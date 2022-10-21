@@ -1,0 +1,13 @@
+{
+    "name": "CuponCode",
+    "alias": "cuponcode",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CuponCode\\Providers\\CuponCodeServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

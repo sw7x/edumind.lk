@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'NotoSansSinhala-Regular';
+  src: url(./NotoSansSinhala-Regular.eot);
+  src: url(./NotoSansSinhala-Regular.eot?#iefix) format('embedded-opentype'),
+       url(./NotoSansSinhala-Regular.otf) format('otf'),
+       url(./NotoSansSinhala-Regular.svg#NotoSansSinhala-Regular) format('svg'),
+       url(./NotoSansSinhala-Regular.ttf) format('truetype'),
+       url(./NotoSansSinhala-Regular.woff) format('woff'),
+       url(./NotoSansSinhala-Regular.woff2) format('woff2');
+}

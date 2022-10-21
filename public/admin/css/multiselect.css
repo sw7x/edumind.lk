@@ -1,0 +1,174 @@
+
+.multiselect-wrapper {
+    border-radius: 0.1em 0.1em;
+    /*padding: 0.25em 0.25em;*/
+    padding: 0em 0em 0.1em 0em;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1.1;
+    background-color: #fff;
+    /*border: 1px solid #777;*/
+    border:1px solid #ada3a3;
+    position: relative;
+    min-width: 28ch;
+    max-width: 35ch;
+}
+
+.multiselect-wrapper .heading{
+    border-radius: .1em .1em 0em 0em;
+}
+
+.multiselect {
+    width: 100%;
+    height: 10em;
+    /*border: solid 1px #c0c0c0;*/
+    border: solid 0px #c0c0c0;
+    /*-moz-box-shadow:    inset 0 0 10px #c0c0c0;
+    -webkit-box-shadow: inset 0 0 10px #c0c0c0;
+    box-shadow:         inset 0 0 10px #c0c0c0;*/
+    overflow: auto;
+    padding-right: 2px;
+    padding-top: 0px;
+}
+
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+.multiselect.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #0080ff #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+.multiselect.custom-scrollbar::-webkit-scrollbar {
+    width: 14px;
+}
+
+.multiselect.custom-scrollbar::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+.multiselect.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #0080ff;
+    border-radius: 0px;
+    border: 2px solid #ffffff;
+}
+
+
+
+
+
+
+
+.multiselect label:last-of-type{
+    margin-bottom: 0px;
+}
+
+
+/* The custom-checkbox-container */
+.multiselect .custom-checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    font-size: 14px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 0.3em 0 0.3em 2.3em;
+    /*font-weight: bold;*/
+    margin-left: 1.2em;
+}
+
+.multiselect .custom-checkbox-container.select-all {
+    /*color: #ffffff;*/
+    /*background-color: #1e68b3c2;*/
+    border-radius: 0.1em;
+    font-size: 14px;
+    padding: 0.4em 0 0.4em 2em;
+    margin-left: 0px;
+    /*font-weight: bold;*/
+}
+
+.multiselect .custom-checkbox-container.select-all .checkmark {
+    top: 6px;
+    left: 5px;
+}
+
+.multiselect .custom-checkbox-container.multiselect-on {
+    color: #ffffff;
+    background-color: #0E8EFF;
+    border-radius: 0.1em;
+}
+
+.multiselect .custom-checkbox-container.select-all.multiselect-on {
+    color: #ffffff;
+    background-color: #1270c3;
+    border-radius: 0.1em;
+}
+
+
+/* Hide the browser's default checkbox */
+.multiselect .custom-checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.multiselect .custom-checkbox-container .checkmark {
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    height: 16px;
+    width: 16px;
+    /*background-color: #eee;*/
+    background: #80808063;
+    border: 1px solid #938f8f;
+}
+
+.multiselect .custom-checkbox-container.multiselect-on .checkmark {
+    border: 1px solid #cfc9c9;
+}
+
+
+/* On mouse-over, add a grey background color */
+.multiselect .custom-checkbox-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.multiselect .custom-checkbox-container input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+/* Style the checkmark/indicator */
+.multiselect .custom-checkbox-container .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 4px;
+    top: 0px;
+    width: 7px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+/* Show the checkmark when checked */
+.multiselect .custom-checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+
+.border {
+    border-width: 1px;
+}
