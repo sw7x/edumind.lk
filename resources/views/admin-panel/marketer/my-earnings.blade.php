@@ -15,12 +15,16 @@
 
     <!-- sweetalert2 CSS file
     <link rel="stylesheet" href="{{asset('admin/css/plugins/sweetalert2/sweetalert2.min.css')}}">-->
+	
+	<!-- Date Range Picker CSS file-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @stop
 
 @section('page-css')
 	<style>
-
-
+		.custom-daterangepicker{
+			
+		}
 	</style>
 @stop
 
@@ -48,41 +52,59 @@
 
 					
 
-                    <div>// move last : available = 0</div>
+                    
                     <h1 class="font-bold my-1">marketer my earnings</h1>
+                   
+                    <div class="px-3 row mb-3" id="">
+                        <div class="col-md-4 px-0">
+                            <div class="text-center"><h3> Date range select:</h3></div>
+                            <div class="earnings-daterange input-daterange input-group" id="datepicker">
+                                <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
+                            </div>
+                        </div>
 
+                        <div class="offset-md-2 col-md-4">
+                        </div>
+                    </div>
+
+                   
                     <div class="table-responsive">
                         <table id="cupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
 							<thead>
 								<tr>
 									<th></th>
-									<th>Code</th>
-									<th>Discount</th>
-									<th>Works for</th>
-									<th>Used</th>
-									<th>Available</th>
-									<th>Total</th>
-									<th>Assigned Date/time</th>
-									<th>Total Discount<br> <small>(marketer claimed amount)</small></th>
+									<th>Enrollment <br>Link</th>								
+									<th>Enrolled <br>Date/time</th>
+									<th>Total <br>claimed Amount</th>									
+									<th>Used <br>cupon code</th>
+									<th>Cupon code <br>discount %</th>
+									<th>is Paid</th>																	
 								</tr>
 							</thead>
 
 							<tbody>
-								<?php
-								$arr = ['Any course','Maths 101','Multiple courses (3)'];
-
+								<?php							
 								for ($x = 0; $x <= 100; $x+=1): ?>
-
 								<tr>
 									<td></td>
-									<td>ABC<?php echo $x; ?></td>
-									<td><?php echo $x; ?>%</td>
-									<td><?php echo $arr[array_rand($arr)];?></td>
-									<td><?php echo $x*100; ?></td>
-									<td><?php echo $x*20; ?></td>
-									<td><?php echo $x; ?></td>
+									<td>ABC<?php echo $x; ?></td>									
 									<td>2022/7/16 06:45 PM</td>
-									<td><?php echo 'RS '.$x.'000.00'; ?></td>
+									<td><?php echo 'RS '.$x.'000.00'; ?></td>									
+									<td>
+										@if($x%2 ==0)
+                                            CCC123
+                                        @else
+                                            -
+                                        @endif
+									</td>
+									<td>7%</td>
+									<td>
+                                        @if($x%2 ==0)
+                                            <span class="label label-primary">Yes : <a href="">DDE123</a></span>
+                                        @else
+                                            <span class="label label-disable">Pending</span>
+                                        @endif
+                                    </td>
 								</tr>
 								<?php endfor;  ?>
 							</tbody>
@@ -90,14 +112,12 @@
 							<tfoot>
 								<tr>
 									<th></th>
-									<th>Code</th>
-									<th>Discount</th>
-									<th>Works for</th>
-									<th>Used</th>
-									<th>Available</th>
-									<th>Total</th>
-									<th>Assigned Date/time</th>
-									<th>Discount <br> <small>(marketer claimed amount)</small></th>
+									<th>Enrollment <br>Link</th>									
+									<th>Enrolled <br>Date/time</th>
+									<th>Total <br>claimed Amount</th>
+									<th>Used <br>cupon code</th>
+									<th>Cupon code <br>discount %</th>
+									<th>is Paid</th>
 								</tr>
 							</tfoot>
 
@@ -127,11 +147,16 @@
 
     <!-- sweetalert2 js file
     <script src="{{asset('admin/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>-->
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 @stop
 
 
 @section('javascript')
 <script>
+
+
 
 	$(document).ready(function() {
 
@@ -163,117 +188,67 @@
 
 			return (`
 
-            <div class="table-detail-content">
-                <ul>
+            <div class="table-detail-content ml-3">                    
+                <ul class="mb-3">
                     <li>
                         <div class="detail"></div>
-
                         <div class="detail detail-main">
                             <fieldset>
-                                <legend>
-									<span class="label label-primary">
-										<a href="" class="hover:text-white">Course one</a>
-									</span>
-								</legend>
                                 <div>
                                     <table class="table table-condensed">
                                         <thead>
-                                            <tr>
-												<!--<th>Course name</th>-->
-												<th>Teacher</th>
-												<th>Original price</th>
-												<th>New price</th>
-												<th>Used cupon code count</th>
-                                                <th>Discount</th>
-											</tr>
-                                        </thead>
-                                        <tr>
-                                            <!--<td>Course one</td>-->
-                                            <td>A.B.C Saman Fernando</td>
-											<td>RS 6000.00</td>
-											<td>RS 5000.00</td>
-											<td>12</td>
-                                            <td>RS 6200.00</td>
-										</tr>
-                                    </table>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </li>
-
-                    <li>
-                        <div class="detail"></div>
-
-                        <div class="detail detail-main">
-                            <fieldset>
-                                <legend>
-									<span class="label label-primary">
-										<a href="" class="hover:text-white">Course two</a>
-									</span>
-								</legend>
-                                <div>
-                                    <table class="table table-condensed">
-                                        <thead>
-                                            <tr>
-												<!--<th>Course name</th>-->
-												<th>Teacher</th>
-												<th>Original price</th>
-												<th>New price</th>
-												<th>Used cupon code count</th>
-                                                <th>Discount</th>
-											</tr>
-                                        </thead>
-                                        <tr>
-                                            <!--<td>Course one</td>-->
-                                            <td>A.B.C Saman Fernando</td>
-											<td>RS 7000.00</td>
-											<td>RS 5000.00</td>
-											<td>33</td>
-                                            <td>RS 4300.00</td>
-										</tr>
-                                    </table>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </li>
-
-                    <li>
-                        <div class="detail"></div>
-
-                        <div class="detail detail-main">
-                            <fieldset>
-                                <legend>
-									<span class="label label-primary">
-										<a href="" class="hover:text-white">Course three</a>
-									</span>
-								</legend>
-                                <div>
-                                    <table class="table table-condensed">
-                                        <thead>
-                                            <tr>
-												<!--<th>Course name</th>-->
+                                            <tr class="table-primary">
+												<th>Course</th>
 												<th>Teacher</th>												
-												<th>Original price</th>
-												<th>New price</th>
-												<th>Used cupon code count</th>
-                                                <th>Discount</th>
+												<th>Course original price</th>												
 											</tr>
                                         </thead>
-                                        <tr>
-                                            <!--<td>Course one</td>-->
-											<td>A.B.C Saman Fernando</td>
-											<td>RS 8000.00</td>
-											<td>RS 5000.00</td>
-											<td>42</td>
-                                            <td>RS 880.00</td>
-										</tr>
+                                        <tbody>
+	                                        <tr class="">
+	                                        	<td>Course one</td>
+	                                            <td>A.B.C Saman Fernando</td>
+												<td>RS 6000.00</td>
+											</tr>
+										</tbody>
                                     </table>
                                 </div>
                             </fieldset>
                         </div>
                     </li>
-
                 </ul>
+
+                <div class="mb-4 w-3/4  ml-3 border">
+                    <table class="w-full">
+                        <tr>
+							<td>Course original price</td>
+							<td>RS 6000.00</td>
+						</tr>
+						<tr>
+							<td>Cupon code discount %</td>
+							<td>10%</td>
+						</tr>
+                        <tr>
+                        	<td>Cupon code discount amount</td>
+                            <td>RS 600.00 = (6000*10%)</td>
+                        </tr>						
+                        <tr>
+                        	<td>Marketer/Teacher share from discount</td>
+                            <td>100%</td>
+                        </tr>
+                        <tr>
+                        	<td>Edumind share from discount</td>
+                            <td>0%</td>
+                        </tr>						
+						<tr class="text-red-600 font-bold">
+							<td>Marketer/Teacher claimed Amount from cupon code discount</td>
+							<td>RS 600.00 = (600*100%)</td>
+						</tr>
+						<tr class="text-red-600 font-bold">
+							<td>Edumind claimed Amount from cupon code discount</td>
+							<td>RS 00.00 = (600*0%)</td>
+						</tr>                                       
+                    </table>
+                </div>
             </div>
 			`);
 		}
@@ -291,28 +266,20 @@
 					data: null,
 					defaultContent: '',
 				},
-				{ data: 'name' },
-				{ data: 'position' },
-				{ data: 'office' },
-				{ data: 'salary' },
-
-				{ data: 'x1',visible: true },
-				{ data: 'y1',visible: true },
-				{ data: 'z1',visible: true },
-				{ data: 'a1',visible: true },
-
-
+				{ data: 'enrollment link' },
+				{ data: 'course' },
+				{ data: 'enrollment date' },
+				{ data: 'claimed Amount' },
+				{ data: 'is paid',visible: true },
+				{ data: 'discount precentage',visible: true },
 			],
 			//order: [[1, 'asc']],
-
 			"ordering": false,
 			pageLength: 10,
 			responsive: true,
 			// dom: '<"html5buttons"B>lTfgitp',
 			//dom: 'Bfrtip',
 			lengthChange: false,
-
-
 		});
 
 		// Add event listener for opening and closing details
@@ -339,55 +306,61 @@
 
 
 
+		
 
 
-		$('#cupon-code-list-tbl1').DataTable({
-			"columns": [
-				null,
-				{ "width": "40%" },
-				null,
-				null,
-				null
-			],
-			"ordering": false,
-			pageLength: 10,
-			responsive: true,
-			// dom: '<"html5buttons"B>lTfgitp',
-			dom: 'Bfrtip',
-			lengthChange: false,
-			buttons: [
-				/*
-                {extend: 'copy'},
-                {extend: 'csv'},
-                {extend: 'excel', title: 'ExampleFile'},
-                {extend: 'pdf', title: 'ExampleFile'},
+		$('input[name="daterange"]').daterangepicker({
+		   	//"minYear": 2020,
+		   	//"minYear": 2022,
+		   	//customClass:'hhh7777',
+		   	minDate: new Date('01/01/2022'),
+		   	maxDate: new Date(),
+		   	showDropdowns: true,
+		   	//"maxYear": moment().year(),
+		    ranges: {
+		        'Today': [moment(), moment()],
+		        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+		        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+		        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+		        'This Month': [moment().startOf('month'), moment().endOf('month')],
+		        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+		    },
+		    "alwaysShowCalendars": true,
+		    "startDate": new Date('01/01/2022'),
+		    "endDate": new Date(),
+		    //"startDate": "10/19/2020",
+		    //"endDate": "10/25/2022",
+		    //"endDate": moment(),
 
-                {extend: 'print',
-                    customize: function (win){
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
-
-                        $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                    }
-                }
-                */
-				{
-					text: 'Add subject',
-					action: function ( e, dt, node, config ) {
-						//$('#addProjectModal').modal('show');
-						//$('#add-modal').modal('show');
-						window.location = '{{route('admin.subject.create')}}';
-						//  alert( 'Button activated' );
-					},
-					className: 'add-ct mb-3 btn-green '
-				}
-			]
-
+		    "opens": "center",
+		    "drops": "auto",
+		    "buttonClasses": "medium-size btn",
+		    locale: {
+		    	format: 'YYYY-MM-DD',
+		    	applyLabel: 'Select <br><small>date range</small>',
+			    cancelLabel: 'Clear <br><small>date range</small>'
+			},
+			"cancelClass": "btn-danger",
+			"applyButtonClasses": "btn-primary",
+			//autoUpdateInput: false,
+		}, function(start, end, label) {
+			console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+		}).on('show.daterangepicker', function (ev, picker) {
+			picker.container.addClass('custom-daterangepicker');
 		});
+
+
+		$('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+			$(this).val('');
+			picker.setStartDate('01/01/2022');
+			picker.setEndDate(new Date());
+		});
+
+
+		
 
 	});
 
 </script>
 @stop
+

@@ -1,10 +1,33 @@
-@extends('admin-panel.layouts.master',['title' => 'Earnings'])
+
+@extends('admin-panel.layouts.master',['title' => 'Earnings(ADMIN)'])
 @section('title','View Earnings')
 
 @section('css-files')
-    <!-- bootstrap datapicker -->
-    <link href="{{asset('admin/css/plugins/datapicker/datepicker3.css')}}" rel="stylesheet">
+    <!-- select2 -->
+    <link href="{{asset('admin/css/plugins/select2/select2.min.css')}}" rel="stylesheet">
+
+    <!-- datatables -->
+    <link href="{{asset('admin/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Magnific Popup core CSS file 
+    <link rel="stylesheet" href="{{asset('admin/css/magnific-popup.css')}}">-->
+
+    <!-- sweetalert2 CSS file
+    <link rel="stylesheet" href="{{asset('admin/css/plugins/sweetalert2/sweetalert2.min.css')}}">-->
+    
+    <!-- Date Range Picker CSS file-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @stop
+
+@section('page-css')
+    <style>
+        .custom-daterangepicker{
+            
+        }
+    </style>
+@stop
+
 
 
 
@@ -12,170 +35,89 @@
     <div class="row" id="">
         <div class="col-lg-12">
             <div class="ibox">
+
+
                 <div class="ibox-content">
 
+                    @if(Session::has('message'))
+                        <div class="col-lg-12">
+                            <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+                                <a href="#" class="close">×</a>
+                                <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                                <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                                <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                            </div>
+                        </div>
+                    @endif
 
+                    
+
+                    
+                    <h1 class="font-bold my-1">admin my earnings</h1>
+                   
                     <div class="px-3 row mb-3" id="">
-
-
-                        <div class="col-md-6">earnings
-                            <div class="text-center"><h3>Range select:</h3></div>
+                        <div class="col-md-4 px-0">
+                            <div class="text-center"><h3> Date range select:</h3></div>
                             <div class="earnings-daterange input-daterange input-group" id="datepicker">
-                                <input type="text" class="form-control-sm form-control" name="start" value="2021/01/01"/>
-                                <span class="input-group-addon px-3"> to </span>
-                                <input type="text" class="form-control-sm form-control" name="end" value="<?php echo date("Y/m/d"); ?>" />
+                                <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
                             </div>
                         </div>
 
                         <div class="offset-md-2 col-md-4">
-                            <table class="table table-bordered table-fixed w-full">
-                                <thead>
-                                <tr>
-                                    <th>Earning</th>
-                                    <td class="break-words"><h4 class="text-navy m-0">Rs 20,0000</h4></td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="font-fullbold">Enrolments</td>
-                                    <td class="break-words"><h4 class="font-semibold text-navy m-0">231</h4></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                    <hr>
-
-                </div>
-            </div>
-        </div>
-
-
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-content">
-
-                    <div class="px-3 row mb-3" id="">
-                        <div class="col-lg-12">
-
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h5>From:</h5>
-
-                                    <!--
-                                    <div>First name Last name</div>
-                                    <address>
-                                        <strong>Street Address</strong><br>
-                                        Town / City <br>
-                                        Country / Region<br>
-                                        Postcode / ZIP<br>
-                                        <abbr title="Phone">P:</abbr> Phone
-                                    </address>
-                                    <a href = "mailto: abc@example.com">Email</a>
-                                    Additional information (optional)
-                                    -->
-                                    <div>Evans Frank Ghosh Hills Irwin Jones</div>
-                                    <address>
-                                        <strong>Inspinia, Inc.</strong><br>
-                                        106 Jorg Avenu, 600/10<br>
-                                        Chicago, VT 32456<br>
-                                        <abbr title="Phone">P:</abbr> (123) 601-4590
-                                    </address>
-                                    <a href = "mailto: abc@example.com">abc@example.com</a>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                </div>
-
-                                <div class="col-sm-6 text-right">
-                                    <h4>Invoice No.</h4>
-                                    <h4 class="text-navy">INV-000567F7-00</h4>
-                                    <p>
-                                        <span><strong>Invoice Date:</strong> Marh 18, 2014</span><br/>
-                                        <span><strong>Due Date:</strong> March 24, 2014</span>
-                                    </p>
-                                </div>
-                            </div>
-
-
-                            <div class="table-responsive m-t m-b">
-                                <table class="table invoice-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Item List</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td><div><strong>Admin Theme with psd project layouts</strong></div>
-                                        <td>1</td>
-                                        <td>$26.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div><strong>Wodpress Them customization</strong></div>
-                                        </td>
-                                        <td>1</td>
-                                        <td>$80.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><div><strong>Angular JS & Node JS Application</strong></div></td>
-                                        <td>1</td>
-                                        <td>$420.00</td>
-                                    </tr>
-
-                                    </tbody>
-                                </table>
-                            </div><!-- /table-responsive -->
-
-                            <table class="table invoice-total">
-                                <tbody>
-                                <tr>
-                                    <td><strong>Cupon Code :</strong></td>
-                                    <td>ABCD123</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Discont(%) :</strong></td>
-                                    <td>45%</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Discont Applied Item :</strong></td>
-                                    <td>Wodpress Them customization</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Discont Applied Item :</strong></td>
-                                    <td>For total</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Sub Total :</strong></td>
-                                    <td>$1026.00</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>TAX :</strong></td>
-                                    <td>$235.98</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Cupon Code Discount Amount :</strong></td>
-                                    <td>-$1026*45% = -$235.98</td>
-                                </tr>
-                                <tr class="total-price">
-                                    <td><strong>TOTAL :</strong></td>
-                                    <td>$1261.98</td>
-                                </tr>
-                                </tbody>
-                            </table>
-
                         </div>
                     </div>
 
+                   
+                    <div class="table-responsive">
+                        <table id="cupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Total <br>claimed Amount</th>
+                                    <th>Order ID <br><small>(Enrollement)</small></th>                                    
+                                    <th>Enrolled <br>Date/time</th>
+                                    <th>Used <br>cupon code</th>
+                                    <th>Cupon code <br>discount %</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php                           
+                                for ($x = 0; $x <= 100; $x+=1): ?>
+                                <tr>
+                                    <td></td>
+                                    <td><?php echo 'RS '.$x.'000.00'; ?></td>  
+                                    <td>ABC<?php echo $x; ?></td>
+                                    <td>2022/7/16 06:45 PM</td>
+                                    <td>
+                                        @if($x%2 ==0)
+                                            CCC123
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>10%</td>
+                                </tr>
+                                <?php endfor;  ?>
+                            </tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th>Total <br>claimed Amount</th>                                                                       
+                                    <th>Order ID <br><small>(Enrollement)</small></th>                                    
+                                    <th>Enrolled <br>Date/time</th>
+                                    <th>Used <br>cupon code</th>
+                                    <th>Cupon code <br>discount %</th>
+                                </tr>
+                            </tfoot>
+
+                        </table>
+                    </div>
+
                 </div>
+
+
             </div>
         </div>
     </div>
@@ -185,29 +127,226 @@
 
 @section('script-files')
 
+    <!-- Select2 -->
+    <script src="{{asset('admin/js/plugins/select2/select2.full.min.js')}}"></script>
 
-    <!-- Data picker -->
-    <script src="{{asset('admin/js/plugins/datapicker/bootstrap-datepicker.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/dataTables/datatables.min.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/dataTables/dataTables.bootstrap4.min.js')}}"></script>
 
+    <!-- Magnific Popup core JS file 
+    <script src="{{asset('admin/js/jquery.magnific-popup.min.js')}}"></script>-->
 
+    <!-- sweetalert2 js file
+    <script src="{{asset('admin/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>-->
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 @stop
 
 
 @section('javascript')
 <script>
-	$(document).ready(function() {
-        $('.earnings-daterange').datepicker({
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true,
 
-            ///startView: 2,
-            todayBtn: "linked",
-            format: 'yyyy-mm-dd',
-            endDate: '+0d',
-            autoclose: true
+
+
+    $(document).ready(function() {
+
+        
+
+        /* Formatting function for row details - modify as you need */
+        function format(d) {
+            // `d` is the original data object for the row
+            /*return (
+                '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                '<tr>' +
+                '<td>Full name:</td>' +
+                '<td>' +
+                d.name +
+                '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>Extension number:</td>' +
+                '<td>' +
+                d.extn +
+                '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>Extra info:</td>' +
+                '<td>And any further details here (images etc)...</td>' +
+                '</tr>' +
+                '</table>');*/
+
+
+            return (`
+
+            <div class="table-detail-content ml-3">                    
+                <ul class="mb-3">
+                    <li>
+                        <div class="detail"></div>
+                        <div class="detail detail-main">
+                            <fieldset>
+                                <div>
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr class="table-primary">
+                                                <th>Course</th>
+                                                <th>Teacher</th>
+                                                <th>Course original price</th>
+                                                <th>Student</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="">
+                                                <td>Course one</td>
+                                                <td>A.B.C Saman Fernando</td>
+                                                <td>RS 6000.00</td>
+                                                <td>A.B.C Vikum Amaraweera</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </li>
+                </ul>                
+                <div class="mb-4 w-3/4 ml-3 border">                    
+                    <table class="w-full">
+                        <tr>
+                            <td>Course original price</td>
+                            <td>RS 6000.00</td>
+                        </tr>
+                        <tr class="">
+                            <td>Edumind share from course fee</td>
+                            <td>40%</td>
+                        </tr>
+                        <tr class="">
+                            <td>Cupon code discount %</td>
+                            <td>10%</td>
+                        </tr>
+                        <tr class="">
+                            <td>Reduced share of cupon code discount from Edumind</td>
+                            <td>100%</td>
+                        </tr>
+                        <tr class="">
+                            <td>New Edumind share (if cupon code used)</td>
+                            <td>30% = (40% - 10%*100%)</td>
+                        </tr>
+                        <tr class="text-red-600 font-bold">
+                            <td>Edumind claimed Amount from course fee</td>
+                            <td>RS 1800.00 = (6000*30%)</td>
+                        </tr> 
+                    </table>                    
+                </div>
+            </div>
+            `);
+        }
+
+
+
+
+
+        var table = $('#cupon-code-list-tbl').DataTable({
+            //ajax: './ajax.txt',
+            columns: [
+                {
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: '',
+                },
+                { data: 'claimed Amount' },                
+                { data: 'order' },
+                { data: 'enrollment date' },
+                { data: 'cupon code' },
+                { data: 'cupon code discount precentage',visible: true },
+            ],
+            //order: [[1, 'asc']],
+            "ordering": false,
+            pageLength: 10,
+            responsive: true,
+            // dom: '<"html5buttons"B>lTfgitp',
+            //dom: 'Bfrtip',
+            lengthChange: false,
         });
-	});
+
+        // Add event listener for opening and closing details
+        $('#cupon-code-list-tbl tbody').on('click', 'td.dt-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                console.log(row.data());
+                // Open this row
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
+
+        $("#cupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
+
+
+
+
+
+        
+
+
+        $('input[name="daterange"]').daterangepicker({
+            //"minYear": 2020,
+            //"minYear": 2022,
+            //customClass:'hhh7777',
+            minDate: new Date('01/01/2022'),
+            maxDate: new Date(),
+            showDropdowns: true,
+            //"maxYear": moment().year(),
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            "alwaysShowCalendars": true,
+            "startDate": new Date('01/01/2022'),
+            "endDate": new Date(),
+            //"startDate": "10/19/2020",
+            //"endDate": "10/25/2022",
+            //"endDate": moment(),
+
+            "opens": "center",
+            "drops": "auto",
+            "buttonClasses": "medium-size btn",
+            locale: {
+                format: 'YYYY-MM-DD',
+                applyLabel: 'Select <br><small>date range</small>',
+                cancelLabel: 'Clear <br><small>date range</small>'
+            },
+            "cancelClass": "btn-danger",
+            "applyButtonClasses": "btn-primary",
+            //autoUpdateInput: false,
+        }, function(start, end, label) {
+            console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        }).on('show.daterangepicker', function (ev, picker) {
+            picker.container.addClass('custom-daterangepicker');
+        });
+
+
+        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+            picker.setStartDate('01/01/2022');
+            picker.setEndDate(new Date());
+        });
+
+
+        
+
+    });
 
 </script>
 @stop

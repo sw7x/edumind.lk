@@ -52,7 +52,7 @@
 
 					
 
-                    <div>// move last : available = 0</div>
+                    
                     <h1 class="font-bold my-1">teacher my earnings</h1>
                    
                     <div class="px-3 row mb-3" id="">
@@ -74,11 +74,11 @@
 								<tr>
 									<th></th>
 									<th>Enrollment <br>Link</th>									
+									<th>Total <br>claimed Amount</th>
 									<th>Course</th>
 									<th>Enrolled <br>Date/time</th>
-									<th>Total <br>claimed Amount</th>
-									<th>is Paid</th>
-									<th>Used <br>cupon code</th>																	
+									<th>Used <br>cupon code</th>
+									<th>is Paid</th>																	
 								</tr>
 							</thead>
 
@@ -88,16 +88,9 @@
 								<tr>
 									<td></td>
 									<td>ABC<?php echo $x; ?></td>
+									<td><?php echo 'RS '.$x.'000.00'; ?></td>	
 									<td>Course<?php echo $x; ?></td>
 									<td>2022/7/16 06:45 PM</td>
-									<td><?php echo 'RS '.$x.'000.00'; ?></td>									
-									<td>
-                                        @if($x%2 ==0)
-                                            <span class="label label-primary">Yes : <a href="">DDE123</a></span>
-                                        @else
-                                            <span class="label label-disable">Pending</span>
-                                        @endif
-                                    </td>
 									<td>
 										@if($x%2 ==0)
                                             CCC123
@@ -105,6 +98,13 @@
                                             -
                                         @endif
 									</td>
+									<td>
+                                        @if($x%2 ==0)
+                                            <span class="label label-primary">Yes : <a href="">DDE123</a></span>
+                                        @else
+                                            <span class="label label-disable">Pending</span>
+                                        @endif
+                                    </td>
 								</tr>
 								<?php endfor;  ?>
 							</tbody>
@@ -113,11 +113,11 @@
 								<tr>
 									<th></th>
 									<th>Enrollment <br>Link</th>									
+									<th>Total <br>claimed Amount</th>
 									<th>Course</th>
 									<th>Enrolled <br>Date/time</th>
-									<th>Total <br>claimed Amount</th>
-									<th>is Paid</th>
 									<th>Used <br>cupon code</th>
+									<th>is Paid</th>									
 								</tr>
 							</tfoot>
 
@@ -201,13 +201,17 @@
 												<th>Teacher</th>
 												<th>Course original price</th>
 												<th>Student</th>
+												<th>Cupon code <br>discount %</th>
 											</tr>
                                         </thead>
-                                        <tr class="">
-                                            <td>A.B.C Saman Fernando</td>
-											<td>RS 6000.00</td>
-											<td>A.B.C Vikum Amaraweera</td>
-										</tr>
+                                        <tbody>
+	                                        <tr class="">
+	                                            <td>A.B.C Saman Fernando</td>
+												<td>RS 6000.00</td>
+												<td>A.B.C Vikum Amaraweera</td>
+												<td>10%</td>
+											</tr>
+										</tbody>
                                     </table>
                                 </div>
                             </fieldset>
@@ -232,7 +236,6 @@
 						</tr>
 					</table>					
                 </div>
-
                 <div class="mb-4 w-3/4  ml-3 border">
                     <table class="w-full">
                         <tr>
@@ -264,34 +267,7 @@
 							<td>RS 00.00 = (600*0%)</td>
 						</tr>                                       
                     </table>
-                </div>
-
-                <div class="mb-4 w-3/4 ml-3 border">
-                	<fieldset>
-	                    <table class="w-full">
-	                        <tr>
-								<td>Course original price</td>
-								<td>RS 6000.00</td>
-							</tr>
-							<tr class="">
-								<td>Edumind share from course fee</td>
-								<td>40%</td>
-							</tr>
-							<tr class="">
-								<td>Reduced share of cupon code discount from Edumind</td>
-								<td>100%</td>
-							</tr>
-							<tr class="">
-								<td>New Edumind share (if cupon code used)</td>
-								<td>30% = (40% - 10%*100%)</td>
-							</tr>
-							<tr class="text-red-600 font-bold">
-								<td>Edumind claimed Amount from course fee</td>
-								<td>RS 1800.00 = (6000*30%)</td>
-							</tr> 
-						</table>
-					</fieldset>
-                </div>
+                </div>                
             </div>
 			`);
 		}
