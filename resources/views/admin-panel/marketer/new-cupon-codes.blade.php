@@ -1,5 +1,5 @@
-@extends('admin-panel.layouts.master',['title' => 'Cupon code usage'])
-@section('title','Dashboard')
+@extends('admin-panel.layouts.master',['title' => 'New cupon codes'])
+@section('title','New cupon code')
 
 @section('css-files')
 @stop

@@ -43,6 +43,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\Admin\TeacherController as Admin_TeacherController;
+use App\Http\Controllers\Admin\MarketerController as Admin_MarketerController;
 
 use App\Http\Controllers\TopicsController;
 use App\Http\Controllers\CourseController as User_CourseController;
@@ -334,15 +335,23 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
 
         Route::group(['prefix'=>'course','as'=>'course.'], function(){
-            Route::get ('/content', [Admin_CourseController::class,'courseContent'])->name ('content');
+            //Route::get ('/content', [Admin_CourseController::class,'courseContent'])->name ('content');
+            
+
             Route::get ('/add-2', [Admin_CourseController::class,'addCourseCopy'])->name ('add-2');
             Route::post('/change-status', [Admin_CourseController::class,'changeStatus'])->name ('change-status');
             Route::get('/add0', function(){return view('admin-panel.course-add-backup1');})->name ('add0');
             Route::post('/check-empty', [Admin_CourseController::class,'checkEmpty'])->name ('check-empty');
+        
+
+
         });
 
         Route::group(['prefix'=>'user','as'=>'user.'], function(){
-            Route::get ('/approve-teachers', [UserController::class,'approveTeachers'])->name ('approve-teachers');
+            Route::get ('/approve-teachers', [UserController::class,'viewUnApprovedTeachersList'])->name ('un-approved-teachers-list');
+            Route::get ('/approve-teachers/{id}', [UserController::class,'viewUnApprovedTeacher'])->name ('view-un-approved-teacher');
+            
+
             Route::get ('/changes-approve', [UserController::class,'changesApprove'])->name ('changes-approve');
 
             Route::post ('/store-teacher', [UserController::class,'storeTeacher'])->name ('store-teacher');
@@ -391,7 +400,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         
             Route::get('/teacher-view',function(){return view('admin-panel.teacher.list-cupon-codes');})->name('teacher-view');
             
-
+            Route::get ('/earnings', [Admin_MarketerController::class,'ViewEarnings'])->name ('earnings');
 
 
         });
@@ -421,7 +430,24 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         Route::resource ('/subject', SubjectController::class);
     //});
 
-    Route::resource('/course', Admin_CourseController::class);
+
+    Route::group(['as'=>'course.'  ,'prefix'=>'course'],function(){
+        Route::get('/enrollments', [Admin_CourseController::class,'viewCourseEnrollmentList'])->name ('enrollement-list');
+        Route::get('/completions', [Admin_CourseController::class,'viewCourseCompleteList'])->name ('complete-list');       
+
+
+        Route::resource('/', Admin_CourseController::class); 
+    });    
+
+
+    
+
+
+
+
+
+
+
 
     Route::resource('/user', UserController::class)->except(['store','update']);
 });

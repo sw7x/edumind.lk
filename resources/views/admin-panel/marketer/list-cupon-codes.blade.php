@@ -1,4 +1,4 @@
-@extends('admin-panel.layouts.master',['title' => 'View teacher cupon codes'])
+@extends('admin-panel.layouts.master',['title' => 'View Marketer cupon codes'])
 @section('title','View cupon codes')
 
 @section('css-files')
@@ -46,8 +46,8 @@
                     @endif
 
 					
-                    <div>// move last : available = 0</div>
 
+                    <div>// move last : available = 0</div>
 
                     <div class="table-responsive">
                         <table id="cupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
@@ -61,7 +61,7 @@
 									<th>Available</th>
 									<th>Total</th>
 									<th>Assigned Date/time</th>
-									<th>Total Discount<br> <small>(teacher claimed amount)</small></th>
+									<th>Total Discount<br> <small>(marketer claimed amount)</small></th>
 								</tr>
 							</thead>
 
@@ -95,7 +95,7 @@
 									<th>Available</th>
 									<th>Total</th>
 									<th>Assigned Date/time</th>
-									<th>Discount <br> <small>(teacher claimed amount)</small></th>
+									<th>Discount <br> <small>(marketer claimed amount)</small></th>
 								</tr>
 							</tfoot>
 
@@ -178,6 +178,7 @@
                                         <thead>
                                             <tr>
 												<!--<th>Course name</th>-->
+												<th>Teacher</th>
 												<th>Original price</th>
 												<th>New price</th>
 												<th>Used cupon code count</th>
@@ -186,6 +187,7 @@
                                         </thead>
                                         <tr>
                                             <!--<td>Course one</td>-->
+                                            <td>A.B.C Saman Fernando</td>
 											<td>RS 6000.00</td>
 											<td>RS 5000.00</td>
 											<td>12</td>
@@ -212,6 +214,7 @@
                                         <thead>
                                             <tr>
 												<!--<th>Course name</th>-->
+												<th>Teacher</th>
 												<th>Original price</th>
 												<th>New price</th>
 												<th>Used cupon code count</th>
@@ -220,6 +223,7 @@
                                         </thead>
                                         <tr>
                                             <!--<td>Course one</td>-->
+                                            <td>A.B.C Saman Fernando</td>
 											<td>RS 7000.00</td>
 											<td>RS 5000.00</td>
 											<td>33</td>
@@ -246,6 +250,7 @@
                                         <thead>
                                             <tr>
 												<!--<th>Course name</th>-->
+												<th>Teacher</th>												
 												<th>Original price</th>
 												<th>New price</th>
 												<th>Used cupon code count</th>
@@ -254,6 +259,7 @@
                                         </thead>
                                         <tr>
                                             <!--<td>Course one</td>-->
+											<td>A.B.C Saman Fernando</td>
 											<td>RS 8000.00</td>
 											<td>RS 5000.00</td>
 											<td>42</td>
@@ -383,3 +389,29 @@
 
 </script>
 @stop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

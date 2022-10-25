@@ -58,9 +58,12 @@
                         </div>
                         <div class="hr-line-dashed"></div>
 
+                        <div>//when course select then load all marketers and course own teacher</div><br>
+                        
+
 
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Select Marketer/Teacher</label>
+                            <label class="col-sm-4 col-form-label">Select Marketer/Teacher <span class="text-xs text-red font-semibold">(course created teacher)</span></label>
                             <div class="col-sm-8">
                                 <select class="form-control m-b" name="account">
                                     <option>option 1</option>

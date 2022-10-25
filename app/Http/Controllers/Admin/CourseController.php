@@ -261,10 +261,10 @@ class CourseController extends Controller
 
 
 
-    public function courseContent()
+    /*public function courseContent()
     {
         return view('admin-panel.course-content');
-    }
+    }*/
 
 
     public function addCourseCopy()
@@ -317,7 +317,19 @@ class CourseController extends Controller
     }
 
 
+    public function viewCourseEnrollmentList(){
+        $data = Course::orderBy('id')->get();
+        return view('admin-panel.course-enrollments')->withData($data);
+    }   
 
 
+    public function viewCourseCompleteList(){
+        $data = Course::orderBy('id')->get();
+        return view('admin-panel.course-completions')->withData($data);
+    }   
+
+
+
+        
 
 }

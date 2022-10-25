@@ -56,7 +56,7 @@
 					<div class="d-flex justify-between col-md-12 mb-4 mt-1">
 
 						<div class="multiselect-wrapper">
-							<div class="text-sm text-white text-center py-1 px-2 bg-gray-400 heading">Select Marketer</div>
+							<div class="text-sm text-white text-center py-1 px-2 bg-gray-400 heading">Select Teacher</div>
 							<div class="multiselect custom-scrollbar" id="multiselect-marketer">
 
 								<label class="custom-checkbox-container select-all">

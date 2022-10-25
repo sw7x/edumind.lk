@@ -1,5 +1,5 @@
-@extends('admin-panel.layouts.master')
-@section('title','Edit subject')
+@extends('admin-panel.layouts.master',['title' => 'View cupon code'])
+@section('title','View cupon code')
 
 @section('css-files')
     <link href="{{asset('admin/css/plugins/iCheck/custom.css')}}" rel="stylesheet">

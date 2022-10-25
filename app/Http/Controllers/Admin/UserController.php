@@ -811,21 +811,30 @@ class UserController extends Controller
                 switch ($request->userType) {
                     case "teacher":
                         $hash = '#tab-teachers';
+                        $redirectRoute = 'admin.user.index';
                         break;
+                    case "approve.teacher":
+                        $hash = '#tab-teachers';
+                        $redirectRoute = 'admin.user.un-approved-teachers-list';
+                        break;    
                     case "student":
                         $hash = '#tab-students';
+                        $redirectRoute = 'admin.user.index';
                         break;
                     case "marketer":
                         $hash = '#tab-marketers';
+                        $redirectRoute = 'admin.user.index';
                         break;
                     case "editor":
                         $hash = '#tab-editors';
+                        $redirectRoute = 'admin.user.index';
                         break;
                     default:
                         $hash = '';
+                        $redirectRoute = 'admin.user.index';
                 }
 
-                return redirect(route('admin.user.index', []). $hash)
+                return redirect(route($redirectRoute, []). $hash)
                     ->with([
                         'message'  => 'successfully deleted the user record',
                         //'message2' => $pwResetTxt,
@@ -854,7 +863,8 @@ class UserController extends Controller
 
         }catch(\Exception $e){
             return view('admin-panel.user-view')->with([
-                'view_user_message'     => 'User delete failed!',
+                //'view_user_message'     => 'User delete failed!',
+                'view_user_message'     => $e->getMessage(),
                 'view_user_cls'         => 'flash-danger',
                 'view_user_msgTitle'    => 'Error !',
             ]);
@@ -864,10 +874,76 @@ class UserController extends Controller
 
 
 
-    public function approveTeachers()
+
+    public function viewUnApprovedTeachersList()
     {
-        return view('admin-panel.user-approve-teachers');
+        
+
+        $unApprovedTeachers   =   Sentinel::findRoleBySlug('teacher')
+                        ->users()
+                        ->with('roles')
+                        ->where('users.status','0')
+                        //->where('users.email','carroll.cydney@example.com')
+                        ->orderBy('id')
+                        ->get();      
+
+        //dd($teachers);
+        
+        return view('admin-panel.user-approve-teachers')->with([
+            'teachers'   => $unApprovedTeachers,
+        ]);
     }
+
+
+    public function viewUnApprovedTeacher($id)
+    {
+        
+        try{
+
+            if(!filter_var($id, FILTER_VALIDATE_INT)){
+                throw new CustomException('Invalid id');
+            }
+            $user = Sentinel::findById($id);
+            // dd($user);
+            if($user != null){
+                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
+                
+                //dd($user->status);
+                if($role != 'teacher'){
+                    throw new CustomException("Invalid User");                    
+                }
+                //todo
+                if($user->status == true){
+                    //throw new CustomException("Account already activated");   
+                }
+
+                return view('admin-panel.teacher.approve-account')->with([
+                    'userData'   => $user,
+                    'userType'   => $role,
+                ]);
+            }else{
+                throw new ModelNotFoundException;
+            }
+        }catch(CustomException $e){
+
+            return view('admin-panel.teacher.approve-account')->with([
+                'view_user_message'     => $e->getMessage(),
+                'view_user_cls'         => 'flash-danger',
+                'view_user_msgTitle'    => 'Error !',
+            ]);
+
+        }catch(\Exception $e){
+            return view('admin-panel.teacher.approve-account')->with([
+                'view_user_message'     => 'Error',
+                //'view_user_message'     => $e->getMessage(),
+                'view_user_cls'         => 'flash-danger',
+                'view_user_msgTitle'    => 'Error !',
+            ]);
+        }
+
+    }
+
+
 
 
 

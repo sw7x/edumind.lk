@@ -69,7 +69,7 @@
                                             <th>Image</th>
                                             <th>Gender</th>
                                             <th>Activated</th>
-                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                            <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
                                             <th class="text-right">Action</th>
                                         </tr>
                                     </thead>
@@ -130,7 +130,7 @@
                                             <th>Image</th>
                                             <th>Gender</th>
                                             <th>Activated</th>
-                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                            <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
                                             <th class="text-right">Action</th>
                                         </tr>
                                     </tfoot>
