@@ -319,13 +319,13 @@ class CourseController extends Controller
 
     public function viewCourseEnrollmentList(){
         $data = Course::orderBy('id')->get();
-        return view('admin-panel.course-enrollments')->withData($data);
+        return view('admin-panel.admin.course-enrollments')->withData($data);
     }   
 
 
     public function viewCourseCompleteList(){
         $data = Course::orderBy('id')->get();
-        return view('admin-panel.course-completions')->withData($data);
+        return view('admin-panel.admin.course-completions')->withData($data);
     }   
 
 

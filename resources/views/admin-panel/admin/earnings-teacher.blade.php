@@ -270,30 +270,8 @@
                     $(api.column(5).footer()).html('Rs ' + pageTotal + ' ( Rs ' + total + ' total)');
 
                     console.log(api.column(5));
-                },
-				fnDrawCallback:function (oSettings) {
-					console.log("after table create");
-					var elems = Array.prototype.slice.call(document.querySelectorAll('.switch-t-approve'));
-
-					elems.forEach(function(html) {
-						//need to check that it has not already be instantiated.
-						if(!html.getAttribute('data-switchery')){
-							var switchery = new Switchery(html, { size: 'small' });
-						}
-						html.onchange = function () {
-							console.log("on click");
-							var checked = html.checked;
-							var id = $(html).attr('bid');
-							if (checked == false) {
-								checked = 2;
-							} else {
-								checked = 1;
-							}
-							//todo
-							//changeBannerState(id, checked);
-						}
-					});
-				}
+                }
+				
 			});
 
             // Add event listener for opening and closing details

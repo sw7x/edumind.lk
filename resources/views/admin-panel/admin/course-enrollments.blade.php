@@ -1,6 +1,6 @@
 
-@extends('admin-panel.layouts.master',['title' => 'My earnings(m)'])
-@section('title','My earnings')
+@extends('admin-panel.layouts.master',['title' => 'Course enrollments'])
+@section('title','Course enrollments')
 
 @section('css-files')
 	<!-- select2 -->
@@ -52,13 +52,24 @@
 
 					
 
-                    
-                    
-                   
-                    <div class="px-3 row mb-3" id="">
-                        <div class="offset-md-6 col-md-6 px-0">
-                            <div class="text-center"><h3> Date range select:</h3></div>
-                            <div class="earnings-daterange input-daterange input-group" id="datepicker">
+                    // test drodown cancel 
+                    <div class="row mb-3" id="">
+                        <div class="col-md-5">
+                            <div class="text-center"><h3>Course</h3></div>
+                            <div class="input-group" id="">
+                                <select class="m-b" id="course" name="course" multiple="multiple">
+                                    <option> </option>
+                                    <option value="all">All</option>                                               
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="iii">Three</option>
+                                    <option value="4">Four</option>                                                
+                                </select>
+                            </div>
+                        </div>
+                        <div class="offset-sm-1 col-md-6 px-0">
+                            <div class="text-center"><h3>Date range select:</h3></div>
+                            <div class="course-enrollments-daterange input-daterange input-group" id="datepicker">
                                 <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
                             </div>
                         </div>
@@ -70,12 +81,10 @@
 							<thead>
 								<tr>
 									<th></th>
-									<th>Enrollment <br>Link</th>								
+									<th>Enrollment <br>Link</th>									
 									<th>Enrolled <br>Date/time</th>
-									<th>Total <br>claimed Amount Rs</th>									
-									<th>Used <br>cupon code</th>
-									<th>Cupon code <br>discount %</th>
-									<th>is Paid</th>																	
+									<th>Student</th>																									
+									<th>Course</th>
 								</tr>
 							</thead>
 
@@ -84,24 +93,10 @@
 								for ($x = 0; $x <= 100; $x+=1): ?>
 								<tr>
 									<td></td>
-									<td>ABC<?php echo $x; ?></td>									
+									<td>ABC<?php echo $x; ?></td>
 									<td>2022/7/16 06:45 PM</td>
-									<td><?php echo $x.'000.00'; ?></td>									
-									<td>
-										@if($x%2 ==0)
-                                            CCC123
-                                        @else
-                                            -
-                                        @endif
-									</td>
-									<td>7%</td>
-									<td>
-                                        @if($x%2 ==0)
-                                            <span class="label label-primary">Yes : <a href="">DDE123</a></span>
-                                        @else
-                                            <span class="label label-disable">Pending</span>
-                                        @endif
-                                    </td>
+									<td>A.B.C Saman Fernando</td>
+									<td>Course<?php echo $x; ?></td>
 								</tr>
 								<?php endfor;  ?>
 							</tbody>
@@ -109,12 +104,10 @@
 							<tfoot>
 								<tr>
 									<th></th>
-									<th></th>							
-									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
+									<th>Enrollment <br>Link</th>									
+									<th>Enrolled <br>Date/time</th>
+									<th>Student</th>																		
+									<th>Course</th>
 								</tr>
 							</tfoot>
 
@@ -157,100 +150,47 @@
 
 	$(document).ready(function() {
 
-		
-
-		/* Formatting function for row details - modify as you need */
-		function format(d) {
-			// `d` is the original data object for the row
-			/*return (
-				'<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-				'<tr>' +
-				'<td>Full name:</td>' +
-				'<td>' +
-				d.name +
-				'</td>' +
-				'</tr>' +
-				'<tr>' +
-				'<td>Extension number:</td>' +
-				'<td>' +
-				d.extn +
-				'</td>' +
-				'</tr>' +
-				'<tr>' +
-				'<td>Extra info:</td>' +
-				'<td>And any further details here (images etc)...</td>' +
-				'</tr>' +
-				'</table>');*/
+		$("#course").select2({
+            placeholder: "Select course",
+            allowClear: true,
+            width: '100%'
+        });
 
 
-			return (`
-
-            <div class="table-detail-content ml-3">                    
-                <ul class="mb-3">
-                    <li>
-                        <div class="detail"></div>
-                        <div class="detail detail-main">
-                            <fieldset>
-                                <div>
-                                    <table class="table table-condensed">
-                                        <thead>
-                                            <tr class="table-primary">
-												<th>Course</th>
-												<th>Teacher</th>												
-												<th>Course original price</th>												
-											</tr>
-                                        </thead>
-                                        <tbody>
-	                                        <tr class="">
-	                                        	<td>Course one</td>
-	                                            <td>A.B.C Saman Fernando</td>
-												<td>RS 6000.00</td>
-											</tr>
-										</tbody>
-                                    </table>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </li>
-                </ul>
-
-                <div class="mb-4 w-3/4  ml-3 border">
-                    <table class="w-full">
-                        <tr>
-							<td>Course original price</td>
-							<td>RS 6000.00</td>
-						</tr>
-						<tr>
-							<td>Cupon code discount %</td>
-							<td>10%</td>
-						</tr>
-                        <tr>
-                        	<td>Cupon code discount amount</td>
-                            <td>RS 600.00 = (6000*10%)</td>
-                        </tr>						
-                        <tr>
-                        	<td>Marketer/Teacher share from discount</td>
-                            <td>100%</td>
-                        </tr>
-                        <tr>
-                        	<td>Edumind share from discount</td>
-                            <td>0%</td>
-                        </tr>						
-						<tr class="text-red-600 font-bold">
-							<td>Marketer/Teacher claimed Amount from cupon code discount</td>
-							<td>RS 600.00 = (600*100%)</td>
-						</tr>
-						<tr class="text-red-600 font-bold">
-							<td>Edumind claimed Amount from cupon code discount</td>
-							<td>RS 00.00 = (600*0%)</td>
-						</tr>                                       
-                    </table>
-                </div>
-            </div>
-			`);
-		}
+        $('.fav_clr').on("select2:select", function (e) {           
+            if(data=='all'){
+                $(".fav_clr > option").prop("selected","selected");
+                $(".fav_clr").trigger("change");
+            }
+        });
 
 
+        $(document.body).on("select2:select select2:unselect","#course",function(e){
+            //console.log($(this));
+            var data    = e.params.data.id;    
+            var val     = $(this).val();
+            var values  = new Array();
+
+            if(data=='all'){
+                $(this).find('option').each(function (index, element) {
+                    var opt     = $(element);
+                    var opvalue = opt.attr('value');
+                    if(opvalue != "all" && typeof opvalue !== 'undefined')
+                        values.push(opvalue);
+                });
+            }
+
+            //console.log(values);
+
+            if(val.indexOf('all') != -1){
+                $(this).select2('val', values);
+            }
+            else{
+                $(this).select2('val', val);
+            }
+
+            //console.log($(this).val());    
+        });
 
 
 
@@ -264,42 +204,11 @@
 					defaultContent: '',
 				},
 				{ data: 'enrollment link' },
-				{ data: 'course' },
 				{ data: 'enrollment date' },
-				{ data: 'claimed Amount' },
-				{ data: 'is paid',visible: true },
-				{ data: 'discount precentage',visible: true },
+				{ data: 'student' },				
+				{ data: 'course' },
+				
 			],
-			footerCallback: function (row, data, start, end, display) {
-                var api = this.api();
-
-                // Remove the formatting to get integer data for summation
-                var intVal = function (i) {
-                    return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                };
-
-                // Total over all pages
-                total = api
-                    .column(3)
-                    .data()
-                    .reduce(function (a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-                // Total over this page
-                pageTotal = api
-                    .column(3, { page: 'current' })
-                    .data()
-                    .reduce(function (a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-                // Update footer
-                //$(api.column(0).footer()).html('Total : ');
-                $(api.column(3).footer()).html('Total : Rs ' + pageTotal + '<br>( Rs ' + total + ' total )');
-
-                //console.log(api.column(5));
-            },
 			//order: [[1, 'asc']],
 			"ordering": false,
 			pageLength: 10,
@@ -388,6 +297,70 @@
 
 	});
 
+
+
+
+	/* Formatting function for row details - modify as you need */
+	function format(d) {
+		// `d` is the original data object for the row
+		/*return (
+			'<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+			'<tr>' +
+			'<td>Full name:</td>' +
+			'<td>' +
+			d.name +
+			'</td>' +
+			'</tr>' +
+			'<tr>' +
+			'<td>Extension number:</td>' +
+			'<td>' +
+			d.extn +
+			'</td>' +
+			'</tr>' +
+			'<tr>' +
+			'<td>Extra info:</td>' +
+			'<td>And any further details here (images etc)...</td>' +
+			'</tr>' +
+			'</table>');*/
+
+
+		return (`
+
+        <div class="table-detail-content ml-3">                    
+            <ul class="mb-3">
+                <li>
+                    <div class="detail"></div>
+                    <div class="detail detail-main">
+                        <fieldset>
+                            <div>
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr class="table-primary">
+											<th>Course Teacher</th>
+											<th>Cupon code</th>
+											<th>Cupon code <br>discount %</th>
+										</tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="">
+                                            <td>A.B.C Saman Fernando</td>
+											<td>ABC123</td>
+											<td>10%</td>
+										</tr>
+									</tbody>
+                                </table>
+                            </div>
+                        </fieldset>
+                    </div>
+                </li>
+            </ul>
+        </div>
+		`);
+	}
+
 </script>
 @stop
+
+
+
 

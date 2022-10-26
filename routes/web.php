@@ -256,6 +256,7 @@ Route::group(['prefix'=>'teacher','as'=>'teacher.'], function(){
 
     Route::get ('/{username?}', [TeacherController::class,'viewTeacher'])->name ('view-profile');
     //Route::get ('/{slug?}/courses', [TeacherController::class,'viewCourses'])->name('courses');
+
 });
 
 
@@ -401,7 +402,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::get('/teacher-view',function(){return view('admin-panel.teacher.list-cupon-codes');})->name('teacher-view');
             
             Route::get ('/earnings', [Admin_MarketerController::class,'ViewEarnings'])->name ('earnings');
-
+            Route::get ('/my-salary', [Admin_MarketerController::class,'viewMySalary'])->name ('my-salary');
 
         });
 
@@ -420,6 +421,11 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::get ('/dashboard', [Admin_TeacherController::class,'viewDashboard'])->name ('dashboard');
             Route::get ('/profile-edit', [Admin_TeacherController::class,'profileEdit'])->name ('profile-edit');
             
+            Route::get ('/enrollments', [TeacherController::class,'viewCourseEnrollmentList'])->name ('enrollments');
+            Route::get ('/completions', [TeacherController::class,'viewCourseCompleteList'])->name ('completions');
+            
+            Route::get ('/my-salary', [TeacherController::class,'viewMySalary'])->name ('my-salary');
+
         });
 
 

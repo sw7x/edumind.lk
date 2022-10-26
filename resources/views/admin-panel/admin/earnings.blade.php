@@ -53,17 +53,14 @@
                     
 
                     
-                    <h1 class="font-bold my-1">admin my earnings</h1>
+                    
                    
                     <div class="px-3 row mb-3" id="">
-                        <div class="col-md-4 px-0">
+                        <div class="offset-md-6 col-md-6 px-0">
                             <div class="text-center"><h3> Date range select:</h3></div>
                             <div class="earnings-daterange input-daterange input-group" id="datepicker">
                                 <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
                             </div>
-                        </div>
-
-                        <div class="offset-md-2 col-md-4">
                         </div>
                     </div>
 
@@ -73,7 +70,7 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Total <br>claimed Amount</th>
+                                    <th>Total <br>claimed Amount Rs</th>
                                     <th>Order ID <br><small>(Enrollement)</small></th>                                    
                                     <th>Enrolled <br>Date/time</th>
                                     <th>Used <br>cupon code</th>
@@ -86,7 +83,7 @@
                                 for ($x = 0; $x <= 100; $x+=1): ?>
                                 <tr>
                                     <td></td>
-                                    <td><?php echo 'RS '.$x.'000.00'; ?></td>  
+                                    <td><?php echo $x.'000.00'; ?></td>  
                                     <td>ABC<?php echo $x; ?></td>
                                     <td>2022/7/16 06:45 PM</td>
                                     <td>
@@ -104,11 +101,11 @@
                             <tfoot>
                                 <tr>
                                     <th></th>
-                                    <th>Total <br>claimed Amount</th>                                                                       
-                                    <th>Order ID <br><small>(Enrollement)</small></th>                                    
-                                    <th>Enrolled <br>Date/time</th>
-                                    <th>Used <br>cupon code</th>
-                                    <th>Cupon code <br>discount %</th>
+                                    <th></th>                                                                       
+                                    <th></th>                                    
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
 
@@ -260,6 +257,36 @@
                 { data: 'cupon code' },
                 { data: 'cupon code discount precentage',visible: true },
             ],
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                };
+
+                // Total over all pages
+                total = api
+                    .column(1)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total over this page
+                pageTotal = api
+                    .column(1, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                //$(api.column(0).footer()).html('Total : ');
+                $(api.column(1).footer()).html('Total : Rs ' + pageTotal + '<br>( Rs ' + total + ' total )');
+
+                //console.log(api.column(5));
+            },
             //order: [[1, 'asc']],
             "ordering": false,
             pageLength: 10,
