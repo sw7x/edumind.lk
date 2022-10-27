@@ -81,7 +81,18 @@ class TeacherController extends Controller
     // my-courses.blade
     // my-earnings.blade
 
+    public function viewCourseEnrollmentList(){
+        return view('admin-panel.teacher.course-enrollments');
+    }   
 
+
+    public function viewCourseCompleteList(){
+        return view('admin-panel.teacher.course-completions');
+    } 
+
+    public function viewMySalary(){
+        return view('admin-panel.teacher.my-salary');
+    }
 
 
 

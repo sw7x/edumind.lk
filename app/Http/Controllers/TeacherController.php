@@ -199,14 +199,5 @@ class TeacherController extends Controller
         return view('teacher.teacher-profile-dashboard');
     }
 
-    public function viewCourseEnrollmentList(){
-        return view('admin-panel.teacher.course-enrollments');
-    }   
-
-
-    public function viewCourseCompleteList(){
-        return view('admin-panel.teacher.course-completions');
-    } 
-
-
+    
 }

@@ -12,6 +12,16 @@ class MarketerController extends Controller
 
     public function ViewEarnings(){
     	return view('admin-panel.marketer.my-earnings');
-
     }
+
+
+    
+    public function viewMySalary(){
+        return view('admin-panel.marketer.my-salary');
+    } 
+
+
+
+
+
 }

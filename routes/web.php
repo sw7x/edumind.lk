@@ -379,8 +379,9 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         });
 
         Route::group(['prefix'=>'salary','as'=>'salary.'], function(){
-            Route::get('/pay-teacher',function(){return view('admin-panel.admin.salary-teacher');})->name('pay-teacher');
-            Route::get('/pay-marketer',function(){return view('admin-panel.admin.salary-marketer');})->name('pay-marketer');
+            Route::get('/pay-teacher',function(){return view('admin-panel.admin.salary-pay-teacher');})->name('pay-teacher');
+            Route::get('/pay-marketer',function(){return view('admin-panel.admin.salary-pay-marketer');})->name('pay-marketer');
+            Route::get('/salary-slip',function(){return view('admin-panel.salary-slip');})->name('salary-slip');
         });
 
 
@@ -421,10 +422,10 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::get ('/dashboard', [Admin_TeacherController::class,'viewDashboard'])->name ('dashboard');
             Route::get ('/profile-edit', [Admin_TeacherController::class,'profileEdit'])->name ('profile-edit');
             
-            Route::get ('/enrollments', [TeacherController::class,'viewCourseEnrollmentList'])->name ('enrollments');
-            Route::get ('/completions', [TeacherController::class,'viewCourseCompleteList'])->name ('completions');
+            Route::get ('/enrollments', [Admin_TeacherController::class,'viewCourseEnrollmentList'])->name ('enrollments');
+            Route::get ('/completions', [Admin_TeacherController::class,'viewCourseCompleteList'])->name ('completions');
             
-            Route::get ('/my-salary', [TeacherController::class,'viewMySalary'])->name ('my-salary');
+            Route::get ('/my-salary', [Admin_TeacherController::class,'viewMySalary'])->name ('my-salary');
 
         });
 

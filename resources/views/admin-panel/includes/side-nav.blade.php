@@ -85,8 +85,9 @@
 					</a>
 					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.salary.*', Route::currentRouteName()) ? 'true' : 'false' }}">
 						<li class="{{ Route::is('admin.salary.pay-teacher') ? 'current' : '' }}"><a href="{{route('admin.salary.pay-teacher')}}">Pay Teacher salary</a></li>
-						<li class="{{ Route::is('admin.salary.pay-marketer') ? 'current' : '' }}"><a href="{{route('admin.salary.pay-marketer')}}">#Pay Marketer salary</a></li>
-					</ul>
+						<li class="{{ Route::is('admin.salary.pay-marketer') ? 'current' : '' }}"><a href="{{route('admin.salary.pay-marketer')}}">Pay Marketer salary</a></li>
+                        <li class="{{ Route::is('admin.salary.salary-slip') ? 'current' : '' }}"><a href="{{route('admin.salary.salary-slip')}}">Salary slip(single)</a></li>
+                    </ul>
 				</li>
 
 
@@ -140,7 +141,7 @@
                         <li class="{{ Route::is('admin.teacher.completions') ? 'current' : '' }}"><a href="{{route('admin.teacher.completions')}}">My Courses completions</a></li>
 						<li class="{{ Route::is('admin.cupon-code.teacher-view') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.teacher-view')}}">My cupon codes</a></li>
 
-                        <li class="{{ Route::is('admin.teacher.my-salary') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-salary')}}">-My salary</a></li>
+                        <li class="{{ Route::is('admin.teacher.my-salary') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-salary')}}">My salary</a></li>
 					</ul>
 				</li>
 
@@ -156,7 +157,7 @@
 						<li class="{{ Route::is('admin.cupon-code.usage') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.usage')}}">Used cupon Code</a></li>
                         <li class="{{ Route::is('admin.cupon-code.dashboard') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.dashboard')}}">Dashboard</a></li>
 						<li class="{{ Route::is('admin.cupon-code.single') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.single')}}">Single cupon Code</a></li>
-					    <li class="{{ Route::is('admin.cupon-code.my-salary') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.my-salary')}}">-My salary</a></li>   
+					    <li class="{{ Route::is('admin.cupon-code.my-salary') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.my-salary')}}">My salary</a></li>   
                     </ul>
 				</li>
 
