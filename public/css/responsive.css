@@ -510,6 +510,9 @@ header .header_inner .right-side .triger::before {
         flex: 0.75;
     }
 
+    footer .footer-big .footer-widget .social-links-div a ion-icon{
+        padding: 0.25rem
+    }
 
 
 }
@@ -563,6 +566,15 @@ header .header_inner .right-side .triger::before {
         margin: 0px auto;
         width: 50%;
     }
+
+    footer .footer-big .footer-widget .social-links-div{
+        justify-content: center;
+    }
+    footer .footer-big .footer-widget .social-links-div a ion-icon{
+        padding: 0.25rem
+    }
+
+
     .tabs-section .nav-section{
         margin-bottom: 15px;
     }
@@ -624,6 +636,9 @@ header .header_inner .right-side .triger::before {
         min-height: 50px;
     }
     
+    footer .footer-big .footer-widget .social-links-div{
+        justify-content: left;
+    }
     
 
 }

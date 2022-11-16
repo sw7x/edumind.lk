@@ -11,7 +11,19 @@ class SettingsController extends Controller
         return view('admin-panel.admin.settings')->with([
             'title' => 'Settings'
         ]);
-
-
     }
+
+
+
+	public function loadGeneralSettings(){
+		return view('admin-panel.admin.settings-general');
+	}
+
+
+	public function loadAdvancedSettings(){
+		return view('admin-panel.admin.settings-advanced');
+	}
+
+
+
 }

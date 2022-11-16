@@ -1,5 +1,5 @@
-@extends('admin-panel.layouts.master')
-@section('title','Dashboard')
+@extends('admin-panel.layouts.master',['title' => 'Editor Dashboard'])
+@section('title','Dashboard(e)')
 
 @section('css-files')
 @stop
@@ -13,14 +13,10 @@
     	<div class="col-lg-12">
 			
 			<div class="row">
-				<div class="col-lg-12">
-					<h2 class="font-bold my-1">salary</h2>
-                	<h2 class="font-bold my-1">earnings</h2>
-                	<h2 class="font-bold my-1">cupon code</h2>
+				<div class="col-lg-12">					
                 </div>
             </div>
-               
-
+			
 			<div class="row">
 				<div class="col-lg-12">
             		<div class="ibox">
@@ -38,7 +34,20 @@
                         </div>
                         <div class="ibox-content" style="">                        	
 				            <div class="row">				            	
-				            	<div class="col-lg-4">
+				            	<div class="col-lg-3">
+				            		<div class="widget style1 p-0">			                
+				                        <div class="row">
+				                            <div class="col-4 text-center">
+				                                <i class="fa fa-book fa-5x"></i>
+				                            </div>
+				                            <div class="col-8 text-right">
+				                            	{{--<span> Today income </span>--}}
+				                                <h3 class="font-bold">Subjects</h3>
+				                            </div>
+				                        </div>
+				                    </div>		                
+					            </div>
+				                <div class="col-lg-3">
 				                    <div class="widget style1 dark-bg">
 				                        <div class="row vertical-align">
 				                            <div class="col-8 text-2xl">Total</div>
@@ -48,7 +57,7 @@
 				                        </div>
 				                    </div>
 				                </div>
-				                <div class="col-lg-4">
+				                <div class="col-lg-3">
 				                    <div class="widget style1 navy-bg">
 				                        <div class="row vertical-align">
 				                            <div class="col-8 text-2xl">Published</div>
@@ -58,7 +67,7 @@
 				                        </div>
 				                    </div>
 				                </div>
-				                <div class="col-lg-4">
+				                <div class="col-lg-3">
 				                    <div class="widget style1 yellow-bg">
 				                        <div class="row vertical-align">
 				                            <div class="col-8 text-2xl">Draft</div>
@@ -75,8 +84,8 @@
                 </div>
             </div>
 
-			<div class="row">
-                <div class="col-lg-12">
+            <div class="row">
+               	<div class="col-lg-12">
             		<div class="ibox">
                         <div class="ibox-title pt-2">                        	                     		
                         	<i class="float-left fa fa-user-circle-o fa-2x py-1 w-5 mr-5"></i>                        	
@@ -92,7 +101,19 @@
                         </div>
                         <div class="ibox-content" style="">                        	
 				            <div class="row">				            	
-				            	<div class="col-lg-6">
+				            	<div class="col-lg-3">
+				            		<div class="widget style1 p-0">			                
+				                        <div class="row">
+				                            <div class="col-4 text-center">
+				                                <i class="fa fa-user-circle-o fa-5x"></i>
+				                            </div>
+				                            <div class="col-8 text-right">
+				                                <h3 class="font-bold">Users</h3>
+				                            </div>
+				                        </div>
+				                    </div>		                
+					            </div>
+				                <div class="col-lg-5">
 				                    <div class="widget style1 dark-bg">
 				                        <div class="row vertical-align">
 				                            <div class="col-8 text-2xl">Students</div>
@@ -102,7 +123,7 @@
 				                        </div>
 				                    </div>
 				                </div>
-				                <div class="col-lg-6">
+				                <div class="col-lg-4">
 				                    <div class="widget style1 dark-bg">
 				                        <div class="row vertical-align">
 				                            <div class="col-8 text-2xl">Teachers</div>
@@ -118,13 +139,79 @@
                     </div>
                 </div>
             </div>
-
+           
 			<div class="row">
 				<div class="col-lg-12">
             		<div class="ibox">
                         <div class="ibox-title pt-2">                        	                     		
                         	<i class="float-left fa fa-graduation-cap fa-2x py-1 w-5 mr-5"></i>                        	
-                            <h2 class="float-left font-bold my-0 p-0 text-2xl">COURSES</h2>
+                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Course</h2>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>                                
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="">                        	
+				            <div class="row">				            	
+				            	<div class="col-lg-3">
+				            		<div class="widget style1 p-0">			                
+				                        <div class="row">
+				                            <div class="col-4 text-center">
+				                                <i class="fa fa-graduation-cap fa-5x"></i>
+				                            </div>
+				                            <div class="col-8 text-right">
+				                                <h3 class="font-bold">Subjects</h3>
+				                            </div>
+				                        </div>
+				                    </div>		                
+					            </div>
+				                <div class="col-lg-3">
+				                    <div class="widget style1 dark-bg">
+				                        <div class="row vertical-align">
+				                            <div class="col-8 text-2xl">Total</div>
+				                            <div class="col-4 text-right">
+				                                <h2 class="font-bold">217</h2>
+				                            </div>
+				                        </div>
+				                    </div>
+				                </div>
+				                <div class="col-lg-3">
+				                    <div class="widget style1 navy-bg">
+				                        <div class="row vertical-align">
+				                            <div class="col-8 text-2xl">Published</div>
+				                            <div class="col-4 text-right">
+				                                <h2 class="font-bold">200</h2>
+				                            </div>
+				                        </div>
+				                    </div>
+				                </div>
+				                <div class="col-lg-3">
+				                    <div class="widget style1 yellow-bg">
+				                        <div class="row vertical-align">
+				                            <div class="col-8 text-2xl">Draft</div>
+				                            <div class="col-4 text-right">
+				                                <h2 class="font-bold">17</h2>
+				                            </div>
+				                        </div>
+				                    </div>
+				                </div>
+				            </div>				            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+               
+			<div class="row">
+				<div class="col-lg-12">
+            		<div class="ibox">
+                        <div class="ibox-title pt-2">                        	                     		
+                        	<i class="float-left fa fa-check-circle fa-2x py-1 w-5 mr-5"></i>                        	
+                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Pending Approvals</h2>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -137,36 +224,76 @@
                         
                         <div class="ibox-content">                        	
 				            
-			            	<fieldset class="p-3 border-solid border-1 border-gray-700 mt-2">
+                        	<fieldset class="p-3 border-solid border-1 border-gray-700 mt-2">
 		                        <legend class="font-bold rounded col-sm-4 text-xl py-1 border-gray-500 border-1">
-		                            <p class="text-center">All courses</p>
+		                            <p class="text-center">Subject</p>
 		                        </legend>
 
 					            <div class="row">				            	
-					            	<div class="col-lg-4">
+					            	<div class="col-lg-12">
 					                    <div class="widget style1 dark-bg text-white">
 					                        <div class="row vertical-align">
-					                            <div class="col-8 text-xl">Total</div>
+					                            <div class="col-8 text-2xl">Need to approve</div>
 					                            <div class="col-4 text-right">
 					                                <h3 class="font-bold">217</h3>
 					                            </div>
 					                        </div>
 					                    </div>
-					                </div>
-					                <div class="col-lg-4">
-					                    <div class="widget style1 navy-bg text-white">
+					                </div>					                
+					            </div>
+					        </fieldset>					            
+				        	
+
+                            <div class="hr-line-dashed"></div>           	                              	
+				            <fieldset class="p-3 border-solid border-1 border-gray-700 mt-2">
+		                        <legend class="font-bold rounded col-sm-4 text-xl py-1 border-gray-500 border-1">
+		                            <p class="text-center">Courses</p>
+		                        </legend>
+					            <div class="row">				            	
+					            	<div class="col-lg-6">
+					                    <div class="widget style1 dark-bg text-white">
 					                        <div class="row vertical-align">
-					                            <div class="col-8 text-xl">Published</div>
+					                            <div class="col-8 text-2xl">New</div>
+					                            <div class="col-4 text-right">
+					                                <h2 class="font-bold">217</h2>
+					                            </div>
+					                        </div>
+					                    </div>
+					                </div>
+					                <div class="col-lg-6">
+					                    <div class="widget style1 dark-bg text-white">
+					                        <div class="row vertical-align">
+					                            <div class="col-8 text-2xl">Changes</div>
+					                            <div class="col-4 text-right">
+					                                <h2 class="font-bold">200</h2>
+					                            </div>
+					                        </div>
+					                    </div>
+					                </div>					                
+					            </div>
+					        </fieldset>					            
+					        
+							
+							<div class="hr-line-dashed"></div> 
+							<fieldset class="p-3 border-solid border-1 border-gray-700 mt-2">
+		                        <legend class="font-bold rounded col-sm-4 text-xl py-1 border-gray-500 border-1">
+		                            <p class="text-center">Teacher</p>
+		                        </legend>
+					            <div class="row">				            	
+					            	<div class="col-lg-6">
+					                    <div class="widget style1 dark-bg text-white">
+					                        <div class="row vertical-align">
+					                            <div class="col-8 text-2xl">Registrations</div>
 					                            <div class="col-4 text-right">
 					                                <h3 class="font-bold">200</h3>
 					                            </div>
 					                        </div>
 					                    </div>
 					                </div>
-					                <div class="col-lg-4">
-					                    <div class="widget style1 yellow-bg text-white">
+					                <div class="col-lg-6">
+					                    <div class="widget style1 dark-bg text-white">
 					                        <div class="row vertical-align">
-					                            <div class="col-8 text-xl">Draft</div>
+					                            <div class="col-8 text-2xl">Account changes</div>
 					                            <div class="col-4 text-right">
 					                                <h3 class="font-bold">17</h3>
 					                            </div>
@@ -176,111 +303,11 @@
 					            </div>
 					        </fieldset>				            
 				        	
-
-
-                            <div class="hr-line-dashed"></div>           	                              	
-				            <fieldset class="p-3 border-solid border-1 border-gray-700 mt-2">
-		                        <legend class="font-bold rounded col-sm-4 text-xl py-1 border-gray-500 border-1">
-		                            <p class="text-center">My courses</p>
-		                        </legend>
-					            <div class="row">				            	
-					            	<div class="col-lg-4">
-					                    <div class="widget style1 dark-bg text-white">
-					                        <div class="row vertical-align">
-					                            <div class="col-8 text-2xl">Total</div>
-					                            <div class="col-4 text-right">
-					                                <h2 class="font-bold">217</h2>
-					                            </div>
-					                        </div>
-					                    </div>
-					                </div>
-					                <div class="col-lg-4">
-					                    <div class="widget style1 navy-bg text-white">
-					                        <div class="row vertical-align">
-					                            <div class="col-8 text-2xl">Published</div>
-					                            <div class="col-4 text-right">
-					                                <h2 class="font-bold">200</h2>
-					                            </div>
-					                        </div>
-					                    </div>
-					                </div>
-					                <div class="col-lg-4">
-					                    <div class="widget style1 yellow-bg text-white">
-					                        <div class="row vertical-align">
-					                            <div class="col-8 text-2xl">Draft</div>
-					                            <div class="col-4 text-right">
-					                                <h2 class="font-bold">17</h2>
-					                            </div>
-					                        </div>
-					                    </div>
-					                </div>
-					            </div>
-
-
-					            <div class="row">				            	
-					            	<div class="col-lg-6">
-					                    <div class="widget style1 dark-bg opacity-85 text-white">
-					                        <div class="row vertical-align">
-					                            <div class="col-8 text-2xl">Enrollements</div>
-					                            <div class="col-4 text-right">
-					                                <h2 class="font-bold">217</h2>
-					                            </div>
-					                        </div>
-					                    </div>
-					                </div>
-					                <div class="col-lg-6">
-					                    <div class="widget style1 dark-bg opacity-85 text-white	">
-					                        <div class="row vertical-align">
-					                            <div class="col-8 text-2xl">Completions</div>
-					                            <div class="col-4 text-right">
-					                                <h2 class="font-bold">217</h2>
-					                            </div>
-					                        </div>
-					                    </div>
-					                </div>				                
-					            </div>
-					        </fieldset>
-					        
-
-							
-							<div class="hr-line-dashed"></div> 
-							<fieldset class="p-3 border-solid border-1 border-gray-700 mt-2">
-		                        <legend class="font-bold rounded col-sm-4 text-xl py-1 border-gray-500 border-1">
-		                            <p class="text-center">Recent</p>
-		                        </legend>
-					            <div class="row">				            	
-					            	<div class="col-lg-6">
-					                    <div class="widget style1 dark-bg text-white">
-					                        <div class="row vertical-align">
-					                            <div class="col-8 text-lg">Enrollements <small>(today)</small></div>
-					                            <div class="col-4 text-right">
-					                                <h3 class="font-bold">200</h3>
-					                            </div>
-					                        </div>
-					                    </div>
-					                </div>
-					                <div class="col-lg-6">
-					                    <div class="widget style1 dark-bg text-white">
-					                        <div class="row vertical-align">
-					                            <div class="col-8 text-lg">Completions <small>(today)</small></div>
-					                            <div class="col-4 text-right">
-					                                <h3 class="font-bold">17</h3>
-					                            </div>
-					                        </div>
-					                    </div>
-					                </div>
-					            </div>
-					        </fieldset>					            
-				        	
-
-
-
                         </div>
-
                     </div>
                 </div>
             </div>
-
+		
             
         </div>
     </div>

@@ -2696,7 +2696,7 @@ div.dt-button-info {
 }
 .vertical-align h2,
 .vertical-align h3 {
-  margin: 0;
+  margin: 0 !important;
 }
 .todo-list {
   list-style: none outside none;

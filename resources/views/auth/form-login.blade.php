@@ -91,7 +91,7 @@
                             <ion-icon name="logo-twitter" class="p-2 rounded-full text-4xl bg-gray-100 text-indigo-500"></ion-icon>
                         </a>
                         <a href="#">
-                            <ion-icon name="logo-github" class="p-2 rounded-full text-4xl bg-gray-100"></ion-icon>
+                            <ion-icon name="logo-instagram" class="p-2 rounded-full text-4xl bg-gray-100"></ion-icon>
                         </a>
                     </div>
                     {{csrf_field ()}}

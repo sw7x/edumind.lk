@@ -109,7 +109,7 @@
 
                 <li class="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="#" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <i class="fa fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
+                        <i class="fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <li class="{{ Route::is('admin.feedback.guests') ? 'current' : '' }}"><a href="{{route('admin.feedback.guests')}}">Guest - Messages</a></li>
@@ -119,9 +119,32 @@
                     </ul>
                 </li>
                 
-                <li class="{{ \Str::is('admin.settings', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="{{route('admin.settings')}}" class=""><i class="fa fa-wrench"></i> <span class="nav-label">Settings</span></a>
+                <li class="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                    <a aria-expanded="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                        <i class="fa fa-wrench"></i><span class="nav-label">Settings</span> <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                        <li class="{{ Route::is('admin.settings.general') ? 'current' : '' }}"><a href="{{route('admin.settings.general')}}">General - Settings</a></li>
+                        <li class="{{ Route::is('admin.settings.advanced') ? 'current' : '' }}"><a href="{{route('admin.settings.advanced')}}">Advanced - Settings</a></li>
+                    </ul>
                 </li>
+
+                <li class="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                    <a href="#" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                        <i class="fa fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                        <li class="{{ Route::is('admin.feedback.guests') ? 'current' : '' }}"><a href="{{route('admin.feedback.guests')}}">Guest - Messages</a></li>
+                        <li class="{{ Route::is('admin.feedback.students') ? 'current' : '' }}"><a href="{{route('admin.feedback.students')}}">Student - Messages</a></li>
+                        <li class="{{ Route::is('admin.feedback.teachers') ? 'current' : '' }}"><a href="{{route('admin.feedback.teachers')}}">Teacher - Messages</a></li>
+                        <li class="{{ Route::is('admin.feedback.other-users') ? 'current' : '' }}"><a href="{{route('admin.feedback.other-users')}}">Other User Messages</a></li>
+                    </ul>
+                </li>
+
+
+
+
+
 
                 <li class="back-to-home">
                     <a href="{{route('home')}}" class="bg-red-900 hover:bg-red-100"><i class="fa fa-external-link _text-xl _mr-3"></i> <span class="nav-label">Back to site Home</span></a>
@@ -162,12 +185,12 @@
 				</li>
 
 
-				<li class="{{ \Str::is('admin.cupon-code.*', Route::currentRouteName()) ? 'active current' : '' }}">
-					<a href="#" aria-expanded="{{ \Str::is('admin.cupon-code.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+				<li class="{{ \Str::is('admin.editor.*', Route::currentRouteName()) ? 'active current' : '' }}">
+					<a href="#" aria-expanded="{{ \Str::is('admin.editor.*', Route::currentRouteName()) ? 'true' : 'false' }}">
 						<span class="nav-label">Editor</span> <span class="fa arrow"></span>
 					</a>
-					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.cupon-code.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-						<li class="{{ Route::is('admin.cupon-code.dashboard') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.dashboard')}}">Dashboard</a></li>
+					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.editor.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+						<li class="{{ Route::is('admin.editor.dashboard') ? 'current' : '' }}"><a href="{{route('admin.editor.dashboard')}}">Dashboard</a></li>
 					</ul>
 				</li>
 

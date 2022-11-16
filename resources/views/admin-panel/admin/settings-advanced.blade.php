@@ -1,5 +1,5 @@
-@extends('admin-panel.layouts.master',['title' => $title])
-@section('title','Settings')
+@extends('admin-panel.layouts.master',['title' => 'Advanced settings'])
+@section('title','Advanced settings')
 
 
 
@@ -29,7 +29,7 @@
             <div class="ibox">
                 <div class="ibox-content">                                    
 
-                    <form class="teacher-profile-edit" method="post" action="">
+                    <form class="advanced-settings" method="post" action="">
                         
                         @if (count($errors) > 0)
                             <div class="flash-msg flash-danger rounded-none" style="margin-bottom:0px;">
@@ -53,90 +53,12 @@
                         @endif
 
                         <div class="text-right mb-4"><span class="font-bold text-red-500 text-sm">*</span> - Required Information </div>
-                    
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Contact details</legend>
-                            
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Phone number <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <div class="col-sm-8">
-                                    <input type="tel" class="form-control" name="phone" required value="{{old('phone')}}">
-                                    <div class="error-msg"></div>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-
-
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <div class="col-sm-8">
-                                    <input type="email" class="form-control" name="email" required value="{{old('email')}}">
-                                    <div class="error-msg"></div>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Address <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="address" required value="{{old('address')}}">
-                                    <div class="error-msg"></div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-
-
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Social links</legend>    
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Facebook <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="facebook" required value="{{old('facebook')}}">
-                                    <div class="error-msg"></div>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Twitter <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="twitter" required value="{{old('twitter')}}">
-                                    <div class="error-msg"></div>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Instagram <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="instagram" required value="{{old('instagram')}}">
-                                    <div class="error-msg"></div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Logo</legend>
-                            <div class="form-group row"><label class="col-sm-4 col-form-label">Site Logo</label>
-                                <div class="col-sm-8">
-                                    {{--                                        <input type="file" class="form-control" name="subject_image">--}}
-                                    <input type="file"
-                                           class="filepond-img"
-                                           name="logo"
-                                           accept="image/webp, image/png, image/jpeg, image/gif"
-                                           data-max-file-size="1MB"/>
-                                    <div class="text-right text-red-500">Image Size 630X820</div>
-                                </div>
-                            </div>
-                        </fieldset>
+                                            
                         
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Subject</legend>                            
+                        <fieldset class="p-3 border-solid border-1 border-gray-700 mb-5">
+                            <legend class="font-bold rounded col-sm-3 text-xl py-1 border-gray-500 border-1">
+                                <p class="text-center">Subject</p>
+                            </legend>                        
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Subject changes need to approve <span class="text-red-500 text-sm font-bold">*</span></label>
                                 <div class="col-sm-8">
@@ -150,8 +72,10 @@
                         </fieldset>
 
                         
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Course</legend>                         
+                        <fieldset class="p-3 border-solid border-1 border-gray-700 mb-5">
+                            <legend class="font-bold rounded col-sm-3 text-xl py-1 border-gray-500 border-1">
+                                <p class="text-center">Course</p>
+                            </legend>                       
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Course changes need to approve <span class="text-red-500 text-sm font-bold">*</span></label>
                                 <div class="col-sm-8">
@@ -186,8 +110,10 @@
                         </fieldset>
 
                         
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">User Accounts</legend>
+                        <fieldset class="p-3 border-solid border-1 border-gray-700 mb-5">
+                            <legend class="font-bold rounded col-sm-3 text-xl py-1 border-gray-500 border-1">
+                                <p class="text-center">User Accounts</p>
+                            </legend>
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Teacher Accounts need to approve :</label>
                                 <div class="col-sm-8">
@@ -211,10 +137,12 @@
                         </fieldset>
 
 
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Revenue</legend>
+                        <fieldset class="p-3 border-solid border-1 border-gray-700 mb-5">
+                            <legend class="font-bold rounded col-sm-3 text-xl py-1 border-gray-500 border-1">
+                                <p class="text-center">Revenue</p>
+                            </legend>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Teacher Accounts need to approve :</label>
+                                <label class="col-sm-4 col-form-label">=== :</label>
                                 <div class="col-sm-8">
                                     <span class="mr-1 text-gray-400 text-xs font-bold">No</span>
                                     <input type="checkbox" class="js-switch" checked />
@@ -225,10 +153,12 @@
                         </fieldset>
 
 
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Salary</legend>
+                        <fieldset class="p-3 border-solid border-1 border-gray-700 mb-5">
+                            <legend class="font-bold rounded col-sm-3 text-xl py-1 border-gray-500 border-1">
+                                <p class="text-center">Salary</p>
+                            </legend>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Teacher Accounts need to approve :</label>
+                                <label class="col-sm-4 col-form-label">=== :</label>
                                 <div class="col-sm-8">
                                     <span class="mr-1 text-gray-400 text-xs font-bold">No</span>
                                     <input type="checkbox" class="js-switch" checked />
@@ -239,10 +169,12 @@
                         </fieldset>
 
 
-                        <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Cupon code</legend>
+                        <fieldset class="p-3 border-solid border-1 border-gray-700 mb-5">
+                            <legend class="font-bold rounded col-sm-3 text-xl py-1 border-gray-500 border-1">
+                                <p class="text-center">Cupon code</p>
+                            </legend>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Teacher Accounts need to approve :</label>
+                                <label class="col-sm-4 col-form-label">=== :</label>
                                 <div class="col-sm-8">
                                     <span class="mr-1 text-gray-400 text-xs font-bold">No</span>
                                     <input type="checkbox" class="js-switch" checked />

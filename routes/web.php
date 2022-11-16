@@ -44,6 +44,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\Admin\TeacherController as Admin_TeacherController;
 use App\Http\Controllers\Admin\MarketerController as Admin_MarketerController;
+use App\Http\Controllers\Admin\EditorController as Admin_EditorController;
 
 use App\Http\Controllers\TopicsController;
 use App\Http\Controllers\CourseController as User_CourseController;
@@ -302,8 +303,14 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             //Route::post ('/change-password', [ChangeAdminPasswordController::class,'changePassword'])->name('changePassword');
         });
 
-        Route::get('/settings', [SettingsController::class,'index'])->name ('settings');
-
+        
+        
+        Route::group(['prefix'=>'settings','as'=>'settings.'], function(){
+            Route::get('/general', [SettingsController::class,'loadGeneralSettings'])->name ('general');
+            Route::get('/advanced', [SettingsController::class,'loadAdvancedSettings'])->name ('advanced');
+        });
+        
+        
 
 
 
@@ -311,7 +318,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             
             Route::get('/dashboard', function () {
                 //dump('ee');
-                return view('admin-panel.dashboard');
+                return view('admin-panel.admin.dashboard');
             })->name('dashboard');
         });
 
@@ -449,7 +456,9 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
     
 
-
+    Route::group(['prefix'=>'editor','as'=>'editor.'], function(){
+        Route::get ('/dashboard', [Admin_EditorController::class,'viewDashboard'])->name ('dashboard');
+    });
 
 
 

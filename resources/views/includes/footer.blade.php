@@ -31,6 +31,18 @@
                                         </ul>
                                     </div>
 
+                                    <div class="social-links-div flex items-left space-x-3 justify-left mt-5">
+                                        <a href="#">
+                                            <ion-icon name="logo-facebook" class="border-2 border-blue-600 p-2 rounded-full text-4xl bg-gray-100 text-blue-600"></ion-icon>
+                                        </a>
+                                        <a href="#">
+                                            <ion-icon name="logo-twitter" class="border-2 border-blue-600 p-2 rounded-full text-4xl bg-gray-100 text-indigo-500"></ion-icon>
+                                        </a>
+                                        <a href="#">
+                                            <ion-icon name="logo-instagram" class="border-2 border-blue-600 p-2 rounded-full text-4xl bg-gray-100"></ion-icon>
+                                        </a>
+                                    </div>
+
                                 </div>
                             </div>
                             <!-- Ends: .footer-widget -->
