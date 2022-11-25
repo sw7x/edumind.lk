@@ -51,7 +51,7 @@ class LoginController extends Controller
 
                 $credentials = ['login'    => $request->email];
                 $user = Sentinel::findByCredentials($credentials);
-
+                
                 if($user->status == 0){
                     throw new CustomException('Account is disable by admin');
                 }
@@ -131,6 +131,7 @@ class LoginController extends Controller
             catch(\Exception $e){
                 return redirect()->back()->with([
                     'message' => 'Something is wrong in login',
+                    //'message' => $e->getMessage(),
                     //'title'   => 'Student Registration submit page',
                     'cls'     => 'flash-danger',
                     'msgTitle'=> 'Error!',

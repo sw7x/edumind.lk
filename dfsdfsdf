@@ -1,0 +1,24 @@
+warning: in the working copy of 'app/Http/Controllers/Auth/LoginController.php', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/app/Http/Controllers/Auth/LoginController.php b/app/Http/Controllers/Auth/LoginController.php[m
+[1mindex 36bc0c6..3dd866d 100644[m
+[1m--- a/app/Http/Controllers/Auth/LoginController.php[m
+[1m+++ b/app/Http/Controllers/Auth/LoginController.php[m
+[36m@@ -51,7 +51,7 @@[m [mpublic function loginSubmit(Request $request){[m
+ [m
+                 $credentials = ['login'    => $request->email];[m
+                 $user = Sentinel::findByCredentials($credentials);[m
+[31m-[m
+[32m+[m[41m                [m
+                 if($user->status == 0){[m
+                     throw new CustomException('Account is disable by admin');[m
+                 }[m
+[36m@@ -130,7 +130,8 @@[m [mpublic function loginSubmit(Request $request){[m
+             }[m
+             catch(\Exception $e){[m
+                 return redirect()->back()->with([[m
+[31m-                    'message' => 'Something is wrong in login',[m
+[32m+[m[32m                    //'message' => 'Something is wrong in login',[m
+[32m+[m[32m                    'message' => $e->getMessage(),[m
+                     //'title'   => 'Student Registration submit page',[m
+                     'cls'     => 'flash-danger',[m
+                     'msgTitle'=> 'Error!',[m

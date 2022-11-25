@@ -10,6 +10,10 @@
                         <a class="dropdown-toggle" href="#">
                             <span class="mt-1 text-white text-center text-lg __text-muted text-xs block">{{Sentinel::getUser()->username}}</span>
                         </a>
+                        <div class="text-center">
+                            <small class="text-white">( {{Sentinel::getUser()->roles()->first()->slug}} )</small>
+                        </div>
+                        
                         @endif                        
                     </div>
                     <div class="logo-element"><small>Edumind</small></div>
@@ -128,23 +132,6 @@
                         <li class="{{ Route::is('admin.settings.advanced') ? 'current' : '' }}"><a href="{{route('admin.settings.advanced')}}">Advanced - Settings</a></li>
                     </ul>
                 </li>
-
-                <li class="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="#" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <i class="fa fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.feedback.guests') ? 'current' : '' }}"><a href="{{route('admin.feedback.guests')}}">Guest - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedback.students') ? 'current' : '' }}"><a href="{{route('admin.feedback.students')}}">Student - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedback.teachers') ? 'current' : '' }}"><a href="{{route('admin.feedback.teachers')}}">Teacher - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedback.other-users') ? 'current' : '' }}"><a href="{{route('admin.feedback.other-users')}}">Other User Messages</a></li>
-                    </ul>
-                </li>
-
-
-
-
-
 
                 <li class="back-to-home">
                     <a href="{{route('home')}}" class="bg-red-900 hover:bg-red-100"><i class="fa fa-external-link _text-xl _mr-3"></i> <span class="nav-label">Back to site Home</span></a>
