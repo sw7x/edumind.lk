@@ -17,23 +17,28 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
+            
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
+
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
+
+            @if(isset($data))
             <div class="ibox">
-
-
                 <div class="ibox-content">
-
-                    @if(Session::has('message'))
-                        <div class="col-lg-12">
-                            <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                                <a href="#" class="close">×</a>
-                                <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                                <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                                <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                            </div>
-                        </div>
-                    @endif
-
-
                     <div class="table-responsive">
                         <table id="category-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                             <thead>
@@ -71,8 +76,14 @@
                                     <td class="text-right">
                                         <div class="btn-group">
                                             <a href="{{route ('admin.subject.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
+                                            
+                                            @can('update',$item)
                                             <a href="{{route ('admin.subject.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
+                                            @endcan
+                                            
+                                            @can('delete',$item)
                                             <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a>
+                                            @endcan
                                         </div>
                                         <form class="subject-destroy" action="{{ route('admin.subject.destroy', $item->id) }}" method="POST">
                                             @method('DELETE')
@@ -97,9 +108,9 @@
                         </table>
                     </div>
                 </div>
-
-
             </div>
+            @endif
+
         </div>
     </div>
 @stop
@@ -192,7 +203,8 @@
 			// dom: '<"html5buttons"B>lTfgitp',
 			dom: 'Bfrtip',
 			lengthChange: false,
-			buttons: [
+			
+            buttons: [
 				/*
                 {extend: 'copy'},
                 {extend: 'csv'},
@@ -210,6 +222,7 @@
                     }
                 }
                 */
+                @can('create',"App\Models\Subject")
 				{
 					text: 'Add subject',
 					action: function ( e, dt, node, config ) {
@@ -220,6 +233,7 @@
 					},
 					className: 'add-ct mb-3 btn-green '
 				}
+                @endcan
 			]
 
 		});

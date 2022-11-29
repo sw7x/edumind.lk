@@ -7,6 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StudentUpdateRequest extends FormRequest
 {
+    private $recordId = null;
+    public $validator = null;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,7 +29,7 @@ class StudentUpdateRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-
+        $this->recordId = $this->route('id');        
     }
 
 
@@ -41,8 +43,8 @@ class StudentUpdateRequest extends FormRequest
         //userId
         //reset_pw_stat
         return [
-            'stud-name'      => 'required',
-            'stud-phone'     => 'required',
+            'stud-name'      => 'required|unique:users,full_name,'.$this->recordId,
+            'stud-phone'     => 'required|unique:users,phone,'.$this->recordId,
             'stud_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
             'stud-gender'    => 'required',
         ];
@@ -58,6 +60,9 @@ class StudentUpdateRequest extends FormRequest
     {
         return [
             'stud-name.required' => 'Name field is required',
+            'stud-name.unique'   => "{$this->get('stud-name')} is already been used as a full name",
+            'stud-phone.unique'  => "{$this->get('stud-phone')} is already been used as a phone number",
+        
         ];
     }
 
@@ -72,6 +77,18 @@ class StudentUpdateRequest extends FormRequest
             'stud_birth_year'=> 'year of birth',
             'stud-gender'    => 'gender',
         ];
+    }
+
+
+    protected function failedValidation(Validator $validator)
+    {
+        $this->validator = $validator;
+        return redirect()
+            ->route('admin.user.update-student',$this->recordId)
+            ->withErrors($validator)
+            ->withInput();
+
+        // parent::failedValidation($validator);
     }
 
 }

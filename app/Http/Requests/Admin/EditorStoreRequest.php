@@ -7,9 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class EditorStoreRequest extends FormRequest
 {
-    public $validator = null;
-    public $is_usernameFill = null;
-
+    public  $validator          = null;
+    public  $is_usernameFill    = null;
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -66,14 +66,15 @@ class EditorStoreRequest extends FormRequest
     {
 
         return [
-            'editor-name'      => 'required',
+            'editor-name'      => 'required|unique:users,full_name',
             'editor-email'     => 'required|email|unique:users,email',
             //'editor-uname'     => 'alpha_dash|unique:users,username',
             'editor-uname'     => 'alpha_dash',
-            'editor-phone'     => 'required',
+            'editor-phone'     => 'required|unique:users,phone',
             'editor-password'  => 'required|min:6|max:12',
             'editor-gender'    => 'required',
         ];
+
     }
 
 

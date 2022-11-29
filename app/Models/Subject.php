@@ -12,7 +12,7 @@ class Subject extends Model
     use HasFactory;
     use Sluggable;
     protected $table = 'subjects';
-    protected $fillable = ['name','description','image','status','slug'];
+    protected $fillable = ['name','description','image','status','slug','author_id'];
 
 
 
@@ -20,7 +20,11 @@ class Subject extends Model
         return $this->hasMany(Course::class,'subject_id','id');
     }
 
+    public function creator(){
+        return $this->belongsTo(User::class,'author_id','id');
+    }
 
+    
 
     /**
      * Return the sluggable configuration array for this model.

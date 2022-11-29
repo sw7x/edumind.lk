@@ -19,24 +19,27 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
+            
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
+
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
+
             <div class="ibox">
-
-
-                <div class="ibox-content">
-
-                    @if(Session::has('message'))
-                        <div class="col-lg-12">
-                            <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                                <a href="#" class="close">×</a>
-                                <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                                <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                                <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                            </div>
-                        </div>
-                    @endif
-
-                    
-
+                <div class="ibox-content">                 
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Amount</label>
                         <div class="col-sm-9">
@@ -91,11 +94,10 @@
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
-
                 </div>
-
-
             </div>
+
+            
         </div>
     </div>
 @stop

@@ -735,6 +735,12 @@ todo -delete
     border: 1px solid transparent;
     border-radius: 4px;
 }
+.flash-msg .close {
+    opacity: 1;
+    color: inherit;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
 .flash-success {
     color: #3c763d;
     background-color: #dff0d8;

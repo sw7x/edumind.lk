@@ -35,342 +35,388 @@
                 </div>
             @endif
 
-
-            <div class="tabs-container mb-5">
-
-                <ul class="nav nav-tabs" role="tablist">
-                    <li><a class="nav-link active" data-toggle="tab" href="#tab-teachers">Teachers</a></li>
-                    <li><a class="nav-link" data-toggle="tab" href="#tab-students">Students</a></li>
-                    <li><a class="nav-link" data-toggle="tab" href="#tab-marketers">Marketers</a></li>
-                    <li><a class="nav-link" data-toggle="tab" href="#tab-editors">Editors</a></li>
-                </ul>
-
-                <div class="tab-content">
-
-                    <div role="tabpanel" id="tab-teachers" class="tab-pane active">
-                        <div class="panel-body">
-
-                            <!--  -->
-                            <div class="table-responsive">
-                                <table id="user-list-teacher" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            {{--
-                                            full_name,email,username
-                                            phone, profile_pic, edu_qualifications |
-                                            profile_text ,gender, dob_year ==
-                                            status, activated
-                                            --}}
-
-                                            <th>Name</th>
-                                            <th>Email<br>
-                                                phone</th>
-                                            <th>Username</th>
-                                            <th>Image</th>
-                                            <th>Gender</th>
-                                            <th>Activated</th>
-                                            <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($teachers as $item)
-                                        <tr class="teacher_{{$item->id}}">
-                                            <td>{{$item->full_name}}</td>
-                                            <td>{{$item->email}}<br> {{$item->phone}}</td>
-                                            <td>{{$item->username}}</td>
-
-                                            <td>
-                                                @if($item->profile_pic != '')
-                                                    <a class="no-clickable popup-img effect" href="{{URL('/')}}/storage/{{$item->profile_pic}}" data-effect="mfp-zoom-in">
-                                                        <img src="{{URL('/')}}/storage/{{$item->profile_pic}}" width="100px" alt="">
-                                                    </a>
-                                                @endif
-                                            </td>
-
-                                            <td>{{$item->gender}}</td>
-
-                                            <td>
-                                                @if($item->isactivated() === true)
-                                                    <span class="label label-primary">Activated</span>
-                                                @elseif($item->isactivated() === false)
-                                                    <span class="label label-warning">Not Activated</span>
-                                                @else
-                                                    <span class="label">error</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                <input type="checkbox" class="js-switch-teacher"
-                                                       userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
-                                            </td>
-
-                                            <td class="text-right">
-                                                <div class="btn-group">
-                                                    <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
-                                                    <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
-                                                    <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
-                                                </div>
-                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
-                                                    @method('DELETE')
-                                                    <input name="userId" type="hidden" value="{{$item->id}}">
-                                                    <input name="userType" type="hidden" value="teacher">
-                                                    @csrf
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email<br>
-                                                phone</th>
-                                            <th>Username</th>
-                                            <th>Image</th>
-                                            <th>Gender</th>
-                                            <th>Activated</th>
-                                            <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div role="tabpanel" id="tab-students" class="tab-pane">
-                        <div class="panel-body">
-
-
-                            <div class="table-responsive">
-                                <table id="user-list-stud" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email<br>
-                                            phone</th>
-                                        <th>Username</th>
-                                        <th>Gender</th>
-                                        <th>Activated</th>
-                                        <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
-                                        <th class="text-right">Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($students as $item)
-                                            <tr class="student_{{$item->id}}">
-                                                <td>{{$item->full_name}}</td>
-                                                <td>{{$item->email}}<br> {{$item->phone}}</td>
-                                                <td>{{$item->username}}</td>
-                                                <td>{{$item->gender}}</td>
-
-                                                <td>
-                                                    @if($item->isactivated() === true)
-                                                        <span class="label label-primary">Activated</span>
-                                                    @elseif($item->isactivated() === false)
-                                                        <span class="label label-warning">Not Activated</span>
-                                                    @else
-                                                        <span class="label">error</span>
-                                                    @endif
-                                                </td>
-
-                                                <td>
-                                                    <input type="checkbox" class="js-switch-student"
-                                                           userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
-                                                </td>
-
-                                                <td class="text-right">
-                                                    <div class="btn-group">
-                                                        <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
-                                                        <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
-                                                        <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
-                                                    </div>
-                                                    <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
-                                                        @method('DELETE')
-                                                        <input name="userId" type="hidden" value="{{$item->id}}">
-                                                        <input name="userType" type="hidden" value="student">
-                                                        @csrf
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email<br>
-                                                phone</th>
-                                            <th>Username</th>
-                                            <th>Gender</th>
-                                            <th>Activated</th>
-                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
-
-                        </div>
-                    </div>
-
-                    <div role="tabpanel" id="tab-marketers" class="tab-pane">
-                        <div class="panel-body">
-
-
-                            <div class="table-responsive">
-                                <table id="user-list-marketer" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email<br>
-                                                phone</th>
-                                            <th>Username</th>
-                                            <th>Gender</th>
-                                            <th>Activated</th>
-                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($marketers as $item)
-                                        <tr class="marketer_{{$item->id}}">
-                                            <td>{{$item->full_name}}</td>
-                                            <td>{{$item->email}}<br> {{$item->phone}}</td>
-                                            <td>{{$item->username}}</td>
-                                            <td>{{$item->gender}}</td>
-
-                                            <td>
-                                                @if($item->isactivated() === true)
-                                                    <span class="label label-primary">Activated</span>
-                                                @elseif($item->isactivated() === false)
-                                                    <span class="label label-warning">Not Activated</span>
-                                                @else
-                                                    <span class="label">error</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                <input type="checkbox" class="js-switch-marketer"
-                                                       userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
-                                            </td>
-
-                                            <td class="text-right">
-                                                <div class="btn-group">
-                                                    <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
-                                                    <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
-                                                    <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
-                                                </div>
-                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
-                                                    @method('DELETE')
-                                                    <input name="userId" type="hidden" value="{{$item->id}}">
-                                                    <input name="userType" type="hidden" value="marketer">
-                                                    @csrf
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email<br>
-                                                phone</th>
-                                            <th>Username</th>
-                                            <th>Gender</th>
-                                            <th>Activated</th>
-                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div role="tabpanel" id="tab-editors" class="tab-pane">
-                        <div class="panel-body">
-
-                            <!--  -->
-                            <div class="table-responsive">
-                                <table id="user-list-editors" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email<br>
-                                                phone</th>
-                                            <th>Username</th>
-                                            <th>Gender</th>
-                                            <th>Activated</th>
-                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($editors as $item)
-                                        <tr class="editors_{{$item->id}}">
-                                            <td>{{$item->full_name}}</td>
-                                            <td>{{$item->email}}<br> {{$item->phone}}</td>
-                                            <td>{{$item->username}}</td>
-                                            <td>{{$item->gender}}</td>
-
-                                            <td>
-                                                @if($item->isactivated() === true)
-                                                    <span class="label label-primary">Activated</span>
-                                                @elseif($item->isactivated() === false)
-                                                    <span class="label label-warning">Not Activated</span>
-                                                @else
-                                                    <span class="label">error</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                <input type="checkbox" class="js-switch-editor"
-                                                       userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
-                                            </td>
-
-                                            <td class="text-right">
-                                                <div class="btn-group">
-                                                    <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
-                                                    <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
-                                                    <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
-                                                </div>
-                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
-                                                    @method('DELETE')
-                                                    <input name="userId" type="hidden" value="{{$item->id}}">
-                                                    <input name="userType" type="hidden" value="editor">
-                                                    @csrf
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email<br>
-                                                phone</th>
-                                            <th>Username</th>
-                                            <th>Gender</th>
-                                            <th>Activated</th>
-                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
-
-                        </div>
-                    </div>
-
-
-
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
                 </div>
+            @endif
 
-            </div>
+            @if(isset($teachers) || isset($students) || isset($marketers) || isset($editors))
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="tabs-container mb-5">
+
+                        <ul class="nav nav-tabs" role="tablist" id="tab-button-wrapper">
+                            @can('view',$teachers->first())
+                                @if($teachers instanceof Illuminate\Support\Collection && $teachers->count()>0)
+                                    <li><a class="nav-link __active" data-toggle="tab" href="#tab-teachers">Teachers</a></li>
+                                @endif
+                            @endcan
+
+                            @can('view',$students->first())
+                                @if(isset($students) && $students instanceof Illuminate\Support\Collection && $students->count()>0)
+                                    <li><a class="nav-link" data-toggle="tab" href="#tab-students">Students</a></li>
+                                @endif
+                            @endcan
+
+                            @can('view',$marketers->first())
+                                @if(isset($marketers) && $marketers instanceof Illuminate\Support\Collection && $marketers->count()>0)
+                                    <li><a class="nav-link" data-toggle="tab" href="#tab-marketers">Marketers</a></li>
+                                @endif
+                            @endcan
+
+                            @can('view',$editors->first())
+                                @if(isset($editors) && $editors instanceof Illuminate\Support\Collection && $editors->count()>0)
+                                    <li><a class="nav-link" data-toggle="tab" href="#tab-editors">Editors</a></li>
+                                @endif                            
+                            @endcan
+                        </ul>
+
+                        <div class="tab-content" id="tab-pane-wrapper">
+                            @can('view',$teachers->first())
+                                @if($teachers instanceof Illuminate\Support\Collection && $teachers->count()>0)
+                                    <div role="tabpanel" id="tab-teachers" class="tab-pane __active">
+                                        <div class="panel-body">
+
+                                            <!--  -->
+                                            <div class="table-responsive">
+                                                <table id="user-list-teacher" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            {{--
+                                                            full_name,email,username
+                                                            phone, profile_pic, edu_qualifications |
+                                                            profile_text ,gender, dob_year ==
+                                                            status, activated
+                                                            --}}
+
+                                                            <th>Name</th>
+                                                            <th>Email<br>
+                                                                phone</th>
+                                                            <th>Username</th>
+                                                            <th>Image</th>
+                                                            <th>Gender</th>
+                                                            <th>Activated</th>
+                                                            <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($teachers as $item)
+                                                        <tr class="teacher_{{$item->id}}">
+                                                            <td>{{$item->full_name}}</td>
+                                                            <td>{{$item->email}}<br> {{$item->phone}}</td>
+                                                            <td>{{$item->username}}</td>
+
+                                                            <td>
+                                                                @if($item->profile_pic != '')
+                                                                    <a class="no-clickable popup-img effect" href="{{URL('/')}}/storage/{{$item->profile_pic}}" data-effect="mfp-zoom-in">
+                                                                        <img src="{{URL('/')}}/storage/{{$item->profile_pic}}" width="100px" alt="">
+                                                                    </a>
+                                                                @endif
+                                                            </td>
+
+                                                            <td>{{$item->gender}}</td>
+
+                                                            <td>
+                                                                @if($item->isactivated() === true)
+                                                                    <span class="label label-primary">Activated</span>
+                                                                @elseif($item->isactivated() === false)
+                                                                    <span class="label label-warning">Not Activated</span>
+                                                                @else
+                                                                    <span class="label">error</span>
+                                                                @endif
+                                                            </td>
+
+                                                            <td>
+                                                                <input type="checkbox" class="js-switch-teacher"
+                                                                       userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
+                                                            </td>
+
+                                                            <td class="text-right">
+                                                                <div class="btn-group">
+                                                                    <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
+                                                                    <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                    <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
+                                                                </div>
+                                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
+                                                                    @method('DELETE')
+                                                                    <input name="userId" type="hidden" value="{{$item->id}}">
+                                                                    <input name="userType" type="hidden" value="teacher">
+                                                                    @csrf
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email<br>
+                                                                phone</th>
+                                                            <th>Username</th>
+                                                            <th>Image</th>
+                                                            <th>Gender</th>
+                                                            <th>Activated</th>
+                                                            <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endcan
+
+                            @can('view',$students->first())
+                                @if(isset($students) && $students instanceof Illuminate\Support\Collection && $students->count()>0)
+                                    <div role="tabpanel" id="tab-students" class="tab-pane">
+                                        <div class="panel-body">
+
+
+                                            <div class="table-responsive">
+                                                <table id="user-list-stud" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Email<br>
+                                                            phone</th>
+                                                        <th>Username</th>
+                                                        <th>Gender</th>
+                                                        <th>Activated</th>
+                                                        <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                                        <th class="text-right">Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($students as $item)
+                                                            <tr class="student_{{$item->id}}">
+                                                                <td>{{$item->full_name}}</td>
+                                                                <td>{{$item->email}}<br> {{$item->phone}}</td>
+                                                                <td>{{$item->username}}</td>
+                                                                <td>{{$item->gender}}</td>
+
+                                                                <td>
+                                                                    @if($item->isactivated() === true)
+                                                                        <span class="label label-primary">Activated</span>
+                                                                    @elseif($item->isactivated() === false)
+                                                                        <span class="label label-warning">Not Activated</span>
+                                                                    @else
+                                                                        <span class="label">error</span>
+                                                                    @endif
+                                                                </td>
+
+                                                                <td>
+                                                                    <input type="checkbox" class="js-switch-student"
+                                                                           userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
+                                                                </td>
+
+                                                                <td class="text-right">
+                                                                    <div class="btn-group">
+                                                                        <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
+                                                                        <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                        <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
+                                                                    </div>
+                                                                    <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
+                                                                        @method('DELETE')
+                                                                        <input name="userId" type="hidden" value="{{$item->id}}">
+                                                                        <input name="userType" type="hidden" value="student">
+                                                                        @csrf
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email<br>
+                                                                phone</th>
+                                                            <th>Username</th>
+                                                            <th>Gender</th>
+                                                            <th>Activated</th>
+                                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                @endif
+                            @endcan
+
+                            @can('view',$marketers->first())    
+                                @if(isset($marketers) && $marketers instanceof Illuminate\Support\Collection && $marketers->count()>0)
+                                    <div role="tabpanel" id="tab-marketers" class="tab-pane">
+                                        <div class="panel-body">
+
+
+                                            <div class="table-responsive">
+                                                <table id="user-list-marketer" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email<br>
+                                                                phone</th>
+                                                            <th>Username</th>
+                                                            <th>Gender</th>
+                                                            <th>Activated</th>
+                                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($marketers as $item)
+                                                        <tr class="marketer_{{$item->id}}">
+                                                            <td>{{$item->full_name}}</td>
+                                                            <td>{{$item->email}}<br> {{$item->phone}}</td>
+                                                            <td>{{$item->username}}</td>
+                                                            <td>{{$item->gender}}</td>
+
+                                                            <td>
+                                                                @if($item->isactivated() === true)
+                                                                    <span class="label label-primary">Activated</span>
+                                                                @elseif($item->isactivated() === false)
+                                                                    <span class="label label-warning">Not Activated</span>
+                                                                @else
+                                                                    <span class="label">error</span>
+                                                                @endif
+                                                            </td>
+
+                                                            <td>
+                                                                <input type="checkbox" class="js-switch-marketer"
+                                                                       userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
+                                                            </td>
+
+                                                            <td class="text-right">
+                                                                <div class="btn-group">
+                                                                    <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
+                                                                    <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                    <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
+                                                                </div>
+                                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
+                                                                    @method('DELETE')
+                                                                    <input name="userId" type="hidden" value="{{$item->id}}">
+                                                                    <input name="userType" type="hidden" value="marketer">
+                                                                    @csrf
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email<br>
+                                                                phone</th>
+                                                            <th>Username</th>
+                                                            <th>Gender</th>
+                                                            <th>Activated</th>
+                                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                @endif
+                            @endcan
+
+                            @can('view',$editors->first())    
+                                @if(isset($editors) && $editors instanceof Illuminate\Support\Collection && $editors->count()>0)
+                                    <div role="tabpanel" id="tab-editors" class="tab-pane">
+                                        <div class="panel-body">
+
+                                            <!--  -->
+                                            <div class="table-responsive">
+                                                <table id="user-list-editors" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email<br>
+                                                                phone</th>
+                                                            <th>Username</th>
+                                                            <th>Gender</th>
+                                                            <th>Activated</th>
+                                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($editors as $item)
+                                                        <tr class="editors_{{$item->id}}">
+                                                            <td>{{$item->full_name}}</td>
+                                                            <td>{{$item->email}}<br> {{$item->phone}}</td>
+                                                            <td>{{$item->username}}</td>
+                                                            <td>{{$item->gender}}</td>
+
+                                                            <td>
+                                                                @if($item->isactivated() === true)
+                                                                    <span class="label label-primary">Activated</span>
+                                                                @elseif($item->isactivated() === false)
+                                                                    <span class="label label-warning">Not Activated</span>
+                                                                @else
+                                                                    <span class="label">error</span>
+                                                                @endif
+                                                            </td>
+
+                                                            <td>
+                                                                <input type="checkbox" class="js-switch-editor"
+                                                                       userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
+                                                            </td>
+
+                                                            <td class="text-right">
+                                                                <div class="btn-group">
+                                                                    <a href="{{route ('admin.user.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
+                                                                    <a href="{{route ('admin.user.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                    <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
+                                                                </div>
+                                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
+                                                                    @method('DELETE')
+                                                                    <input name="userId" type="hidden" value="{{$item->id}}">
+                                                                    <input name="userType" type="hidden" value="editor">
+                                                                    @csrf
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email<br>
+                                                                phone</th>
+                                                            <th>Username</th>
+                                                            <th>Gender</th>
+                                                            <th>Activated</th>
+                                                            <th>status<br/> <small>Enable/disable <br/> by admin</small></th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                @endif
+                            @endcan
+                        </div>
+
+                    </div>
+                </div>
+            </div>  
+            @endif
+
         </div>
     </div>
 @stop
@@ -405,12 +451,19 @@
 	$(document).ready(function ($) {
 
 		let selectedTab = window.location.hash;
-		selectedTab = (selectedTab=='')?'#tab-teachers':selectedTab;
-		$('.nav-link[href="' + selectedTab + '"]' ).trigger('click');
+		//selectedTab = (selectedTab=='')?'#tab-teachers':selectedTab;
+
+        let firstTabId   = '#' + $('#tab-pane-wrapper .tab-pane').first().attr('id');
+		selectedTab      = (selectedTab=='')? firstTabId : selectedTab;
+
+
+        console.log(selectedTab);
+        $('.nav-link[href="' + selectedTab + '"]' ).trigger('click');
+        //window.location.hash = selectedTab;
 
 		//Prevent default hash behavior on page load
 		window.scrollTo(0,0);
-	});
+    });
 
 
 
@@ -423,6 +476,7 @@
 			"newestOnTop": true,
 			"progressBar": true,
 			"positionClass": "toast-top-right",
+            //"positionClass": "toast-top-full-width",
 			"preventDuplicates": false,
 			"onclick": null,
 			"showDuration": "300",
@@ -501,17 +555,21 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [{
-				text: 'Add teacher',
-				href : 'uuu',
-				action: function ( e, dt, node, config ) {
-					//$('#addProjectModal').modal('show');
-					//$('#add-modal').modal('show');
-					window.location = '{{route('admin.user.create').'#tab-add-teachers'}}';
-					//  alert( 'Button activated' );
-				},
-				className: 'add-ct mb-3 btn-green '
-			}],
+			buttons: [
+                @can('createTeachers',"App\Models\User")
+                    {
+        				text: 'Add teacher',
+        				href : 'uuu',
+        				action: function ( e, dt, node, config ) {
+        					//$('#addProjectModal').modal('show');
+        					//$('#add-modal').modal('show');
+        					window.location = '{{route('admin.user.create').'#tab-teachers'}}';
+        					//  alert( 'Button activated' );
+        				},
+        				className: 'add-ct mb-3 btn-green '
+        			}
+                @endcan
+            ],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6],
 				"searchable": false
@@ -547,17 +605,21 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [{
-				text: 'Add student',
-				href : 'uuu',
-				action: function ( e, dt, node, config ) {
-					//$('#addProjectModal').modal('show');
-					//$('#add-modal').modal('show');
-					window.location = '{{route('admin.user.create').'#tab-add-students'}}';
-					//  alert( 'Button activated' );
-				},
-				className: 'add-ct mb-3 btn-green '
-			}],
+			buttons: [
+                @can('createStudents',"App\Models\User")
+                    {
+        				text: 'Add student',
+        				href : 'uuu',
+        				action: function ( e, dt, node, config ) {
+        					//$('#addProjectModal').modal('show');
+        					//$('#add-modal').modal('show');
+        					window.location = '{{route('admin.user.create').'#tab-students'}}';
+        					//  alert( 'Button activated' );
+        				},
+        				className: 'add-ct mb-3 btn-green '
+        			}
+                @endcan
+            ],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6],
 				"searchable": false
@@ -594,17 +656,21 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [{
-				text: 'Add marketer',
-				href : 'uuu',
-				action: function ( e, dt, node, config ) {
-					//$('#addProjectModal').modal('show');
-					//$('#add-modal').modal('show');
-					window.location = '{{route('admin.user.create').'#tab-add-marketers'}}';
-					//  alert( 'Button activated' );
-				},
-				className: 'add-ct mb-3 btn-green '
-			}],
+			buttons: [
+                @can('createMarketers',"App\Models\User")
+                    {
+        				text: 'Add marketer',
+        				href : 'uuu',
+        				action: function ( e, dt, node, config ) {
+        					//$('#addProjectModal').modal('show');
+        					//$('#add-modal').modal('show');
+        					window.location = '{{route('admin.user.create').'#tab-marketers'}}';
+        					//  alert( 'Button activated' );
+        				},
+        				className: 'add-ct mb-3 btn-green '
+        			}
+                @endcan
+            ],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6],
 				"searchable": false
@@ -641,17 +707,21 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [{
-				text: 'Add editor',
-				href : 'uuu',
-				action: function ( e, dt, node, config ) {
-					//$('#addProjectModal').modal('show');
-					//$('#add-modal').modal('show');
-					window.location = '{{route('admin.user.create').'#tab-add-editors'}}';
-					//  alert( 'Button activated' );
-				},
-				className: 'add-ct mb-3 btn-green '
-			}],
+			buttons: [
+                @can('createEditors',"App\Models\User")
+                    {
+        				text: 'Add editor',
+        				href : 'uuu',
+        				action: function ( e, dt, node, config ) {
+        					//$('#addProjectModal').modal('show');
+        					//$('#add-modal').modal('show');
+        					window.location = '{{route('admin.user.create').'#tab-editors'}}';
+        					//  alert( 'Button activated' );
+        				},
+        				className: 'add-ct mb-3 btn-green '
+    			    }
+                @endcan
+            ],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6],
 				"searchable": false
@@ -708,9 +778,9 @@
 					userId : id
 				},
 				success: function (response) {
-					toastr[response.status](response.message);
+					toastr[response.status](response.message,response.msgTitle);
 					// You will get response from your PHP page (what you echo or print)
-				},
+                },
 				error:function(request,errorType,errorMessage)
 				{
 					//alert ('error - '+errorType+'with message - '+errorMessage);

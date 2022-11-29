@@ -10,12 +10,29 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
+            
+            @if(Session::has('view_user_message'))
+                <div class="flash-msg {{ Session::get('view_user_cls', 'flash-info')}}">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('view_user_msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('view_user_message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
 
-            <div class="ibox-content feedback-container forum-post-container mb-5">
+            @if(isset($view_user_message))
+                <div class="flash-msg {{$view_user_cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $view_user_msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $view_user_message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
 
-
-                @if(isset($userData))
-
+            
+            @if(isset($userData))
+            <div class="ibox">  
+                <div class="ibox-content feedback-container forum-post-container mb-5">                    
                     @if(isset($userData->full_name))
                         <div class="form-group  row">
                             <label class="col-sm-3 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
@@ -23,7 +40,6 @@
                         </div>
                         <div class="hr-line-dashed"></div>
                     @endif
-
 
                     @if(isset($userType))
                     <div class="form-group  row">
@@ -84,8 +100,7 @@
                         </div>
                         <div class="hr-line-dashed"></div>
                     @endif
-
-
+                        
                     @if(isset($userData->profile_pic))
                         <div class="form-group  row">
                             <label class="col-sm-3 col-form-label">Profile image</label>
@@ -98,7 +113,6 @@
                         <div class="hr-line-dashed"></div>
                     @endif
 
-
                     @if(isset($userData->gender))
                         <div class="form-group  row">
                             <label class="col-sm-3 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
@@ -106,8 +120,6 @@
                         </div>
                         <div class="hr-line-dashed"></div>
                     @endif
-
-
 
                     <div class="form-group  row">
                         <label class="col-sm-3 col-form-label">Account (Enable /Disable)<br> by admin</label>
@@ -120,8 +132,6 @@
                         </label>
                     </div>
                     <div class="hr-line-dashed"></div>
-
-
 
                     @if(isset($userData))
                         <div class="form-group  row">
@@ -139,7 +149,6 @@
                         <div class="hr-line-dashed"></div>
                     @endif
 
-
                     @if(isset($userData->last_login))
                         <div class="form-group  row">
                             <label class="col-sm-3 col-form-label">Last login</label>
@@ -152,24 +161,11 @@
                         <div class="col-sm-4 offset-sm-3 mt-5">
                             <a class="btn btn-info btn-sm font-semibold" style="min-width: 150px" type="submit" href="{{route('admin.user.index')}}">Go back</a>
                         </div>
-                    </div>
-
-                @else
-
-                    @if($view_user_message)
-                        <div class="flash-msg {{ $view_user_cls ?? 'flash-info'}}">
-                            <a href="#" class="close">×</a>
-                            <div class="text-lg"><strong>{{ $view_user_msgTitle ?? 'Info!'}}</strong></div>
-                            <p class="mb-1">{{ $view_user_message ?? 'Info!' }}</p>
-                            <a class="font-semibold" href="{{route('admin.user.index')}}">Go back</a>
-                        </div>
-                    @endif
-
-                @endif
-
-
-
+                    </div>                   
+                    
+                </div>
             </div>
+            @endif
 
 
 

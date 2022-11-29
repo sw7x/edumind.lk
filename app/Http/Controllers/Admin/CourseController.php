@@ -21,6 +21,7 @@ class CourseController extends Controller
      */
     public function index()
     {
+        //dd('index');
         //todo - Enrolled, Completed, Rating
 
         //dd(cleanUsernameString('WW.e rr..rt gg...ppp A1aasas _asas  gg"jj / ss h/h__oo s\de dd2!!@@#@DD 6&&& && jjjj$/$  f gg  hh   ii    k'));
@@ -67,7 +68,6 @@ class CourseController extends Controller
      */
     public function create()
     {
-
         $subjectsDataSet =  Subject::all ('id','name')->toArray();
         //dd($subjects);
 
@@ -113,6 +113,8 @@ class CourseController extends Controller
      */
     public function show($id)
     {
+        //dd('fgfg');
+
         try{
 
             if(!filter_var($id, FILTER_VALIDATE_INT)){
@@ -153,6 +155,7 @@ class CourseController extends Controller
      */
     public function edit($id)
     {
+        dd('edit');
         return view('admin-panel.course-edit');
     }
 
@@ -274,7 +277,7 @@ class CourseController extends Controller
 
 
     public function changeStatus(Request $request){
-
+        dd('changeStatus');
         try{
 
             if(!filter_var($request->courseId, FILTER_VALIDATE_INT)){

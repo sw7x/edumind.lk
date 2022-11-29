@@ -1,5 +1,7 @@
-@extends('admin-panel.layouts.master')
-@section('title','Dashboard')
+@extends('admin-panel.layouts.master',['title' => 'Teacher Dashboard'])
+@section('title','Dashboard(t)')
+
+
 
 @section('css-files')
 @stop

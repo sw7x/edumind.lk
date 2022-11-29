@@ -39,10 +39,27 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
+
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
+
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
+            
             <div class="ibox">
                 <div class="ibox-content">
-
-
                     // test drodown cancel
                     <div class="row mb-3" id="">                        
                         <div class="col-md-5">
@@ -112,6 +129,7 @@
 
                 </div>
             </div>
+
         </div>
     </div>
 @stop

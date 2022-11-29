@@ -251,10 +251,26 @@
                             @endif
 
                             @if(Sentinel::check())
-                                @if(Sentinel::getUser()->roles()->first()->slug != 'student')
+                                @if(Sentinel::getUser()->isUserCanAccessAdminPanel())
                                 <li> <a href="{{route('admin.dashboard')}}">Admin panel</a></li>
                                 @endif
                             @endif
+
+                            
+                        {{--
+                            @can('is_admin')
+                            <li>eeeeeeeeeeeee</li>
+                            @endcan
+                             
+                            @can('viewAny','App\Models\Contact_us')                            
+                            <li>ffff</li>
+                            @endcan
+
+                            @can('viewAny',App\Models\Contact_us::class)                            
+                            <li>gggg</li>
+                            @endcan 
+                        --}}
+
                         </ul>
                     </nav>
 

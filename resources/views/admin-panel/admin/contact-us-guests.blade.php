@@ -19,7 +19,16 @@
                 </div>
             @endif
 
-            <div class="ibox ">                
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
+
+            <div class="ibox">                
                 <div class="ibox-content relative forum-post-container" id="ibox-content">
                     
                     <div class="text-center p-2 absolute top-1 right-1">

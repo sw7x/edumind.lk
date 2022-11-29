@@ -6,13 +6,14 @@ use App\Exceptions\CustomException;
 use App\Models\Subject;
 use App\Utils\ColorUtil;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Access\AuthorizationException;
 
 
 
-
-class TopicsController extends Controller
+class SubjectController extends Controller
 {
     public function ViewAll(){
+        $this->authorize('viewAllInSiteFrontend',Subject::class);    
         $subjects = Subject::orderBy('created_at', 'desc')->get();
         //dd($subjects);
         return view('subject-list')->with(['subjects' => $subjects]);
@@ -22,7 +23,7 @@ class TopicsController extends Controller
     public function ViewTopic($slug=null){
 
         try{
-
+            
             if(!$slug){
                 throw new CustomException('Subject id not provided');
             }
@@ -31,7 +32,7 @@ class TopicsController extends Controller
             //dd($subjectData);
             //dd();
 
-
+            $this->authorize('viewSingleInSiteFrontend',$subjectData);
 
             if($subjectData){
                 if($subjectData->image){
@@ -60,6 +61,12 @@ class TopicsController extends Controller
                 'msgTitle'    => 'Error !',
             ]);
 
+        }catch(AuthorizationException $e){
+            return view('subject-single')->with([
+                'message'     => 'You dont have Permissions to access this page !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
         }catch(\Exception $e){
             return view('subject-single')->with([
                 'message'     => 'Subject does not exist!',

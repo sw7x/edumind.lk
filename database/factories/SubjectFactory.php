@@ -5,6 +5,9 @@ namespace Database\Factories;
 use App\Models\Subject;
 use App\Utils\UrlUtil;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use App\Models\Role;
+use Sentinel;
 
 class SubjectFactory extends Factory
 {
@@ -29,12 +32,21 @@ class SubjectFactory extends Factory
 
         return [
             //'name' => substr($this->faker->name,0,24),
-            'name' => $subjectName,
-            'description' => $this->faker->text(),
-            'image' => '',
-            'status' => $this->faker->randomElement(['published','draft']),
-            'slug' => $slug
-
+            'name'          => $subjectName,
+            'description'   => $this->faker->text(),
+            'image'         => '',
+            'status'        => $this->faker->randomElement(['published','draft']),
+            'slug'          => $slug,
+            'author_id'     => function () {
+                $teacherIdArr   = Sentinel::findRoleBySlug(Role::TEACHER)->users()->with('roles')->pluck('id')->toArray();
+                $adminIdArr     = Sentinel::findRoleBySlug(Role::ADMIN)->users()->with('roles')->pluck('id')->toArray();
+                $editorIdArr    = Sentinel::findRoleBySlug(Role::EDITOR)->users()->with('roles')->pluck('id')->toArray();
+                
+                $userArr = array_merge($teacherIdArr,$adminIdArr,$editorIdArr);        
+                shuffle($userArr);
+                return $userArr[0];
+            },
+            
 
 
 

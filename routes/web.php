@@ -30,7 +30,7 @@
 
 use App\Http\Controllers\Admin\ContactUsMessagesController;
 use App\Http\Controllers\Admin\SettingsController;
-use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\SubjectController as Admin_SubjectController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\ContactUsMessagesController as User_ContactUsMessagesController;
 use App\Http\Controllers\Admin\CourseController as Admin_CourseController;
@@ -45,8 +45,11 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\Admin\TeacherController as Admin_TeacherController;
 use App\Http\Controllers\Admin\MarketerController as Admin_MarketerController;
 use App\Http\Controllers\Admin\EditorController as Admin_EditorController;
+use App\Http\Controllers\Admin\AdminPanelController;
 
-use App\Http\Controllers\TopicsController;
+
+use App\Http\Controllers\SubjectController as User_SubjectController;
+
 use App\Http\Controllers\CourseController as User_CourseController;
 
 
@@ -61,13 +64,36 @@ use App\Http\Controllers\Auth\ActivationController;
 use App\Http\Controllers\Auth\LoginController as User_LoginController;
 
 
+
+
+
+
+
 use App\Models\Subject;
 use App\Models\User;
 
 
 
+
+//use Sentinel;
+use App\Models\Contact_us;
+
+
+
+
+
+
 use Illuminate\Support\Facades\DB;
 Route::get('/test123', function () {
+    
+    $msg = Contact_us::find(1);
+    $user = Sentinel::getUser();
+        
+
+    dd($user->can('view', $msg));
+
+
+
     $ff = Subject::find(1);
     dump($ff);
 
@@ -183,7 +209,16 @@ Route::group(['as'=>'auth.','namespace' =>'Auth'], function() {
 
 Route::get('/form-submit-page', function () {    return view('form-submit-page');})->name('form-submit-page');
 Route::get('/coming-soon', function () {    return view('coming-soon');})->name('coming-soon');
-Route::get ('/', [HomeController::class,'index'])->name ('home');
+
+Route::get ('/', [HomeController::class,'index'])
+->name ('home');
+//->middleware('can:view-any,App\Models\Contact_us');
+//->middleware('can:viewAny');
+
+
+
+
+
 Route::get ('/no-permission', [PageController::class,'pageNoPermission'])->name ('no-permission');
 Route::get('/search2',function(){    return view('search-2');})->name('search2');
 Route::get('/404',function(){    return view('errors.404');})->name('404');
@@ -219,22 +254,30 @@ Route::get ('/course/watch/{slug?}/{videoId?}', [User_CourseController::class,'w
 
 
 
-Route::get ('/subjects', [TopicsController::class,'ViewAll'])->name ('viewAllTopic');
-Route::get ('/subject/{slug?}', [TopicsController::class,'ViewTopic'])->name ('viewTopic');
+Route::get ('/subjects', [User_SubjectController::class,'ViewAll'])->name ('viewAllTopic');
+Route::get ('/subject/{slug?}', [User_SubjectController::class,'ViewTopic'])->name ('viewTopic');
 
 
 
 /*==== student ===*/
 Route::group(['middleware'=> 'checkStudent'], function(){
-    //Route::get ('/student-profile-dashboard', [StudentController::class,'loadDashboard'])->name('student-profile-dashboard');
+    //block to other users than students
+    Route::get ('/student-profile-dashboard', [StudentController::class,'loadDashboard'])->name('student-profile-dashboard');
 });
+
 
 Route::group(['prefix'=>'student','as'=>'student.'], function(){
     Route::get ('/my-profile', [StudentController::class,'viewMyProfile'])->name ('my-profile');
     Route::get ('/my-courses', [StudentController::class,'viewMyCourses'])->name ('my-courses');
 
     Route::get ('/help', [StudentController::class,'viewHelp'])->name ('help');
+    
     Route::get ('/dashboard', [StudentController::class,'viewDashboard'])->name ('dashboard');
+    
+
+
+
+
     Route::get ('/profile-edit', [StudentController::class,'profileEdit'])->name ('profile-edit');
     Route::get ('/{slug?}', [StudentController::class,'viewStudent'])->name ('view-profile');
     Route::get ('/{slug?}/courses', [StudentController::class,'viewEnrolledCourses'])->name('courses');
@@ -248,7 +291,11 @@ Route::group(['prefix'=>'teacher','as'=>'teacher.'], function(){
     Route::get ('/my-courses', [TeacherController::class,'viewMyCourses'])->name ('my-courses');
 
     Route::get ('/earnings', [TeacherController::class,'ViewEarnings'])->name ('earnings');
+    
+    //todo-delete
     Route::get ('/dashboard', [TeacherController::class,'viewDashboard'])->name ('dashboard');
+    
+
     Route::get ('/course-edit', [TeacherController::class,'courseAddContent'])->name ('course-add-content');
     Route::get ('/course-create', [TeacherController::class,'createCourse'])->name ('course-create');
     Route::get ('/profile-edit', [TeacherController::class,'profileEdit'])->name ('profile-edit');
@@ -313,14 +360,11 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         
 
 
-
-        Route::group(['middleware'=> 'adminPanelAccess'], function(){
+        //todo---
+        Route::group(['middleware'=> 'adminPanelAccess'], function(){});
             
-            Route::get('/dashboard', function () {
-                //dump('ee');
-                return view('admin-panel.admin.dashboard');
-            })->name('dashboard');
-        });
+        Route::get('/dashboard',[AdminPanelController::class,'viewDashboard'])->name('dashboard');
+        
 
 
         Route::group(['middleware' => ['canAccess:admin,editor']], function() {
@@ -342,18 +386,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
 
 
-        Route::group(['prefix'=>'course','as'=>'course.'], function(){
-            //Route::get ('/content', [Admin_CourseController::class,'courseContent'])->name ('content');
-            
 
-            Route::get ('/add-2', [Admin_CourseController::class,'addCourseCopy'])->name ('add-2');
-            Route::post('/change-status', [Admin_CourseController::class,'changeStatus'])->name ('change-status');
-            Route::get('/add0', function(){return view('admin-panel.course-add-backup1');})->name ('add0');
-            Route::post('/check-empty', [Admin_CourseController::class,'checkEmpty'])->name ('check-empty');
-        
-
-
-        });
 
         Route::group(['prefix'=>'user','as'=>'user.'], function(){
             Route::get ('/approve-teachers', [UserController::class,'viewUnApprovedTeachersList'])->name ('un-approved-teachers-list');
@@ -404,7 +437,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::get('/view',function(){return view('admin-panel.marketer.list-cupon-codes');})->name('view');
             Route::get('/new',function(){return view('admin-panel.marketer.new-cupon-codes');})->name('new');
             Route::get('/usage',function(){return view('admin-panel.marketer.usage-cupon-codes');})->name('usage');
-            Route::get('/dashboard',function(){return view('admin-panel.marketer.dashboard');})->name('dashboard');
+            //Route::get('/dashboard',function(){return view('admin-panel.marketer.dashboard');})->name('dashboard');
             Route::get('/single',function(){return view('admin-panel.marketer.cupon-code-view');})->name('single');
         
             Route::get('/teacher-view',function(){return view('admin-panel.teacher.list-cupon-codes');})->name('teacher-view');
@@ -415,7 +448,11 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         });
 
         Route::group(['prefix'=>'feedback','as'=>'feedback.'], function(){
-            Route::get ('/students', [ContactUsMessagesController::class,'students'])->name ('students');
+            Route::get ('/students', [ContactUsMessagesController::class,'students'])
+            ->name ('students');
+            //->middleware('can:viewAny,App\Models\Contact_us');
+            //->can('viewAny', Contact_us::class);
+
             Route::get ('/teachers', [ContactUsMessagesController::class,'teachers'])->name ('teachers');
             Route::get ('/other-users', [ContactUsMessagesController::class,'otherUsers'])->name ('other-users');
             Route::get ('/guests', [ContactUsMessagesController::class,'guests'])->name ('guests');
@@ -426,7 +463,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         Route::group(['prefix'=>'teacher','as'=>'teacher.'], function(){            
             Route::get ('/my-courses', [Admin_TeacherController::class,'viewMyCourses'])->name ('my-courses');
             Route::get ('/earnings', [Admin_TeacherController::class,'ViewEarnings'])->name ('earnings');
-            Route::get ('/dashboard', [Admin_TeacherController::class,'viewDashboard'])->name ('dashboard');
+            //Route::get ('/dashboard', [Admin_TeacherController::class,'viewDashboard'])->name ('dashboard');
             Route::get ('/profile-edit', [Admin_TeacherController::class,'profileEdit'])->name ('profile-edit');
             
             Route::get ('/enrollments', [Admin_TeacherController::class,'viewCourseEnrollmentList'])->name ('enrollments');
@@ -441,26 +478,39 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
     });
 
     //Route::group(['middleware' => ['canAccess:admin,editor']], function() {
-        Route::resource ('/subject', SubjectController::class);
+        Route::resource ('/subject', Admin_SubjectController::class);
     //});
+    
+
+    //Route::resource('/course', Admin_CourseController::class); 
 
 
-    Route::group(['as'=>'course.'  ,'prefix'=>'course'],function(){
-        Route::get('/enrollments', [Admin_CourseController::class,'viewCourseEnrollmentList'])->name ('enrollement-list');
-        Route::get('/completions', [Admin_CourseController::class,'viewCourseCompleteList'])->name ('complete-list');       
-
-
-        Route::resource('/', Admin_CourseController::class); 
-    });    
+        
 
 
     
 
-    Route::group(['prefix'=>'editor','as'=>'editor.'], function(){
+    /*Route::group(['prefix'=>'editor','as'=>'editor.'], function(){
         Route::get ('/dashboard', [Admin_EditorController::class,'viewDashboard'])->name ('dashboard');
+    });*/
+
+    
+
+    /**/
+    Route::group(['prefix'=>'course','as'=>'course.'], function(){
+        //Route::get ('/content', [Admin_CourseController::class,'courseContent'])->name ('content');
+        
+        Route::get ('/add-2', [Admin_CourseController::class,'addCourseCopy'])->name ('add-2');
+        Route::post('/change-status', [Admin_CourseController::class,'changeStatus'])->name ('change-status');
+        Route::get('/add0', function(){return view('admin-panel.course-add-backup1');})->name ('add0');
+        Route::post('/check-empty', [Admin_CourseController::class,'checkEmpty'])->name ('check-empty');
+        
+        Route::get('/enrollments', [Admin_CourseController::class,'viewCourseEnrollmentList'])->name ('enrollement-list');
+        Route::get('/completions', [Admin_CourseController::class,'viewCourseCompleteList'])->name ('complete-list');       
+    
     });
-
-
+    Route::resource('/course', Admin_CourseController::class);   
+        
 
 
 

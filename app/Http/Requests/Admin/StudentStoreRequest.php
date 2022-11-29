@@ -66,14 +66,17 @@ class StudentStoreRequest extends FormRequest
     {
 
         return [
-            'stud-name'      => 'required',
+            'stud-name'      => 'required|unique:users,full_name',
             'stud-email'     => 'required|email|unique:users,email',
             //'stud-uname'     => 'alpha_dash|unique:users,username',
             'stud-uname'     => 'alpha_dash',
-            'stud-phone'     => 'required',
+            'stud-phone'     => 'required|unique:users,phone',
             'stud-password'  => 'required|min:6|max:12',
             'stud_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
             'stud-gender'    => 'required',
+
+
+
         ];
     }
 

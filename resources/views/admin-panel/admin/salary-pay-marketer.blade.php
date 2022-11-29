@@ -78,30 +78,31 @@
     <div class="row" id="">
         <div class="col-lg-12">
 
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
 
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
 
 
             <!-- content -->
             <div class="ibox ">
-
                 <div class="ibox-content px-3">
-
-                    @if(Session::has('message'))
-                        <div class="col-lg-12">
-                            <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                                <a href="#" class="close">×</a>
-                                <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                                <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                                <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                            </div>
-                        </div>
-                    @endif
-
-                    
-
+                 
                     <form class="edit-user-form" id="add-subject" action="{{route('admin.subject.store')}}" method="POST">
-
-                        <div class="form-group  row">
+                        <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Amount (Rs)</label>
                             <div class="col-sm-8"><input type="text" name="amount" class="form-control" required="required"></div>
                         </div>
@@ -169,12 +170,8 @@
                             </div>
                         </div>
                         {{csrf_field ()}}
-
                     </form>
-
-
                 </div>
-
             </div>
 
 

@@ -10,7 +10,7 @@ use Cartalyst\Sentinel\checkpoints\NotActivatedException;
 use App\Exceptions\WrongUserTypeException;
 use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -51,7 +51,7 @@ class LoginController extends Controller
 
                 $credentials = ['login'    => $request->email];
                 $user = Sentinel::findByCredentials($credentials);
-                
+
                 if($user->status == 0){
                     throw new CustomException('Account is disable by admin');
                 }
@@ -71,7 +71,7 @@ class LoginController extends Controller
                     'password' => $request->password],$remember_me)){
 
                     $role = Sentinel::getUser()->roles()->first()->slug;
-
+                    
                     if($role == 'teacher'){
                         return redirect()->route('teacher.my-profile', []);
                     }else if($role == 'student'){
@@ -81,6 +81,8 @@ class LoginController extends Controller
                         //return redirect('/student-profile-dashboard');
                         return redirect()->route('admin.dashboard');
                     }
+
+
 
 
                 }else{
@@ -130,8 +132,8 @@ class LoginController extends Controller
             }
             catch(\Exception $e){
                 return redirect()->back()->with([
-                    'message' => 'Something is wrong in login',
-                    //'message' => $e->getMessage(),
+                    //'message' => 'Something is wrong in login',
+                    'message' => $e->getMessage(),
                     //'title'   => 'Student Registration submit page',
                     'cls'     => 'flash-danger',
                     'msgTitle'=> 'Error!',

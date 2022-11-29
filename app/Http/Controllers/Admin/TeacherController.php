@@ -66,10 +66,9 @@ class TeacherController extends Controller
 
     }
 
-    public function viewDashboard(){
+    /*public function viewDashboard(){
     	return view('admin-panel.teacher.dashboard');
-
-    }
+    }*/
 
     public function profileEdit(){
     	return view('admin-panel.teacher.edit-profile');

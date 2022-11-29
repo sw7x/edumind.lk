@@ -68,11 +68,11 @@ class TeacherStoreRequest extends FormRequest
     {
 
         return [
-            'teacher-name'      => 'required',
+            'teacher-name'      => 'required|unique:users,full_name',
             'teacher-email'     => 'required|email|unique:users,email',
             //'teacher-uname'     => 'alpha_dash|unique:users,username',
             'teacher-uname'     => 'alpha_dash',
-            'teacher-phone'     => 'required',
+            'teacher-phone'     => 'required|unique:users,phone',
             'teacher-password'  => 'required|min:6|max:12',
             'teacher_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
             'teacher-gender'    => 'required',
@@ -89,7 +89,7 @@ class TeacherStoreRequest extends FormRequest
     {
         return [
             'teacher-name.required' => 'Name field is required',
-            'teacher-email.required' => 'Email field is required',
+            'teacher-email.required' => 'Email field is required',            
         ];
     }
 

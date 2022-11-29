@@ -66,11 +66,11 @@ class MarketerStoreRequest extends FormRequest
     {
 
         return [
-            'marketer-name'      => 'required',
+            'marketer-name'      => 'required|unique:users,full_name',
             'marketer-email'     => 'required|email|unique:users,email',
             //'marketer-uname'     => 'alpha_dash|unique:users,username',
             'marketer-uname'     => 'alpha_dash',
-            'marketer-phone'     => 'required',
+            'marketer-phone'     => 'required|unique:users,phone',
             'marketer-password'  => 'required|min:6|max:12',
             'marketer-gender'    => 'required',
         ];

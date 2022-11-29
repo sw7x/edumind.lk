@@ -26,11 +26,28 @@
     <div class="row" id="_sortable-view">
         <div class="col-lg-12">
 
-            <div class="ibox">
-                <div class="ibox-content">                                    
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
 
-                    <form class="teacher-profile-edit" method="post" action="">
-                        
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
+
+
+            <div class="ibox">
+                <div class="ibox-content">
+                    <form class="teacher-profile-edit" method="post" action="">                        
                         @if (count($errors) > 0)
                             <div class="flash-msg flash-danger rounded-none" style="margin-bottom:0px;">
                                 <a href="#" class="close">×</a>
@@ -253,8 +270,7 @@
                         </fieldset>
                               
                         {{csrf_field ()}}                    
-                    </form>
-            
+                    </form>            
                 </div>
             </div>
         

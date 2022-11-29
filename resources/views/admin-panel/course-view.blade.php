@@ -27,354 +27,363 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
-            <div class="tabs-container">
 
-                <ul class="nav nav-tabs" role="tablist">
-                    <li><a class="nav-link" data-toggle="tab" href="#tab-course-details">Course details</a></li>
-                    <li><a class="nav-link" data-toggle="tab" href="#tab-course-curriculum">Course curriculum</a></li>
-                </ul>
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
 
-                <div class="tab-content mb-3">
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>
+            @endif
 
-                    <!-- add-course tab -->
-                    <div role="tabpanel" id="tab-course-details" class="tab-pane ">
-                        <div class="panel-body">
+            <div class="ibox">
+                <div class="ibox-content">
+
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li><a class="nav-link" data-toggle="tab" href="#tab-course-details">Course details</a></li>
+                            <li><a class="nav-link" data-toggle="tab" href="#tab-course-curriculum">Course curriculum</a></li>
+                        </ul>
+
+                        <div class="tab-content mb-3">
+
+                            <!-- add-course tab -->
+                            <div role="tabpanel" id="tab-course-details" class="tab-pane ">
+                                <div class="panel-body">
+
+                                    <form class="" id="" action="" method="POST">
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Name</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->name}}</label>
+
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Subject</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->subject->name}}</label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Teacher</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->teacher->full_name}}</label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        {{--//todo - enrollment_id - enrolled ,complete,rating--}}
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Heading text</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->heading_text}}</label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Description</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->description}}</label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
+                                            <div class="col-sm-8">
+                                                @if($course->image)
+                                                    <img style="max-width:500px" src="{{URL('/')}}/storage/{{$course->image}}"/>
+                                                @else
+                                                    <p>no image</p>
+                                                @endif
+                                                <br>
+                                                <small>Image Size should be 300X350</small>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
+                                            <label class="col-sm-8 col-form-label">{{$course->duration}}</label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
+                                            <label class="col-sm-8 col-form-label">{{$course->video_count}}</label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Price</label>
+                                            @if(isset($course->price) && $course->price != '0.00')
+                                                <label class="col-sm-8 col-form-label">Rs {{$course->price}}</label>
+                                            @else
+                                                <label class="col-sm-8 col-form-label">Free</label>
+                                            @endif
+
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Created</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->getCreatedTime()}} <small>({{$course->created_at}})</small></label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Last update</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->getLastUpdatedTime()}} <small>({{$course->updated_at}})</small></label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Submit status</label>
+                                            <label class="col-sm-8 col-form-label">{{$course->status}} </label>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
 
 
 
-                            <h3>Course details</h3>
+                                        <div class="form-group row">
+                                            <div class="col-sm-4 offset-sm-4">
+                                                <a class="btn btn-danger btn-sm" href="{{route('admin.course.index')}}">Go back</a>
+                                            </div>
+                                        </div>
 
-                            <form class="" id="" action="" method="POST">
-
-                                <div class="form-group  row">
-                                    <label class="col-sm-4 col-form-label">Name</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->name}}</label>
+                                    </form>
 
                                 </div>
-                                <div class="hr-line-dashed"></div>
+                            </div>
+                            
+                            <div role="tabpanel" id="tab-course-curriculum" class="tab-pane">
+                                <div class="panel-body">
 
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label">Subject</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->subject->name}}</label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                    <pre class="py-1"><span class="text-red-500 text-sm font-bold">* View URL                 - Hover the link </span></pre>
+                                    <pre class="py-1"><span class="text-red-500 text-sm font-bold">* Copy URL to clipboard    - Click the link </span></pre>
 
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label">Teacher</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->teacher->full_name}}</label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                    <div id="curriculum" class="tube-card mt-5">
 
-                                {{--//todo - enrollment_id - enrolled ,complete,rating--}}
+                                        @php
+                                            //var_dump($course->content);
+                                        @endphp
 
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label">Heading text</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->heading_text}}</label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                        @if($course->content)
+                                        <ul uk-accordion="multiple: true" class="divide-y space-y-3">
 
+                                            @foreach($course->content as $sectionHeading => $sectionContent)
+                                            <li class="uk-open bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':''}}">
 
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label">Description</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->description}}</label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                                <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
+                                                    <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
 
-                                <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
-                                    <div class="col-sm-8">
-                                        @if($course->image)
-                                            <img style="max-width:500px" src="{{URL('/')}}/storage/{{$course->image}}"/>
+                                                <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
+
+                                                    <ul class="course-curriculum-list font-medium">                                                                                               
+
+                                                        @foreach($sectionContent as $arr)
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md
+                                                            {{($arr['price'] == 'Free')?' text-blue-500':''}}
+                                                            {{($arr['type'] == 'Download')?' __pl-8-important':''}}">
+
+                                                            @if(strtolower($arr['type']) == 'video')
+                                                                <i class="fa fa-play-circle text-2xl mr-2"></i>
+                                                                <!-- <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> -->
+                                                            @elseif (strtolower($arr['type']) =="download")
+                                                                <i class="fa fa-download leading-6 text-2xl mr-2"></i>
+                                                                <!-- <ion-icon class="icon-feather-download text-2xl mr-2"></ion-icon> -->
+                                                            @elseif (strtolower($arr['type']) =="other")
+                                                                <i class="fa fa-link leading-6 text-2xl mr-2"></i>
+                                                                <!-- <ion-icon class="icon-feather-link text-2xl mr-2"></ion-icon> -->
+                                                            @else
+                                                                <i class="fa fa-info-circle leading-6 text-2xl mr-2"></i>
+                                                                <!-- <ion-icon class="icon-feather-box text-2xl mr-2"></ion-icon> -->
+                                                            @endif
+
+                                                            <div class="link_div mr-2 text-justify">    
+                                                                <a class="link" href="{{$arr['url']}}">{{$arr['text']}}</a>                                                    
+
+                                                                @if($arr['price'] == 'Free')
+                                                                <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                                @endif
+                                                            </div>
+
+                                                            @if($arr['param'] !='')
+                                                            <span class="param text-sm ml-auto">{{$arr['param']}}</span>
+                                                            @endif
+                                                        </li>
+                                                        @endforeach
+
+                                                    </ul>
+
+                                                </div>
+                                            </li>
+                                            @endforeach
+
+                                        </ul>
                                         @else
-                                            <p>no image</p>
+                                            <p class="text-center text-sm font-semibold">Course content is empty</p>
                                         @endif
-                                        <br>
-                                        <small>Image Size should be 300X350</small>
+
                                     </div>
-                                </div>
-                                <div class="hr-line-dashed"></div>
 
+                                    {{--
+                                    <div id="curriculum" class="tube-card mt-5">
 
-                                <div class="form-group  row">
-                                    <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
-                                    <label class="col-sm-8 col-form-label">{{$course->duration}}</label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                        <ul uk-accordion="multiple: true" class="divide-y space-y-3">
 
-                                <div class="form-group  row">
-                                    <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
-                                    <label class="col-sm-8 col-form-label">{{$course->video_count}}</label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                            <li class="uk-open bg-gray-200 px-2 pb-3 rounded">
+                                                <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">  <div class="mb-1 text-sm font-medium"> Section 1 </div> Html Introduction </a>
+                                                <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
 
-                                <div class="form-group  row">
-                                    <label class="col-sm-4 col-form-label">Price</label>
-                                    @if(isset($course->price) && $course->price != '0.00')
-                                        <label class="col-sm-8 col-form-label">Rs {{$course->price}}</label>
-                                    @else
-                                        <label class="col-sm-8 col-form-label">Free</label>
-                                    @endif
+                                                    <ul class="course-curriculum-list font-medium">
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            <a class="" href="#111">Introduction</a>
+                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                            <span class="text-sm ml-auto"> 4 min </span>
+                                                        </li>
 
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            <a class="" href="url-htmlzip">What is HTML</a>
+                                                             <span class="text-sm ml-auto"> 5 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500 pl-8-important">
+                                                            <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
+                                                            <a class="" href="url-htmlzip">HTML.zip</a>
+                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                            <span class="text-sm ml-auto">5 MB</span>
 
-                                <div class="form-group  row">
-                                    <label class="col-sm-4 col-form-label">Created</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->getCreatedTime()}} <small>({{$course->created_at}})</small></label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500 pl-8-important">
+                                                            <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
+                                                            <a class="" href="#">CSS.zip</a>
+                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                            <span class="text-sm ml-auto">5 MB</span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500 pl-8-important">
+                                                            <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
+                                                            <a class="" href="#">Java.zip</a>
+                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                            <span class="text-sm ml-auto">5 MB</span>
+                                                        </li>
 
-                                <div class="form-group  row">
-                                    <label class="col-sm-4 col-form-label">Last update</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->getLastUpdatedTime()}} <small>({{$course->updated_at}})</small></label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            <a class="" href="url-htmlzip">What is a Web page?</a>
+                                                            <span class="text-sm ml-auto">8 min</span>
+                                                        </li>
 
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            <a class="" href="#">Your First Web Page</a>
+                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                            <span class="text-sm ml-auto"> 4 min </span>
+                                                        </li>
 
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label">Submit status</label>
-                                    <label class="col-sm-8 col-form-label">{{$course->status}} </label>
-                                </div>
-                                <div class="hr-line-dashed"></div>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            <a class="" href="url-Brain Streak">Brain Streak?</a>
+                                                            <span class="text-sm ml-auto">5 min</span>
+                                                        </li>
 
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md pl-8-important">
+                                                            <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
+                                                            <a class="" href="#">PHP.zip</a><span class="text-sm ml-auto">7 MB</span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md pl-8-important">
+                                                            <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
+                                                            <a class="" href="#">C#.zip</a><span class="text-sm ml-auto">7 MB</span>
+                                                        </li>
 
+                                                    </ul>
 
-                                <div class="form-group row">
-                                    <div class="col-sm-4 offset-sm-4">
-                                        <a class="btn btn-danger btn-sm" href="{{route('admin.course.index')}}">Go back</a>
+                                                </div>
+                                            </li>
+                                            <li class="pt-2 bg-gray-200 px-2 pb-3 rounded">
+                                                <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#"> <div class="mb-1 text-sm font-medium"> Section 2 </div> Your First webpage  </a>
+                                                <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
+
+                                                    <ul class="course-curriculum-list font-medium">
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> Headings
+                                                            <span class="text-sm ml-auto"> 4 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> Paragraphs
+                                                            <span class="text-sm ml-auto"> 5 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            Emphasis and Strong Tag
+                                                            <span class="text-sm ml-auto"> 8 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            Brain Streak
+                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs"> Preview </span>
+                                                            <span class="text-sm ml-auto"> 4 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            Live Preview Feature
+                                                            <span class="text-sm ml-auto"> 5 min </span>
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+                                            </li>
+                                            <li class="pt-2 bg-gray-200 px-2 pb-3 rounded">
+                                                <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#"> <div class="mb-1 text-sm font-medium"> Section 3 </div> Build Complete Webste  </a>
+                                                <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
+
+                                                    <ul class="course-curriculum-list font-medium">
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> The paragraph tag
+                                                            <span class="text-sm ml-auto"> 4 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> The break tag
+                                                            <span class="text-sm ml-auto"> 5 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            Headings in HTML
+                                                            <span class="text-sm ml-auto"> 8 min </span>
+                                                        </li>
+                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md">
+                                                            <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
+                                                            Bold, Italics Underline
+                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs"> Preview </span>
+                                                            <span class="text-sm ml-auto"> 4 min </span>
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+                                            </li>
+                                        </ul>
                                     </div>
+                                    --}}
+
                                 </div>
-
-                            </form>
-
-
+                            </div>                            
+                        
                         </div>
                     </div>
-                    <!--  -->
-
-
-                    <div role="tabpanel" id="tab-course-curriculum" class="tab-pane">
-                        <div class="panel-body">
-
-                            <h3>Course curriculum</h3>
-
-                            <pre class="py-1"><span class="text-red-500 text-sm font-bold">* View URL                 - Hover the link </span></pre>
-                            <pre class="py-1"><span class="text-red-500 text-sm font-bold">* Copy URL to clipboard    - Click the link </span></pre>
-
-
-
-
-                            <div id="curriculum" class="tube-card mt-5">
-
-                                @php
-                                    //var_dump($course->content);
-                                @endphp
-
-                                @if($course->content)
-                                <ul uk-accordion="multiple: true" class="divide-y space-y-3">
-
-                                    @foreach($course->content as $sectionHeading => $sectionContent)
-                                    <li class="uk-open bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':''}}">
-
-                                        <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
-                                            <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
-
-                                        <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
-
-                                            <ul class="course-curriculum-list font-medium">                                                                                               
-
-                                                @foreach($sectionContent as $arr)
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md
-                                                    {{($arr['price'] == 'Free')?' text-blue-500':''}}
-                                                    {{($arr['type'] == 'Download')?' __pl-8-important':''}}">
-
-                                                    @if(strtolower($arr['type']) == 'video')
-                                                        <i class="fa fa-play-circle text-2xl mr-2"></i>
-                                                        <!-- <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> -->
-                                                    @elseif (strtolower($arr['type']) =="download")
-                                                        <i class="fa fa-download leading-6 text-2xl mr-2"></i>
-                                                        <!-- <ion-icon class="icon-feather-download text-2xl mr-2"></ion-icon> -->
-                                                    @elseif (strtolower($arr['type']) =="other")
-                                                        <i class="fa fa-link leading-6 text-2xl mr-2"></i>
-                                                        <!-- <ion-icon class="icon-feather-link text-2xl mr-2"></ion-icon> -->
-                                                    @else
-                                                        <i class="fa fa-info-circle leading-6 text-2xl mr-2"></i>
-                                                        <!-- <ion-icon class="icon-feather-box text-2xl mr-2"></ion-icon> -->
-                                                    @endif
-
-                                                    <div class="link_div mr-2 text-justify">    
-                                                        <a class="link" href="{{$arr['url']}}">{{$arr['text']}}</a>                                                    
-
-                                                        @if($arr['price'] == 'Free')
-                                                        <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
-                                                        @endif
-                                                    </div>
-
-                                                    @if($arr['param'] !='')
-                                                    <span class="param text-sm ml-auto">{{$arr['param']}}</span>
-                                                    @endif
-                                                </li>
-                                                @endforeach
-
-                                            </ul>
-
-                                        </div>
-                                    </li>
-                                    @endforeach
-
-                                </ul>
-                                @else
-                                    <p class="text-center text-sm font-semibold">Course content is empty</p>
-                                @endif
-
-                            </div>
-
-                            {{--
-                            <div id="curriculum" class="tube-card mt-5">
-
-                                <ul uk-accordion="multiple: true" class="divide-y space-y-3">
-
-                                    <li class="uk-open bg-gray-200 px-2 pb-3 rounded">
-                                        <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">  <div class="mb-1 text-sm font-medium"> Section 1 </div> Html Introduction </a>
-                                        <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
-
-                                            <ul class="course-curriculum-list font-medium">
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    <a class="" href="#111">Introduction</a>
-                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
-                                                    <span class="text-sm ml-auto"> 4 min </span>
-                                                </li>
-
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    <a class="" href="url-htmlzip">What is HTML</a>
-                                                     <span class="text-sm ml-auto"> 5 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500 pl-8-important">
-                                                    <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
-                                                    <a class="" href="url-htmlzip">HTML.zip</a>
-                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
-                                                    <span class="text-sm ml-auto">5 MB</span>
-
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500 pl-8-important">
-                                                    <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
-                                                    <a class="" href="#">CSS.zip</a>
-                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
-                                                    <span class="text-sm ml-auto">5 MB</span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500 pl-8-important">
-                                                    <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
-                                                    <a class="" href="#">Java.zip</a>
-                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
-                                                    <span class="text-sm ml-auto">5 MB</span>
-                                                </li>
-
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    <a class="" href="url-htmlzip">What is a Web page?</a>
-                                                    <span class="text-sm ml-auto">8 min</span>
-                                                </li>
-
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md text-blue-500">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    <a class="" href="#">Your First Web Page</a>
-                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
-                                                    <span class="text-sm ml-auto"> 4 min </span>
-                                                </li>
-
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    <a class="" href="url-Brain Streak">Brain Streak?</a>
-                                                    <span class="text-sm ml-auto">5 min</span>
-                                                </li>
-
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md pl-8-important">
-                                                    <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
-                                                    <a class="" href="#">PHP.zip</a><span class="text-sm ml-auto">7 MB</span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md pl-8-important">
-                                                    <ion-icon class="icon-feather-download text-2xl leading-6 mr-2"></ion-icon>
-                                                    <a class="" href="#">C#.zip</a><span class="text-sm ml-auto">7 MB</span>
-                                                </li>
-
-                                            </ul>
-
-                                        </div>
-                                    </li>
-                                    <li class="pt-2 bg-gray-200 px-2 pb-3 rounded">
-                                        <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#"> <div class="mb-1 text-sm font-medium"> Section 2 </div> Your First webpage  </a>
-                                        <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
-
-                                            <ul class="course-curriculum-list font-medium">
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> Headings
-                                                    <span class="text-sm ml-auto"> 4 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> Paragraphs
-                                                    <span class="text-sm ml-auto"> 5 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    Emphasis and Strong Tag
-                                                    <span class="text-sm ml-auto"> 8 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    Brain Streak
-                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs"> Preview </span>
-                                                    <span class="text-sm ml-auto"> 4 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    Live Preview Feature
-                                                    <span class="text-sm ml-auto"> 5 min </span>
-                                                </li>
-                                            </ul>
-
-                                        </div>
-                                    </li>
-                                    <li class="pt-2 bg-gray-200 px-2 pb-3 rounded">
-                                        <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#"> <div class="mb-1 text-sm font-medium"> Section 3 </div> Build Complete Webste  </a>
-                                        <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
-
-                                            <ul class="course-curriculum-list font-medium">
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> The paragraph tag
-                                                    <span class="text-sm ml-auto"> 4 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> The break tag
-                                                    <span class="text-sm ml-auto"> 5 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    Headings in HTML
-                                                    <span class="text-sm ml-auto"> 8 min </span>
-                                                </li>
-                                                <li class=" hover:bg-gray-100 p-2 flex rounded-md">
-                                                    <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon>
-                                                    Bold, Italics Underline
-                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs"> Preview </span>
-                                                    <span class="text-sm ml-auto"> 4 min </span>
-                                                </li>
-                                            </ul>
-
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            --}}
-
-                        </div>
-                    </div>
-
-
 
                 </div>
-
             </div>
+
         </div>
     </div>
 @stop

@@ -49,6 +49,8 @@ class Handler extends ExceptionHandler
     /**/
     public function render($request, Throwable $exception)
     {
+        //dd('77');
+
         //dd(sentinel::check());
         if ($this->isHttpException($exception)) {
             //HTTP - 404
@@ -56,7 +58,7 @@ class Handler extends ExceptionHandler
                 if ($request->ajax() || $request->wantsJson()) {
                     return response()->json([], 404);
                 }else{
-                    $view = $request->is('admin/*') ? 'admin.errors.404' : 'errors.404' ;
+                    $view = $request->is('admin/*') ? 'admin-panel.errors.404' : 'errors.404' ;
                     return response()->view($view, [], 404);
                 }
             }

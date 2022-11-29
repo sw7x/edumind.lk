@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Sentinel;
 
 class SubjectController extends Controller
 {
@@ -24,10 +26,25 @@ class SubjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //dd(Subject::all());
-        $data = Subject::orderBy('id')->get();
-        return view ( 'admin-panel.subject-list' )->withData($data);
+    {      
+        try{
+            $this->authorize('viewAny',Subject::class);
+            $data = Subject::orderBy('id')->get();
+            return view ('admin-panel.subject-list')->withData($data);
+        }catch(AuthorizationException $e){
+            return view ('admin-panel.subject-list')->with([
+                'message'     => 'You dont have Permissions view all subjects !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
+        }catch(\Exception $e){
+            return view ('admin-panel.subject-list')->with([
+                //'message'  => $e->getMessage(),
+                'message'  => 'Failed to view all subjects !',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error !',
+            ]);
+        }
     }
 
     /**
@@ -37,7 +54,24 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        return view('admin-panel.subject-add');
+        try{
+            $this->authorize('create',Subject::class);
+            return view('admin-panel.subject-add');
+        }catch(AuthorizationException $e){
+            return redirect()->back()->with([
+                'message'     => 'You dont have Permissions create new subject !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
+        }catch(\Exception $e){
+            return redirect()->back()->with([
+                //'message'  => $e->getMessage(),
+                'message'  => 'Subject creation failed!',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error !',
+            ]);
+        }
+
     }
 
     /**
@@ -51,7 +85,7 @@ class SubjectController extends Controller
         //todo-refactor
 
         try{
-
+            $this->authorize('create',Subject::class);
             if(!$request->subject_name){
                 throw new CustomException('Subject name cannot be empty');
             }
@@ -76,13 +110,14 @@ class SubjectController extends Controller
 
                 //$slug = SlugService::createSlug(Subject::class, 'slug', $urlString);
 
-
+                //dd(Sentinel::getUser()->id);
                 Subject::create([
                     'name'          => $request->subject_name,
                     'description'   => $request->subject_description,
                     'image'         => $imgDest,
                     'status'        => $request->subject_stat,
-                    'slug'          => $slug
+                    'slug'          => $slug,
+                    'author_id'     => Sentinel::getUser()->id
                 ]);
 
                 return redirect()->back()->with([
@@ -105,10 +140,16 @@ class SubjectController extends Controller
                 'msgTitle'=> 'Error !',
             ]);
 
+        }catch(AuthorizationException $e){
+            return redirect()->back()->with([
+                'message'     => 'You dont have Permissions create new subject !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
         }catch(\Exception $e){
             return redirect()->back()->with([
-                'message'  => $e->getMessage(),
-                //'message'  => 'Subject creation failed!',
+                //'message'  => $e->getMessage(),
+                'message'  => 'Subject creation failed!',
                 'cls'     => 'flash-danger',
                 'msgTitle'=> 'Error !',
             ]);
@@ -126,11 +167,12 @@ class SubjectController extends Controller
     {
         //dd($id);
         try{
-
+            
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
             $subject = Subject::find($id);
+            $this->authorize('view',$subject);
             // dd($subject);
             if($subject != null){
                 return view('admin-panel.subject-view')->with(['subject'   => $subject]);
@@ -139,13 +181,18 @@ class SubjectController extends Controller
                 throw new CustomException('Subject does not exist!');
             }
         }catch(CustomException $e){
-
             return view('admin-panel.subject-view')->with([
                 'message'     => $e->getMessage(),
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Error !',
             ]);
 
+        }catch(AuthorizationException $e){
+            return view('admin-panel.subject-view')->with([
+                'message'     => 'You dont have Permissions to view the subject !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
         }catch(\Exception $e){
             return view('admin-panel.subject-view')->with([
                 'message'     => 'cannot display subject info!',
@@ -164,15 +211,33 @@ class SubjectController extends Controller
     public function edit($id)
     {
         try{
+            if(!filter_var($id, FILTER_VALIDATE_INT)){
+                throw new CustomException('Invalid id');
+            }
             $subject = Subject::find($id);
+            $this->authorize('update',$subject);
             If(!$subject){
                 throw new ModelNotFoundException;
             }
             return view('admin-panel.subject-edit',['subject' => $subject]);
+        }catch(CustomException $e){            
+            return redirect()->back()->with([
+                'message'     => $e->getMessage(),
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Error !',
+            ]);
+
+        }catch(AuthorizationException $e){
+            return redirect()->back()->with([
+                'message'     => 'You dont have Permissions to update the subject !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);            
         }catch(\Exception $e){
 
             return redirect()->back()->with([
                 'message'  => 'Resource not exist',
+                //'message'     => $e->getMessage(),
                 //'message2' => $pwResetTxt,
                 //'title'   => 'Student Registration submit page',
                 'cls'     => 'flash-danger',
@@ -200,50 +265,51 @@ class SubjectController extends Controller
             }
 
             $subject = Subject::find($id);
+            $this->authorize('update',$subject);
             if ($subject) {
-
-                $file = $request->input('subject_img');
-                if(!isset($file)){  //no image upload
-                    //todo delete prev image when update image path
-                    // when teacher_img_add_count < 1 then delete prev image
-                    $imgDest = null;
-                }else{
-
-                    //input filed with name = teacher_img_add_count vale equals 0 when initially filpond loads image
-                    if( $request->hidden_file_add_count == 0){
-
-                        // previously no image now new image is uploaded and submit form
-                        if($request->hidden_subject_img_url == null){
-
-                            $fileUploadUtil = new FileUploadUtil();
-                            $imgDest        = $fileUploadUtil->upload($file,'subjects/');
-
-                        }else{
-                            // no change to previously upload image and submit edit form
-                            $imgDest = $request->hidden_subject_img_url;
-                        }
-
-                    }else{
-                        // previously image is uploaded and now change the image and upload
-                        //todo delete prviously uploaded image
-
-                        $fileUploadUtil = new FileUploadUtil();
-                        $imgDest        = $fileUploadUtil->upload($file,'subjects/');
-                    }
-                }
 
                 $subject_name = $request->get('subject_name');
                 $subjectCount = Subject::where('id', '!=', $id)->where('name', '=', $subject_name)->count();
 
                 if($subjectCount == 0) {
-                    $subject = Subject::find($id);
+                    
+                    /* upload image if have one */
+                    $file = $request->input('subject_img');
+                    if(!isset($file)){ 
+                        //todo delete prev image when update image path
+                        // when teacher_img_add_count < 1 then delete prev image
+                        $imgDest = null;
+                    }else{
+
+                        //input filed with name = teacher_img_add_count vale equals 0 when initially filpond loads image
+                        if( $request->hidden_file_add_count == 0){
+
+                            // previously no image now new image is uploaded and submit form
+                            if($request->hidden_subject_img_url == null){
+
+                                $fileUploadUtil = new FileUploadUtil();
+                                $imgDest        = $fileUploadUtil->upload($file,'subjects/');
+
+                            }else{
+                                // no change to previously upload image and submit edit form
+                                $imgDest = $request->hidden_subject_img_url;
+                            }
+
+                        }else{
+                            // previously image is uploaded and now change the image and upload
+                            //todo delete prviously uploaded image
+
+                            $fileUploadUtil = new FileUploadUtil();
+                            $imgDest        = $fileUploadUtil->upload($file,'subjects/');
+                        }
+                    }
 
                     $subject->name          = $request->subject_name;
                     $subject->description   = $request->subject_description;
                     $subject->image         = $imgDest;
                     $subject->status        = $request->subject_stat;
                     $subject->save();
-
+                    
                     return redirect()->route('admin.subject.index')
                         ->with([
                             'message' => 'Subject updated successfully',
@@ -273,6 +339,12 @@ class SubjectController extends Controller
                     'cls'     => 'flash-danger',
                     'msgTitle'=> 'Error !',
                 ]);
+        }catch(AuthorizationException $e){
+            return redirect()->route('admin.subject.index')->with([
+                'message'     => 'You dont have Permissions to update the subject !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
         }catch(\Exception $e){
             return redirect()->route('admin.subject.index')
                 ->with([
@@ -298,6 +370,7 @@ class SubjectController extends Controller
             }
 
             $subject = Subject::find($id);
+            $this->authorize('delete',$subject);
             if ($subject) {
                 $subject->delete();
 
@@ -325,6 +398,13 @@ class SubjectController extends Controller
                 'msgTitle'    => $exData['msgTitle']  ?? 'Error !',
             ]);
 
+        }catch(AuthorizationException $e){          
+
+            return redirect()->route('admin.subject.index')->with([
+                'message'     => 'You dont have Permissions to delete the subject !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);            
         }catch(\Exception $e){
             return redirect()->route('admin.subject.index')->with([
                 'message'  => 'Resource delete failed',

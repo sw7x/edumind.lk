@@ -45,17 +45,18 @@ class RegistrationController extends Controller
         $g_recaptcha_response = $request->input('g-recaptcha-response');        
 
         $validator = Validator::make($request->all(), [
-            'full_name'             =>'required|min:3|max:100',                
+            'full_name'             =>'required|min:3|max:100|unique:users,full_name',                
             'email'                 =>'required|email|unique:users,email',
             'username'              =>'nullable|sometimes|unique:users,username',
             'password'              =>'required|min:6|max:12',
-            'phone'                 =>'required',
+            'phone'                 =>'required|unique:users,phone',
             'gender'                =>'required',
             'g-recaptcha-response'  =>'required',
             'dob_year'              =>'required|digits:4|integer|min:'.(date('Y')-100).'|max:'.date('Y'),
         ],[
-            'full_name.required'            => 'Full name field is required.',
-            'email.unique'                  => 'Your email already exists in database',
+            'full_name.unique'              => 'This full name is already been used',
+            'email.unique'                  => 'This Email is already been used',
+            'phone.unique'                  => 'This phone number is already been used',
             'message.required'              => 'Message field is required.',
             'g-recaptcha-response.required' => 'Recaptcha is required.',
             'dob_year.digits'               => 'Date of birth year format is invalid.',
@@ -64,7 +65,6 @@ class RegistrationController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         } else {
-
 
             try {                
                 
@@ -154,17 +154,19 @@ class RegistrationController extends Controller
         $g_recaptcha_response = $request->input('g-recaptcha-response');        
 
         $validator = Validator::make($request->all(), [
-            'full_name'             =>'required|min:3|max:100',                
+            'full_name'             =>'required|min:3|max:100|unique:users,full_name',                
             'email'                 =>'required|email|unique:users,email',
             'username'              =>'nullable|sometimes|unique:users,username',
             'password'              =>'required|min:6|max:12',
-            'phone'                 =>'required',
+            'phone'                 =>'required|unique:users,phone',
             'gender'                =>'required',
             'g-recaptcha-response'  =>'required',
             'dob_year'              =>'required|digits:4|integer|min:'.(date('Y')-100).'|max:'.date('Y'),
-        ],[
+        ],[ 
             'full_name.required'            => 'Full name field is required.',
-            'email.unique'                  => 'Your email already exists in database',
+            'full_name.unique'              => 'This full name is already been used',
+            'email.unique'                  => 'This Email is already been used',
+            'phone.unique'                  => 'This phone number is already been used',
             'message.required'              => 'Message field is required.',
             'g-recaptcha-response.required' => 'Recaptcha is required.',
             'dob_year.digits'               => 'Date of birth year format is invalid.',

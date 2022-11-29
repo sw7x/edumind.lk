@@ -10,15 +10,19 @@ use Laravel\Sanctum\HasApiTokens;
 
 use Carbon\Carbon;
 use Sentinel;
-
-
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use App\Models\Role;
+use App\Models\Subject;
+//use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 use Cartalyst\Sentinel\Users\EloquentUser as CartalystUser;
 class User extends CartalystUser
 //class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Authorizable ;
+    
+
 
     /**
      * The attributes that are mass assignable.
@@ -93,7 +97,9 @@ class User extends CartalystUser
             )->withTimestamps();
     }
 
-
+    public function subjects(){
+        return $this->hasMany(Subject::class,'author_id','id');
+    }
 
 
 
@@ -183,11 +189,30 @@ class User extends CartalystUser
 
         $userRole = $this->roles()->first()->slug;
 
-        if($userRole == 'teacher'){
+        if($userRole == Role::TEACHER){
             return($this->getTeachingCourses()->where('status','published')->count());
         }else{
             return null;
         }
         //dump($this->roles()->first()->slug);
     }
+
+
+    public function isUserCanAccessAdminPanel(){
+        $userRole = $this->roles()->first()->slug;
+        return in_array($userRole, [Role::ADMIN, Role::EDITOR, Role::MARKETER, Role::TEACHER]);
+    }
+
+    public function isAdmin(){
+        $userRole = $this->roles()->first()->slug;    
+        return ($userRole == Role::ADMIN);
+    }
+
+
+    public function isSubjectCreator(Subject $subject){        
+        //dd(static::id);
+        return ($this->id == $subject->creator->id);        
+    }
+
+
 }

@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 class EditorController extends Controller
 {
 
-    public function viewDashboard(){
+    /*public function viewDashboard(){
     	return view('admin-panel.editor.dashboard');
-    }
+    }*/
 
 }

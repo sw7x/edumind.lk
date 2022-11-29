@@ -4,10 +4,14 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-
+use App\Exceptions\CustomException;
+use Illuminate\Http\Request;
 
 class TeacherUpdateRequest extends FormRequest
 {
+
+    private $recordId    = null;
+    public  $validator   = null;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +33,9 @@ class TeacherUpdateRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-
+        //dd(request()->route('id'));
+        //dd($this->request->get('teacher-name'));        
+        $this->recordId = $this->route('id');
     }
 
 
@@ -40,11 +46,13 @@ class TeacherUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        //userId
-        //reset_pw_stat
         return [
-            'teacher-name'      => 'required',
-            'teacher-phone'     => 'required',
+            'teacher-name'      => 'required|unique:users,full_name,'.$this->recordId,
+            //'teacher-name'      => 'required|unique:users,full_name',
+            
+            'teacher-phone'     => 'required|unique:users,phone,'.$this->recordId,
+            //'teacher-phone'     => 'required|unique:users,phone',
+            
             'teacher_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
             'teacher-gender'    => 'required',
         ];
@@ -57,12 +65,13 @@ class TeacherUpdateRequest extends FormRequest
      * @return array
      */
     public function messages()
-    {
+    {        
         return [
             'teacher-name.required' => 'Name field is required',
+            'teacher-name.unique'   => "{$this->get('teacher-name')} is already been used as a full name",
+            'teacher-phone.unique'  => "{$this->get('teacher-phone')} is already been used as a phone number",
         ];
     }
-
 
 
     // Special Naming for Attributes
@@ -77,20 +86,24 @@ class TeacherUpdateRequest extends FormRequest
     }
 
 
+    protected function failedValidation(Validator $validator)
+    {
+        $this->validator = $validator;
+        //dd()
+        return redirect()
+            ->route('admin.user.update-teacher',$this->recordId)
+            ->withErrors($validator)
+            ->withInput();
+           //->with(['is_teacher_usernameFill' => $this->is_usernameFill]);
+        // parent::failedValidation($validator);
+    }
 
 
-//    protected function failedValidation(Validator $validator)
-//    {
-//        $this->validator = $validator;
-//
-//        return redirect()->route('admin.user.update-teacher')
-//           ->withErrors($validator)
-//           ->withInput();
-//           //->with(['is_teacher_usernameFill' => $this->is_usernameFill]);
-//        // parent::failedValidation($validator);
-//    }
 
 
+
+
+    
 
 
 }

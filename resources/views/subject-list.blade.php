@@ -11,7 +11,7 @@
 
 
 
-            <div class="text-2xl font-semibold mb-4 text-black">Browse topics</div>
+            <div class="text-2xl font-semibold mb-4 text-black">Browse subjects</div>
 
             <div class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-3">
                 @forelse($subjects as $item)
@@ -28,7 +28,7 @@
                         <div class="absolute bottom-0 w-full p-3 text-white z-20 font-semibold text-lg">{{$item->name}}</div>
                     </a>
                 @empty
-                    <p class="text-xl font-semibold mb-4 text-black">No topics</p>
+                    <p class="text-xl font-semibold mb-4 text-black">No subjects</p>
                 @endforelse
 
 

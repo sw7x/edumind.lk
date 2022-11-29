@@ -24,31 +24,45 @@
                     <a href="{{route('admin.dashboard')}}"><i class="fa fa-desktop text-lg"></i> <span class="nav-label">Dashboard</span></a>
                 </li>
 
-
+                @canany(['viewAny', 'create'], App\Models\Subject::class)
                 <li class="{{ \Str::is('admin.subject.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="#" class="" aria-expanded="{{ \Str::is('admin.subject.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-book"></i><span class="nav-label">Subject</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level" aria-expanded="{{ \Str::is('admin.subject.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.subject.index') ? 'current' : '' }}"><a href="{{route('admin.subject.index')}}">Subject list</a></li>
-                        <li class="{{ Route::is('admin.subject.create') ? 'current' : '' }}"><a href="{{route('admin.subject.create')}}">Create subject</a></li>
+                        @can('viewAny',App\Models\Subject::class)
+                            <li class="{{ Route::is('admin.subject.index') ? 'current' : '' }}"><a href="{{route('admin.subject.index')}}">Subject list</a></li>
+                        @endcan                       
+                        
+                        @can('create',App\Models\Subject::class)
+                            <li class="{{ Route::is('admin.subject.create') ? 'current' : '' }}"><a href="{{route('admin.subject.create')}}">Create subject</a></li>
+                        @endcan
+                        
                         <li class=""><a href="{{route('admin.subject.create')}}">#Approve subject</a></li>
                         <li class=""><a href="{{route('admin.subject.create')}}">#Approve subject changes</a></li>
                     </ul>
                 </li>
+                @endcanany
 
-
+                @canany(['viewAny', 'create'], App\Models\User::class)
                 <li class="{{ \Str::is('admin.user.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="" aria-expanded="{{ \Str::is('admin.user.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-user-circle-o"></i><span class="nav-label">Users</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.user.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.user.index') ? 'current' : '' }}"><a href="{{route('admin.user.index')}}">User list</a></li>
-                        <li class="{{ Route::is('admin.user.create') ? 'current' : '' }}"><a href="{{route('admin.user.create')}}">Add user</a></li>
+                        @can('viewAny',App\Models\User::class)
+                            <li class="{{ Route::is('admin.user.index') ? 'current' : '' }}"><a href="{{route('admin.user.index')}}">User list</a></li>
+                        @endcan
+
+                        @can('create',App\Models\User::class)
+                            <li class="{{ Route::is('admin.user.create') ? 'current' : '' }}"><a href="{{route('admin.user.create')}}">Add user</a></li>
+                        @endcan
+
                         <li class="{{ Route::is('admin.user.un-approved-teachers-list') ? 'current' : '' }}"><a href="{{route('admin.user.un-approved-teachers-list')}}">Approve teachers</a></li>
                         <li class="{{ Route::is('admin.user.changes-approve') ? 'current' : '' }}"><a href="{{route('admin.user.changes-approve')}}"># Approve user changes</a></li>
                     </ul>
                 </li>
+                @endcanany
 
 
                 <li class="{{ \Str::is('admin.course.*', Route::currentRouteName()) ? 'active current' : '' }}">
@@ -110,7 +124,8 @@
                     </ul>
                 </li>
 
-
+                
+                @can('viewAny',App\Models\Contact_us::class)
                 <li class="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="#" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
@@ -122,6 +137,7 @@
                         <li class="{{ Route::is('admin.feedback.other-users') ? 'current' : '' }}"><a href="{{route('admin.feedback.other-users')}}">Other User Messages</a></li>
                     </ul>
                 </li>
+                @endcan
                 
                 <li class="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a aria-expanded="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'true' : 'false' }}">
@@ -145,9 +161,7 @@
 						<li class="{{ Route::is('admin.teacher.profile-edit') ? 'current' : '' }}"><a href="{{route('admin.teacher.profile-edit')}}">Edit Profile</a></li>
 						<li class="{{ Route::is('admin.teacher.earnings') ? 'current' : '' }}"><a href="{{route('admin.teacher.earnings')}}">My Earnings</a></li>
 						<li class="{{ Route::is('admin.teacher.my-courses') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-courses')}}">My Courses</a></li>
-						<li class="{{ Route::is('admin.teacher.dashboard') ? 'current' : '' }}"><a href="{{route('admin.teacher.dashboard')}}">Dashboard</a></li>
-
-                        <li class="{{ Route::is('admin.teacher.enrollments') ? 'current' : '' }}"><a href="{{route('admin.teacher.enrollments')}}">My Courses enrollments</a></li>
+						<li class="{{ Route::is('admin.teacher.enrollments') ? 'current' : '' }}"><a href="{{route('admin.teacher.enrollments')}}">My Courses enrollments</a></li>
                         <li class="{{ Route::is('admin.teacher.completions') ? 'current' : '' }}"><a href="{{route('admin.teacher.completions')}}">My Courses completions</a></li>
 						<li class="{{ Route::is('admin.cupon-code.teacher-view') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.teacher-view')}}">My cupon codes</a></li>
 
@@ -165,22 +179,15 @@
                         <li class="{{ Route::is('admin.cupon-code.earnings') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.earnings')}}">My Earnings</a></li>
 						<li class="{{ Route::is('admin.cupon-code.new') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.new')}}">New Cupon Codes</a></li>
 						<li class="{{ Route::is('admin.cupon-code.usage') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.usage')}}">Used cupon Code</a></li>
-                        <li class="{{ Route::is('admin.cupon-code.dashboard') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.dashboard')}}">Dashboard</a></li>
-						<li class="{{ Route::is('admin.cupon-code.single') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.single')}}">Single cupon Code</a></li>
+                        <li class="{{ Route::is('admin.cupon-code.single') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.single')}}">Single cupon Code</a></li>
 					    <li class="{{ Route::is('admin.cupon-code.my-salary') ? 'current' : '' }}"><a href="{{route('admin.cupon-code.my-salary')}}">My salary</a></li>   
                     </ul>
 				</li>
 
 
-				<li class="{{ \Str::is('admin.editor.*', Route::currentRouteName()) ? 'active current' : '' }}">
-					<a href="#" aria-expanded="{{ \Str::is('admin.editor.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-						<span class="nav-label">Editor</span> <span class="fa arrow"></span>
-					</a>
-					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.editor.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-						<li class="{{ Route::is('admin.editor.dashboard') ? 'current' : '' }}"><a href="{{route('admin.editor.dashboard')}}">Dashboard</a></li>
-					</ul>
-				</li>
+				
 
+                
             </ul>
 
         </div>

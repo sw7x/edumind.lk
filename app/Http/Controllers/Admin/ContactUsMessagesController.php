@@ -7,11 +7,52 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact_us;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class ContactUsMessagesController extends Controller
 {
-    public function students(){
+    public function students(){      
 
+
+        try{
+
+            $this->authorize('viewAny',Contact_us::class);
+            $studentComments    = Contact_us::whereHas('user', function($query){
+                //$query->where('subject', 'ww');
+                $query->whereHas('roles', function ($query) {
+                    $query->where('name', 'student');
+                });
+            })->orderBy('created_at', 'desc')->get();
+
+            return view('admin-panel.admin.contact-us-students')
+                ->with(['studentComments' => $studentComments]);
+
+
+        }catch(AuthorizationException $e){
+            return view('admin-panel.admin.contact-us-students')
+                ->with([
+                    'message'     => 'You dont have Permissions to delete the comment !',
+                    'cls'         => 'flash-danger',
+                    'msgTitle'    => 'Permission Denied !',
+                ]);
+
+        
+        }catch(\Exception $e){
+            return view('admin-panel.admin.contact-us-students')
+                ->with([
+                    'message'     => 'Comment delete failed!',
+                    'cls'         => 'flash-danger',
+                    'msgTitle'    => 'Error !',
+                ]);
+        }
+
+
+
+
+
+
+
+        $this->authorize('viewAny',Contact_us::class);
         $studentComments    = Contact_us::whereHas('user', function($query){
             //$query->where('subject', 'ww');
             $query->whereHas('roles', function ($query) {
@@ -24,7 +65,7 @@ class ContactUsMessagesController extends Controller
 
 
     public function teachers(){
-
+        $this->authorize('viewAny',Contact_us::class);
         $teacherComments    = Contact_us::whereHas('user', function($query){
             //$query->where('subject', 'ww');
             $query->whereHas('roles', function ($query) {
@@ -37,6 +78,7 @@ class ContactUsMessagesController extends Controller
 
 
     public function otherUsers(){
+        $this->authorize('viewAny',Contact_us::class);
         // comments belongs to marketers and editors
         $otherUserComments    = Contact_us::whereHas('user', function($query){
             //$query->where('subject', 'ww');
@@ -53,6 +95,7 @@ class ContactUsMessagesController extends Controller
 
 
     public function guests(){
+        $this->authorize('viewAny',Contact_us::class);
         $guestMessages = Contact_us::where('user_id', null)->get();
 
         $guestMessages->each(function($item, $key) {
@@ -76,7 +119,10 @@ class ContactUsMessagesController extends Controller
                 throw new CustomException('Invalid id');
             }
             $comment = Contact_us::find($id);
+            
             if ($comment) {
+
+                $this->authorize('delete',$comment);
 
                 $comment->delete();
                 $userType = (isset($request->userType)?$request->userType:null);
@@ -123,7 +169,17 @@ class ContactUsMessagesController extends Controller
                 'msgTitle'    => $exData['msgTitle']  ?? 'Error !',
             ]);
 
+        }catch(AuthorizationException $e){
+            return redirect(route('admin.feedback.teachers'))->with([
+                'message'     => 'You dont have Permissions to delete the comment !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
+            //Illuminate\Auth\Access\AuthorizationException
         }catch(\Exception $e){
+            //dd($e);
+
+            //dd(get_class($e));
             return redirect(route('admin.feedback.teachers'))->with([
                 'message'     => 'Comment delete failed!',
                 'cls'         => 'flash-danger',
