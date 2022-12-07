@@ -31,7 +31,6 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return true;
         $currentUserRole   = $user->roles()->first()->slug;
         $givenUserRole     = $model->roles()->first()->slug;
 
@@ -151,25 +150,25 @@ class UserPolicy
     
     public function updateTeachers(User $user, User $model)
     {
-        return false;$userRole = $user->roles()->first()->slug;   
+        $userRole = $user->roles()->first()->slug;   
         return ($userRole == Role::ADMIN);        
     }
 
     public function updateStudents(User $user, User $model)
     {
-        return false;$userRole = $user->roles()->first()->slug;   
+        $userRole = $user->roles()->first()->slug;   
         return ($userRole == Role::ADMIN);        
     }
 
     public function updateEditors(User $user, User $model)
     {
-        return false;$userRole = $user->roles()->first()->slug;   
+        $userRole = $user->roles()->first()->slug;   
         return ($userRole == Role::ADMIN);        
     }
     
     public function updateMarketers(User $user, User $model)
     {
-        return false;$userRole = $user->roles()->first()->slug;   
+        $userRole = $user->roles()->first()->slug;   
         return ($userRole == Role::ADMIN);        
     }
 

@@ -76,7 +76,13 @@ class AuthServiceProvider extends ServiceProvider
 
     protected function registerAccessGate()
     {
+        //dd($this->app['sentinel']);
+
         $this->app->singleton(GateContract::class, function ($app) {
+
+            //dd($this->app['sentinel']);
+
+
             return new Gate($app, function () use ($app) {
                 return $this->app['sentinel']->getUser();
             });

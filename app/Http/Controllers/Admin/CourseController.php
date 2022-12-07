@@ -11,6 +11,14 @@ use App\Services\TeacherService;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Enum;
+
+use App\Http\Requests\Admin\Course\CourseStoreRequest;
+use App\Http\Requests\Admin\Course\CourseUpdateRequest;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+
+
 
 class CourseController extends Controller
 {
@@ -75,9 +83,9 @@ class CourseController extends Controller
         $teacherService = new TeacherService();
         $allTeachers = $teacherService->getAllTeachers();
         $teachersDataSet = $allTeachers->map(function ($teacher) {
-        return collect($teacher->toArray())
-            ->only(['id', 'full_name', 'email'])
-            ->all();
+            return collect($teacher->toArray())
+                ->only(['id', 'full_name', 'email'])
+                ->all();
         });
 
         //dd($teachersDataSet);
@@ -99,10 +107,221 @@ class CourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+
+
+
+
+    public function store(CourseStoreRequest $request)
+    //public function store(Request $request)
     {
+        
+        //dump(Session::all());
+        //dump(Session::get('errors'));
+        //dump(Session::get('errors')->courseCreate);
+        dump(Session::get('errors')->courseCreate->getMessages());
+        //dd();
+
+        $courseContentErrMsgArr         = array();
+        $courseContentLinkErrMsgArr     = array();
+        $courseInfoErrMsgArr            = array();
+
+        foreach (Session::get('errors')->courseCreate->getMessages() as $errField => $valErrMsgArr):
+            //dump($errField);
+            //dump($valErrMsgArr);
+            if(Str::startsWith($errField, 'contentArr.')){
+                //dump($errField);
+
+                $sectionHeading = Str::of($errField)->explode('.')[1];
+
+                //dump(isset(Str::of($errField)->explode('.')[2]));
+                
+
+
+                //dump($sectionHeading);
+                //dump($valErrMsgArr);
+                foreach ($valErrMsgArr as $errMsg){
+
+
+                    if(isset(Str::of($errField)->explode('.')[2])){
+                        $linkIndex = Str::of($errField)->explode('.')[2];
+                        
+                        //dump($courseContentLinkErrMsgArr);
+                        //dump("courseContentLinkErrMsgArr-{$sectionHeading}-{$linkIndex}");
+                        //dump(isset($courseContentLinkErrMsgArr[$sectionHeading][$linkIndex]));
+                         
+
+                        if(!isset($courseContentLinkErrMsgArr[$sectionHeading][$linkIndex])){
+                            $courseContentLinkErrMsgArr[$sectionHeading][$linkIndex] = $errMsg;
+                        }else{
+                            $courseContentLinkErrMsgArr[$sectionHeading][$linkIndex] .= ', '.$errMsg;
+                        }
+                        //dump($courseContentLinkErrMsgArr);
+                        //dump("=====================");  
+
+                        
+                    }else{
+                        $courseContentErrMsgArr[$sectionHeading][] = $errMsg;
+                    }
+
+                    //$courseContentErrMsgArr[$key][] = $err;
+                }
+                /**/               
+
+                
+            }else{
+                $courseInfoErrMsgArr[$errField] = $valErrMsgArr;               
+            }
+
+        endforeach;
+        
+        //dump($courseContentLinkErrMsgArr);
+        //dump($courseContentErrMsgArr);
+        //dump($courseInfoErrMsgArr);
+        //dd();
+
+
+
+        //dump(gettype($contentErrMsgArr));
+
+        //$contentErrMsgArr = '11';
+
+
+        //dd();
+        //dump('===================================');
+        
+
+        //Session::get('errors')->courseCreate->add($contentErrMsgArr, 'fff');
+        //Session::put('errors', $contentErrMsgArr);
+        //dump(Session::all());
+
+
+
+        //dd();
+        //dd(Session::get('errors')['courseCreate']);
+        //dump($request->validator->fails());
+        //dump($request->validator);
+        //dump($request->isValidContentJson);
+       // dd($request);
+
+        //dd($request->get('contentArr.*'));
+        
+        //dump($request->get('contentArr'));
+        //dump($request->get('contentArr')['ff'][0]['isFree']);
+        //dd(gettype($request->get('contentArr')['ff'][0]['isFree']));
         //
-        dd($request->all());
+        //dump('course-store');
+        //dump($request->get('contentJson'));
+        //dump(json_decode($request->get('contentJson')));
+        //dd(collect(json_decode($request->get('contentJson'), true)));
+        //dd($request->all());
+        //dd($request);
+        //dd(json_decode($request->get('contentJson'),true));
+
+        try{
+            //$this->authorize('createTeachers',User::class);            
+            
+            $validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
+
+            if (isset($request->validator) && $request->validator->fails()) {
+                $validationErrMsg .= ($validationErrMsg != '') ? ' and ':'';
+                $validationErrMsg .= 'Form validation is failed';
+            }
+
+            if($validationErrMsg){
+                $validationErrMsg .= ' !';
+                throw new CustomException($validationErrMsg);
+            }
+
+
+
+            
+
+            /*
+            $file = $request->input('teacher_profile_img');
+            if(isset($file)){
+                $fileUploadUtil = new FileUploadUtil();
+                $destination    = $fileUploadUtil->upload($file,'course/');
+            }else{
+                $destination =null;
+            }
+
+
+            $status = ($request->get('teacher_stat')=='enable')? True: False;
+            //DB::enableQueryLog();
+
+            $teacher = [
+                'full_name'         => $request->get('teacher-name'),
+                'email'             => $request->get('teacher-email'),
+                'password'          => $request->get('teacher-password'),
+                'phone'             => $request->get('teacher-phone'),
+                'username'          => $username,
+                'edu_qualifications'=> $request->get('teacher_edu_details'),
+                'gender'            => $request->get('teacher-gender'),
+                'dob_year'          => $request->get('teacher_birth_year'),
+                'status'            => $status,
+                'profile_pic'       => $destination,
+
+            ];
+
+            $user_teacher = Sentinel::registerAndActivate($teacher);
+            $role_teacher = Sentinel::findRoleBySlug('teacher');
+            $role_teacher->users()->attach($user_teacher);
+
+            return redirect()->back()->with([
+                'teacher_submit_message'  => 'Add Teacher success',
+                'teacher_submit_message2' => $usernameMsg,
+                //'teacher_submit_title'   => 'Student Registration submit page',
+                'teacher_submit_cls'     => 'flash-success',
+                'teacher_submit_msgTitle'=> 'Success',
+            ]);
+            */
+
+        }catch(CustomException $e){
+            return redirect()->back()
+            ->withErrors($courseContentErrMsgArr,'courseContentErrMsgArr')
+            ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
+            ->withErrors($courseInfoErrMsgArr,'courseInfoErrMsgArr')
+            ->with([
+                'message'  => $e->getMessage(),
+                //'message2' => $pwResetTxt,                
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error !',
+                //'' => $contentErrMsgArr
+            ]);
+
+        }catch(AuthorizationException $e){
+            return redirect()->back()->with([
+                'message'  => 'You dont have Permissions to create Teachers !',
+                //'message2' => $pwResetTxt,                
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Permission Denied !',
+            ]);
+
+        }catch(\Exception $e){
+            return redirect()->back()->with([
+                'message'  => 'Add Teacher Failed !',
+                //'message'  => $e->getMessage(),
+                //'message2' => $pwResetTxt,
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error !',
+            ]);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     /**
@@ -155,7 +374,33 @@ class CourseController extends Controller
      */
     public function edit($id)
     {
-        dd('edit');
+        
+        $subjectsDataSet =  Subject::all ('id','name')->toArray();
+        //dd($subjects);
+
+
+        $teacherService = new TeacherService();
+        $allTeachers = $teacherService->getAllTeachers();
+        $teachersDataSet = $allTeachers->map(function ($teacher) {
+            return collect($teacher->toArray())
+                ->only(['id', 'full_name', 'email'])
+                ->all();
+        });
+
+        //dd($teachersDataSet);
+
+        return view('admin-panel.course-edit')->with([
+            'teachers'       => $teachersDataSet,
+            //'teachers'       => [],
+            'subjects'       => $subjectsDataSet,
+        ]);
+
+
+
+
+
+
+        //dd('edit');
         return view('admin-panel.course-edit');
     }
 
@@ -166,7 +411,8 @@ class CourseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CourseUpdateRequest $request, $id)
+    //public function update(Request $request, $id)
     {
         //
     }

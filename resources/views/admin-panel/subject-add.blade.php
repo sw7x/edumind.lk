@@ -55,7 +55,9 @@
 
                         <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
                             <div class="col-sm-8">
-                                {{--                                        <input type="file" class="form-control" name="subject_image">--}}
+                                {{--                                        
+                                    <input type="file" class="form-control" name="subject_image">
+                                --}}
                                 <input type="file"
                                        class="filepond-img"
                                        name="subject_img"

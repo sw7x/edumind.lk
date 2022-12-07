@@ -52,7 +52,7 @@ class UserController extends Controller
     public function index()
     {   
         try{
-            //$this->authorize('viewAny',User::class);
+            $this->authorize('viewAny',User::class);
             
             $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
             $students   =   Sentinel::findRoleBySlug('student')->users()->with('roles')->get();

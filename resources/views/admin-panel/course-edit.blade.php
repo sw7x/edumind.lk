@@ -1,5 +1,5 @@
-@extends('admin-panel.layouts.master',['title' => 'Add course'])
-@section('title','Add course')
+@extends('admin-panel.layouts.master',['title' => 'Edit course'])
+@section('title','Edit course')
 
 
 @section('css-files')
@@ -12,9 +12,9 @@
 <link href="{{asset('admin/css/plugins/iCheck/custom.css')}}" rel="stylesheet">
 {{--<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/green.css">--}}
 
-{{--
+
 <link rel='stylesheet' href='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'>
-<link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>--}}
+<link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>
 
 <!-- jQuery Steps -->
 <link rel='stylesheet' href='{{asset('admin/css/plugins/steps/jquery.steps.css')}}'>
@@ -115,104 +115,7 @@
                     <a href="#" class="close">×</a>
                     <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
                     <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>                    
-
-                     @if ($errors->courseInfoErrMsgArr->getMessages())
-                        <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
-                            @foreach ($errors->courseInfoErrMsgArr->getMessages() as $field => $errorMsgArr)
-                                @foreach ($errorMsgArr as $errorMsg)
-                                    <li class="">{{ $errorMsg }}</li>
-                                @endforeach
-                            @endforeach
-                        </ul>
-                    @endif                    
-
-                    
-                    <?php //dump($errors); ?>
-                    <?php //dump($errors->courseCreate->any()); ?>
-                    <?php //dump($errors->all()); ?>
-                    <?php //dump($errors->courseCreate); ?>
-                    <?php //dump($errors->courseCreate->getMessages()); ?>
-
-                    <?php ////dump($errors->courseCreate['messages']); ?>
-                    <?php //dump($errors->courseCreate->get('course-name')); ?>
-
-
-
-                    <?php //dump($errors->courseCreate->has('subject')); ?>
-                    <?php //dump($errors->courseCreate->all()); ?>
-                    
-                    <?php //dump($errors->courseContentErrMsgArr->getMessages()); ?>
-                    <?php //dump($errors->courseContentLinkErrMsgArr->getMessages()); ?>
-                    <?php //dd($errors->courseContentLinkErrMsgArr->getMessages()); ?>
-                    <?php //dump($errors->uuu); ?>
-
-
-
-                    
-
-                    
-                    
-                    
-                                        
-
-
-                    
-                    <?php  //dump($errors->courseContentErrMsgArr->getMessages()); ?>
-                    {{----}}
-                    @foreach ($errors->courseContentErrMsgArr->getMessages() as $key => $errorMsgArr)
-                            <?php  //dump($key); ?>
-                            <?php  //dump($errorMsgArr); ?>
-                            <?php  //dump(count($errorMsgArr)); ?>
-                        <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                            <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
-                            <div class="card-body py-1">                                
-                                <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
-                                @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                    <li class="">{{$errorMsgArr[$i]}}</li>
-                                @endfor
-                                </ul>                                   
-                            </div>
-                        </div>
-                    @endforeach
-                    
-
-                    <?php  //dump($errors->courseContentLinkErrMsgArr->getMessages()); ?>
-                    {{----}}
-                    @foreach ($errors->courseContentLinkErrMsgArr->getMessages() as $key => $errorMsgArr)
-                            <?php  //dump($key); ?>
-                            <?php  //dump($errorMsgArr); ?>
-                            <?php  //dump(count($errorMsgArr)); ?>
-                        <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                            <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
-                            <div class="card-body py-1">                                
-                                <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
-                                @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                    <li class="">Link {{($i+1)}}  ⟹  {{$errorMsgArr[$i]}}</li>
-                                @endfor
-                                </ul>                                   
-                            </div>
-                        </div>
-                    @endforeach
-
-
-                    
-
-
-
-
-
-
-
-                    
-
-
-                    
-
-
-
-
-
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
                 </div>
             @endif
 
@@ -227,7 +130,14 @@
 
             <div class="ibox">
                 <div class="ibox-content">
-                    
+
+                     @foreach ($errors->all() as $error)
+                        {{ $error }}
+                    @endforeach  
+
+
+
+
                     <form id="course-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix">
                         {{csrf_field ()}}
                         <h1>Details</h1>
@@ -240,12 +150,12 @@
                                     <div class="form-group  row">
                                         <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                         <div class="col-sm-8">
-                                            <input type="text" name="course-name" class="form-control" value="{{old('course-name')}}">
+                                            <input type="text" name="course-name" class="form-control">
                                             <div class="error-msg"></div>
-                                            @if ($errors->courseInfoErrMsgArr->has('course-name'))
+                                            @if ($errors->has('course-name'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->courseInfoErrMsgArr->get('course-name') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                    @foreach ($errors->get('course-name') as $error)
+                                                        <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                     @endforeach
                                                 </ul>
                                             @endif
@@ -259,14 +169,14 @@
                                             <select class="form-control m-b" id="subject" name="subject">
 												<option></option>
 												@foreach ($subjects as $subject)
-													<option value="{{$subject['id']}}" @if(old('subject') == $subject['id']) selected @endif>{{$subject['name']}}</option>
+													<option value="{{$subject['id']}}">{{$subject['name']}}</option>
 												@endforeach
                                             </select>
                                             <div class="error-msg"></div>
                                             @if ($errors->has('subject'))
                                                 <ul class="mt-1">
                                                     @foreach ($errors->get('subject') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                     @endforeach
                                                 </ul>
                                             @endif
@@ -280,14 +190,14 @@
                                             <select class="form-control m-b" id="teacher" name="teacher">
 												<option></option>
 												@foreach ($teachers as $teacher)
-													<option value="{{$teacher['id']}}" @if(old('teacher') == $teacher['id']) selected @endif>{{$teacher['full_name']}}</option>
+													<option value="{{$teacher['id']}}">{{$teacher['full_name']}}</option>
 												@endforeach
                                             </select>
                                             <div class="error-msg"></div>
                                             @if ($errors->has('teacher'))
                                                 <ul class="mt-1">
                                                     @foreach ($errors->get('teacher') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                     @endforeach
                                                 </ul>
                                             @endif
@@ -299,12 +209,12 @@
                                         <div class="col-sm-8">
                                             <div class="border">
                                                 <textarea class="form-control" name="course-heading"
-                                                          cols="30" rows="7" placeholder="" autocomplete="off">{{old('course-heading')}}</textarea>
+                                                          cols="30" rows="7" placeholder="" autocomplete="off"></textarea>
                                                 <div class="error-msg"></div>
                                                 @if ($errors->has('course-heading'))
                                                     <ul class="mt-1">
                                                         @foreach ($errors->get('course-heading') as $error)
-                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                            <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                         @endforeach
                                                     </ul>
                                                 @endif
@@ -316,7 +226,7 @@
                                     <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
                                         <div class="col-sm-8">
                                             <div class="border-edu">
-                                                <textarea rows="3" class="form-control" name="course-description">{{old('course-description')}}</textarea>
+                                                <textarea rows="3" class="form-control" name="course-description"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -324,37 +234,20 @@
 
                                     <div class="form-group row"><label class="col-sm-4 col-form-label">Course image</label>
                                         <div class="col-sm-8">
-                                            {{--<input type="file" id="course-img" name="course-img">--}}
-                                            <input type="file"
-                                               class="filepond-img"
-                                               name="course-img"
-                                               accept="image/webp, image/png, image/jpeg, image/gif"
-                                               data-max-file-size="1MB"/>
+                                            <input type="file" id="course-img" name="course-img">
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
 
                                     <div class="form-group  row">
                                         <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="video-duration" class="form-control" value="{{old('video-duration')}}">
-                                        </div>
+                                        <div class="col-sm-8"><input type="text" name="video-duration" class="form-control"></div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
 
                                     <div class="form-group  row">
                                         <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="video-count" class="form-control" value="{{old('video-count')}}">
-                                            <div class="error-msg"></div>
-                                            @if ($errors->has('video-count'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->get('video-count') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
+                                        <div class="col-sm-8"><input type="text" name="video-count" class="form-control"></div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
 
@@ -370,7 +263,7 @@
 										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
 										<div class="col-sm-8">
 											<div class="text-2xl text-center font-bold output"></div><br>
-											<input type="range" name="author_share_percentage" value="{{old('author_share_percentage',60)}}" min="0" max="100" step="1">
+											<input type="range" name="author_share_percentage" value="60" min="0" max="100" step="1">
 										</div>
 									</div>
 									<div class="hr-line-dashed"></div>
@@ -385,7 +278,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-addon">Rs</span>
                                                 </div>
-                                                <input type="text" name="course-price" class="form-control" value="{{old('course-price')}}"><br>
+                                                <input type="text" name="course-price" class="form-control"><br>
                                             </div>
 
                                             <!--
@@ -403,10 +296,10 @@
 
                                         <div class="col-sm-8">
                                             <div class="">
-                                                <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{(old('course_stat')) == 'draft'? 'checked':''}}> <i></i>Draft </label>
+                                                <label> <input type="radio" class="iCheck" value="draft" name="course_stat"> <i></i>Draft </label>
                                             </div>
                                             <div class="">
-                                                <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{(old('course_stat')) != 'draft'? 'checked':''}}> <i></i>Published </label>
+                                                <label> <input type="radio" class="iCheck" checked="" value="published" name="course_stat"> <i></i>Published </label>
                                             </div>
                                         </div>
 
@@ -770,14 +663,12 @@
     <!-- <script src="../assets/summernote-0.8.18/summernote-lite.js"></script> -->
     <script src="{{asset('admin/plugins/summernote-0.8.18/summernote-bs4.js')}}"></script>
 
-    <!-- 
     <script src='https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js'></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script>
-    -->
 
 
     <!-- jQuery Steps -->
@@ -805,8 +696,8 @@
 @section('javascript')
     <script>
 
-		/*(function () {
-			//We want to preview images, so we need to register the Image Preview plugin
+		(function () {
+			/* We want to preview images, so we need to register the Image Preview plugin  */
 			FilePond.registerPlugin(
 
 				// encodes the file as base64 data
@@ -823,142 +714,15 @@
 
 				FilePondPluginFileValidateType
 			);
-		})();*/
+		})();
 
         var courseTopicFunctionality;
         var courseContentFunctionality;
         var inputLinkType;
 
         /* course content from Database */
-        //var courseContentFromDb = '{\n                           "aa":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
-        // . " \ ${} `
-        var courseContentFromDb = `{
-                           "aa":[
-                              "",
-                              {
-                                 "inputText":"a1",
-                                 "inputUrl":"aa12",
-                                 "isFree":"",
-                                 "type":""
-                              },
-                              {
-                                 "inputText":"bb1",
-                                 "inputUrl":"bb12",
-                                 "linkParam":"b22",
-                                 "isFree":true,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":7,
-                                 "inputUrl":"cc32",
-                                 "linkParam":"cc33",
-                                 "isFree":false,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"dd4",
-                                 "inputUrl":"dd41",
-                                 "linkParam":"dd42",
-                                 "isFree":true,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"ee5",
-                                 "inputUrl":"ee51",
-                                 "linkParam":"ee52",
-                                 "isFree":true,
-                                 "type":"video"
-                              }
-                           ],
-                           "bb":[
-                              {
-                                 "inputText":"zz",
-                                 "inputUrl":"zzq",
-                                 "linkParam":"zzq",
-                                 "isFree":false,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"xx",
-                                 "inputUrl":"xx1",
-                                 "linkParam":"xx2",
-                                 "isFree":false,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":"cc",
-                                 "inputUrl":"cc2",
-                                 "linkParam":"cc3",
-                                 "isFree":true,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"vv",
-                                 "inputUrl":"vvf",
-                                 "linkParam":"vvr",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "cc":[
-                              {
-                                 "inputText":"gg",
-                                 "inputUrl":"gg1",
-                                 "linkParam":"gg2",
-                                 "isFree":true,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"hh1",
-                                 "inputUrl":"hh2",
-                                 "linkParam":"hh3",
-                                 "isFree":true,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"jj1",
-                                 "inputUrl":"jj2",
-                                 "linkParam":"jj3",
-                                 "isFree":false,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"kk1",
-                                 "inputUrl":"kk2",
-                                 "linkParam":"kk3",
-                                 "isFree":true,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":"ll1",
-                                 "inputUrl":"ll2",
-                                 "linkParam":"ll3",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "dd":[
-                              {
-                                 "inputText":"susa1",
-                                 "inputUrl":"su",
-                                 "linkParam":"sae",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "ee":[],
-                           "kiooo":[
-                              {
-                                 "inputText":"ff-susa1",
-                                 "inputUrl":"f-su",
-                                 "linkParam":"f-sae",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ]
-                        }`;
-        //var courseContentFromDb = '';
-        //console.log(JSON.parse(courseContentFromDb));
+        var courseContentFromDb = '{\n                           "aa":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
+        //var courseContentFromDb = 'uu';
 
 
 
@@ -1014,8 +778,8 @@
 				},
 				onInit:function (event, currentIndex, newIndex){
 
-					// Select the file input and use create() to turn it into a pond					
-                    //const pond = FilePond.create(document.querySelector('.filepond-img'));
+					// Select the file input and use create() to turn it into a pond
+					const pond = FilePond.create(document.getElementById('course-img'));
 
 					$("#subject").select2({
 						placeholder: "Select student gender",
@@ -1195,7 +959,6 @@
                     //"subject": {required: true},
                     //"teacher": {required: true},
                     //"course-heading": {required: true},
-                    //"video-count": {number: true,min:0}
 
                 },
                 messages:{
@@ -1206,7 +969,6 @@
                     "subject":          {required: "Subject name is required"},
                     "teacher":          {required: "Teacher name is required"},
                     "course-heading":   {required: "Course heading is required"},
-                    "video-count":      {digits:   "Video count must be digits only"}
                 },
                 submitHandler: function(form){
                     console.log('submitHandler');
