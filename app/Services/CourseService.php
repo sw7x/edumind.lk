@@ -7,6 +7,8 @@ namespace App\Services;
 
 
 use App\Models\Course;
+use Illuminate\Support\Str;
+
 
 class CourseService
 {
@@ -60,6 +62,59 @@ class CourseService
    public function getlinkCount($data){
         return User::where('username',$username)->get()->count();
     }*/
+
+    public function getCourseValidationErrors($validationErrorsArr){
+
+
+        $contentLinksErrMsgArr    = array();
+        $contentErrMsgArr         = array();
+        $infoErrMsgArr            = array();
+
+
+        foreach ($validationErrorsArr as $errField => $valErrMsgArr){
+            //dump($errField);
+            //dump($valErrMsgArr);
+            if(Str::startsWith($errField, 'contentArr.')){
+                $sectionHeading = Str::of($errField)->explode('.')[1];             
+                
+                //dump($sectionHeading);
+                //dump($valErrMsgArr);
+                foreach ($valErrMsgArr as $errMsg){
+
+                    if(isset(Str::of($errField)->explode('.')[2])){
+                        $linkIndex = Str::of($errField)->explode('.')[2];
+                        
+                        //dump($contentLinksErrMsgArr);
+                        //dump("contentLinksErrMsgArr-{$sectionHeading}-{$linkIndex}");
+                        //dump(isset($contentLinksErrMsgArr[$sectionHeading][$linkIndex]));                         
+
+                        if(!isset($contentLinksErrMsgArr[$sectionHeading][$linkIndex])){
+                            $contentLinksErrMsgArr[$sectionHeading][$linkIndex] = $errMsg;
+                        }else{
+                            $contentLinksErrMsgArr[$sectionHeading][$linkIndex] .= ', '.$errMsg;
+                        }
+
+                        //dump($contentLinksErrMsgArr[$sectionHeading][$linkIndex]);
+                        //dump($contentLinksErrMsgArr);
+                        //dump("=====================");                        
+                    }else{
+                        $contentErrMsgArr[$sectionHeading][] = $errMsg;
+                    }                    
+                }
+            }else{
+                $infoErrMsgArr[$errField] = $valErrMsgArr;               
+            }
+        }
+
+        return array(
+            'contentLinksErrMsgArr' => $contentLinksErrMsgArr, 
+            'contentErrMsgArr'      => $contentErrMsgArr,
+            'infoErrMsgArr'         => $infoErrMsgArr
+        );
+    }
+
+
+
 
 
 

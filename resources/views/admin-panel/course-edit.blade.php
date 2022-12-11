@@ -57,10 +57,9 @@
         list-style: none !important;
     }
 
-</style>
 
 
-<style>
+
     .three-state-checkbox {
         background-color: #fff;
         border: solid 1px #ccc;
@@ -113,31 +112,96 @@
             @if(Session::has('message'))
                 <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
                     <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                    <div class="text-xl text-red-500"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p class="font-semibold text-sm text-red-500">{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>                    
+
+                    @if ($errors->infoErrMsgArr->getMessages())
+                        <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
+                            @foreach ($errors->infoErrMsgArr->getMessages() as $field => $errorMsgArr)
+                                @foreach ($errorMsgArr as $errorMsg)
+                                    <li class="">{{ $errorMsg }}</li>
+                                @endforeach
+                            @endforeach
+                        </ul>
+                    @endif
+
+                                        
+                    <?php 
+                        //dump($errors);
+                        //dump($errors->courseCreate->any());
+                        //dump($errors->all());
+                        //dump($errors->courseCreate);
+                        //dump($errors->courseCreate->getMessages());
+
+                        ////dump($errors->courseCreate['messages']);
+                        //dump($errors->courseCreate->get('course-name'));
+
+                        //dump($errors->courseCreate->has('subject'));
+                        //dump($errors->courseCreate->all());
+                        
+                        //dump($errors->contentErrMsgArr->getMessages());
+                        //dump($errors->contentLinksErrMsgArr->getMessages());
+                        //dd($errors->contentLinksErrMsgArr->getMessages());
+                        //dump($errors->uuu);
+
+                        //dd($xsr);
+                        //dd($contentLinksErrMsgArr); 
+
+
+
+
+                    ?>            
+
+                    
+                    
+                    <?php  //dump($errors->contentErrMsgArr->getMessages()); ?>
+                    @if(($errors->contentErrMsgArr->getMessages() != null) && is_array($errors->contentErrMsgArr->getMessages()))
+                        @foreach ($errors->contentErrMsgArr->getMessages() as $key => $errorMsgArr)
+                            <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
+                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
+                                <div class="card-body py-1">                                
+                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
+                                    @for ($i = 0; $i < count($errorMsgArr); $i++)
+                                        <li class="">{{$errorMsgArr[$i]}}</li>
+                                    @endfor
+                                    </ul>                                   
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif   
+
+                    <?php //dd(Session::get('contentLinksErrMsgArr'));?>
+                    @if(Session::has('contentLinksErrMsgArr') && is_array(Session::get('contentLinksErrMsgArr')))
+                        @foreach (Session::get('contentLinksErrMsgArr') as $key => $errorMsgArr)
+                            <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
+                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
+                                <div class="card-body py-1">                                
+                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
+                                    @for ($i = 0; $i < count($errorMsgArr); $i++)
+                                        <li class="">Link {{($i+1)}}  ⟹  {{$errorMsgArr[$i]}}</li>
+                                    @endfor
+                                    </ul>                                   
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+
                 </div>
             @endif
 
             @if(isset($message))
                 <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
                     <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
-                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-xl text-red-500"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p class="text-sm font-semibold text-red-500">{{ $message ?? 'Info!' }}</p>
                     <div class="text-base">{!! $message2 ?? '' !!}</div>
                 </div>
             @endif
 
             <div class="ibox">
                 <div class="ibox-content">
-
-                     @foreach ($errors->all() as $error)
-                        {{ $error }}
-                    @endforeach  
-
-
-
-
+                    
                     <form id="course-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix">
                         {{csrf_field ()}}
                         <h1>Details</h1>
@@ -150,12 +214,12 @@
                                     <div class="form-group  row">
                                         <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                         <div class="col-sm-8">
-                                            <input type="text" name="course-name" class="form-control">
+                                            <input type="text" name="course-name" class="form-control" value="{{old('course-name')}}">
                                             <div class="error-msg"></div>
-                                            @if ($errors->has('course-name'))
+                                            @if ($errors->infoErrMsgArr->has('course-name'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->get('course-name') as $error)
-                                                        <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
+                                                    @foreach ($errors->infoErrMsgArr->get('course-name') as $error)
+                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                     @endforeach
                                                 </ul>
                                             @endif
@@ -167,16 +231,16 @@
                                         <label class="col-sm-4 col-form-label">Subject <span class="text-red-500 text-sm font-bold">*</span></label>
                                         <div class="col-sm-8">
                                             <select class="form-control m-b" id="subject" name="subject">
-												<option></option>
-												@foreach ($subjects as $subject)
-													<option value="{{$subject['id']}}">{{$subject['name']}}</option>
-												@endforeach
+                                                <option></option>
+                                                @foreach ($subjects as $subject)
+                                                    <option value="{{$subject['id']}}" @if(old('subject') == $subject['id']) selected @endif>{{$subject['name']}}</option>
+                                                @endforeach
                                             </select>
                                             <div class="error-msg"></div>
-                                            @if ($errors->has('subject'))
+                                            @if ($errors->infoErrMsgArr->has('subject'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->get('subject') as $error)
-                                                        <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
+                                                    @foreach ($errors->infoErrMsgArr->get('subject') as $error)
+                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                     @endforeach
                                                 </ul>
                                             @endif
@@ -188,16 +252,16 @@
                                         <label class="col-sm-4 col-form-label">Teacher <span class="text-red-500 text-sm font-bold">*</span></label>
                                         <div class="col-sm-8">
                                             <select class="form-control m-b" id="teacher" name="teacher">
-												<option></option>
-												@foreach ($teachers as $teacher)
-													<option value="{{$teacher['id']}}">{{$teacher['full_name']}}</option>
-												@endforeach
+                                                <option></option>
+                                                @foreach ($teachers as $teacher)
+                                                    <option value="{{$teacher['id']}}" @if(old('teacher') == $teacher['id']) selected @endif>{{$teacher['full_name']}}</option>
+                                                @endforeach
                                             </select>
                                             <div class="error-msg"></div>
-                                            @if ($errors->has('teacher'))
+                                            @if ($errors->infoErrMsgArr->has('teacher'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->get('teacher') as $error)
-                                                        <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
+                                                    @foreach ($errors->infoErrMsgArr->get('teacher') as $error)
+                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                     @endforeach
                                                 </ul>
                                             @endif
@@ -209,12 +273,12 @@
                                         <div class="col-sm-8">
                                             <div class="border">
                                                 <textarea class="form-control" name="course-heading"
-                                                          cols="30" rows="7" placeholder="" autocomplete="off"></textarea>
+                                                          cols="30" rows="7" placeholder="" autocomplete="off">{{old('course-heading')}}</textarea>
                                                 <div class="error-msg"></div>
-                                                @if ($errors->has('course-heading'))
+                                                @if ($errors->infoErrMsgArr->has('course-heading'))
                                                     <ul class="mt-1">
-                                                        @foreach ($errors->get('course-heading') as $error)
-                                                            <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
+                                                        @foreach ($errors->infoErrMsgArr->get('course-heading') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                         @endforeach
                                                     </ul>
                                                 @endif
@@ -226,7 +290,7 @@
                                     <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
                                         <div class="col-sm-8">
                                             <div class="border-edu">
-                                                <textarea rows="3" class="form-control" name="course-description"></textarea>
+                                                <textarea rows="3" class="form-control" name="course-description">{{old('course-description')}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -234,39 +298,66 @@
 
                                     <div class="form-group row"><label class="col-sm-4 col-form-label">Course image</label>
                                         <div class="col-sm-8">
-                                            <input type="file" id="course-img" name="course-img">
+                                            {{--<input type="file" id="course-img" name="course-img">--}}
+                                            <input 
+                                                type="file" class="filepond-img" name="course-img[]"
+                                                multiple
+                                                data-max-file-size="1MB"
+                                                accept="image/webp, image/png, image/jpeg, image/gif"/>
+                                            <div class="__error-msg"></div>
+                                            @if ($errors->infoErrMsgArr->has('course-heading'))
+                                                <ul class="mt-1">
+                                                    @foreach ($errors->infoErrMsgArr->get('course-img') as $error)
+                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+
+
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
 
                                     <div class="form-group  row">
                                         <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
-                                        <div class="col-sm-8"><input type="text" name="video-duration" class="form-control"></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" name="video-duration" class="form-control" value="{{old('video-duration')}}">
+                                        </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
 
                                     <div class="form-group  row">
                                         <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
-                                        <div class="col-sm-8"><input type="text" name="video-count" class="form-control"></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" name="video-count" class="form-control" value="{{old('video-count')}}">
+                                            <div class="error-msg"></div>
+                                            @if ($errors->infoErrMsgArr->has('video-count'))
+                                                <ul class="mt-1">
+                                                    @foreach ($errors->infoErrMsgArr->get('video-count') as $error)
+                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
 
                                     {{--
-									<div class="form-group  row">
-										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-										<div class="col-sm-8 text-base">60%</div>
-									</div>
-									<div class="hr-line-dashed"></div>
+                                    <div class="form-group  row">
+                                        <label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
+                                        <div class="col-sm-8 text-base">60%</div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
                                     --}}
 
-									<div class="form-group row">
-										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-										<div class="col-sm-8">
-											<div class="text-2xl text-center font-bold output"></div><br>
-											<input type="range" name="author_share_percentage" value="60" min="0" max="100" step="1">
-										</div>
-									</div>
-									<div class="hr-line-dashed"></div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
+                                        <div class="col-sm-8">
+                                            <div class="text-2xl text-center font-bold output"></div><br>
+                                            <input type="range" name="author_share_percentage" value="{{old('author_share_percentage',60)}}" min="0" max="100" step="1">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
 
 
 
@@ -278,7 +369,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-addon">Rs</span>
                                                 </div>
-                                                <input type="text" name="course-price" class="form-control"><br>
+                                                <input type="text" name="course-price" class="form-control" value="{{old('course-price')}}"><br>
                                             </div>
 
                                             <!--
@@ -296,10 +387,10 @@
 
                                         <div class="col-sm-8">
                                             <div class="">
-                                                <label> <input type="radio" class="iCheck" value="draft" name="course_stat"> <i></i>Draft </label>
+                                                <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{(old('course_stat')) == 'draft'? 'checked':''}}> <i></i>Draft </label>
                                             </div>
                                             <div class="">
-                                                <label> <input type="radio" class="iCheck" checked="" value="published" name="course_stat"> <i></i>Published </label>
+                                                <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{(old('course_stat')) != 'draft'? 'checked':''}}> <i></i>Published </label>
                                             </div>
                                         </div>
 
@@ -616,31 +707,31 @@
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">                
 
         <symbol id="link_icon" viewBox="0 0 256 256">
-			<g transform="translate(128 128) scale(0.72 0.72)" style="">
-				<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(-175.05 -175.05) scale(3.89 3.89)" >
-					<path d="M 41.242 69.371 l -8.953 8.954 c -0.288 0.287 -0.627 0.331 -0.803 0.331 c -0.176 0 -0.515 -0.044 -0.803 -0.332 L 11.676 59.317 c -0.443 -0.443 -0.443 -1.163 0 -1.606 l 24.98 -24.98 c 0.288 -0.288 0.626 -0.331 0.802 -0.331 h 0 c 0.176 0 0.515 0.043 0.803 0.331 l 16.362 16.362 l 8.025 -8.025 L 46.287 24.707 c -4.869 -4.869 -12.789 -4.868 -17.657 0 L 3.65 49.686 c -4.867 4.868 -4.867 12.789 0 17.656 l 19.007 19.007 c 2.434 2.434 5.631 3.65 8.828 3.65 c 3.197 0 6.394 -1.217 8.827 -3.65 l 13.961 -13.961 C 50.063 74.716 46.357 73.631 41.242 69.371 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,123,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-					<path d="M 48.758 20.629 l 8.953 -8.954 c 0.288 -0.287 0.627 -0.331 0.803 -0.331 c 0.176 0 0.515 0.044 0.803 0.332 l 19.007 19.007 c 0.443 0.443 0.443 1.163 0 1.606 l -24.98 24.98 c -0.288 0.288 -0.626 0.331 -0.802 0.331 h 0 c -0.176 0 -0.515 -0.043 -0.803 -0.331 L 35.377 40.907 l -8.025 8.025 l 16.362 16.361 c 4.869 4.869 12.789 4.868 17.657 0 l 24.98 -24.979 c 4.867 -4.868 4.867 -12.789 0 -17.656 L 67.342 3.651 C 64.908 1.217 61.711 0 58.514 0 c -3.197 0 -6.394 1.217 -8.827 3.65 L 35.725 17.611 C 39.937 15.284 43.643 16.369 48.758 20.629 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,123,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-				</g>
-			</g>
-		</symbol>
+            <g transform="translate(128 128) scale(0.72 0.72)" style="">
+                <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(-175.05 -175.05) scale(3.89 3.89)" >
+                    <path d="M 41.242 69.371 l -8.953 8.954 c -0.288 0.287 -0.627 0.331 -0.803 0.331 c -0.176 0 -0.515 -0.044 -0.803 -0.332 L 11.676 59.317 c -0.443 -0.443 -0.443 -1.163 0 -1.606 l 24.98 -24.98 c 0.288 -0.288 0.626 -0.331 0.802 -0.331 h 0 c 0.176 0 0.515 0.043 0.803 0.331 l 16.362 16.362 l 8.025 -8.025 L 46.287 24.707 c -4.869 -4.869 -12.789 -4.868 -17.657 0 L 3.65 49.686 c -4.867 4.868 -4.867 12.789 0 17.656 l 19.007 19.007 c 2.434 2.434 5.631 3.65 8.828 3.65 c 3.197 0 6.394 -1.217 8.827 -3.65 l 13.961 -13.961 C 50.063 74.716 46.357 73.631 41.242 69.371 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,123,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                    <path d="M 48.758 20.629 l 8.953 -8.954 c 0.288 -0.287 0.627 -0.331 0.803 -0.331 c 0.176 0 0.515 0.044 0.803 0.332 l 19.007 19.007 c 0.443 0.443 0.443 1.163 0 1.606 l -24.98 24.98 c -0.288 0.288 -0.626 0.331 -0.802 0.331 h 0 c -0.176 0 -0.515 -0.043 -0.803 -0.331 L 35.377 40.907 l -8.025 8.025 l 16.362 16.361 c 4.869 4.869 12.789 4.868 17.657 0 l 24.98 -24.979 c 4.867 -4.868 4.867 -12.789 0 -17.656 L 67.342 3.651 C 64.908 1.217 61.711 0 58.514 0 c -3.197 0 -6.394 1.217 -8.827 3.65 L 35.725 17.611 C 39.937 15.284 43.643 16.369 48.758 20.629 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,123,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                </g>
+            </g>
+        </symbol>
 
         <symbol id="download_icon" viewBox="0 0 256 256">
-			<g transform="translate(128 128) scale(0.72 0.72)" style="">
-				<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(-175.05 -175.05) scale(3.89 3.89)" >
-					<path d="M 69.726 78.71 h -46.13 C 10.585 78.71 0 68.125 0 55.115 c 0 -11.185 8.035 -20.892 18.894 -23.098 C 22.76 19.75 34.195 11.29 47.14 11.29 c 15.829 0 28.819 12.494 29.609 28.138 C 84.62 42.34 90 49.955 90 58.436 C 90 69.615 80.905 78.71 69.726 78.71 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(171,226,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-					<path d="M 57.496 42.886 l -4.878 4.878 c -0.971 0.971 -2.632 0.283 -2.632 -1.09 v 0 V 27.602 c 0 -0.851 -0.69 -1.542 -1.542 -1.542 h -6.89 c -0.851 0 -1.542 0.69 -1.542 1.542 v 19.072 c 0 1.373 -1.66 2.061 -2.632 1.09 l -4.878 -4.878 c -0.602 -0.602 -1.578 -0.602 -2.18 0 l -4.872 4.872 c -0.602 0.602 -0.602 1.578 0 2.18 l 12.496 12.496 l 5.962 5.962 c 0.602 0.602 1.578 0.602 2.18 0 l 5.962 -5.962 l 12.496 -12.496 c 0.602 -0.602 0.602 -1.578 0 -2.18 l -4.872 -4.872 C 59.074 42.284 58.098 42.284 57.496 42.886 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-				</g>
-			</g>
-		</symbol>
-		
+            <g transform="translate(128 128) scale(0.72 0.72)" style="">
+                <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(-175.05 -175.05) scale(3.89 3.89)" >
+                    <path d="M 69.726 78.71 h -46.13 C 10.585 78.71 0 68.125 0 55.115 c 0 -11.185 8.035 -20.892 18.894 -23.098 C 22.76 19.75 34.195 11.29 47.14 11.29 c 15.829 0 28.819 12.494 29.609 28.138 C 84.62 42.34 90 49.955 90 58.436 C 90 69.615 80.905 78.71 69.726 78.71 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(171,226,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                    <path d="M 57.496 42.886 l -4.878 4.878 c -0.971 0.971 -2.632 0.283 -2.632 -1.09 v 0 V 27.602 c 0 -0.851 -0.69 -1.542 -1.542 -1.542 h -6.89 c -0.851 0 -1.542 0.69 -1.542 1.542 v 19.072 c 0 1.373 -1.66 2.061 -2.632 1.09 l -4.878 -4.878 c -0.602 -0.602 -1.578 -0.602 -2.18 0 l -4.872 4.872 c -0.602 0.602 -0.602 1.578 0 2.18 l 12.496 12.496 l 5.962 5.962 c 0.602 0.602 1.578 0.602 2.18 0 l 5.962 -5.962 l 12.496 -12.496 c 0.602 -0.602 0.602 -1.578 0 -2.18 l -4.872 -4.872 C 59.074 42.284 58.098 42.284 57.496 42.886 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                </g>
+            </g>
+        </symbol>
+        
         <symbol id="video_icon" viewBox="0 0 256 256">            
-			<g transform="translate(128 128) scale(0.72 0.72)" style="">
-				<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(-175.05 -175.05) scale(3.89 3.89)" >
-					<circle cx="46.283" cy="45.003" r="29.803" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(249,249,249); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/>
-					<path d="M 45 0 C 20.147 0 0 20.147 0 45 c 0 24.853 20.147 45 45 45 s 45 -20.147 45 -45 C 90 20.147 69.853 0 45 0 z M 62.251 46.633 L 37.789 60.756 c -1.258 0.726 -2.829 -0.181 -2.829 -1.633 V 30.877 c 0 -1.452 1.572 -2.36 2.829 -1.634 l 24.461 14.123 C 63.508 44.092 63.508 45.907 62.251 46.633 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(210,34,21); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-				</g>
-			</g>		
-		</symbol>
+            <g transform="translate(128 128) scale(0.72 0.72)" style="">
+                <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(-175.05 -175.05) scale(3.89 3.89)" >
+                    <circle cx="46.283" cy="45.003" r="29.803" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(249,249,249); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/>
+                    <path d="M 45 0 C 20.147 0 0 20.147 0 45 c 0 24.853 20.147 45 45 45 s 45 -20.147 45 -45 C 90 20.147 69.853 0 45 0 z M 62.251 46.633 L 37.789 60.756 c -1.258 0.726 -2.829 -0.181 -2.829 -1.633 V 30.877 c 0 -1.452 1.572 -2.36 2.829 -1.634 l 24.461 14.123 C 63.508 44.092 63.508 45.907 62.251 46.633 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(210,34,21); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                </g>
+            </g>        
+        </symbol>
 
     </svg>
 
@@ -669,13 +760,19 @@
     <script src='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js'></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script>
-
+   
 
     <!-- jQuery Steps -->
     <script src="{{asset('admin/js/plugins/steps/jquery.steps.min.js')}}"></script>
 
     <!-- jQuery validate -->
     <script src="{{asset('admin/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    {{--
+    <script src="{{asset('admin/js/plugins/validate/additional-methods.min.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
+    --}}
+
+
 
     <!-- iCheck
     <script src="{{asset('admin/js/plugins/iCheck/icheck.min.js')}}"></script>-->
@@ -689,59 +786,188 @@
     <!-- toastr js file-->
     <script src="{{asset('admin/js/plugins/toastr/toastr.min.js')}}"></script>
 
-	<!-- rangeslider JS file-->
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.js'></script>
+    <!-- rangeslider JS file-->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.js'></script>
 @stop
 
 @section('javascript')
     <script>
 
-		(function () {
-			/* We want to preview images, so we need to register the Image Preview plugin  */
-			FilePond.registerPlugin(
+        (function () {
+            /*We want to preview images, so we need to register the Image Preview plugin*/
+            FilePond.registerPlugin(
 
-				// encodes the file as base64 data
-				FilePondPluginFileEncode,
+                // encodes the file as base64 data
+                FilePondPluginFileEncode,
 
-				// validates the size of the file
-				FilePondPluginFileValidateSize,
+                // validates the size of the file
+                FilePondPluginFileValidateSize,
 
-				// corrects mobile image orientation
-				FilePondPluginImageExifOrientation,
+                // corrects mobile image orientation
+                FilePondPluginImageExifOrientation,
 
-				// previews dropped images
-				FilePondPluginImagePreview,
+                // previews dropped images
+                FilePondPluginImagePreview,
 
-				FilePondPluginFileValidateType
-			);
-		})();
+                FilePondPluginFileValidateType
+            );
+        })();
 
         var courseTopicFunctionality;
         var courseContentFunctionality;
         var inputLinkType;
 
         /* course content from Database */
+        // ok \'
         var courseContentFromDb = '{\n                           "aa":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
-        //var courseContentFromDb = 'uu';
+        
+        // . " \ ${} `
+        var courseContentFromDb1 = `{
+                           "aa":[
+                              "",
+                              {
+                                 "inputText":"a1",
+                                 "inputUrl":"aa12",
+                                 "isFree":"",
+                                 "type":""
+                              },
+                              {
+                                 "inputText":"bb1",
+                                 "inputUrl":"bb12",
+                                 "linkParam":"b22",
+                                 "isFree":true,
+                                 "type":"download"
+                              },
+                              {
+                                 "inputText":7,
+                                 "inputUrl":"cc32",
+                                 "linkParam":"cc33",
+                                 "isFree":false,
+                                 "type":"other"
+                              },
+                              {
+                                 "inputText":"dd4",
+                                 "inputUrl":"dd41",
+                                 "linkParam":"dd42",
+                                 "isFree":true,
+                                 "type":"video"
+                              },
+                              {
+                                 "inputText":"ee5",
+                                 "inputUrl":"ee51",
+                                 "linkParam":"ee52",
+                                 "isFree":true,
+                                 "type":"video"
+                              }
+                           ],
+                           "bb":[
+                              {
+                                 "inputText":"zz",
+                                 "inputUrl":"zzq",
+                                 "linkParam":"zzq",
+                                 "isFree":false,
+                                 "type":"video"
+                              },
+                              {
+                                 "inputText":"xx",
+                                 "inputUrl":"xx1",
+                                 "linkParam":"xx2",
+                                 "isFree":false,
+                                 "type":"download"
+                              },
+                              {
+                                 "inputText":"cc",
+                                 "inputUrl":"cc2",
+                                 "linkParam":"cc3",
+                                 "isFree":true,
+                                 "type":"other"
+                              },
+                              {
+                                 "inputText":"vv",
+                                 "inputUrl":"vvf",
+                                 "linkParam":"vvr",
+                                 "isFree":true,
+                                 "type":"download"
+                              }
+                           ],
+                           "cc":[
+                              {
+                                 "inputText":"gg",
+                                 "inputUrl":"gg1",
+                                 "linkParam":"gg2",
+                                 "isFree":true,
+                                 "type":"video"
+                              },
+                              {
+                                 "inputText":"hh1",
+                                 "inputUrl":"hh2",
+                                 "linkParam":"hh3",
+                                 "isFree":true,
+                                 "type":"other"
+                              },
+                              {
+                                 "inputText":"jj1",
+                                 "inputUrl":"jj2",
+                                 "linkParam":"jj3",
+                                 "isFree":false,
+                                 "type":"other"
+                              },
+                              {
+                                 "inputText":"kk1",
+                                 "inputUrl":"kk2",
+                                 "linkParam":"kk3",
+                                 "isFree":true,
+                                 "type":"download"
+                              },
+                              {
+                                 "inputText":"ll1",
+                                 "inputUrl":"ll2",
+                                 "linkParam":"ll3",
+                                 "isFree":true,
+                                 "type":"download"
+                              }
+                           ],
+                           "dd":[
+                              {
+                                 "inputText":"susa1",
+                                 "inputUrl":"su",
+                                 "linkParam":"sae",
+                                 "isFree":true,
+                                 "type":"download"
+                              }
+                           ],
+                           "ee":[],
+                           "kiooo":[
+                              {
+                                 "inputText":"ff-susa1",
+                                 "inputUrl":"f-su",
+                                 "linkParam":"f-sae",
+                                 "isFree":true,
+                                 "type":"download"
+                              }
+                           ]
+                        }`;
+        //var courseContentFromDb = '';
+        //console.log(JSON.parse(courseContentFromDb));
 
 
 
 
 
-		/* percentage range slider */
-		function valueOutput(element) {
-			let value  = $(element).val();
-			$(element).parent().find('.output').html(value + '%');
-		}
+        /* percentage range slider */
+        function valueOutput(element) {
+            let value  = $(element).val();
+            $(element).parent().find('.output').html(value + '%');
+        }
 
-		$(document).on('input', 'input[name="author_share_percentage"]', function(e) {
-			valueOutput(e.target);
-		});
-		/***************************/
+        $(document).on('input', 'input[name="author_share_percentage"]', function(e) {
+            valueOutput(e.target);
+        });
+        /***************************/
 
 
 
-		$(document).ready(function(){
+        $(document).ready(function(){
             
             toastr.options = {
                 "closeButton": true,
@@ -765,107 +991,157 @@
 
 
 
-			var courseForm = $("#course-form");
+            var courseForm = $("#course-form");
+            let pond;
+
 
             courseForm.steps({
-				bodyTag: "fieldset",
-				transitionEffect: "fade",
-				transitionEffectSpeed:500,
-				//titleTemplate: '<span class="step">#index#</span> #title#',
-				labels: {
-					finish: "Submit",
+                bodyTag: "fieldset",
+                transitionEffect: "fade",
+                transitionEffectSpeed:500,
+                //titleTemplate: '<span class="step">#index#</span> #title#',
+                labels: {
+                    finish: "Submit",
                     //next : '>>'
-				},
-				onInit:function (event, currentIndex, newIndex){
+                },
+                onInit:function (event, currentIndex, newIndex){
 
-					// Select the file input and use create() to turn it into a pond
-					const pond = FilePond.create(document.getElementById('course-img'));
+                    // Select the file input and use create() to turn it into a pond                    
+                    pond = FilePond.create(document.querySelector('.filepond-img'));
 
-					$("#subject").select2({
-						placeholder: "Select student gender",
-						allowClear: true,
-						width: '100%'
-					});
-					$("#teacher").select2({
-						placeholder: "Select marketer gender",
-						allowClear: true,
-						width: '100%'
-					});
+                    $("#subject").select2({
+                        placeholder: "Select student gender",
+                        allowClear: true,
+                        width: '100%'
+                    });
+                    $("#teacher").select2({
+                        placeholder: "Select marketer gender",
+                        allowClear: true,
+                        width: '100%'
+                    });
 
-					$('#course-topics').select2({
-						placeholder: "Select a topic",
-						//allowClear: false,
-						width: '100%',
+                    $('#course-topics').select2({
+                        placeholder: "Select a topic",
+                        //allowClear: false,
+                        width: '100%',
                         placeholder: "Please select a topic",
                         allowClear: true
-					});
+                    });
 
-					$('[name="course-description"]').summernote({
-						//placeholder: 'Hello bootstrap 4',
-						tabsize: 2,
-						height: 250,
-						width: '100%',
-						toolbar: [
+                    $('[name="course-description"]').summernote({
+                        //placeholder: 'Hello bootstrap 4',
+                        tabsize: 2,
+                        height: 250,
+                        width: '100%',
+                        toolbar: [
 
-							['style', ['style']],
-							//['font', ['bold', 'italic', 'underline', 'clear']],
-							['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
-							['fontname', ['fontname']],
-							['fontsize', ['fontsize']],
-							['color', ['color']],
-							['para', ['ul', 'ol', 'paragraph']],
-							['height', ['height']],
-							['table', ['table']],
-							['insert', [
-								'link',
-								//'picture',
-								//'video',
-								'hr'
-							]
-							],
-							['view', [
-								//'fullscreen',
-								'codeview',
-								'help']
-							]
-						],
-					});
+                            ['style', ['style']],
+                            //['font', ['bold', 'italic', 'underline', 'clear']],
+                            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                            ['fontname', ['fontname']],
+                            ['fontsize', ['fontsize']],
+                            ['color', ['color']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['height', ['height']],
+                            ['table', ['table']],
+                            ['insert', [
+                                'link',
+                                //'picture',
+                                //'video',
+                                'hr'
+                            ]
+                            ],
+                            ['view', [
+                                //'fullscreen',
+                                'codeview',
+                                'help']
+                            ]
+                        ],
+                    });
 
-					$('input').iCheck({
-						checkboxClass: 'icheckbox_square-green',
-						radioClass: 'iradio_square-green',
-					});
+                    $('input').iCheck({
+                        checkboxClass: 'icheckbox_square-green',
+                        radioClass: 'iradio_square-green',
+                    });
 
 
-					/***** precentage range slider *******/
-					let $inputRange = $('input[name="author_share_percentage"]');
-					$inputRange.rangeslider({
-						polyfill: false
-					});
-					for (let i = $inputRange.length - 1; i >= 0; i--) {
-						valueOutput($inputRange[i]);
-					}
-					/*************************************/
+                    /***** precentage range slider *******/
+                    let $inputRange = $('input[name="author_share_percentage"]');
+                    $inputRange.rangeslider({
+                        polyfill: false
+                    });
+                    for (let i = $inputRange.length - 1; i >= 0; i--) {
+                        valueOutput($inputRange[i]);
+                    }
+                    /*************************************/
 
-					
-					//activate topicsModule,courseContentModule, 3state checkbon input
+                    
+                    //activate topicsModule,courseContentModule, 3state checkbon input
                     courseTopicFunctionality   = topicsModule(window,jQuery);
                     courseContentFunctionality = courseContentModule(window,jQuery);
                     inputLinkType = threeStateCheckboxModule(window,jQuery,$('#input_link_type'));                    
 
                 },
-				onStepChanging: function (event, currentIndex, newIndex)
-				{                    
+                onStepChanging: function (event, currentIndex, newIndex)
+                {                    
                     //var fv = $("#course-form").data('formValidation');
                     //var fv = courseForm.data('formValidation');
 
                     // The current step container
                     //$container = $("#course-form").find('section[data-step="' + currentIndex +'"]');
                     
+                    /*console.log('=========pond========');
+                    console.log(pond);
+                    console.log(typeof pond);
+                    console.log(typeof pond);
+                    console.log(pond.getFile());
+                    console.log(pond.getFile(1));
+                    console.log(pond.getFile().fileExtension);
+                    console.log(pond.getFile().fileSize);*/
+
+                    
+                    if(currentIndex === 0){
+                        // validate course image
+                        if(pond.getFile(0)){
+                            try {                      
+                                let fileExt     = pond.getFile(0).fileExtension;
+                                let fileSize    = pond.getFile(0).fileSize;
+                                let msg         = '';
+
+                                if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
+                                    msg += 'only image type jpg/png/jpeg/gif/webp is allowed for course image';                          
+                                }
+
+                                if(fileSize /1024 > 1000){
+                                    if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
+                                        msg += ' and '
+                                    }
+                                    msg += 'file size must be less than 1MB';
+                                }
+
+                                if(msg != ''){
+                                    msg = 'Course image - ' + msg + '. !';
+                                    toastr['error'](msg);
+                                    return; 
+                                }
+
+                            }
+                            catch(err) {                          
+                                toastr['error'](err.message);
+                                return;
+                            }
+                        }
+                    }
+
+
+
+
+
+                    
 
 
                     console.log(currentIndex);
-					//console.log(newIndex);
+                    //console.log(newIndex);
 
 
                     // step2  ==>  step3
@@ -891,17 +1167,17 @@
                     // Validate the container
                     //fv.validateContainer(currentIndex);
 
-					//return true;
+                    //return true;
 
                     //var form = $(this);
                     $(this).validate().settings.ignore = ":disabled,:hidden";
                     return $(this).valid();
                     
 
-				},
-				onStepChanged: function (event, currentIndex, priorIndex)
-				{
-					if(currentIndex ==2){
+                },
+                onStepChanged: function (event, currentIndex, priorIndex)
+                {
+                    if(currentIndex ==2){
                         courseContentFunctionality.renderTopicsDropdown();
                         courseContentFunctionality.resetTopicsDropdown();
                         courseContentFunctionality.clearJsonPrev();
@@ -942,7 +1218,7 @@
                     form.submit();
                 }
 
-			});
+            });
 
 
 
@@ -956,9 +1232,15 @@
                         //required: true,
                         //minlength: 3
                     },
-                    //"subject": {required: true},
-                    //"teacher": {required: true},
-                    //"course-heading": {required: true},
+                    //"subject"         : {required: true},
+                    //"teacher"         : {required: true},
+                    //"course-heading"  : {required: true},
+                    //"video-count"     : {number: true,min:0},
+                    /*
+                    "course-img"        : { 
+                        accept: "image/*",
+                       filesize: 1 // 1MB
+                    }*/
 
                 },
                 messages:{
@@ -969,6 +1251,15 @@
                     "subject":          {required: "Subject name is required"},
                     "teacher":          {required: "Teacher name is required"},
                     "course-heading":   {required: "Course heading is required"},
+                    "video-count":      {digits:   "Video count must be digits only"},
+                    /*                    
+                    "course-img" :      { 
+                        accept: 'Only image type jpg/png/jpeg/gif/webp is allowed',
+                        filesize:" file size must be less than 1MB.",
+                    }*/
+
+
+
                 },
                 submitHandler: function(form){
                     console.log('submitHandler');
@@ -1026,7 +1317,7 @@
             
 
 
-		});
+        });
 
 
 

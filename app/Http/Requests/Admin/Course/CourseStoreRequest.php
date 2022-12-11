@@ -34,7 +34,19 @@ class CourseStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        //dd($this->get('contentJson'));        
+        //dd($this->get('contentJson')); 
+        //dd($this->get('course-img'));   
+
+        //dump($this->request);
+        //dd($this->get('course-image'));
+        //dump($this->get('hidden-course-img'));
+        //dd($this->request->file('hidden-course-img'));
+        //dd($this->file('hidden-course-img'));
+
+        //dd();
+        //dd($this->request);
+
+
 
         if(!$this->get('course-price')){
             $this->merge(['course-price' => 0]);
@@ -43,8 +55,9 @@ class CourseStoreRequest extends FormRequest
         if(!$this->get('author_share_percentage')){
             $this->merge(['author_share_percentage' => '60']);
         }
-         
-        try {  
+        
+        try {
+
             $contentArr = json_decode($this->get('contentJson'), true, 512, JSON_THROW_ON_ERROR);
             //dd($contentArr);
             $this->isValidContentJson = true;
@@ -75,6 +88,97 @@ class CourseStoreRequest extends FormRequest
             'teacher'       => 'required',
             'course-heading'=> 'required',
             'video-count'   => 'nullable|numeric|min:0',
+            
+            /*'course-img'=> function ($attribute, $value, $fail) {                    
+                
+                try {
+                    $courseImg      = json_decode($this->get('course-img'), true, 512, JSON_THROW_ON_ERROR);
+                    $validFileTypes = array('webp', 'png', 'jpeg', 'jpg', 'gif');
+                    $msg            = '';
+
+                    $ext = explode(".",$courseImg['name'])[1];
+                    $ext = strtolower($ext);
+                    
+                    if(!in_array($ext,$validFileTypes)){
+                        $msg .= 'only image type jpg/png/jpeg/gif/webp is allowed';  
+                    }
+
+                    if(($courseImg['size']/(1024*1024)) > 1){
+                        if(!in_array($ext,$validFileTypes)){
+                            $msg    .= ' and ';
+                        }
+                        $msg .= 'file size must be less than 1MB';
+                    }
+
+                    if($msg != ''){
+                        $msg = 'Course image - ' . $msg . '. !';
+                        $fail($msg);
+                    }
+                }  
+                catch (\Exception $exception) { 
+                    $msg = 'Course image is invalid.!';
+                }
+            },*/
+            
+            'course-img'=>[
+                function ($attribute, $value, $fail) {               
+                    try {
+                        if(null == $this->get('course-img'))return;                        
+                        $courseImg      = json_decode($this->get('course-img'), true, 512, JSON_THROW_ON_ERROR);
+                        $validFileTypes = array('webp', 'png', 'jpeg', 'jpg', 'gif');
+                        $ext            = strtolower(explode(".",$courseImg['name'])[1]);                        
+
+                        $msg = (!in_array($ext,$validFileTypes))?'Course image can be these file types jpg/png/jpeg/gif/webp.':'';
+                    }  
+                    catch (\Exception $exception) { 
+                        $msg = 'Course image file type is invalid.!';
+                    }                    
+                    if($msg != '')$fail($msg);
+                },
+                function ($attribute, $value, $fail) {             
+                    try {
+                        if(null == $this->get('course-img'))return;
+                        $courseImg      = json_decode($this->get('course-img'), true, 512, JSON_THROW_ON_ERROR);                   
+                        $msg =(($courseImg['size']/(1024*1024)) > 1)?'Course image file size must be less than 1MB':'';                        
+                    }  
+                    catch (\Exception $exception) { 
+                        $msg = 'Course image file size is invalid.!';
+                    }
+                    if($msg != '')$fail($msg);
+                }
+            ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //'course-img'    => 'image|max:1024',
+           
+
+
 
 
             'contentArr'    => [
@@ -206,17 +310,15 @@ class CourseStoreRequest extends FormRequest
         }      
         //echo '<pre>',print_r($contentArrMessages,true),'</pre>';dd();
         return [
-            'course-name.required'      => 'Course name field is required',
-            'course-name.min'           => 'Course name must be minimum 3 characters long',
-            'course-name.unique'        => 'Course name already exist',
-            'subject.required'          => 'Subject need to assign for a course',
-            'teacher.required'          => 'Teacher need to assign for a course',            
-            'course-heading.required'   => 'Course heading field is required',
-            'video-count.numeric'       => ':attribute must be a number',
-            'video-count.min'           => ':attribute value must be greater than zero',
-
-
-
+            'course-name.required'      => 'Course name field is required.',
+            'course-name.min'           => 'Course name must be minimum 3 characters long.',
+            'course-name.unique'        => 'Course name already exist.',
+            'subject.required'          => 'Subject need to assign for a course.',
+            'teacher.required'          => 'Teacher need to assign for a course.',            
+            'course-heading.required'   => 'Course heading field is required.',
+            'video-count.numeric'       => ':attribute must be a number.',
+            'video-count.min'           => ':attribute value must be greater than zero.',            
+        
         ] + $contentArrMessages;
         
     }
@@ -230,7 +332,8 @@ class CourseStoreRequest extends FormRequest
             'subject'       => 'Course subject',
             'teacher'       => 'Course teacher',
             'course-heading'=> 'Course heading',
-            'video-count'   => 'Video count',            
+            'video-count'   => 'Video count',
+            'course-img'    => 'Course image',          
 
             'contentArr'    => 'Course content',            
             /*

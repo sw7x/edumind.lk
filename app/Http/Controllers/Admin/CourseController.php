@@ -16,12 +16,21 @@ use Illuminate\Validation\Rules\Enum;
 use App\Http\Requests\Admin\Course\CourseStoreRequest;
 use App\Http\Requests\Admin\Course\CourseUpdateRequest;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
 
-
+use App\Services\CourseService;
+use App\Utils\FileUploadUtil;
 
 class CourseController extends Controller
 {
+    private $courseService;
+
+    public function __construct(CourseService $courseService)
+    {
+        $this->courseService = $courseService;       
+
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -114,85 +123,46 @@ class CourseController extends Controller
     public function store(CourseStoreRequest $request)
     //public function store(Request $request)
     {
-        
+        //dd($request->all());
         //dump(Session::all());
         //dump(Session::get('errors'));
         //dump(Session::get('errors')->courseCreate);
-        dump(Session::get('errors')->courseCreate->getMessages());
+        //dump(Session::get('errors')->courseCreate->getMessages());dd();
         //dd();
 
-        $courseContentErrMsgArr         = array();
+        /*$courseContentErrMsgArr         = array();
         $courseContentLinkErrMsgArr     = array();
-        $courseInfoErrMsgArr            = array();
+        $courseInfoErrMsgArr            = array();*/
 
+        $courseValErrors = $this->courseService->getCourseValidationErrors(Session::get('errors')->courseCreate->getMessages());
+        //dump($courseValErrors);
+
+
+        /*
         foreach (Session::get('errors')->courseCreate->getMessages() as $errField => $valErrMsgArr):
-            //dump($errField);
-            //dump($valErrMsgArr);
             if(Str::startsWith($errField, 'contentArr.')){
-                //dump($errField);
-
                 $sectionHeading = Str::of($errField)->explode('.')[1];
 
-                //dump(isset(Str::of($errField)->explode('.')[2]));
-                
-
-
-                //dump($sectionHeading);
-                //dump($valErrMsgArr);
                 foreach ($valErrMsgArr as $errMsg){
 
-
                     if(isset(Str::of($errField)->explode('.')[2])){
-                        $linkIndex = Str::of($errField)->explode('.')[2];
-                        
-                        //dump($courseContentLinkErrMsgArr);
-                        //dump("courseContentLinkErrMsgArr-{$sectionHeading}-{$linkIndex}");
-                        //dump(isset($courseContentLinkErrMsgArr[$sectionHeading][$linkIndex]));
-                         
-
+                        $linkIndex = Str::of($errField)->explode('.')[2];                        
                         if(!isset($courseContentLinkErrMsgArr[$sectionHeading][$linkIndex])){
                             $courseContentLinkErrMsgArr[$sectionHeading][$linkIndex] = $errMsg;
                         }else{
                             $courseContentLinkErrMsgArr[$sectionHeading][$linkIndex] .= ', '.$errMsg;
                         }
-                        //dump($courseContentLinkErrMsgArr);
-                        //dump("=====================");  
-
-                        
                     }else{
                         $courseContentErrMsgArr[$sectionHeading][] = $errMsg;
                     }
-
-                    //$courseContentErrMsgArr[$key][] = $err;
                 }
-                /**/               
-
-                
             }else{
                 $courseInfoErrMsgArr[$errField] = $valErrMsgArr;               
             }
-
         endforeach;
+        */
         
-        //dump($courseContentLinkErrMsgArr);
-        //dump($courseContentErrMsgArr);
-        //dump($courseInfoErrMsgArr);
-        //dd();
-
-
-
-        //dump(gettype($contentErrMsgArr));
-
-        //$contentErrMsgArr = '11';
-
-
-        //dd();
-        //dump('===================================');
         
-
-        //Session::get('errors')->courseCreate->add($contentErrMsgArr, 'fff');
-        //Session::put('errors', $contentErrMsgArr);
-        //dump(Session::all());
 
 
 
@@ -219,7 +189,10 @@ class CourseController extends Controller
 
         try{
             //$this->authorize('createTeachers',User::class);            
-            
+            //$file = $request->input('course-img');
+            //dd($file);
+
+
             $validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
 
             if (isset($request->validator) && $request->validator->fails()) {
@@ -234,13 +207,12 @@ class CourseController extends Controller
 
 
 
-            
 
             /*
-            $file = $request->input('teacher_profile_img');
+            
             if(isset($file)){
                 $fileUploadUtil = new FileUploadUtil();
-                $destination    = $fileUploadUtil->upload($file,'course/');
+                $destination    = $fileUploadUtil->upload($file,'courses/');
             }else{
                 $destination =null;
             }
@@ -277,16 +249,20 @@ class CourseController extends Controller
             */
 
         }catch(CustomException $e){
-            return redirect()->back()
-            ->withErrors($courseContentErrMsgArr,'courseContentErrMsgArr')
+            
+            /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
-            ->withErrors($courseInfoErrMsgArr,'courseInfoErrMsgArr')
+            then laravel automatically remove all duplicated message in one key element in array */
+
+            return redirect()->back()
+            ->withErrors($courseValErrors['contentErrMsgArr'],'contentErrMsgArr')            
+            ->withErrors($courseValErrors['infoErrMsgArr'],'infoErrMsgArr')
             ->with([
-                'message'  => $e->getMessage(),
-                //'message2' => $pwResetTxt,                
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-                //'' => $contentErrMsgArr
+                'message'               => $e->getMessage(),
+                //'message'             => $e->getMessage(),         
+                'cls'                   => 'flash-danger',
+                'msgTitle'              => 'Error !',
+                'contentLinksErrMsgArr' => $courseValErrors['contentLinksErrMsgArr']
             ]);
 
         }catch(AuthorizationException $e){
@@ -295,6 +271,7 @@ class CourseController extends Controller
                 //'message2' => $pwResetTxt,                
                 'cls'     => 'flash-danger',
                 'msgTitle'=> 'Permission Denied !',
+                
             ]);
 
         }catch(\Exception $e){
@@ -304,6 +281,7 @@ class CourseController extends Controller
                 //'message2' => $pwResetTxt,
                 'cls'     => 'flash-danger',
                 'msgTitle'=> 'Error !',
+
             ]);
         }
 

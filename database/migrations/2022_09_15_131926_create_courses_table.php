@@ -20,7 +20,7 @@ class CreateCoursesTable extends Migration
 
             $table->increments('id');
             $table->text('name'); // course name
-            $table->decimal('author_share_percentage', 4, 2)->default (60.00);
+            
             $table->text('heading_text')->nullable();
             $table->text('description')->nullable();
             $table->text('image')->nullable();
@@ -45,7 +45,7 @@ class CreateCoursesTable extends Migration
             $table->foreign('teacher_id')->references('id')->on('users');
 
 
-
+            $table->decimal('author_share_percentage', 4, 2)->default (60.00);
 
 
 

@@ -12,9 +12,9 @@
 <link href="{{asset('admin/css/plugins/iCheck/custom.css')}}" rel="stylesheet">
 {{--<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/green.css">--}}
 
-{{--
+
 <link rel='stylesheet' href='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'>
-<link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>--}}
+<link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>
 
 <!-- jQuery Steps -->
 <link rel='stylesheet' href='{{asset('admin/css/plugins/steps/jquery.steps.css')}}'>
@@ -57,10 +57,9 @@
         list-style: none !important;
     }
 
-</style>
 
 
-<style>
+
     .three-state-checkbox {
         background-color: #fff;
         border: solid 1px #ccc;
@@ -113,105 +112,80 @@
             @if(Session::has('message'))
                 <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
                     <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-xl text-red-500"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p class="font-semibold text-sm text-red-500">{{ Session::get('message') ?? 'Info!' }}</p>
                     <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>                    
 
-                     @if ($errors->courseInfoErrMsgArr->getMessages())
+                    @if ($errors->infoErrMsgArr->getMessages())
                         <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
-                            @foreach ($errors->courseInfoErrMsgArr->getMessages() as $field => $errorMsgArr)
+                            @foreach ($errors->infoErrMsgArr->getMessages() as $field => $errorMsgArr)
                                 @foreach ($errorMsgArr as $errorMsg)
                                     <li class="">{{ $errorMsg }}</li>
                                 @endforeach
                             @endforeach
                         </ul>
-                    @endif                    
+                    @endif
 
-                    
-                    <?php //dump($errors); ?>
-                    <?php //dump($errors->courseCreate->any()); ?>
-                    <?php //dump($errors->all()); ?>
-                    <?php //dump($errors->courseCreate); ?>
-                    <?php //dump($errors->courseCreate->getMessages()); ?>
-
-                    <?php ////dump($errors->courseCreate['messages']); ?>
-                    <?php //dump($errors->courseCreate->get('course-name')); ?>
-
-
-
-                    <?php //dump($errors->courseCreate->has('subject')); ?>
-                    <?php //dump($errors->courseCreate->all()); ?>
-                    
-                    <?php //dump($errors->courseContentErrMsgArr->getMessages()); ?>
-                    <?php //dump($errors->courseContentLinkErrMsgArr->getMessages()); ?>
-                    <?php //dd($errors->courseContentLinkErrMsgArr->getMessages()); ?>
-                    <?php //dump($errors->uuu); ?>
-
-
-
-                    
-
-                    
-                    
-                    
                                         
+                    <?php 
+                        //dump($errors);
+                        //dump($errors->courseCreate->any());
+                        //dump($errors->all());
+                        //dump($errors->courseCreate);
+                        //dump($errors->courseCreate->getMessages());
 
+                        ////dump($errors->courseCreate['messages']);
+                        //dump($errors->courseCreate->get('course-name'));
+
+                        //dump($errors->courseCreate->has('subject'));
+                        //dump($errors->courseCreate->all());
+                        
+                        //dump($errors->contentErrMsgArr->getMessages());
+                        //dump($errors->contentLinksErrMsgArr->getMessages());
+                        //dd($errors->contentLinksErrMsgArr->getMessages());
+                        //dump($errors->uuu);
+
+                        //dd($xsr);
+                        //dd($contentLinksErrMsgArr); 
+
+
+
+
+                    ?>            
 
                     
-                    <?php  //dump($errors->courseContentErrMsgArr->getMessages()); ?>
-                    {{----}}
-                    @foreach ($errors->courseContentErrMsgArr->getMessages() as $key => $errorMsgArr)
-                            <?php  //dump($key); ?>
-                            <?php  //dump($errorMsgArr); ?>
-                            <?php  //dump(count($errorMsgArr)); ?>
-                        <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                            <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
-                            <div class="card-body py-1">                                
-                                <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
-                                @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                    <li class="">{{$errorMsgArr[$i]}}</li>
-                                @endfor
-                                </ul>                                   
+                    
+                    <?php  //dump($errors->contentErrMsgArr->getMessages()); ?>
+                    @if(($errors->contentErrMsgArr->getMessages() != null) && is_array($errors->contentErrMsgArr->getMessages()))
+                        @foreach ($errors->contentErrMsgArr->getMessages() as $key => $errorMsgArr)
+                            <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
+                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
+                                <div class="card-body py-1">                                
+                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
+                                    @for ($i = 0; $i < count($errorMsgArr); $i++)
+                                        <li class="">{{$errorMsgArr[$i]}}</li>
+                                    @endfor
+                                    </ul>                                   
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
-                    
+                        @endforeach
+                    @endif   
 
-                    <?php  //dump($errors->courseContentLinkErrMsgArr->getMessages()); ?>
-                    {{----}}
-                    @foreach ($errors->courseContentLinkErrMsgArr->getMessages() as $key => $errorMsgArr)
-                            <?php  //dump($key); ?>
-                            <?php  //dump($errorMsgArr); ?>
-                            <?php  //dump(count($errorMsgArr)); ?>
-                        <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                            <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
-                            <div class="card-body py-1">                                
-                                <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
-                                @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                    <li class="">Link {{($i+1)}}  ⟹  {{$errorMsgArr[$i]}}</li>
-                                @endfor
-                                </ul>                                   
+                    <?php //dd(Session::get('contentLinksErrMsgArr'));?>
+                    @if(Session::has('contentLinksErrMsgArr') && is_array(Session::get('contentLinksErrMsgArr')))
+                        @foreach (Session::get('contentLinksErrMsgArr') as $key => $errorMsgArr)
+                            <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
+                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
+                                <div class="card-body py-1">                                
+                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
+                                    @for ($i = 0; $i < count($errorMsgArr); $i++)
+                                        <li class="">Link {{($i+1)}}  ⟹  {{$errorMsgArr[$i]}}</li>
+                                    @endfor
+                                    </ul>                                   
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
-
-
-                    
-
-
-
-
-
-
-
-                    
-
-
-                    
-
-
-
-
+                        @endforeach
+                    @endif
 
                 </div>
             @endif
@@ -219,8 +193,8 @@
             @if(isset($message))
                 <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
                     <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
-                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-xl text-red-500"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
+                    <p class="text-sm font-semibold text-red-500">{{ $message ?? 'Info!' }}</p>
                     <div class="text-base">{!! $message2 ?? '' !!}</div>
                 </div>
             @endif
@@ -228,7 +202,7 @@
             <div class="ibox">
                 <div class="ibox-content">
                     
-                    <form id="course-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix">
+                    <form id="course-add-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
                         {{csrf_field ()}}
                         <h1>Details</h1>
                         <fieldset>
@@ -242,9 +216,9 @@
                                         <div class="col-sm-8">
                                             <input type="text" name="course-name" class="form-control" value="{{old('course-name')}}">
                                             <div class="error-msg"></div>
-                                            @if ($errors->courseInfoErrMsgArr->has('course-name'))
+                                            @if ($errors->infoErrMsgArr->has('course-name'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->courseInfoErrMsgArr->get('course-name') as $error)
+                                                    @foreach ($errors->infoErrMsgArr->get('course-name') as $error)
                                                         <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                     @endforeach
                                                 </ul>
@@ -263,9 +237,9 @@
 												@endforeach
                                             </select>
                                             <div class="error-msg"></div>
-                                            @if ($errors->has('subject'))
+                                            @if ($errors->infoErrMsgArr->has('subject'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->get('subject') as $error)
+                                                    @foreach ($errors->infoErrMsgArr->get('subject') as $error)
                                                         <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                     @endforeach
                                                 </ul>
@@ -284,9 +258,9 @@
 												@endforeach
                                             </select>
                                             <div class="error-msg"></div>
-                                            @if ($errors->has('teacher'))
+                                            @if ($errors->infoErrMsgArr->has('teacher'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->get('teacher') as $error)
+                                                    @foreach ($errors->infoErrMsgArr->get('teacher') as $error)
                                                         <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                     @endforeach
                                                 </ul>
@@ -301,9 +275,9 @@
                                                 <textarea class="form-control" name="course-heading"
                                                           cols="30" rows="7" placeholder="" autocomplete="off">{{old('course-heading')}}</textarea>
                                                 <div class="error-msg"></div>
-                                                @if ($errors->has('course-heading'))
+                                                @if ($errors->infoErrMsgArr->has('course-heading'))
                                                     <ul class="mt-1">
-                                                        @foreach ($errors->get('course-heading') as $error)
+                                                        @foreach ($errors->infoErrMsgArr->get('course-heading') as $error)
                                                             <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                         @endforeach
                                                     </ul>
@@ -320,16 +294,27 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="hr-line-dashed"></div>
+                                    <div class="hr-line-dashed"></div>                                    
+
 
                                     <div class="form-group row"><label class="col-sm-4 col-form-label">Course image</label>
                                         <div class="col-sm-8">
-                                            {{--<input type="file" id="course-img" name="course-img">--}}
-                                            <input type="file"
-                                               class="filepond-img"
-                                               name="course-img"
-                                               accept="image/webp, image/png, image/jpeg, image/gif"
-                                               data-max-file-size="1MB"/>
+                                            {{--<input type="file" id="course-img" name="course-img"/>--}}
+                                            <input 
+                                                type="file" class="filepond-img" name="course-img"/>
+
+<!-- data-max-file-size="1MB"
+                                                accept="image/webp, image/png, image/jpeg, image/gif" -->
+
+                                            <div class="__error-msg"></div>
+                                            @if ($errors->infoErrMsgArr->has('course-img'))
+                                                <ul class="mt-1">
+                                                    @foreach ($errors->infoErrMsgArr->get('course-img') as $error)
+                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                    @endforeach
+                                                </ul>
+                                            @endif                                            
+
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -347,9 +332,9 @@
                                         <div class="col-sm-8">
                                             <input type="text" name="video-count" class="form-control" value="{{old('video-count')}}">
                                             <div class="error-msg"></div>
-                                            @if ($errors->has('video-count'))
+                                            @if ($errors->infoErrMsgArr->has('video-count'))
                                                 <ul class="mt-1">
-                                                    @foreach ($errors->get('video-count') as $error)
+                                                    @foreach ($errors->infoErrMsgArr->get('video-count') as $error)
                                                         <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                     @endforeach
                                                 </ul>
@@ -770,21 +755,25 @@
     <!-- <script src="../assets/summernote-0.8.18/summernote-lite.js"></script> -->
     <script src="{{asset('admin/plugins/summernote-0.8.18/summernote-bs4.js')}}"></script>
 
-    <!-- 
     <script src='https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js'></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script>
-    -->
-
+   
 
     <!-- jQuery Steps -->
     <script src="{{asset('admin/js/plugins/steps/jquery.steps.min.js')}}"></script>
 
     <!-- jQuery validate -->
     <script src="{{asset('admin/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    {{--
+    <script src="{{asset('admin/js/plugins/validate/additional-methods.min.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
+    --}}
+
+
 
     <!-- iCheck
     <script src="{{asset('admin/js/plugins/iCheck/icheck.min.js')}}"></script>-->
@@ -805,8 +794,8 @@
 @section('javascript')
     <script>
 
-		/*(function () {
-			//We want to preview images, so we need to register the Image Preview plugin
+		(function () {
+			/*We want to preview images, so we need to register the Image Preview plugin*/
 			FilePond.registerPlugin(
 
 				// encodes the file as base64 data
@@ -822,17 +811,21 @@
 				FilePondPluginImagePreview,
 
 				FilePondPluginFileValidateType
+
+
 			);
-		})();*/
+		})();
 
         var courseTopicFunctionality;
         var courseContentFunctionality;
         var inputLinkType;
 
         /* course content from Database */
-        //var courseContentFromDb = '{\n                           "aa":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
+        // ok \'
+        var courseContentFromDb = '{\n                           "aa":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
+        
         // . " \ ${} `
-        var courseContentFromDb = `{
+        var courseContentFromDb1 = `{
                            "aa":[
                               "",
                               {
@@ -978,6 +971,14 @@
 
 
 		$(document).ready(function(){
+
+
+            
+
+
+
+
+
             
             toastr.options = {
                 "closeButton": true,
@@ -1001,7 +1002,9 @@
 
 
 
-			var courseForm = $("#course-form");
+			var courseForm = $("#course-add-form");
+            let pond;
+
 
             courseForm.steps({
 				bodyTag: "fieldset",
@@ -1015,7 +1018,7 @@
 				onInit:function (event, currentIndex, newIndex){
 
 					// Select the file input and use create() to turn it into a pond					
-                    //const pond = FilePond.create(document.querySelector('.filepond-img'));
+                    pond = FilePond.create(document.querySelector('.filepond-img'));
 
 					$("#subject").select2({
 						placeholder: "Select student gender",
@@ -1092,11 +1095,59 @@
                 },
 				onStepChanging: function (event, currentIndex, newIndex)
 				{                    
-                    //var fv = $("#course-form").data('formValidation');
+                    //var fv = $("#course-add-form").data('formValidation');
                     //var fv = courseForm.data('formValidation');
 
                     // The current step container
-                    //$container = $("#course-form").find('section[data-step="' + currentIndex +'"]');
+                    //$container = $("#course-add-form").find('section[data-step="' + currentIndex +'"]');
+                    
+                    /*console.log('=========pond========');
+                    console.log(pond);
+                    console.log(typeof pond);
+                    console.log(typeof pond);
+                    console.log(pond.getFile());
+                    console.log(pond.getFile(1));
+                    console.log(pond.getFile().fileExtension);
+                    console.log(pond.getFile().fileSize);*/
+
+                    
+                    if(currentIndex === 10){
+                        // validate course image
+                        if(pond.getFile(0)){
+                            try {                      
+                                let fileExt     = pond.getFile(0).fileExtension;
+                                let fileSize    = pond.getFile(0).fileSize;
+                                let msg         = '';
+
+                                if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
+                                    msg += 'only image type jpg/png/jpeg/gif/webp is allowed';                          
+                                }
+
+                                if(fileSize /1024 > 1000){
+                                    if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
+                                        msg += ' and '
+                                    }
+                                    msg += 'file size must be less than 1MB';
+                                }
+
+                                if(msg != ''){
+                                    msg = 'Course image - ' + msg + '. !';
+                                    toastr['error'](msg);
+                                    return; 
+                                }
+
+                            }
+                            catch(err) {                          
+                                toastr['error'](err.message);
+                                return;
+                            }
+                        }
+                    }
+
+
+
+
+
                     
 
 
@@ -1173,7 +1224,39 @@
                     }
                     
 
+
+
+
+
+
+
+
+
+
                     var form = $(this);
+                    /*var formdata = new FormData(this);
+                    
+
+                    // append FilePond files into the form data
+                    pondFiles = pond.getFiles();
+                    //console.log(pond.getFiles());
+                    console.log(pondFiles[0].file);
+
+
+                    //formdata.append('course-image', pondFiles[0].file);
+                    //console.log(formdata);
+                    $('#hidden-course-img').append($('<input type="hidden" ' + 
+                                                    'name="course-image-hidden" ' + 
+                                                    'value="' + pondFiles[0].file + '">')
+                    );
+
+                    $('#hidden-course-img').append($('<input type="text" ' + 
+                                                    'name="xxx" ' + 
+                                                    'value="777">')
+                    );
+*/
+
+
                     // Submit form input
                     form.submit();
                 }
@@ -1192,10 +1275,15 @@
                         //required: true,
                         //minlength: 3
                     },
-                    //"subject": {required: true},
-                    //"teacher": {required: true},
-                    //"course-heading": {required: true},
-                    //"video-count": {number: true,min:0}
+                    //"subject"         : {required: true},
+                    //"teacher"         : {required: true},
+                    //"course-heading"  : {required: true},
+                    //"video-count"     : {number: true,min:0},
+                    /*
+                    "course-img"        : { 
+                        accept: "image/*",
+                       filesize: 1 // 1MB
+                    }*/
 
                 },
                 messages:{
@@ -1206,7 +1294,15 @@
                     "subject":          {required: "Subject name is required"},
                     "teacher":          {required: "Teacher name is required"},
                     "course-heading":   {required: "Course heading is required"},
-                    "video-count":      {digits:   "Video count must be digits only"}
+                    "video-count":      {digits:   "Video count must be digits only"},
+                    /*                    
+                    "course-img" :      { 
+                        accept: 'Only image type jpg/png/jpeg/gif/webp is allowed',
+                        filesize:" file size must be less than 1MB.",
+                    }*/
+
+
+
                 },
                 submitHandler: function(form){
                     console.log('submitHandler');
@@ -1323,7 +1419,7 @@
 
 
             const _cacheDom = () => {
-                form          = $("#course-form");
+                form          = $("#course-add-form");
                 thisTab       = $("#tab-add-topics");
                 addBtn        = thisTab.find("#add-topics-btn");
                 inp_ele       = thisTab.find("input.add-topics");
@@ -1821,7 +1917,7 @@
 
 
             const _cacheDom = () => {
-                form                = $("#course-form");
+                form                = $("#course-add-form");
                 thisTab             = $("#tab-add-course-content");
                 addBtn              = thisTab.find("#add-course-content");
                 contentListArea     = thisTab.find(".course-content-list-area");
@@ -2117,7 +2213,7 @@
                         id: "contentJson",
                         type: "hidden",
                         value: contentJsonStr
-                    }).appendTo("#course-form");
+                    }).appendTo("#course-add-form");
                 }else{
                     form.find($("input[name=contentJson]")).val(contentJsonStr);
                 }

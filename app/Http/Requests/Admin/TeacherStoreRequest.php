@@ -32,6 +32,9 @@ class TeacherStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        
+
+
         $email      = $this->get('teacher-email');
         $username   = $this->get('teacher-uname');
         //dd($email);
