@@ -5,14 +5,76 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
+
 
 class Course extends Model
 {
-    use HasFactory;
+    use HasFactory,Sluggable;
+    
     protected $casts = [
-        'topics'  => 'array',
-        'content' => 'array',
+        //'topics'  => 'array',
+        //'content' => 'array',
     ];
+
+    protected $fillable = [
+        'name',
+        'subject_id',
+        'teacher_id',
+        'heading_text',
+        'description',
+        'duration',
+        'video_count',
+        'author_share_percentage',
+        'price',
+        'status',
+        'image',
+        'topics', 
+        'content',
+        'slug'
+    ];
+
+
+
+
+
+    
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'name'
+            ]
+        ];
+    }
+
+
+    public function getContentAttribute($value)
+    {
+        //return $value;
+        //return stripslashes($value);
+        //return "getContentAttribute";
+        //$rr = stripslashes($value);
+        //return $rr;
+        //dump($value);
+        return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        //dump($rr);
+        //return  json_decode($rr, true, 512, JSON_THROW_ON_ERROR);
+        //return json_decode($value, true, 512, JSON_UNESCAPED_SLASHES);
+    }
+
+    
+    public function getTopicsAttribute($value)
+    {
+        //return 'getTopicsAttribute';
+        return  json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+    }
+
 
     public function subject(){
         return $this->belongsTo(Subject::class,'subject_id','id');

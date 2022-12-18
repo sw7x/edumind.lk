@@ -14,6 +14,7 @@ class CourseStoreRequest extends FormRequest
 
     public  $isValidContentJson = null;
     protected $stopOnFirstFailure = false;
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,8 +26,6 @@ class CourseStoreRequest extends FormRequest
         return true;
     }
 
-
-
     /**
      * Prepare the data for validation.
      *
@@ -34,20 +33,7 @@ class CourseStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        //dd($this->get('contentJson')); 
-        //dd($this->get('course-img'));   
-
         //dump($this->request);
-        //dd($this->get('course-image'));
-        //dump($this->get('hidden-course-img'));
-        //dd($this->request->file('hidden-course-img'));
-        //dd($this->file('hidden-course-img'));
-
-        //dd();
-        //dd($this->request);
-
-
-
         if(!$this->get('course-price')){
             $this->merge(['course-price' => 0]);
         }
@@ -59,14 +45,18 @@ class CourseStoreRequest extends FormRequest
         try {
 
             $contentArr = json_decode($this->get('contentJson'), true, 512, JSON_THROW_ON_ERROR);
+            $topicsArr  = json_decode($this->get('topicsJson'), true, 512, JSON_THROW_ON_ERROR);
+
             //dd($contentArr);
             $this->isValidContentJson = true;
 
-            $this->merge(['contentArr' => $contentArr]);
+            $this->merge([
+                'contentArr' => $contentArr,
+                'topicsArr'  => $topicsArr,
+            ]);
             //$this->merge(['contentArr' => array("Peter"=>"35", "Ben"=>"37", "Joe"=>"43")]);
             //$this->merge(['contentArr' => [1,2,3]]);
             //$this->merge(['contentArr' => []]);
-
         }  
         catch (\JsonException $exception) {  
             $this->isValidContentJson = false;
@@ -87,47 +77,16 @@ class CourseStoreRequest extends FormRequest
             'subject'       => 'required',
             'teacher'       => 'required',
             'course-heading'=> 'required',
-            'video-count'   => 'nullable|numeric|min:0',
+            'video-count'   => 'nullable|numeric|min:0',            
             
-            /*'course-img'=> function ($attribute, $value, $fail) {                    
-                
-                try {
-                    $courseImg      = json_decode($this->get('course-img'), true, 512, JSON_THROW_ON_ERROR);
-                    $validFileTypes = array('webp', 'png', 'jpeg', 'jpg', 'gif');
-                    $msg            = '';
-
-                    $ext = explode(".",$courseImg['name'])[1];
-                    $ext = strtolower($ext);
-                    
-                    if(!in_array($ext,$validFileTypes)){
-                        $msg .= 'only image type jpg/png/jpeg/gif/webp is allowed';  
-                    }
-
-                    if(($courseImg['size']/(1024*1024)) > 1){
-                        if(!in_array($ext,$validFileTypes)){
-                            $msg    .= ' and ';
-                        }
-                        $msg .= 'file size must be less than 1MB';
-                    }
-
-                    if($msg != ''){
-                        $msg = 'Course image - ' . $msg . '. !';
-                        $fail($msg);
-                    }
-                }  
-                catch (\Exception $exception) { 
-                    $msg = 'Course image is invalid.!';
-                }
-            },*/
-            
-            'course-img'=>[
+            'course-img'    =>  [
                 function ($attribute, $value, $fail) {               
+                    //validate file type
                     try {
                         if(null == $this->get('course-img'))return;                        
                         $courseImg      = json_decode($this->get('course-img'), true, 512, JSON_THROW_ON_ERROR);
                         $validFileTypes = array('webp', 'png', 'jpeg', 'jpg', 'gif');
-                        $ext            = strtolower(explode(".",$courseImg['name'])[1]);                        
-
+                        $ext            = strtolower(explode(".",$courseImg['name'])[1]);
                         $msg = (!in_array($ext,$validFileTypes))?'Course image can be these file types jpg/png/jpeg/gif/webp.':'';
                     }  
                     catch (\Exception $exception) { 
@@ -135,7 +94,8 @@ class CourseStoreRequest extends FormRequest
                     }                    
                     if($msg != '')$fail($msg);
                 },
-                function ($attribute, $value, $fail) {             
+                function ($attribute, $value, $fail) {   
+                    // validate file size          
                     try {
                         if(null == $this->get('course-img'))return;
                         $courseImg      = json_decode($this->get('course-img'), true, 512, JSON_THROW_ON_ERROR);                   
@@ -147,40 +107,7 @@ class CourseStoreRequest extends FormRequest
                     if($msg != '')$fail($msg);
                 }
             ],
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             //'course-img'    => 'image|max:1024',
-           
-
-
-
-
             'contentArr'    => [
                 'present',
                 function ($attribute, $value, $fail) {                    
@@ -191,15 +118,12 @@ class CourseStoreRequest extends FormRequest
                     }
                 }
             ],
-            'contentArr.*'                => 'required|array',
-            //'contentArr.*'                  => 'array',
+            //'contentArr.*'                  => 'required|array',
+            'contentArr.*'                  => 'array',
             'contentArr.*.*'                => 'required|array',            
             
-            //'contentArr.*.*.inputText'      => 'required|string',
-            'contentArr.*.*.inputText'      => 'string|email',
-
-
-
+            'contentArr.*.*.inputText'      => 'required|string',
+            //'contentArr.*.*.inputText'      => 'string|email',
 
             'contentArr.*.*.inputUrl'       => 'required|string',
             'contentArr.*.*.linkParam'      => 'present|string',
@@ -210,30 +134,6 @@ class CourseStoreRequest extends FormRequest
             ]
 
         ];
-
-
-
-
-
-
-
-
-        /*return [
-        'item.*.name' => 'required|string|max:255',
-        'item.*.description' => 'sometimes|nullable|string|min:60',
-        'sku' => 'required|array',
-        'sku.*' => 'sometimes|required|string|regex:​​/^[a-zA-Z0-9]+$/',
-        'sku' => 'required|array',
-        'price.*' => 'sometimes|required|numeric',
-        'months_available' => 'required|array',
-        'months_available.*' => 'sometimes|required|array',
-        'months_available.*.*' => 'sometimes|required|string',
-    ];*/
-
-
-
-
-
     }
 
 
@@ -247,65 +147,39 @@ class CourseStoreRequest extends FormRequest
         $contentArrMessages = [];
 
         foreach ($this->request->get('contentArr') as $secHeading => $secContent) {
-            /* 'contentArr.*' => 'required|array'   */
-            //$contentArrMessages['contentArr.' . $secHeading . '.required'] = 'Content under section ' . $secHeading . ' is required'; 
-            $contentArrMessages['contentArr.' . $secHeading . '.required'] = 'content is required';            
-            //$contentArrMessages['contentArr.' . $secHeading . '.array']    = 'Content under section ' . $secHeading . ' is not in corect format';
+            /* 'contentArr.*' => 'array'   */
+            //$contentArrMessages['contentArr.' . $secHeading . '.required'] = 'content is required';            
             $contentArrMessages['contentArr.' . $secHeading . '.array']    = 'content is not in corect format';
 
             foreach ($secContent as $linkIndex => $linkContent) {
                 $linkPosition = $linkIndex + 1;
 
                 /* 'contentArr.*.*' => 'required|array' */
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.required'] = 'Link number ' . $linkPosition . ' under section ' . $secHeading . ' is required'; 
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.required'] = 'link is required'; 
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.array']    = 'Link number ' . $linkPosition . ' under section ' . $secHeading . ' is not corect format';
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.array']    = 'link is not in corect format';
-                
-                
+                                
                 /* 'contentArr.*.*.inputText' => 'required|string' */
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.required']  = 'Text is required for link number '    . $linkPosition . ' under section ' . $secHeading;
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']    = 'Text must be string for link number ' . $linkPosition . ' under section ' . $secHeading;
-                
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']  = 'Text must be string for link number '    . $linkPosition . ' under section ' . $secHeading;
-                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']  = 'text must be string';
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.email']   = 'Text must be email for link number ' . $linkPosition . ' under section ' . $secHeading;
-                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.email']   = 'text must be email';
-
-
-
-
-
+                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.required']  = 'text is required';
+                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']    = 'text must be string';
+                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']  = 'text must be string';
+                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.email']   = 'text must be email';
 
 
                 /* 'contentArr.*.*.inputUrl'  => 'required|string' */ 
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputUrl'.'.required']   = 'url is required for link number '    . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputUrl'.'.required']   = 'url is required';
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputUrl'.'.string']     = 'url must be string for link number ' . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputUrl'.'.string']     = 'url must be string';
 
-
                 /* 'contentArr.*.*.linkParam' => 'present|string' */
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.linkParam'.'.present']   = 'Duration/Size must be present for link number '    . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.linkParam'.'.present']   = 'Duration/Size field must be present';
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.linkParam'.'.string']    = 'Duration/Size must be string for link number ' . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.linkParam'.'.string']    = 'Duration/Size field value must be string';
 
-
-
                 /* 'contentArr.*.*.isFree'    => 'required|boolean' */
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.isFree'.'.required']     = 'Price type is required for link number ' . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.isFree'.'.required']     = 'price type is required';
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.isFree'.'.boolean']      = 'Price type is invalid for link number '  . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.isFree'.'.boolean']      = 'price type is invalid';
                 
-
                 /* 'contentArr.*.*.type'      => ['required',Rule::in(['download', 'other', 'qvideo'])]  */             
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.type'.'.required']   = 'Link type is required for link number ' . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.type'.'.required']   = 'link type is required';
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.type'.'.in']         = 'Link type is invalid for link number '  . $linkPosition . ' under section ' . $secHeading;
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.type'.'.in']         = 'link type is invalid';
-            
             }            
         }      
         //echo '<pre>',print_r($contentArrMessages,true),'</pre>';dd();

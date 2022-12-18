@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Session;
 
 use App\Services\CourseService;
 use App\Utils\FileUploadUtil;
+use App\Utils\UrlUtil;
+
 
 class CourseController extends Controller
 {
@@ -124,6 +126,13 @@ class CourseController extends Controller
     //public function store(Request $request)
     {
         //dd($request->all());
+        //=============`todo - course section heading topics string how set ????
+        //=============`todo - custom casts to course model ????
+        //=============`todo - client side val
+        //=============`todo - user input characters filetr
+
+        //dd($dd);
+
         //dump(Session::all());
         //dump(Session::get('errors'));
         //dump(Session::get('errors')->courseCreate);
@@ -133,8 +142,11 @@ class CourseController extends Controller
         /*$courseContentErrMsgArr         = array();
         $courseContentLinkErrMsgArr     = array();
         $courseInfoErrMsgArr            = array();*/
+        //dd(Session::get('errors'));
 
-        $courseValErrors = $this->courseService->getCourseValidationErrors(Session::get('errors')->courseCreate->getMessages());
+        if(null != Session::get('errors') && null != Session::get('errors')->courseCreate->getMessages()){
+            $courseValErrors = $this->courseService->getCourseValidationErrors(Session::get('errors')->courseCreate->getMessages());
+        }
         //dump($courseValErrors);
 
 
@@ -171,7 +183,7 @@ class CourseController extends Controller
         //dump($request->validator->fails());
         //dump($request->validator);
         //dump($request->isValidContentJson);
-       // dd($request);
+        //dd($request);
 
         //dd($request->get('contentArr.*'));
         
@@ -189,8 +201,22 @@ class CourseController extends Controller
 
         try{
             //$this->authorize('createTeachers',User::class);            
-            //$file = $request->input('course-img');
-            //dd($file);
+            
+
+
+
+            //dump($request->get('contentArr'));
+
+            $contentString = json_encode($request->get('contentArr'),JSON_THROW_ON_ERROR|JSON_UNESCAPED_LINE_TERMINATORS ,512);
+            $topicsString  = json_encode($request->get('topicsArr'),JSON_THROW_ON_ERROR,512);
+
+            //dump($contentString);
+            //dump($topicsString);
+            //dd();
+
+
+
+
 
 
             $validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
@@ -208,32 +234,64 @@ class CourseController extends Controller
 
 
 
-            /*
             
+            $file = $request->input('course-img');
             if(isset($file)){
                 $fileUploadUtil = new FileUploadUtil();
                 $destination    = $fileUploadUtil->upload($file,'courses/');
             }else{
                 $destination =null;
             }
+            
+
+            
+           
+            $status = ($request->get('course_stat')=='published')? 'published': 'draft';
+            
 
 
-            $status = ($request->get('teacher_stat')=='enable')? True: False;
+
+
+            $urlString  = UrlUtil::wordsToUrl($request->get('course-name'),15);
+            $slug       = UrlUtil::generateCourseUrl($urlString);
+            
+
+
+            //$slug = SlugService::createSlug(Subject::class, 'slug', $urlString);
+
+ 
+
+
+
             //DB::enableQueryLog();
 
-            $teacher = [
-                'full_name'         => $request->get('teacher-name'),
-                'email'             => $request->get('teacher-email'),
-                'password'          => $request->get('teacher-password'),
-                'phone'             => $request->get('teacher-phone'),
-                'username'          => $username,
-                'edu_qualifications'=> $request->get('teacher_edu_details'),
-                'gender'            => $request->get('teacher-gender'),
-                'dob_year'          => $request->get('teacher_birth_year'),
-                'status'            => $status,
-                'profile_pic'       => $destination,
+            Course::create([
+                'name'                    => $request->get('course-name'),
+                'subject_id'              => $request->get('subject'),
+                'teacher_id'              => $request->get('teacher'),
+                'heading_text'            => $request->get('course-heading'),
+                'description'             => $request->get('course-description'),
+                'duration'                => $request->get('video-duration'),
+                'video_count'             => $request->get('video-count'),
+                'author_share_percentage' => $request->get('author_share_percentage'),
+                'price'                   => $request->get('course-price'),
+                'status'                  => $request->get('course_stat'),
+                'image'                   => $destination,
+                'topics'                  => $topicsString, 
+                'content'                 => $contentString,
+                'slug'                    => $slug    
+            ]);
 
-            ];
+            //dd($contentString);
+
+            return redirect()->route('admin.course.create')->with([
+                'message' => 'Course created successfully',
+                'cls'     => 'flash-success',
+                'msgTitle'=> 'Success',
+            ]);
+
+            //
+            /*
 
             $user_teacher = Sentinel::registerAndActivate($teacher);
             $role_teacher = Sentinel::findRoleBySlug('teacher');
@@ -275,6 +333,8 @@ class CourseController extends Controller
             ]);
 
         }catch(\Exception $e){
+
+            dump($e->getMessage());dd('tt');
             return redirect()->back()->with([
                 'message'  => 'Add Teacher Failed !',
                 //'message'  => $e->getMessage(),
@@ -311,13 +371,45 @@ class CourseController extends Controller
     public function show($id)
     {
         //dd('fgfg');
+        $course = Course::find($id);
+        //dump($course->content);
+        //dump($course->topics);
+        //dd();
+
 
         try{
 
             if(!filter_var($id, FILTER_VALIDATE_INT)){
+                dd('Invalid id');
                 throw new CustomException('Invalid id');
             }
             $course = Course::find($id);
+            //dump($course);
+            //dump($course->content);
+
+            //dd();
+
+
+            // $string = preg_replace("/\r\n+/", " ", $course->content);
+            // dump($string);
+
+
+
+            // $json = utf8_encode($string);
+            // dump('json1');
+            // dump($json);
+            // dump('=============');
+            // $json = json_decode($json);
+            // dump('json2');
+            // dump($json);
+            // dump('=============');
+
+
+
+
+            //$contentArr = json_decode($course->content, true, 512, JSON_THROW_ON_ERROR);
+            //dd($contentArr);
+
             //var_dump($course->content);
             //dd();
             if($course != null){

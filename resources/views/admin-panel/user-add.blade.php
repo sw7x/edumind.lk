@@ -33,14 +33,14 @@
                 </div>
             @endif
 
-            @if(isset($message))
+            @isset($message)
                 <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
                     <a href="#" class="close">×</a>
                     <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
                     <p>{{ $message ?? 'Info!' }}</p>
                     <div class="text-base">{!! $message2 ?? '' !!}</div>
                 </div>
-            @endif
+            @endisset
                       
             <div class="ibox">
                 <div class="ibox-content">

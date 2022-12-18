@@ -192,7 +192,7 @@
 
                                                         @foreach($sectionContent as $arr)
                                                         <li class=" hover:bg-gray-100 p-2 flex rounded-md
-                                                            {{($arr['price'] == 'Free')?' text-blue-500':''}}
+                                                            {{($arr['isFree'] == true)?' text-blue-500':''}}
                                                             {{($arr['type'] == 'Download')?' __pl-8-important':''}}">
 
                                                             @if(strtolower($arr['type']) == 'video')
@@ -210,15 +210,15 @@
                                                             @endif
 
                                                             <div class="link_div mr-2 text-justify">    
-                                                                <a class="link" href="{{$arr['url']}}">{{$arr['text']}}</a>                                                    
+                                                                <a class="link" href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>                                                    
 
-                                                                @if($arr['price'] == 'Free')
+                                                                @if($arr['isFree'] == true)
                                                                 <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
                                                                 @endif
                                                             </div>
 
-                                                            @if($arr['param'] !='')
-                                                            <span class="param text-sm ml-auto">{{$arr['param']}}</span>
+                                                            @if($arr['linkParam'] !='')
+                                                            <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
                                                             @endif
                                                         </li>
                                                         @endforeach

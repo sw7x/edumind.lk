@@ -5,6 +5,8 @@ namespace App\View\Composers;
 
 
 use App\Models\Subject;
+use App\Models\Enrollment;
+
 use Illuminate\View\View;
 
 class TopSubjectsComposer
