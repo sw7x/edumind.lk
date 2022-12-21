@@ -307,7 +307,7 @@ class CourseController extends Controller
             */
 
         }catch(CustomException $e){
-            
+
             /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
             then laravel automatically remove all duplicated message in one key element in array */
@@ -319,7 +319,7 @@ class CourseController extends Controller
                 'message'               => $e->getMessage(),
                 //'message'             => $e->getMessage(),         
                 'cls'                   => 'flash-danger',
-                'msgTitle'              => 'Error !',
+                'msgTitle'              => 'Error!',
                 'contentLinksErrMsgArr' => $courseValErrors['contentLinksErrMsgArr']
             ]);
 
@@ -328,7 +328,7 @@ class CourseController extends Controller
                 'message'  => 'You dont have Permissions to create Teachers !',
                 //'message2' => $pwResetTxt,                
                 'cls'     => 'flash-danger',
-                'msgTitle'=> 'Permission Denied !',
+                'msgTitle'=> 'Permission Denied!',
                 
             ]);
 
@@ -336,11 +336,11 @@ class CourseController extends Controller
 
             dump($e->getMessage());dd('tt');
             return redirect()->back()->with([
-                'message'  => 'Add Teacher Failed !',
+                'message'  => 'Add Teacher Failed!',
                 //'message'  => $e->getMessage(),
                 //'message2' => $pwResetTxt,
                 'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
+                'msgTitle'=> 'Error!',
 
             ]);
         }
@@ -412,28 +412,27 @@ class CourseController extends Controller
 
             //var_dump($course->content);
             //dd();
-            if($course != null){
-                return view('admin-panel.course-view')->with(['course' => $course]);
-            }else{
-                throw new ModelNotFoundException;
-            }
-        }catch(CustomException $e){
+            if($course == null){
+                throw new ModelNotFoundException;                
+            }           
+            
 
-            return view('admin-panel.course-view')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+        }catch(CustomException $e){
+            session()->flash('message',$e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($course);       
 
         }catch(\Exception $e){
-            return view('admin-panel.course-view')->with([
-                'message'     => 'Course does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message','Course does not exist!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!'); 
+            unset($course);           
         }
 
-        return view('admin-panel.course-view');
+        return view('admin-panel.course-view')->with([
+            'course' => $course??null
+        ]);        
     }
 
     /**
@@ -496,7 +495,6 @@ class CourseController extends Controller
     public function destroy($id)
     {
         try{
-
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
@@ -504,16 +502,13 @@ class CourseController extends Controller
             if ($course) {
 
                 $course->delete();
-
-                return redirect(route('admin.course.index'))
-                    ->with([
-                        'message'  => 'successfully deleted the course',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success!',
-                    ]);
+                return redirect(route('admin.course.index'))->with([
+                    'message'  => 'successfully deleted the course',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Success!',
+                ]);
 
             } else {
-
                 throw new CustomException('Course does not exist!',[
                     'cls'     => 'flash-warning',
                     'msgTitle'=> 'Warning!',
@@ -521,17 +516,16 @@ class CourseController extends Controller
 
             }
         }catch(CustomException $e){
-
+            //dd('CustomException');
             $exData = $e->getData();
-            //dd($e->getData());
-            return view('admin-panel.user-view')->with([
+            return redirect(route('admin.course.index'))->with([
                 'message'     => $e->getMessage(),
                 'cls'         => $exData['cls'] ?? "flash-danger",
-                'msgTitle'    => $exData['msgTitle']  ?? 'Error !',
+                'msgTitle'    => $exData['msgTitle']  ?? 'Error!',
             ]);
 
         }catch(\Exception $e){
-            return view('admin-panel.user-view')->with([
+            return redirect(route('admin.course.index'))->with([
                 'message'     => 'Course delete failed!',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Error !',
@@ -549,8 +543,8 @@ class CourseController extends Controller
 
             $course = Course::find($request->courseId);
             if ($course) {
-
-                $status = $course->isEmpty();
+                
+                $status = $course->isEmpty();                
 
                 return response()->json([
                     'message'  => $status,
@@ -572,7 +566,8 @@ class CourseController extends Controller
 
         }catch(\Exception $e){
             return response()->json([
-                'message'  => 'Course status check failed!',
+                'message'  => '----'.$e->getMessage(),
+                //'message'  => 'Course status check failed!',
                 'status' => 'error',
             ]);
         }
@@ -593,7 +588,7 @@ class CourseController extends Controller
 
 
     public function changeStatus(Request $request){
-        dd('changeStatus');
+        
         try{
 
             if(!filter_var($request->courseId, FILTER_VALIDATE_INT)){

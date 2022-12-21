@@ -6,14 +6,13 @@
     <div class="main-container container">
         <div class="max-w-full  md:p-2 mx-auto">
 
-            @if(isset($message))
-                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
                     <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
-                    <p>{{ $message ?? 'Info!' }}</p>
-                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
                 </div>
-
             @endif
 
             @php

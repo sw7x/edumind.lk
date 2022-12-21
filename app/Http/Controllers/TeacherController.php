@@ -35,20 +35,17 @@ class TeacherController extends Controller
                 throw new CustomException('Access denied');
             }
         }catch(CustomException $e){
-
-            return view('teacher.teacher-my-profile')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('teacher.teacher-my-profile');            
 
         }catch(\Exception $e){
-            return view('teacher.teacher-my-profile')->with([
-                'message'     => 'Student does not exist!',
-                //'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load your profile');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('teacher.teacher-my-profile');
+            
         }
     }
 
@@ -56,13 +53,11 @@ class TeacherController extends Controller
     {
         $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
         //$teachers->getCourseCount();
-
         //todo
         foreach($teachers as $teacher){
             //dump($teacher->getTeachingCourses);
         }
         //dd();
-
         //dd($teachers);
         return view('teacher-list')->with(['teachers' => $teachers]);
     }
@@ -105,22 +100,20 @@ class TeacherController extends Controller
                 }
 
             }else{
-                throw new CustomException('Access denied');
+                throw new CustomException('Teacher profile does not exists');
             }
         }catch(CustomException $e){
-
-            return view('view-teacher-profile')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('view-teacher-profile');
 
         }catch(\Exception $e){
-            return view('view-teacher-profile')->with([
-                'message'     => 'Teacher does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load teacher profile');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('view-teacher-profile');
+
         }
 
     }
@@ -154,19 +147,17 @@ class TeacherController extends Controller
                 throw new CustomException('Access denied');
             }
         }catch(CustomException $e){
-            return view('teacher.teacher-my-courses')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('teacher.teacher-my-courses');
+
         }catch(\Exception $e){
-            //dd($e->getMessage());
-            return view('teacher.teacher-my-courses')->with([
-                //'message'     => 'Error!',
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load your courses');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('teacher.teacher-my-courses');
+
         }
 
     }

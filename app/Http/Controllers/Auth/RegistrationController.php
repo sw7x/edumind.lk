@@ -108,12 +108,10 @@ class RegistrationController extends Controller
                     //send mail
                     Mail::to($email)->send(new StudentRegMail($link,$username));
 
-                    return view('form-submit-page')->with([
-                        'message' => 'Successfully registered, check you emails to use account activation link',
-                        'title'   => 'Student registration submit page',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success!',
-                    ]);
+                    session()->flash('message', 'Successfully registered, check you emails to use account activation link');
+                    session()->flash('cls','flash-success');
+                    session()->flash('msgTitle','Success!');
+                    return view('form-submit-page');                    
 
                 }else{
                     return back()->with([

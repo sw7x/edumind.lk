@@ -13,52 +13,40 @@ class TeacherController extends Controller
 
 
     public function viewMyCourses(){
-
+        //dd('hh');
     	try{
+            $user = Sentinel::getUser();
 
-                $user = Sentinel::getUser();
+            if($user != null){
+                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
+                if($role=='teacher'){
 
-                if($user != null){
-                    $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
-                    if($role=='teacher'){
+                    $teacherService     = new TeacherService();
+                    $teacher_courses    = $teacherService->getAllCoursesByTeacher($user);                        
 
-                        $teacherService     = new TeacherService();
-                        $teacher_courses    = $teacherService->getAllCoursesByTeacher($user);
-
-                        return view('admin-panel.teacher.my-courses')->with([
-                        //return view('teacher-my-courses')->with([
-                            'userData'          => $user,
-                            'teacher_courses'   => $teacher_courses
-                        ]);
-
-                    }else{
-                        throw new CustomException('Wrong user type');
-                    }
                 }else{
-                    throw new CustomException('Access denied');
+                    throw new CustomException('Wrong user type');
                 }
-            }catch(CustomException $e){
-                return view('admin-panel.teacher.my-courses')->with([
-                    'message'     => $e->getMessage(),
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Error !',
-                ]);
-            }catch(\Exception $e){
-                //dd($e->getMessage());
-                return view('admin-panel.teacher.my-courses')->with([
-                    //'message'     => 'Error!',
-                    'message'     => $e->getMessage(),
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Error !',
-                ]);
+            }else{
+                throw new CustomException('Access denied');
             }
 
+        }catch(CustomException $e){                
+            session()->flash('message',$e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($teacher_courses);
 
+        }catch(\Exception $e){                
+            session()->flash('message','Failed to show your courses');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($teacher_courses);
+        }
 
-
-
-    	//return view('admin-panel.teacher.my-courses');
-
+        return view('admin-panel.teacher.my-courses')->with([            
+            'teacher_courses'   => $teacher_courses??null
+        ]);
     }
             
     public function ViewEarnings(){

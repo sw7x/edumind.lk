@@ -62,17 +62,30 @@ class Course extends Model
         //$rr = stripslashes($value);
         //return $rr;
         //dump($value);
-        return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        //return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
         //dump($rr);
         //return  json_decode($rr, true, 512, JSON_THROW_ON_ERROR);
         //return json_decode($value, true, 512, JSON_UNESCAPED_SLASHES);
+
+
+        if($value){
+            return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        }else{
+            return "";
+        }   
+
+
+
     }
 
     
     public function getTopicsAttribute($value)
-    {
-        //return 'getTopicsAttribute';
-        return  json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+    {   
+        if($value){
+            return  json_decode($value ?? "{}", true, 512, JSON_THROW_ON_ERROR);
+        }else{
+            return "";
+        }        
     }
 
 
@@ -114,8 +127,14 @@ class Course extends Model
         return Carbon::parse($this->created_at)->diffForHumans();
     }
 
-    public function isEmpty(){
-        return empty(json_decode($this->topics,true));
+    public function isEmpty(){       
+        if(!$this->topics){
+            return true;
+        }else{
+            return empty(json_decode($this->topics,true));
+        }
+
+        
     }
 
     public function getLinkCount(){

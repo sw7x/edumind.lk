@@ -14,9 +14,17 @@
                         <hr class="mb-5">
                         <h4 class="font-semibold mb-2 text-base"> 403 page </h4>
 
+
+                            
+                        
                         <div class="content centered">
                          	<img class="align-center" style="width:500px;" src="{{asset('images/access-denied.png')}}">
-                            <h1 class="font-semibold mb-2 text-xl">It appears you don't have permission to access this page.</h1>
+                            
+                            @if(Session::get('message'))
+                                <h1 class="font-semibold mb-2 text-xl">{{Session::get('message')}}</h1>                                
+                            @else
+                                <h1 class="font-semibold mb-2 text-xl">It appears you don't have permission to access this page.</h1>
+                            @endif
 
                             <div class="flex mt-5">
                                 <div class="mr-5">

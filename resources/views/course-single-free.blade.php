@@ -21,25 +21,18 @@
 
 @section('content')
 
-    @if(isset($message))
-        <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
-            <a href="#" class="close">×</a>
-            <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
-            <p>{{ $message ?? 'Info!' }}</p>
-            <div class="text-base">{!! $message2 ?? '' !!}</div>
-        </div>
-    @endif
-
-
+    
     @php
         //var_dump($courseData);
         //var_dump($courseData->subject->name);
         //var_dump($courseData->teacher->full_name);
     @endphp
+   
+
 
     @if(isset($courseData))
         <!-- course preview details -->
-        <div class="bg-gray-600 text-white lg:-mt-20 lg:pt-20" style="background: {{$bgColor ?? 'grey'}}">free
+        <div class="bg-gray-600 text-white lg:-mt-20 lg:pt-20" style="background: {{$bgColor ?? 'grey'}}">
             <div class="container p-0">
                 <div class="lg:flex items-center lg:space-x-12 lg:py-14 lg:px-20 p-3">
 
@@ -180,7 +173,7 @@
                     <!-- course Curriculum -->
                     <div id="curriculum" class="tube-card p-5 lg:p-8">
                         <h3 class="mb-4 text-xl font-semibold lg:mb-5"> Course Curriculum </h3>
-                        @if(isset($courseData->content))
+                        @if(isset($courseData->content) && is_array($courseData->content))
                             <ul uk-accordion="multiple: true" class="divide-y space-y-3">
                                 @php($liCount = 1)
                                 @foreach($courseData->content as $sectionHeading => $sectionContent)
@@ -608,10 +601,18 @@
 
                 </div>
             </div>
-
+        </div>    
+    @else        
+        <div class="main-container container p-0">
+            @if(Session::get('message') !== null)
+                <div class="flash-msg {{Session::get('cls') ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
         </div>
-    @else
-        <div></div>
     @endif
 
 @stop
@@ -622,7 +623,7 @@
 
 @section('bootstrap-modals')
 
-    @if(isset($courseData->content))
+    @if(isset($courseData->content) && is_array($courseData->content))
         @php($liCount = 1)
         @foreach($courseData->content as $sectionHeading => $sectionContent)
 

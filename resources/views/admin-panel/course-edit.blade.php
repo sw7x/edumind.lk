@@ -190,14 +190,7 @@
                 </div>
             @endif
 
-            @if(isset($message))
-                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
-                    <a href="#" class="close">×</a>
-                    <div class="text-xl text-red-500"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
-                    <p class="text-sm font-semibold text-red-500">{{ $message ?? 'Info!' }}</p>
-                    <div class="text-base">{!! $message2 ?? '' !!}</div>
-                </div>
-            @endif
+            
 
             <div class="ibox">
                 <div class="ibox-content">

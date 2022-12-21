@@ -41,21 +41,17 @@ class StudentController extends Controller
                 throw new CustomException('Access denied');
             }
         }catch(CustomException $e){
-
-            return view('student.student-my-courses-full-width')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-my-courses-full-width');
 
         }catch(\Exception $e){
-            //dd($e->getMessage());
-            return view('student.student-my-courses-full-width')->with([
-                //'message'     => 'Error!',
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load your courses');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-my-courses-full-width');
+
         }
     }
 
@@ -82,20 +78,16 @@ class StudentController extends Controller
                 throw new CustomException('Access denied');
             }
         }catch(CustomException $e){
-
-            return view('student.student-my-profile')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-my-profile');
 
         }catch(\Exception $e){
-            return view('student.student-my-profile')->with([
-                'message'     => 'Student does not exist!',
-                //'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load your profile');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-my-profile');
         }
     }
 
@@ -125,19 +117,17 @@ class StudentController extends Controller
                 throw new CustomException('Access denied');
             }
         }catch(CustomException $e){
-
-            return view('view-student-profile')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('view-student-profile');
 
         }catch(\Exception $e){
-            return view('view-student-profile')->with([
-                'message'     => 'Student does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load student profile');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('view-student-profile');
+            //Student does not exist!
         }
 
     }

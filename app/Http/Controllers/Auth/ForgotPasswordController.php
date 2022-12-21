@@ -84,50 +84,42 @@ class ForgotPasswordController extends Controller
             $code = $reminder->code;
 
             if($user == null){
-                return view('form-submit-page')->with([
-                    'message' => 'Invalid user',
-                    'title'   => 'Reset password page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
+                session()->flash('message','Invalid user');
+                session()->flash('cls','flash-danger');
+                session()->flash('msgTitle','Error!');
+                return view('form-submit-page');
             }
 
             if(Reminder::exists($user)){
 
                 if($code == $resetCode){
                     //return 'ok';
-                    return view('auth.form-reset-password')->with([
-                        'message' => 'Valid reset password link',
-                        'title'   => 'Reset password page',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success!',
-                    ]);
+                    session()->flash('message','Valid reset password link');
+                    session()->flash('cls','flash-success');
+                    session()->flash('msgTitle','Success!');
+                    return view('auth.form-reset-password');
 
                 }else{
-                    return view('form-submit-page')->with([
-                        'message' => 'Invalid reset password link',
-                        'title'   => 'Reset password page',
-                        'cls'     => 'flash-danger',
-                        'msgTitle'=> 'Error!',
-                    ]);
+                    session()->flash('message','Invalid reset password link');
+                    session()->flash('cls','flash-danger');
+                    session()->flash('msgTitle','Error!');
+                    return view('form-submit-page');
+                    
                 }
             }else{
-                return view('form-submit-page')->with([
-                    'message' => 'Invalid reset password link',
-                    'title'   => 'Reset password page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
+                session()->flash('message','Invalid reset password link');
+                session()->flash('cls','flash-danger');
+                session()->flash('msgTitle','Error!');
+                return view('form-submit-page');
+
             }
 
         }catch(\Exception $e){
-            return view('form-submit-page')->with([
-                //'message' => 'Error in reset password',
-                'message' => $e->getMessage(),
-                'title'   => 'Reset password page',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error!',
-            ]);
+            session()->flash('message', 'Error in reset password');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('form-submit-page');
+
         }
     }
 
@@ -143,12 +135,10 @@ class ForgotPasswordController extends Controller
             $user = User::whereEmail($email)->first();
 
             if($user == null){
-                return view('form-submit-page')->with([
-                    'message' => 'Invalid user',
-                    'title'   => 'Reset password page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
+                session()->flash('message', 'Invalid user');
+                session()->flash('cls','flash-danger');
+                session()->flash('msgTitle','Error!');
+                return view('form-submit-page');
             }
 
             if(Reminder::exists($user)){
@@ -172,30 +162,25 @@ class ForgotPasswordController extends Controller
                     ]);
 
                 }else{
-                    return view('form-submit-page')->with([
-                        'message' => 'Invalid reset password link',
-                        'title'   => 'Reset password page',
-                        'cls'     => 'flash-danger',
-                        'msgTitle'=> 'Error!',
-                    ]);
+                    session()->flash('message', 'Invalid reset password link');
+                    session()->flash('cls','flash-danger');
+                    session()->flash('msgTitle','Error!');
+                    return view('form-submit-page');
                 }
             }else{
-                return view('form-submit-page')->with([
-                    'message' => 'Invalid reset password link',
-                    'title'   => 'Reset password page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
+                session()->flash('message', 'Invalid reset password link');
+                session()->flash('cls','flash-danger');
+                session()->flash('msgTitle','Error!');
+                return view('form-submit-page');                
+
             }
 
         }catch(\Exception $e){
-            return view('form-submit-page')->with([
-                'message' => 'Error in reset password',
-                //'message' => $e->getMessage(),
-                'title'   => 'Reset password page',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error!',
-            ]);
+            session()->flash('message', 'Error in reset password');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('form-submit-page');
+            
         }
 
     }

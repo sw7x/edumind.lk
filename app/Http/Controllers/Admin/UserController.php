@@ -52,35 +52,43 @@ class UserController extends Controller
     public function index()
     {   
         try{
-            $this->authorize('viewAny',User::class);
-            
+
+            $this->authorize('viewAny',User::class);            
             $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
             $students   =   Sentinel::findRoleBySlug('student')->users()->with('roles')->get();
             $marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->get();
-            $editors    =   Sentinel::findRoleBySlug('editor')->users()->with('roles')->get();
-        
-            return view('admin-panel.user-manage')->with([
+            $editors    =   Sentinel::findRoleBySlug('editor')->users()->with('roles')->get();  
+            
+
+            $teachers1   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
+            
+//dd($teachers->first());
+
+            //dd($teachers);
+            return view('admin-panel.user-list')->with([
                 'teachers'   => $teachers,
+                'teachers1'   => $teachers1,
                 'students'   => $students,
                 'marketers'  => $marketers,
                 'editors'    => $editors,
             ]);
 
-        }catch(AuthorizationException $e){
-            return view ('admin-panel.user-manage')->with([
-                'message'     => 'You dont have Permissions view all users !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
+        }catch(AuthorizationException $e){           
+            return redirect(route('admin.dashboard'))->with([
+                'message'   =>'You dont have Permissions view all users',
+                'cls'       =>'flash-danger',
+                'msgTitle'  =>'Permission Denied!'
             ]);
 
-        }catch(\Exception $e){            
-            return view ('admin-panel.user-manage')->with([
-                //'message'  => $e->getMessage(),
-                'message' => 'Failed to show all users !',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-            ]);
+        }catch(\Exception $e){
+        dd($e);        
+            session()->flash('message','Failed to show all users');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('admin-panel.user-list');
         }
+
+
 
         //dd(Sentinel::findRoleBySlug('teacher')->users()->with('roles')->get());    
     }
@@ -97,28 +105,21 @@ class UserController extends Controller
 
         try{
             $this->authorize('create',User::class);            
-            return view('admin-panel.user-add');
+            return view('admin-panel.user-add');           
 
         }catch(AuthorizationException $e){
-
-            //return redirect(url()->previous().'#')->with([
-            return view('admin-panel.user-add')
-            //return redirect()->back()
-            ->with([
-                'message'     => 'You dont have Permissions to create users !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
+            return redirect(route('admin.user.index'))->with([
+                'message'   =>'You dont have Permissions to create users',
+                'cls'       =>'flash-danger',
+                'msgTitle'  =>'Permission Denied!'
             ]);
 
-        }catch(\Exception $e){            
-            return redirect()->back()->with([
-                //'message'  => $e->getMessage(),
-                'message' => 'Failed to show all users !',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-            ]);
+        }catch(\Exception $e){
+            session()->flash('message',  'Failed to show user add form');
+            session()->flash('cls',      'flash-danger');
+            session()->flash('msgTitle', 'Error!');
+            return view('admin-panel.user-add');
         }
-
     }
 
 
@@ -127,6 +128,9 @@ class UserController extends Controller
         //dd($request->all());
         //username
         try{
+
+            throw new AuthorizationException('Form validation failed');
+
             $this->authorize('createTeachers',User::class);
             $username    = $this->userService->generateUniqueUsername($request->get('teacher-uname'));
             $usernameMsg = ($username != $request->get('teacher-uname'))?"Given username is already there, ∴ system updated username to {$username}":'';
@@ -165,7 +169,7 @@ class UserController extends Controller
             $role_teacher = Sentinel::findRoleBySlug('teacher');
             $role_teacher->users()->attach($user_teacher);
 
-            return redirect()->back()->with([
+            return redirect(route('admin.user.create'))->with([            
                 'teacher_submit_message'  => 'Add Teacher success',
                 'teacher_submit_message2' => $usernameMsg,
                 //'teacher_submit_title'   => 'Student Registration submit page',
@@ -174,7 +178,10 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.user.create'))
+            ->withErrors($request->validator)
+            ->withInput()
+            ->with([
                 'teacher_submit_message'  => $e->getMessage(),
                 //'teacher_submit_message2' => $pwResetTxt,
                 //'teacher_submit_title'   => 'Student Registration submit page',
@@ -183,7 +190,11 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect(url()->previous().'#tab-teachers')->with([
+            //return redirect(url()->previous().'#tab-teachers')->with([
+            return redirect(route('admin.user.create').'#tab-students')
+            ->withErrors($request->validator)
+            ->withInput()
+            ->with([            
                 'teacher_submit_message'  => 'You dont have Permissions to create Teachers !',
                 //'teacher_submit_message2' => $pwResetTxt,
                 //'teacher_submit_title'   => 'Student Registration submit page',
@@ -192,7 +203,10 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.user.create'))
+            ->withErrors($request->validator)
+            ->withInput()
+            ->with([
                 'teacher_submit_message'  => 'Add Teacher Failed !',
                 //'teacher_submit_message'  => $e->getMessage(),
                 //'teacher_submit_message2' => $pwResetTxt,
@@ -260,8 +274,8 @@ class UserController extends Controller
 
         }catch(AuthorizationException $e){
 
-            //return redirect(route('admin.user.create', []). '#tab-students')
-            return redirect(url()->previous().'#tab-students')            
+            return redirect(route('admin.user.create', []). '#tab-students')
+            //return redirect(url()->previous().'#tab-students')            
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -340,7 +354,8 @@ class UserController extends Controller
                 ]);
 
         }catch(AuthorizationException $e){
-            return redirect(url()->previous().'#tab-marketers')
+            return redirect(route('admin.user.create', []). '#tab-marketers')
+            //return redirect(url()->previous().'#tab-marketers')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -411,7 +426,8 @@ class UserController extends Controller
                 ]);
 
         }catch(AuthorizationException $e){
-            return redirect(url()->previous().'#tab-editor')
+            return redirect(route('admin.user.create', []). '#tab-editor')
+            //return redirect(url()->previous().'#tab-editor')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -445,7 +461,6 @@ class UserController extends Controller
     public function show($id)
     {
         try{
-
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
@@ -462,28 +477,24 @@ class UserController extends Controller
                 throw new ModelNotFoundException;
             }
         }catch(CustomException $e){
-
-            return view('admin-panel.user-view')->with([
-                'view_user_message'     => $e->getMessage(),
-                'view_user_cls'         => 'flash-danger',
-                'view_user_msgTitle'    => 'Error !',
-            ]);
+            session()->flash('view_user_message',$e->getMessage());
+            session()->flash('view_user_cls','flash-danger');
+            session()->flash('view_user_msgTitle','Error!');
+            return view('admin-panel.user-view');
 
         }catch(AuthorizationException $e){
-            return view('admin-panel.user-view')->with([
-                //'view_user_message'   => $e->getMessage(),
-                'view_user_message'     => 'You dont have Permissions to view the user !',
-                'view_user_cls'         => 'flash-danger',
-                'view_user_msgTitle'    => 'Permission Denied !',
+            return redirect(route('admin.user.index'))->with([            
+                'message'     => 'You dont have Permissions to view the user !',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
             ]);
             
         }catch(\Exception $e){
+            session()->flash('view_user_message','User does not exist');
+            session()->flash('view_user_cls','flash-danger');
+            session()->flash('view_user_msgTitle','Error!');
+            return view('admin-panel.user-view');
 
-            return view('admin-panel.user-view')->with([
-                'view_user_message'     => 'User does not exist!',
-                'view_user_cls'         => 'flash-danger',
-                'view_user_msgTitle'    => 'Error !',
-            ]);
         }
     }
 
@@ -529,34 +540,27 @@ class UserController extends Controller
 
             }
         }catch(CustomException $e){
-
             $exData = $e->getData();
-            //dd($e->getData());
-            return view('admin-panel.user-view')->with([
-                'view_user_message'     => $e->getMessage(),
-                'view_user_cls'         => $exData['cls'] ?? "flash-danger",
-                'view_user_msgTitle'    => $exData['msgTitle']  ?? 'Error !',
-            ]);
+            session()->flash('user_edit_message',$e->getMessage());
+            session()->flash('user_edit_cls',$exData['cls'] ?? "flash-danger");
+            session()->flash('user_edit_msgTitle', $exData['msgTitle']  ?? 'Error !');
+            return view('admin-panel.user-view');            
 
         }catch(AuthorizationException $e){
-            return view('admin-panel.user-view')->with([
-                //'view_user_message'   => $e->getMessage(),
-                'view_user_message'     => 'You dont have Permissions to edit the user !',
-                'view_user_cls'         => 'flash-danger',
-                'view_user_msgTitle'    => 'Permission Denied !',
+            return redirect(route('admin.user.index'))->with([            
+                'message'     => 'You dont have Permissions to edit the user',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
             ]);
-            
+
         }
         catch(\Exception $e){
-            return view('admin-panel.user-view')->with([
-                'view_user_message'     => 'User edit failed!',
-                'view_user_cls'         => 'flash-danger',
-                'view_user_msgTitle'    => 'Error !',
-            ]);
+            session()->flash('user_edit_message','User edit failed');
+            session()->flash('user_edit_cls','flash-danger');
+            session()->flash('user_edit_msgTitle','Error!');
+            return view('admin-panel.user-view');
+
         }
-
-
-
 
     }
 
@@ -627,12 +631,11 @@ class UserController extends Controller
                     Sentinel::update($user, array('password' => 'Pa$$w0rd!'));
                 }
 
-                return redirect()->route('admin.user.index')
-                    ->with([
-                        'message'  => 'Teacher update success',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success',
-                    ]);
+                return redirect()->route('admin.user.index')->with([
+                    'message' => 'Teacher update success',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Success',
+                ]);
             } else {
                 throw new CustomException('User does not exist!',[
                     'cls'     => 'flash-warning',
@@ -641,26 +644,27 @@ class UserController extends Controller
             }
 
         }catch(CustomException $e){            
-            return redirect()->back()
-                ->with([
-                    'user_edit_message'  => $e->getMessage(),
-                    'user_edit_cls'     => 'flash-danger',
-                    'user_edit_msgTitle'=> 'Error !',
-                ]);
+            return redirect()->back()->with([
+                'user_edit_message'  => $e->getMessage(),
+                'user_edit_cls'     => 'flash-danger',
+                'user_edit_msgTitle'=> 'Error !',
+            ]);
 
         }catch(AuthorizationException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.user.index'))->with([
+            //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update teacher user accounts !',
                 'user_edit_cls'         => 'flash-danger',
                 'user_edit_msgTitle'    => 'Permission Denied !',
-            ]);            
+            ]);
+
         }catch(\Exception $e){
-            return redirect()->back()
-                ->with([
-                    'user_edit_message'  => 'Add User Failed !',
-                    'user_edit_cls'     => 'flash-danger',
-                    'user_edit_msgTitle'=> 'Error !',
-                ]);
+            return redirect()->back()->with([
+                'user_edit_message'  => 'Add User Failed !',
+                'user_edit_cls'     => 'flash-danger',
+                'user_edit_msgTitle'=> 'Error !',
+            ]);
+
         }
 
     }
@@ -697,12 +701,11 @@ class UserController extends Controller
                     Sentinel::update($user, array('password' => 'Pa$$w0rd!'));
                 }
 
-                return redirect()->route('admin.user.index')
-                    ->with([
-                        'message' => 'Student update success',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success',
-                    ]);
+                return redirect()->route('admin.user.index')->with([
+                    'message' => 'Student update success',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Success',
+                ]);
             } else {
                 throw new CustomException('User does not exist!',[
                     'cls'     => 'flash-warning',
@@ -717,7 +720,8 @@ class UserController extends Controller
                 'user_edit_msgTitle'=> 'Error !',
             ]);
         }catch(AuthorizationException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.user.index'))->with([
+            //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update student user accounts !',
                 'user_edit_cls'         => 'flash-danger',
                 'user_edit_msgTitle'    => 'Permission Denied !',
@@ -763,12 +767,11 @@ class UserController extends Controller
                     Sentinel::update($user, array('password' => 'Pa$$w0rd!'));
                 }
 
-                return redirect()->route('admin.user.index')
-                    ->with([
-                        'message'  => 'Marketer update success',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success',
-                    ]);
+                return redirect()->route('admin.user.index')->with([
+                    'message'  => 'Marketer update success',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Success',
+                ]);
             } else {
                 throw new CustomException('User does not exist!',[
                     'cls'     => 'flash-warning',
@@ -777,25 +780,24 @@ class UserController extends Controller
             }
 
         }catch(CustomException $e){
-            return redirect()->back()
-                ->with([
-                    'user_edit_message'  => $e->getMessage(),
-                    'user_edit_cls'     => 'flash-danger',
-                    'user_edit_msgTitle'=> 'Error !',
-                ]);
-        }catch(AuthorizationException $e){
             return redirect()->back()->with([
+                'user_edit_message'  => $e->getMessage(),
+                'user_edit_cls'     => 'flash-danger',
+                'user_edit_msgTitle'=> 'Error !',
+            ]);
+        }catch(AuthorizationException $e){
+            return redirect(route('admin.user.index'))->with([
+            //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update marketer user accounts !',
                 'user_edit_cls'         => 'flash-danger',
                 'user_edit_msgTitle'    => 'Permission Denied !',
             ]);            
         }catch(\Exception $e){
-            return redirect()->back()
-                ->with([
-                    'user_edit_message'  => 'User update Failed!',
-                    'user_edit_cls'     => 'flash-danger',
-                    'user_edit_msgTitle'=> 'Error !',
-                ]);
+            return redirect()->back()->with([
+                'user_edit_message'  => 'User update Failed!',
+                'user_edit_cls'     => 'flash-danger',
+                'user_edit_msgTitle'=> 'Error !',
+            ]);
         }
     }
 
@@ -830,12 +832,11 @@ class UserController extends Controller
                     Sentinel::update($user, array('password' => 'Pa$$w0rd!'));
                 }
 
-                return redirect()->route('admin.user.index')
-                    ->with([
-                        'message'  => 'Editor update success',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success',
-                    ]);
+                return redirect()->route('admin.user.index')->with([
+                    'message'  => 'Editor update success',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Success',
+                ]);
             } else {
                 throw new CustomException('User does not exist!',[
                     'cls'     => 'flash-warning',
@@ -844,14 +845,15 @@ class UserController extends Controller
             }
 
         }catch(CustomException $e){
+            return redirect()->back()->with([
+                'user_edit_message'  => $e->getMessage(),
+                'user_edit_cls'     => 'flash-danger',
+                'user_edit_msgTitle'=> 'Error !',
+            ]);
 
-            return redirect()->back()->with([
-                    'user_edit_message'  => $e->getMessage(),
-                    'user_edit_cls'     => 'flash-danger',
-                    'user_edit_msgTitle'=> 'Error !',
-                ]);
         }catch(AuthorizationException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.user.index'))->with([
+            //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update editor user accounts !',
                 'user_edit_cls'         => 'flash-danger',
                 'user_edit_msgTitle'    => 'Permission Denied !',
@@ -859,10 +861,10 @@ class UserController extends Controller
 
         }catch(\Exception $e){
             return redirect()->back()->with([
-                    'user_edit_message'  => 'User update Failed!',
-                    'user_edit_cls'     => 'flash-danger',
-                    'user_edit_msgTitle'=> 'Error !',
-                ]);
+                'user_edit_message'  => 'User update Failed!',
+                'user_edit_cls'     => 'flash-danger',
+                'user_edit_msgTitle'=> 'Error !',
+            ]);
         }
     }
 
@@ -959,14 +961,13 @@ class UserController extends Controller
                         $redirectRoute = 'admin.user.index';
                 }
 
-                return redirect(route($redirectRoute, []). $hash)
-                    ->with([
-                        'message'  => 'successfully deleted the user record',
-                        //'message2' => $pwResetTxt,
-                        //'title'   => 'Student Registration submit page',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success!',
-                    ]);
+                return redirect(route($redirectRoute, []). $hash)->with([
+                    'message'  => 'successfully deleted the user record',
+                    //'message2' => $pwResetTxt,
+                    //'title'   => 'Student Registration submit page',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Success!',
+                ]);
 
             } else {
 
@@ -987,7 +988,8 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.user.index'))->with([
+            //return redirect()->back()->with([
                 'message'     => 'You dont have Permissions to delete the user !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
@@ -1054,17 +1056,17 @@ class UserController extends Controller
         }catch(CustomException $e){
 
             return view('admin-panel.teacher.approve-account')->with([
-                'view_user_message'     => $e->getMessage(),
-                'view_user_cls'         => 'flash-danger',
-                'view_user_msgTitle'    => 'Error !',
+                'message'     => $e->getMessage(),
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Error !',
             ]);
 
         }catch(\Exception $e){
             return view('admin-panel.teacher.approve-account')->with([
-                'view_user_message'     => 'Error',
-                //'view_user_message'     => $e->getMessage(),
-                'view_user_cls'         => 'flash-danger',
-                'view_user_msgTitle'    => 'Error !',
+                'message'     => 'Error',
+                //'message'     => $e->getMessage(),
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Error !',
             ]);
         }
     }

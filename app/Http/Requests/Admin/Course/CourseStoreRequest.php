@@ -118,19 +118,19 @@ class CourseStoreRequest extends FormRequest
                     }
                 }
             ],
-            //'contentArr.*'                  => 'required|array',
-            'contentArr.*'                  => 'array',
+            'contentArr.*'                  => 'required|array',
+            //'contentArr.*'                  => 'array',
             'contentArr.*.*'                => 'required|array',            
             
-            'contentArr.*.*.inputText'      => 'required|string',
-            //'contentArr.*.*.inputText'      => 'string|email',
+            //'contentArr.*.*.inputText'      => 'required|string',
+            'contentArr.*.*.inputText'      => 'string|email',
 
             'contentArr.*.*.inputUrl'       => 'required|string',
             'contentArr.*.*.linkParam'      => 'present|string',
             'contentArr.*.*.isFree'         => 'required|boolean',
             'contentArr.*.*.type'           => [
                 'required',
-                Rule::in(['download', 'other', 'video']),
+                Rule::in(['qdownload', 'qother', 'qvideo']),
             ]
 
         ];
@@ -148,7 +148,9 @@ class CourseStoreRequest extends FormRequest
 
         foreach ($this->request->get('contentArr') as $secHeading => $secContent) {
             /* 'contentArr.*' => 'array'   */
-            //$contentArrMessages['contentArr.' . $secHeading . '.required'] = 'content is required';            
+            $contentArrMessages['contentArr.' . $secHeading . '.required'] = 'content is required';/////
+
+
             $contentArrMessages['contentArr.' . $secHeading . '.array']    = 'content is not in corect format';
 
             foreach ($secContent as $linkIndex => $linkContent) {
@@ -159,10 +161,10 @@ class CourseStoreRequest extends FormRequest
                 $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.array']    = 'link is not in corect format';
                                 
                 /* 'contentArr.*.*.inputText' => 'required|string' */
-                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.required']  = 'text is required';
-                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']    = 'text must be string';
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']  = 'text must be string';
-                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.email']   = 'text must be email';
+                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.required']  = 'text is required';
+                //$contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']    = 'text must be string';
+                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.string']  = 'text must be string';
+                $contentArrMessages['contentArr.' . $secHeading . '.'. $linkIndex .'.inputText'.'.email']   = 'text must be email';
 
 
                 /* 'contentArr.*.*.inputUrl'  => 'required|string' */ 

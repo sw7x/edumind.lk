@@ -95,8 +95,7 @@ class ContactController extends Controller
                 return back()->with([
                     'message'     => 'Recaptcha validation failed',
                     'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Form submit error !',
-
+                    'msgTitle'    => 'Form submit error !'
                 ]);
             }
 

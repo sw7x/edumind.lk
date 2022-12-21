@@ -6,15 +6,6 @@
 
 @section('content')
 
-    @if(isset($message))
-        <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
-            <a href="#" class="close">×</a>
-            <div class="text-lg"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
-            <p>{{ $message ?? 'Info!' }}</p>
-            <div class="text-base">{!! $message2 ?? '' !!}</div>
-        </div>
-    @endif
-
     @php
         //var_dump($courseData);
         //var_dump($courseData->subject->name);
@@ -23,7 +14,7 @@
 
     @if(isset($courseData))
         <!-- course preview details -->
-        <div class="bg-gray-600 text-white lg:-mt-20 lg:pt-20">aaaaaaaaaaaa
+        <div class="bg-gray-600 text-white lg:-mt-20 lg:pt-20">
             <div class="container p-0">
                 <div class="lg:flex items-center lg:space-x-12 lg:py-14 lg:px-20 p-3">
 
@@ -72,7 +63,7 @@
         </div>
 
         <div class="main-container container p-0">
-            @if(Session::get('message') !== null)
+            @if(Session::get('message'))
                 <div class="flash-msg {{Session::get('cls') ?? 'flash-info'}} rounded-none">
                     <a href="#" class="close">×</a>
                     <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
@@ -590,7 +581,16 @@
 
         </div>
     @else
-        <div></div>
+        <div class="main-container container p-0">
+            @if(Session::get('message') !== null)
+                <div class="flash-msg {{Session::get('cls') ?? 'flash-info'}} rounded-none">
+                    <a href="#" class="close">×</a>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                </div>
+            @endif
+        </div>
     @endif
 
 

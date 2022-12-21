@@ -179,7 +179,6 @@ class CourseController extends Controller
                         $viewFile = 'course-single-enrolled';
                     }
 
-
                     return view($viewFile)->with([
                         'courseData'      => $course,
                         'bgColor'         => $bannerColors['bgColor'],
@@ -195,20 +194,16 @@ class CourseController extends Controller
                 throw new CustomException('Course does not exist');
             }
         }catch(CustomException $e){
-
-            return view('course-single-free')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('course-single-free');
 
         }catch(\Exception $e){
-            return view('course-single-free')->with([
-                //'message'     => 'Student does not exist!',
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to show course');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error ');
+            return view('course-single-free');
         }
 
     }
@@ -408,21 +403,18 @@ class CourseController extends Controller
                 throw new CustomException('Course does not exist');
             }
         }catch(CustomException $e){
-
-            return view('course-single-free')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
-
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('course-single-free');
+        
         }catch(\Exception $e){
             //dd($e->getMessage());
-            return view('course-single-free')->with([
-                //'message'     => 'Student does not exist!',
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load course');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('course-single-free');
+            
         }
 
     }

@@ -107,15 +107,41 @@
 
 @section('content')
     <div class="row" id="">
-        <div class="col-lg-12">
+        <div class="col-lg-12">          
+            
+            {{--
+                <x-flash-message
+                    class="flash-info" 
+                    title="Error!"
+                    message="When writing components for your own application, components">
+                    
+                    <x-slot name="insideContent">
+                        @if(false)
+                        <div>11111111111111111</div>
+                        @endif
+                    </x-slot>
+                </x-flash-message>
+            --}}
+            
+            <?php dump(Session::get('aaa')) ?>
+            <?php dump(Session::get('aaa.1message')) ?>
+           
+
+
+
+
+            [{{Session::get('bbb')}}]
+            [{{Session::get('ccc')}}]
+
+
 
             @if(Session::has('message'))
-                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                    <a href="#" class="close">×</a>
-                    <div class="text-xl"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p class="font-semibold text-sm">{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>                    
+            <x-flash-message
+                class="{{ Session::get('cls', 'flash-info')}}" 
+                :title="Session::get('msgTitle')"
+                :message="Session::get('message')">
 
+                <x-slot name="insideContent">
                     @if ($errors->infoErrMsgArr->getMessages())
                         <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
                             @foreach ($errors->infoErrMsgArr->getMessages() as $field => $errorMsgArr)
@@ -125,7 +151,6 @@
                             @endforeach
                         </ul>
                     @endif
-
                                         
                     <?php 
                         //dump($errors);
@@ -146,15 +171,9 @@
                         //dump($errors->uuu);
 
                         //dd($xsr);
-                        //dd($contentLinksErrMsgArr); 
+                        //dd($contentLinksErrMsgArr);
+                    ?>
 
-
-
-
-                    ?>            
-
-                    
-                    
                     <?php  //dump($errors->contentErrMsgArr->getMessages()); ?>
                     @if(($errors->contentErrMsgArr->getMessages() != null) && is_array($errors->contentErrMsgArr->getMessages()))
                         @foreach ($errors->contentErrMsgArr->getMessages() as $key => $errorMsgArr)
@@ -186,18 +205,11 @@
                             </div>
                         @endforeach
                     @endif
-
-                </div>
+                </x-slot>
+            </x-flash-message>
             @endif
-
-            @if(isset($message))
-                <div class="flash-msg {{$cls ?? 'flash-info'}} rounded-none">
-                    <a href="#" class="close">×</a>
-                    <div class="text-xl text-red-500"><strong>{{ $msgTitle ?? 'Info!'}}</strong></div>
-                    <p class="text-sm font-semibold text-red-500">{{ $message ?? 'Info!' }}</p>
-                    <div class="text-base">{!! $message2 ?? '' !!}</div>
-                </div>
-            @endif
+            
+            
 
             <div class="ibox">
                 <div class="ibox-content">

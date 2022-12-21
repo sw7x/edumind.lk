@@ -23,7 +23,6 @@ class SubjectController extends Controller
     public function ViewTopic($slug=null){
 
         try{
-            
             if(!$slug){
                 throw new CustomException('Subject id not provided');
             }
@@ -54,37 +53,21 @@ class SubjectController extends Controller
                 throw new CustomException('Subject does not exist');
             }
         }catch(CustomException $e){
-
-            return view('subject-single')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('subject-single');
 
         }catch(AuthorizationException $e){
-            return view('subject-single')->with([
-                'message'     => 'You dont have Permissions to access this page !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            session()->flash('message', 'You dont have Permissions to access this subject');            
+            abort(403);
+
         }catch(\Exception $e){
-            return view('subject-single')->with([
-                'message'     => 'Subject does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', 'Failed to load the subject');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('subject-single');
         }
-
-
-
-
-
-
-
-
-
-
-
 
     }
 

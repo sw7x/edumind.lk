@@ -32,18 +32,16 @@ class SubjectController extends Controller
             $data = Subject::orderBy('id')->get();
             return view ('admin-panel.subject-list')->withData($data);
         }catch(AuthorizationException $e){
-            return view ('admin-panel.subject-list')->with([
+            return redirect(route('admin.dashboard'))->with([            
                 'message'     => 'You dont have Permissions view all subjects !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
             ]);
         }catch(\Exception $e){
-            return view ('admin-panel.subject-list')->with([
-                //'message'  => $e->getMessage(),
-                'message'  => 'Failed to view all subjects !',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-            ]);
+            session()->flash('message','Failed to view all subjects');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('admin-panel.subject-list');
         }
     }
 
@@ -56,20 +54,20 @@ class SubjectController extends Controller
     {
         try{
             $this->authorize('create',Subject::class);
-            return view('admin-panel.subject-add');
+            return view('admin-panel.subject-add');          
+
         }catch(AuthorizationException $e){
-            return redirect()->back()->with([
-                'message'     => 'You dont have Permissions create new subject !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
+            return redirect(route('admin.subject.index'))->with([
+                'message'   =>'You dont have Permissions create new subject',
+                'cls'       =>'flash-danger',
+                'msgTitle'  =>'Permission Denied!'
             ]);
+
         }catch(\Exception $e){
-            return redirect()->back()->with([
-                //'message'  => $e->getMessage(),
-                'message'  => 'Subject creation failed!',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-            ]);
+            session()->flash('message',  'Failed to show subject add form');
+            session()->flash('cls',      'flash-danger');
+            session()->flash('msgTitle', 'Error!');
+            return view('admin-panel.subject-add');
         }
 
     }
@@ -85,6 +83,7 @@ class SubjectController extends Controller
         //todo-refactor
 
         try{
+
             $this->authorize('create',Subject::class);
             if(!$request->subject_name){
                 throw new CustomException('Subject name cannot be empty');
@@ -120,7 +119,7 @@ class SubjectController extends Controller
                     'author_id'     => Sentinel::getUser()->id
                 ]);
 
-                return redirect()->back()->with([
+                return redirect(route('admin.subject.create'))->with([
                     'message' => 'Subject inserted successfully',
                     'cls'     => 'flash-success',
                     'msgTitle'=> 'Success',
@@ -134,20 +133,20 @@ class SubjectController extends Controller
             }
 
         }catch(CustomException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.subject.create'))->with([            
                 'message'  => $e->getMessage(),
                 'cls'     => 'flash-danger',
                 'msgTitle'=> 'Error !',
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.subject.create'))->with([
                 'message'     => 'You dont have Permissions create new subject !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
             ]);
         }catch(\Exception $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.subject.create'))->with([
                 //'message'  => $e->getMessage(),
                 'message'  => 'Subject creation failed!',
                 'cls'     => 'flash-danger',
@@ -181,24 +180,22 @@ class SubjectController extends Controller
                 throw new CustomException('Subject does not exist!');
             }
         }catch(CustomException $e){
-            return view('admin-panel.subject-view')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message',$e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('admin-panel.subject-view');
 
         }catch(AuthorizationException $e){
-            return view('admin-panel.subject-view')->with([
+            return redirect(route('admin.subject.index'))->with([
                 'message'     => 'You dont have Permissions to view the subject !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
             ]);
         }catch(\Exception $e){
-            return view('admin-panel.subject-view')->with([
-                'message'     => 'cannot display subject info!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message','Cannot display subject info!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('admin-panel.subject-view');
         }
     }
 
@@ -221,28 +218,24 @@ class SubjectController extends Controller
             }
             return view('admin-panel.subject-edit',['subject' => $subject]);
         }catch(CustomException $e){            
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('admin-panel.subject-edit');
 
         }catch(AuthorizationException $e){
-            return redirect()->back()->with([
+            return redirect(route('admin.subject.index'))->with([            
                 'message'     => 'You dont have Permissions to update the subject !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
-            ]);            
-        }catch(\Exception $e){
-
-            return redirect()->back()->with([
-                'message'  => 'Resource not exist',
-                //'message'     => $e->getMessage(),
-                //'message2' => $pwResetTxt,
-                //'title'   => 'Student Registration submit page',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error!',
             ]);
+
+        }catch(\Exception $e){
+            session()->flash('message','Resource not exist');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('admin-panel.subject-edit');
+
         }
     }
 
@@ -310,12 +303,11 @@ class SubjectController extends Controller
                     $subject->status        = $request->subject_stat;
                     $subject->save();
                     
-                    return redirect()->route('admin.subject.index')
-                        ->with([
-                            'message' => 'Subject updated successfully',
-                            'cls'     => 'flash-success',
-                            'msgTitle'=> 'Success',
-                        ]);
+                    return redirect()->route('admin.subject.index')->with([
+                        'message' => 'Subject updated successfully',
+                        'cls'     => 'flash-success',
+                        'msgTitle'=> 'Success',
+                    ]);
 
                 }else{
                     throw new CustomException('Subject name already exists!',[
@@ -332,13 +324,11 @@ class SubjectController extends Controller
             }
 
         }catch(CustomException $e){
-
-            return redirect()->route('admin.subject.index')
-                ->with([
-                    'message'  => $e->getMessage(),
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error !',
-                ]);
+            return redirect()->route('admin.subject.edit')->with([
+                'message'  => $e->getMessage(),
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error !',
+            ]);
         }catch(AuthorizationException $e){
             return redirect()->route('admin.subject.index')->with([
                 'message'     => 'You dont have Permissions to update the subject !',
@@ -346,12 +336,11 @@ class SubjectController extends Controller
                 'msgTitle'    => 'Permission Denied !',
             ]);
         }catch(\Exception $e){
-            return redirect()->route('admin.subject.index')
-                ->with([
-                    'message'  => 'Subject updated failed!',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error !',
-                ]);
+            return redirect()->route('admin.subject.edit')->with([
+                'message'  => 'Subject updated failed!',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error !',
+            ]);
         }
     }
 
@@ -374,12 +363,11 @@ class SubjectController extends Controller
             if ($subject) {
                 $subject->delete();
 
-                return redirect()->route('admin.subject.index')
-                    ->with([
-                        'message' => 'Subject deleted successfully',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success',
-                    ]);
+                return redirect()->route('admin.subject.index')->with([
+                    'message' => 'Subject deleted successfully',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Success',
+                ]);
 
             } else {
 
@@ -390,7 +378,6 @@ class SubjectController extends Controller
 
             }
         }catch(CustomException $e){
-
             $exData = $e->getData();
             return redirect()->route('admin.subject.index')->with([
                 'message'     => $e->getMessage(),
@@ -399,7 +386,6 @@ class SubjectController extends Controller
             ]);
 
         }catch(AuthorizationException $e){          
-
             return redirect()->route('admin.subject.index')->with([
                 'message'     => 'You dont have Permissions to delete the subject !',
                 'cls'         => 'flash-danger',

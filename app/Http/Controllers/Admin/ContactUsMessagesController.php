@@ -13,9 +13,7 @@ class ContactUsMessagesController extends Controller
 {
     public function students(){      
 
-
         try{
-
             $this->authorize('viewAny',Contact_us::class);
             $studentComments    = Contact_us::whereHas('user', function($query){
                 //$query->where('subject', 'ww');
@@ -24,43 +22,23 @@ class ContactUsMessagesController extends Controller
                 });
             })->orderBy('created_at', 'desc')->get();
 
-            return view('admin-panel.admin.contact-us-students')
-                ->with(['studentComments' => $studentComments]);
+        }catch(AuthorizationException $e){          
+            session()->flash('message','You dont have Permissions to view student comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Permission Denied!');
+            unset($studentComments);
 
-
-        }catch(AuthorizationException $e){
-            return view('admin-panel.admin.contact-us-students')
-                ->with([
-                    'message'     => 'You dont have Permissions to delete the comment !',
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Permission Denied !',
-                ]);
-
-        
         }catch(\Exception $e){
-            return view('admin-panel.admin.contact-us-students')
-                ->with([
-                    'message'     => 'Comment delete failed!',
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Error !',
-                ]);
-        }
+            session()->flash('message','Failed to show all student comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($studentComments);
 
-
-
-
-
-
-
-        $this->authorize('viewAny',Contact_us::class);
-        $studentComments    = Contact_us::whereHas('user', function($query){
-            //$query->where('subject', 'ww');
-            $query->whereHas('roles', function ($query) {
-                $query->where('name', 'student');
-            });
-        })->orderBy('created_at', 'desc')->get();
-
-        return view('admin-panel.admin.contact-us-students')->with(['studentComments' => $studentComments]);
+        }      
+        
+        return view('admin-panel.admin.contact-us-students')->with([
+            'studentComments' => $studentComments??null
+        ]);
     }
 
 
@@ -114,7 +92,7 @@ class ContactUsMessagesController extends Controller
 
         //dd($id);
         try{
-
+            
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
@@ -163,27 +141,26 @@ class ContactUsMessagesController extends Controller
 
             $exData = $e->getData();
             //dd($e->getData());
-            return redirect(route('admin.feedback.teachers'))->with([
+            return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([            
                 'message'     => $e->getMessage(),
                 'cls'         => $exData['cls'] ?? "flash-danger",
-                'msgTitle'    => $exData['msgTitle']  ?? 'Error !',
+                'msgTitle'    => $exData['msgTitle']  ?? 'Error!',
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.feedback.teachers'))->with([
+            return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([
                 'message'     => 'You dont have Permissions to delete the comment !',
                 'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
+                'msgTitle'    => 'Permission Denied!',
             ]);
             //Illuminate\Auth\Access\AuthorizationException
         }catch(\Exception $e){
             //dd($e);
-
             //dd(get_class($e));
-            return redirect(route('admin.feedback.teachers'))->with([
+            return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([
                 'message'     => 'Comment delete failed!',
                 'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
+                'msgTitle'    => 'Error!',
             ]);
         }
     }
