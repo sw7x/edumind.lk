@@ -13,11 +13,11 @@
 {{--<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/green.css">--}}
 
 
-<link rel='stylesheet' href='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'>
-<link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>
+<link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond-plugin-image-preview.min.css')}}">
+<link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond.min.css')}}">
 
 <!-- jQuery Steps -->
-<link rel='stylesheet' href='{{asset('admin/css/plugins/steps/jquery.steps.css')}}'>
+<link rel='stylesheet' href="{{asset('admin/css/plugins/steps/jquery.steps.css')}}">
 
 
 <!-- sweetalert2 CSS file-->
@@ -496,12 +496,12 @@
     <!-- <script src="../assets/summernote-0.8.18/summernote-lite.js"></script> -->
     <script src="{{asset('admin/plugins/summernote-0.8.18/summernote-bs4.js')}}"></script>
 
-    <script src='https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js'></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
-    <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-encode.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-validate-size.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-image-exif-orientation.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-validate-type.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond.min.js')}}"></script>
 
 
     <!-- jQuery Steps -->

@@ -7,7 +7,7 @@
 
     <!-- datatables -->
     <link href="{{asset('admin/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="{{asset('admin/css/plugins/dataTables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 
     <!-- select2 -->
     <link href="{{asset('admin/css/plugins/select2/select2.min.css')}}" rel="stylesheet">

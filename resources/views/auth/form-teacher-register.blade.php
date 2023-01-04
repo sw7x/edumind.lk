@@ -3,9 +3,11 @@
 
 
 @section('css-files')
-    <link rel='stylesheet' href='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>
-    
+    <link rel='stylesheet' href="{{asset('plugins/filepond/css/filepond-plugin-image-preview.min.css')}}">
+    <link rel='stylesheet' href="{{asset('plugins/filepond/css/filepond.min.css')}}">
+
+
+
     <!-- sweetalert2 CSS file-->
     <link rel="stylesheet" href="{{asset('css/sweetalert2.min.css')}}">
 @stop
@@ -156,12 +158,16 @@
 
 
 @section('script-files')
-    <script src='https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js'></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
-    <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script>
+    <script src="{{asset('plugins/filepond/js/filepond-plugin-file-encode.min.js')}}"></script>
+    <script src="{{asset('plugins/filepond/js/filepond-plugin-file-validate-size.min.js')}}"></script>
+    <script src="{{asset('plugins/filepond/js/filepond-plugin-image-exif-orientation.min.js')}}"></script>
+    <script src="{{asset('plugins/filepond/js/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{asset('plugins/filepond/js/filepond-plugin-file-validate-type.js')}}"></script>
+    <script src="{{asset('plugins/filepond/js/filepond.min.js')}}"></script>
+
+
+
+
 
     <!-- sweetalert2 js file-->
     <script src="{{asset('js/sweetalert2.min.js')}}"></script>

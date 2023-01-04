@@ -174,10 +174,10 @@
                                                 <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
 
                                                     <div class="mb-1 text-sm font-normal">
-                                                        <a class="block switch-links" style="" href="{{$arr['url']}}" data-id="{{$liCount}}">
+                                                        <a class="block switch-links" style="" href="{{$arr['inputUrl']}}" data-id="{{$liCount}}">
                                                             <!-- <span class="mr-3">{{$key + 1}}.</span> -->
                                                             <span class="mr-3">{{$liCount}}.</span>
-                                                            {{$arr['text']}}
+                                                            {{$arr['inputText']}}
                                                         </a>
                                                     </div>
 
@@ -193,8 +193,8 @@
                                                             <i class="fa fa-info-circle leading-5 text-xl mr-0 md hydrated"></i>
                                                         @endif
 
-                                                        @if($arr['param'] !='')
-                                                            <span class="param ml-5">{{$arr['param']}}</span>
+                                                        @if($arr['linkParam'] !='')
+                                                            <span class="param ml-5">{{$arr['linkParam']}}</span>
                                                         @endif
 
                                                         <!-- <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button> -->
@@ -240,24 +240,24 @@
                                 @if(strtolower($arr['type']) == 'video')
                                     <li>
                                         <div class="embed-video">
-                                            <iframe uk-video="automute: false;autoplay:false" src="{{$arr['url']}}" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                                            <iframe uk-video="automute: false;autoplay:false" src="{{$arr['inputUrl']}}" allow="autoplay; fullscreen" allowfullscreen></iframe>
                                         </div>
                                     </li>
                                 @elseif (strtolower($arr['type']) =="download")
                                     <li>
                                         <div class="text-center text-white link p-10 bg-gray-800 min-h-screen-half">
 
-                                            <div class=" font-bold text-4xl">{{$arr['text']}}</div>
+                                            <div class=" font-bold text-4xl">{{$arr['inputText']}}</div>
 
                                             <div class="my-5 inline-block top-div">
                                                 <div class="border-8 rounded-full mb-1">
-                                                    <a href="{{$arr['url']}}" download class="down_icon py-5 inline-block" title="Download">
+                                                    <a href="{{$arr['inputUrl']}}" download class="down_icon py-5 inline-block" title="Download">
                                                         <i class="fa fa-download text-6xl"></i>
                                                     </a>
                                                 </div>
                                             </div>
-                                            @if($arr['param'] !='')
-                                            <p class="text-2xl font-bold mt-0">({{$arr['param']}})</p>
+                                            @if($arr['linkParam'] !='')
+                                            <p class="text-2xl font-bold mt-0">({{$arr['linkParam']}})</p>
                                             @endif
                                         </div>
                                     </li>
@@ -265,17 +265,17 @@
                                     <li>
                                         <div class="text-center text-white link p-10 bg-gray-800 min-h-screen-half">
 
-                                            <div class=" font-bold text-4xl">{{$arr['text']}}</div>
+                                            <div class=" font-bold text-4xl">{{$arr['inputText']}}</div>
 
                                             <div class="my-5 inline-block top-div">
                                                 <div class="border-8 rounded-full mb-1">
-                                                    <a href="{{$arr['url']}}" target="_blank" class="down_icon py-5 inline-block" title="Download">
+                                                    <a href="{{$arr['inputUrl']}}" target="_blank" class="down_icon py-5 inline-block" title="Download">
                                                         <i class="fa fa-link text-6xl"></i>
                                                     </a>
                                                 </div>
                                             </div>
-                                            @if($arr['param'] !='')
-                                            <p class="text-2xl font-bold mt-0">{{$arr['param']}}</p>
+                                            @if($arr['linkParam'] !='')
+                                            <p class="text-2xl font-bold mt-0">{{$arr['linkParam']}}</p>
                                             @endif
                                         </div>
                                     </li>
@@ -287,13 +287,13 @@
 
                                             <div class="my-5 inline-block top-div">
                                                 <div class="border-8 rounded-full mb-1">
-                                                    <a href="{{$arr['url']}}" target="_blank" class="down_icon py-5 inline-block" title="Download">
+                                                    <a href="{{$arr['inputUrl']}}" target="_blank" class="down_icon py-5 inline-block" title="Download">
                                                         <i class="fa fa-info-circle text-6xl"></i>
                                                     </a>
                                                 </div>
                                             </div>
-                                            @if($arr['param'] !='')
-                                            <p class="text-2xl font-bold mt-0">{{$arr['param']}}</p>
+                                            @if($arr['linkParam'] !='')
+                                            <p class="text-2xl font-bold mt-0">{{$arr['linkParam']}}</p>
                                             @endif
                                         </div>
                                     </li>
@@ -372,7 +372,7 @@
 
                                                             @foreach($sectionContent as $arr)
                                                                 <li class="font-normal hover:bg-gray-100 p-2 flex text-blue-500
-                                                                    {{($arr['price'] == 'Free')?' __text-blue-500':''}}
+                                                                    {{($arr['isFree'] == 'Free')?' __text-blue-500':''}}
                                                                     {{($arr['type'] == 'Download')?' __pl-8':''}}">
 
                                                                     {{--$arr['type']--}}
@@ -397,20 +397,20 @@
 
 
                                                                     <div class="link_div mr-2 text-justify">
-                                                                        <a class="switch-links" href="{{$arr['url']}}" data-id="{{$li_count}}">{{$li_count}} . {{$arr['text']}}</a>
+                                                                        <a class="switch-links" href="{{$arr['inputUrl']}}" data-id="{{$li_count}}">{{$li_count}} . {{$arr['inputText']}}</a>
 
-                                                                        @if($arr['price'] == 'Free' && $arr['type'] == 'Video')
+                                                                        @if($arr['isFree'] == 'Free' && $arr['type'] == 'Video')
                                                                         <!-- <a href="#trailer-modal" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle="">Preview</a> -->
                                                                         @endif
 
-                                                                        @if($arr['price'] == 'Free' && $arr['type'] == 'Download')
-                                                                        <!-- <a href="{{$arr['url']}}" target="_blank" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle="">Download</a> -->
+                                                                        @if($arr['isFree'] == 'Free' && $arr['type'] == 'Download')
+                                                                        <!-- <a href="{{$arr['inputUrl']}}" target="_blank" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle="">Download</a> -->
                                                                         @endif
                                                                     </div>
 
 
-                                                                    @if($arr['param'] !='')
-                                                                        <span class="param text-sm ml-auto">{{$arr['param']}}</span>
+                                                                    @if($arr['linkParam'] !='')
+                                                                        <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
                                                                     @endif
 
 

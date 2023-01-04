@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-
+use App\Casts\Json;
 
 class Course extends Model
 {
@@ -14,7 +14,10 @@ class Course extends Model
     
     protected $casts = [
         //'topics'  => 'array',
+        'topics'  => Json::class,
         //'content' => 'array',
+        'content' => Json::class,
+
     ];
 
     protected $fillable = [
@@ -54,7 +57,7 @@ class Course extends Model
     }
 
 
-    public function getContentAttribute($value)
+    /*public function getContentAttribute($value)
     {
         //return $value;
         //return stripslashes($value);
@@ -86,7 +89,7 @@ class Course extends Model
         }else{
             return "";
         }        
-    }
+    }*/
 
 
     public function subject(){
@@ -128,10 +131,12 @@ class Course extends Model
     }
 
     public function isEmpty(){       
-        if(!$this->topics){
+        
+        //dd($this->topics);
+        if(!$this->content){
             return true;
         }else{
-            return empty(json_decode($this->topics,true));
+            return empty($this->content);
         }
 
         

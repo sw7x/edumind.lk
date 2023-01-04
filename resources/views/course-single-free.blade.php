@@ -187,7 +187,7 @@
                                             <ul class="course-curriculum-list font-normal">
                                                 @foreach($sectionContent as $arr)
                                                     <li class=" hover:bg-gray-100 p-2 flex _rounded-md
-                                                        {{($arr['price'] == 'Free')?' text-blue-500':''}}
+                                                        {{($arr['isFree'] == true)?' text-blue-500':''}}
                                                         {{($arr['type'] == 'Download')?' __pl-8':''}}">
 
 
@@ -202,23 +202,23 @@
                                                         @endif
 
                                                         <div class="link_div mr-2 text-justify">
-                                                            @if($arr['price'] == 'Free')
+                                                            @if($arr['isFree'] == true)
                                                                 @if($arr['type'] == 'Video')
-                                                                    <a href="#preview-modal-{{$liCount}}" class="_underline link" uk-toggle>{{$arr['text']}}</a>
+                                                                    <a href="#preview-modal-{{$liCount}}" class="_underline link" uk-toggle>{{$arr['inputText']}}</a>
                                                                     <a href="#preview-modal-{{$liCount}}" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle>Preview</a>
                                                                 @elseif($arr['type'] == 'Download')
-                                                                    <a class="_underline link" download href="{{$arr['url']}}">{{$arr['text']}}</a>
-                                                                    <a href="{{$arr['url']}}" download class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs">Download</a>
+                                                                    <a class="_underline link" download href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>
+                                                                    <a href="{{$arr['inputUrl']}}" download class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs">Download</a>
                                                                 @else
-                                                                    <a class="_underline link" href="{{$arr['url']}}" target="_blank">{{$arr['text']}}</a>
+                                                                    <a class="_underline link" href="{{$arr['inputUrl']}}" target="_blank">{{$arr['inputText']}}</a>
                                                                 @endif
                                                             @else
-                                                                {{$arr['text']}}
+                                                                {{$arr['inputText']}}
                                                             @endif
                                                         </div>
 
-                                                        @if($arr['param'] !='')
-                                                            <span class="param text-sm ml-auto">{{$arr['param']}}</span>
+                                                        @if($arr['linkParam'] !='')
+                                                            <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
                                                         @endif
 
                                                     </li>
@@ -628,7 +628,7 @@
         @foreach($courseData->content as $sectionHeading => $sectionContent)
 
             @foreach($sectionContent as $arr)
-                @if($arr['price'] == 'Free')
+                @if($arr['isFree'] == true)
                     @if($arr['type'] == 'Video')
                     <!-- model for video {{$liCount}} -->
                         <div id="preview-modal-{{$liCount}}" uk-modal>

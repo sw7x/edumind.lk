@@ -4,8 +4,8 @@
 @section('css-files')
     <link href="{{asset('admin/css/plugins/iCheck/custom.css')}}" rel="stylesheet">
 
-    <link rel='stylesheet' href='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>
+    <link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond-plugin-image-preview.min.css')}}">
+    <link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond.min.css')}}">
 
 @stop
 
@@ -100,12 +100,12 @@
 
 
 
-    <script src='https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js'></script>
-    <script src='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js'></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
-    <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-encode.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-validate-size.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-image-exif-orientation.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-validate-type.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond.min.js')}}"></script>
 @stop
 
 

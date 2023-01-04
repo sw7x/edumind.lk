@@ -550,7 +550,6 @@ todo -delete
     list-style: none;
 }
 
-.course-content-list-area ul li,
 .course-topic-list-area ul li{
     background: #fff;
     position: relative;
@@ -559,6 +558,18 @@ todo -delete
     margin-bottom: 10px;
     border: 1px solid #ccc;
     padding: 10px ;
+    border-radius: 2px;
+    cursor: move;
+}
+
+.course-content-list-area ul li{
+    background: #fff;
+    position: relative;
+    list-style-image: none;
+    /*margin: 10px;*/
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    padding: 5px ;
     border-radius: 2px;
     cursor: move;
 }

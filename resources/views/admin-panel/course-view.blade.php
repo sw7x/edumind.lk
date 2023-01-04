@@ -166,7 +166,7 @@
                                         <div id="curriculum" class="tube-card mt-5">
 
                                             @php
-                                                //var_dump($course->content);
+                                                //dump($course->content);
                                             @endphp
 
                                             @if($course->content)

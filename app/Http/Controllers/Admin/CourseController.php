@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Session;
 use App\Services\CourseService;
 use App\Utils\FileUploadUtil;
 use App\Utils\UrlUtil;
+use Illuminate\Support\Str;
 
 
 class CourseController extends Controller
@@ -40,6 +41,32 @@ class CourseController extends Controller
      */
     public function index()
     {
+        
+        /*try{
+            
+           $rr = Course::find(42);
+
+
+            dump('eeee');
+            dump(Course::find(42));
+
+
+            dump(Course::find(42)->toArray());
+            dump(Course::find(42)->content);
+            dump(Course::find(42)->topics);
+            //dd('ffff');
+        }catch(\Exception $e){
+
+            dump($e);
+            //dd('tt');
+            
+        }*/
+
+
+        
+
+
+
         //dd('index');
         //todo - Enrolled, Completed, Rating
 
@@ -65,6 +92,10 @@ class CourseController extends Controller
 
 
         $data = Course::orderBy('id')->get();
+
+        //dd($data->toArray());
+
+
 //        $data->each(function($item, $key) {
 //            var_dump($item->id);
 //
@@ -88,7 +119,10 @@ class CourseController extends Controller
     public function create()
     {
         $subjectsDataSet =  Subject::all ('id','name')->toArray();
-        //dd($subjects);
+        
+        //dump($ttt = base64_encode('contentArr.inputUrl.ee.inputUrl'));
+        //dd(base64_decode($ttt));
+
 
 
         $teacherService = new TeacherService();
@@ -97,7 +131,7 @@ class CourseController extends Controller
             return collect($teacher->toArray())
                 ->only(['id', 'full_name', 'email'])
                 ->all();
-        });
+        })->toArray();
 
         //dd($teachersDataSet);
 
@@ -126,9 +160,8 @@ class CourseController extends Controller
     //public function store(Request $request)
     {
         //dd($request->all());
-        //=============`todo - course section heading topics string how set ????
-        //=============`todo - custom casts to course model ????
-        //=============`todo - client side val
+        //=============`todo - course section heading topics string how set ????        
+        //=============`todo - client side val for course content
         //=============`todo - user input characters filetr
 
         //dd($dd);
@@ -139,10 +172,12 @@ class CourseController extends Controller
         //dump(Session::get('errors')->courseCreate->getMessages());dd();
         //dd();
 
-        /*$courseContentErrMsgArr         = array();
+        /*$courseContentErrMsgArr       = array();
         $courseContentLinkErrMsgArr     = array();
         $courseInfoErrMsgArr            = array();*/
         //dd(Session::get('errors'));
+
+        //dd(Session::get('errors')->courseCreate->getMessages());
 
         if(null != Session::get('errors') && null != Session::get('errors')->courseCreate->getMessages()){
             $courseValErrors = $this->courseService->getCourseValidationErrors(Session::get('errors')->courseCreate->getMessages());
@@ -207,9 +242,23 @@ class CourseController extends Controller
 
             //dump($request->get('contentArr'));
 
-            $contentString = json_encode($request->get('contentArr'),JSON_THROW_ON_ERROR|JSON_UNESCAPED_LINE_TERMINATORS ,512);
-            $topicsString  = json_encode($request->get('topicsArr'),JSON_THROW_ON_ERROR,512);
+            
+            //$contentString = json_encode($request->get('contentArr'),JSON_THROW_ON_ERROR|JSON_UNESCAPED_LINE_TERMINATORS ,512);
+            $contentString = array();
+            foreach ($request->get('contentArr') as $key => $value) {
+                $contentString[base64_decode($key)] = $value;
+            }
 
+            $topicsString = array();
+            foreach ($request->get('topicsArr') as $key => $value) {
+                $topicsString[$key] = base64_decode($value);
+            }
+
+
+
+            //$topicsString  = json_encode($request->get('topicsArr'),JSON_THROW_ON_ERROR,512);
+            //$topicsString  = $request->get('topicsArr');
+            
             //dump($contentString);
             //dump($topicsString);
             //dd();
@@ -246,7 +295,7 @@ class CourseController extends Controller
 
             
            
-            $status = ($request->get('course_stat')=='published')? 'published': 'draft';
+            $courseStatus = ($request->get('course_stat')=='published')? 'published': 'draft';
             
 
 
@@ -275,7 +324,7 @@ class CourseController extends Controller
                 'video_count'             => $request->get('video-count'),
                 'author_share_percentage' => $request->get('author_share_percentage'),
                 'price'                   => $request->get('course-price'),
-                'status'                  => $request->get('course_stat'),
+                'status'                  => $courseStatus,
                 'image'                   => $destination,
                 'topics'                  => $topicsString, 
                 'content'                 => $contentString,
@@ -371,7 +420,7 @@ class CourseController extends Controller
     public function show($id)
     {
         //dd('fgfg');
-        $course = Course::find($id);
+        //$course = Course::find($id);
         //dump($course->content);
         //dump($course->topics);
         //dd();
@@ -380,13 +429,13 @@ class CourseController extends Controller
         try{
 
             if(!filter_var($id, FILTER_VALIDATE_INT)){
-                dd('Invalid id');
+                //dd('Invalid id');
                 throw new CustomException('Invalid id');
             }
             $course = Course::find($id);
-            //dump($course);
+            //dd($course);
             //dump($course->content);
-
+            //dump(json_encode($course->content,512));
             //dd();
 
 
@@ -444,33 +493,104 @@ class CourseController extends Controller
     public function edit($id)
     {
         
-        $subjectsDataSet =  Subject::all ('id','name')->toArray();
-        //dd($subjects);
+        try{
 
-
-        $teacherService = new TeacherService();
-        $allTeachers = $teacherService->getAllTeachers();
-        $teachersDataSet = $allTeachers->map(function ($teacher) {
-            return collect($teacher->toArray())
-                ->only(['id', 'full_name', 'email'])
-                ->all();
-        });
-
-        //dd($teachersDataSet);
-
-        return view('admin-panel.course-edit')->with([
-            'teachers'       => $teachersDataSet,
-            //'teachers'       => [],
-            'subjects'       => $subjectsDataSet,
-        ]);
+            if(!filter_var($id, FILTER_VALIDATE_INT)){
+                //dd('Invalid id');
+                throw new CustomException('Invalid id');
+            }
+            
 
 
 
 
+            $course = Course::find($id);
+            //dd($course);
+            //dump($course->content);
+            //dump(json_encode($course->content,512));
+            //dd();
+            //$courseContent = json_encode(null,512);
+            $courseContent = json_encode($course->content,512);
+            //dd($courseContent);
+            
+            //dump($a1 = json_decode(null, true, 512));            
+            //dump(json_encode($a1,512));
 
 
-        //dd('edit');
-        return view('admin-panel.course-edit');
+
+            //dump(json_encode('',512));
+            //dump(json_encode('',512));
+            // $string = preg_replace("/\r\n+/", " ", $course->content);
+            // dump($string);
+
+
+
+            // $json = utf8_encode($string);
+            // dump('json1');
+            // dump($json);
+            // dump('=============');
+            // $json = json_decode($json);
+            // dump('json2');
+            // dump($json);
+            // dump('=============');
+
+
+
+
+            //$contentArr = json_decode($course->content, true, 512, JSON_THROW_ON_ERROR);
+            //dd($contentArr);
+
+            //var_dump($course->content);
+            //dd();
+            if($course == null){
+                throw new ModelNotFoundException;                
+            }else{
+                 
+                $subjectsDataSet =  Subject::all ('id','name')->toArray();               
+
+                $teacherService = new TeacherService();
+                $allTeachers = $teacherService->getAllTeachers();
+                $teachersDataSet = $allTeachers->map(function ($teacher) {
+                    return collect($teacher->toArray())
+                        ->only(['id', 'full_name', 'email'])
+                        ->all();
+                })->toArray();
+
+
+
+                /*
+                dump($course);
+                dump($courseContent);
+                dump($teachersDataSet);
+                dump($subjectsDataSet);
+                dd();
+                */
+
+                return view('admin-panel.course-edit')->with([
+                    'course'            => $course,
+                    'courseContent'     => $courseContent,
+                    'teachers'          => $teachersDataSet,
+                    //'teachers'        => [],
+                    'subjects'          => $subjectsDataSet,
+
+                ]); 
+
+            }          
+            
+
+        }catch(CustomException $e){
+            session()->flash('message',$e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('admin-panel.course-edit');       
+
+        }catch(\Exception $e){
+            session()->flash('message','Course does not exist!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!'); 
+            return view('admin-panel.course-edit');           
+        }
+
     }
 
     /**
@@ -483,7 +603,193 @@ class CourseController extends Controller
     public function update(CourseUpdateRequest $request, $id)
     //public function update(Request $request, $id)
     {
-        //
+        
+        //dd($id);
+
+        ///////////////
+        try{
+            if(!filter_var($id, FILTER_VALIDATE_INT)){
+                throw new CustomException('Invalid id');
+            }
+            $course = Course::find($id);
+            //dd(Session::get('errors')->courseUpdate->getMessages());
+
+            if(null != Session::get('errors') && null != Session::get('errors')->courseUpdate->getMessages()){
+                $courseValErrors = $this->courseService->getCourseValidationErrors(Session::get('errors')->courseUpdate->getMessages());
+            }
+
+
+
+            $validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
+
+            if (isset($request->validator) && $request->validator->fails()) {
+                $validationErrMsg .= ($validationErrMsg != '') ? ' and ':'';
+                $validationErrMsg .= 'Form validation is failed';
+            }
+
+            if($validationErrMsg){
+                $validationErrMsg .= ' !';
+                throw new CustomException($validationErrMsg);
+            }
+
+
+
+
+            
+
+            
+            //--------------$this->authorize('update',$course);
+            if ($course) {
+
+                $course_name = $request->get('course-name');
+                $courseCount = Course::where('id', '!=', $id)->where('name', '=', $course_name)->count();
+
+                if($courseCount == 0) {
+                    
+                    /* upload image if have one */
+                    $file = $request->input('course-img');
+                    if(!isset($file)){ 
+                        //todo delete prev image when update image path
+                        // when teacher_img_add_count < 1 then delete prev image
+                        $imgDest = null;
+                    }else{
+                        //input filed with name = teacher_img_add_count vale equals 0 when initially filpond loads image
+                        if( $request->hidden_file_add_count == 0){
+                            
+                            // previously no image now new image is uploaded and submit form
+                            if($request->hidden_course_img_url == null){
+                                $fileUploadUtil = new FileUploadUtil();
+                                $imgDest        = $fileUploadUtil->upload($file,'courses/');
+                            }else{
+                                // no change to previously upload image and submit edit form
+                                $imgDest = $request->hidden_course_img_url;
+                            }
+
+                        }else{
+                            // previously image is uploaded and now change the image and upload
+                            //todo delete prviously uploaded image
+                            $fileUploadUtil = new FileUploadUtil();
+                            $imgDest        = $fileUploadUtil->upload($file,'courses/');
+
+                        }
+
+                    }
+
+            
+
+            
+
+
+
+                    $course->name                    = $request->get('course-name');
+                    $course->subject_id              = $request->get('subject');
+                    $course->teacher_id              = $request->get('teacher');
+                    $course->heading_text            = $request->get('course-heading');
+                    $course->description             = $request->get('course-description');
+                    $course->duration                = $request->get('video-duration');
+                    $course->video_count             = $request->get('video-count');
+                    $course->author_share_percentage = $request->get('author_share_percentage');
+                    $course->price                   = $request->get('course-price');
+                    $course->status                  = ($request->get('course_stat')=='published')?'published': 'draft';
+                    $course->image                   = $imgDest;
+                    
+
+                    $topicsString = array();
+                    foreach ($request->get('topicsArr') as $key => $value) {
+                        $topicsString[$key] = base64_decode($value);
+                    }
+                    $course->topics                  = $topicsString;
+                    
+
+
+
+
+
+                    $contentString = array();
+                    foreach ($request->get('contentArr') as $key => $value) {
+                        $contentString[base64_decode($key)] = $value;
+                    }
+                    $course->content                 = $contentString;                
+                    
+                    
+
+
+
+
+                    $course->save();
+                    
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    return redirect()->route('admin.course.index')->with([
+                        'message' => 'Course updated successfully',
+                        'cls'     => 'flash-success',
+                        'msgTitle'=> 'Success',
+                    ]);
+
+                }else{
+                    throw new CustomException('Course name already exists!',[
+                        'cls'     => 'flash-warning',
+                        'msgTitle'=> 'Warning!',
+                    ]);
+                }
+
+            } else {
+                throw new CustomException('Course does not exist!',[
+                    'cls'     => 'flash-warning',
+                    'msgTitle'=> 'Warning!',
+                ]);
+            }
+
+        }catch(CustomException $e){
+
+
+            /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
+            ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
+            then laravel automatically remove all duplicated message in one key element in array */
+
+            return redirect()->back()
+            ->withErrors($courseValErrors['contentErrMsgArr'],'contentErrMsgArr')            
+            ->withErrors($courseValErrors['infoErrMsgArr'],'infoErrMsgArr')
+            ->with([
+                'message'               => $e->getMessage(),
+                //'message'             => $e->getMessage(),         
+                'cls'                   => 'flash-danger',
+                'msgTitle'              => 'Error!',
+                'contentLinksErrMsgArr' => $courseValErrors['contentLinksErrMsgArr']
+            ]);
+
+
+            
+        }catch(AuthorizationException $e){
+            return redirect()->route('admin.course.index')->with([
+                'message'     => 'You dont have Permissions to update the course!',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Permission Denied !',
+            ]);
+        }catch(\Exception $e){
+            return redirect()->back()->with([
+                'message'  => 'Course update failed!',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error !',
+            ]);
+        }
+        ////////////
     }
 
     /**
@@ -542,10 +848,9 @@ class CourseController extends Controller
             }
 
             $course = Course::find($request->courseId);
-            if ($course) {
-                
-                $status = $course->isEmpty();                
 
+            if ($course) {                
+                $status = $course->isEmpty();                
                 return response()->json([
                     'message'  => $status,
                     'status' => 'success',
@@ -566,19 +871,21 @@ class CourseController extends Controller
 
         }catch(\Exception $e){
             return response()->json([
-                'message'  => '----'.$e->getMessage(),
-                //'message'  => 'Course status check failed!',
-                'status' => 'error',
+                //'message'  => '----'.$e->getMessage(),
+                'message'   => 'Course status check failed!',
+                'status'    => 'error',
             ]);
         }
     }
 
 
 
-    /*public function courseContent()
+    /*
+    public function courseContent()
     {
         return view('admin-panel.course-content');
-    }*/
+    }
+    */
 
 
     public function addCourseCopy()

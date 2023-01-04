@@ -7,7 +7,7 @@
 
     <!-- datatables -->
     <link href="{{asset('admin/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="{{asset('admin/css/plugins/dataTables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 
     <!-- Magnific Popup core CSS file 
     <link rel="stylesheet" href="{{asset('admin/css/magnific-popup.css')}}">-->

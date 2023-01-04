@@ -13,11 +13,20 @@
 {{--<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/green.css">--}}
 
 
-<link rel='stylesheet' href='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'>
-<link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'>
+<!-- <link rel='stylesheet' href='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'> -->
+<link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond-plugin-image-preview.min.css')}}">
+<!-- <link rel='stylesheet' href='https://unpkg.com/filepond/dist/filepond.min.css'> -->
+<link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond.min.css')}}">
+
 
 <!-- jQuery Steps -->
-<link rel='stylesheet' href='{{asset('admin/css/plugins/steps/jquery.steps.css')}}'>
+<link rel='stylesheet' href="{{asset('admin/css/plugins/steps/jquery.steps.css')}}">
+
+
+
+
+
+
 
 
 <!-- sweetalert2 CSS file-->
@@ -27,7 +36,8 @@
 <link rel="stylesheet" href="{{asset('admin/css/plugins/toastr/toastr.min.css')}}">
 
 <!-- rangeslider CSS file-->
-<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.css'>
+<!-- <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.css'> -->
+<link rel='stylesheet' href="{{asset('admin/plugins/rangeslider/css/rangeslider.min.css')}}">
 
 @stop
 
@@ -109,32 +119,6 @@
     <div class="row" id="">
         <div class="col-lg-12">          
             
-            {{--
-                <x-flash-message
-                    class="flash-info" 
-                    title="Error!"
-                    message="When writing components for your own application, components">
-                    
-                    <x-slot name="insideContent">
-                        @if(false)
-                        <div>11111111111111111</div>
-                        @endif
-                    </x-slot>
-                </x-flash-message>
-            --}}
-            
-            <?php dump(Session::get('aaa')) ?>
-            <?php dump(Session::get('aaa.1message')) ?>
-           
-
-
-
-
-            [{{Session::get('bbb')}}]
-            [{{Session::get('ccc')}}]
-
-
-
             @if(Session::has('message'))
             <x-flash-message
                 class="{{ Session::get('cls', 'flash-info')}}" 
@@ -170,7 +154,6 @@
                         //dd($errors->contentLinksErrMsgArr->getMessages());
                         //dump($errors->uuu);
 
-                        //dd($xsr);
                         //dd($contentLinksErrMsgArr);
                     ?>
 
@@ -178,11 +161,11 @@
                     @if(($errors->contentErrMsgArr->getMessages() != null) && is_array($errors->contentErrMsgArr->getMessages()))
                         @foreach ($errors->contentErrMsgArr->getMessages() as $key => $errorMsgArr)
                             <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
+                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
                                 <div class="card-body py-1">                                
-                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
+                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">                                    
                                     @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                        <li class="">{{$errorMsgArr[$i]}}</li>
+                                        <li class="@if(($i+1) != count($errorMsgArr)) pb-2 mb-1 border-b border-red-300 @endif">{{$errorMsgArr[$i]}}</li>
                                     @endfor
                                     </ul>                                   
                                 </div>
@@ -190,15 +173,15 @@
                         @endforeach
                     @endif   
 
-                    <?php //dd(Session::get('contentLinksErrMsgArr'));?>
+                    <?php //dump(Session::get('contentLinksErrMsgArr'));?>
                     @if(Session::has('contentLinksErrMsgArr') && is_array(Session::get('contentLinksErrMsgArr')))
                         @foreach (Session::get('contentLinksErrMsgArr') as $key => $errorMsgArr)
                             <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{$key}}</div>
+                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
                                 <div class="card-body py-1">                                
                                     <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
                                     @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                        <li class="">Link {{($i+1)}}  ⟹  {{$errorMsgArr[$i]}}</li>
+                                        <li class="@if(($i+1) != count($errorMsgArr)) pb-2 mb-1 border-b border-red-300 @endif">Link {{($i+1)}}  ⟹  {{$errorMsgArr[$i]}}</li>
                                     @endfor
                                     </ul>                                   
                                 </div>
@@ -302,7 +285,7 @@
                                     <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
                                         <div class="col-sm-8">
                                             <div class="border-edu">
-                                                <textarea rows="3" class="form-control" name="course-description">{{old('course-description')}}</textarea>
+                                                <textarea rows="3" class="form-control" name="course-description"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -764,13 +747,20 @@
     <!-- <script src="../assets/summernote-0.8.18/summernote-lite.js"></script> -->
     <script src="{{asset('admin/plugins/summernote-0.8.18/summernote-bs4.js')}}"></script>
 
+    <!-- 
     <script src='https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js'></script>
     <script src='https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js'></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
-    <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script>
-   
+    <script src='https://unpkg.com/filepond/dist/filepond.min.js'></script> 
+    --> 
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-encode.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-validate-size.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-image-exif-orientation.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-validate-type.js')}}"></script>
+    <script src="{{asset('admin/plugins/filepond/js/filepond.min.js')}}"></script>
 
     <!-- jQuery Steps -->
     <script src="{{asset('admin/js/plugins/steps/jquery.steps.min.js')}}"></script>
@@ -784,10 +774,9 @@
 
 
 
-    <!-- iCheck
-    <script src="{{asset('admin/js/plugins/iCheck/icheck.min.js')}}"></script>-->
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+    <!-- iCheck-->
+    <script src="{{asset('admin/js/plugins/iCheck/icheck.min.js')}}"></script>
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>-->
 
 
     <!-- sweetalert2 js file-->
@@ -797,14 +786,15 @@
     <script src="{{asset('admin/js/plugins/toastr/toastr.min.js')}}"></script>
 
 	<!-- rangeslider JS file-->
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.js'></script>
+	<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.js'></script> -->
+    <script src="{{asset('admin/plugins/rangeslider/js/rangeslider.min.js')}}"></script>
 @stop
 
 @section('javascript')
     <script>
 
 		(function () {
-			/*We want to preview images, so we need to register the Image Preview plugin*/
+			//We want to preview images, so we need to register the Image Preview plugin
 			FilePond.registerPlugin(
 
 				// encodes the file as base64 data
@@ -1078,6 +1068,11 @@
 							]
 						],
 					});
+                    @if(null != old('course-description'))
+                        $('[name="course-description"]').summernote('code', `{!!old('course-description')!!}`);
+                    @endif
+
+
 
 					$('input').iCheck({
 						checkboxClass: 'icheckbox_square-green',
@@ -1407,6 +1402,9 @@
                 var dbCourseContentJson
                 try {
                     dbCourseContentJson = JSON.parse(courseContentFromDb) || {};
+
+                    // fix for prevent page load error if data format is 
+                    if(!(dbCourseContentJson instanceof Object)){throw new Error();}
                 }
                 catch(e) {
                     dbCourseContentJson = {};
@@ -1489,7 +1487,7 @@
                     var ok_i        = '<a href="" class="ok-btn fa edit fa-check" title="Update changes"></a>';
 
                     _topicList   +=  "<li>"+
-                                        "<p>" + inp_ele_txt + "</p>" +
+                                        "<p style='width:calc(100% - 60px);'>" + inp_ele_txt + "</p>" +
                                         close_i + edit_i + undo_i + ok_i + edit_inp +
                                     "</li>";
                 });
@@ -1916,6 +1914,9 @@
                 var dbCourseContentJson
                 try {
                     dbCourseContentJson = JSON.parse(courseContentFromDb)  || {};
+
+                    // fix for prevent page load error if data format is 
+                    if(!(dbCourseContentJson instanceof Object)){throw new Error();}                   
                 }
                 catch(e) {
                     dbCourseContentJson = {};
@@ -2101,11 +2102,16 @@
 
 
                                 contentListHtml +=  "<li>" +
-                                                        '<div class="txt-div" style="font-size:14px;font-weight: bold;">' +
-                                                            '<a class="cc-link" href="' + element.inputUrl + '">' + element.inputText + '</a> ➜ ' +
-                                                            '&nbsp;&nbsp; [Duration/Size - <span class="cc-param">' + element.linkParam + '</span>]' +
-                                                            '&nbsp;&nbsp; [<span class="cc-price">' + freeVal + '</span>]' +
-                                                            '&nbsp;&nbsp; [Type - <span class="cc-type capitalize">' + c_type + '</span>]' +
+                                                        '<div class="txt-div border pl-2 py-1" style="font-size:14px; width:calc(100% - 60px);">' +
+                                                            '<a class="cc-link" href="' + element.inputUrl + '">' + element.inputText + '</a>' +
+                                                            
+                                                            '<div class="-ml-2 border-b border-gray-300 my-2"></div>' + 
+                                                            
+                                                            '<div class="text-xs font-semibold">' + 
+                                                                'Duration/Size - <span class="cc-param">' + element.linkParam + '</span><br>' +
+                                                                'Price - <span class="cc-price">' + freeVal + '</span><br>' +
+                                                                'Type - <span class="cc-type capitalize">' + c_type + '</span>' +
+                                                            '</div>' + 
                                                         '</div>' +
                                                         close_i + edit_i + undo_i +ok_i +  formHtml +
                                                     "</li>";
@@ -2385,9 +2391,9 @@
 
                 var _inputText   = parent_li_item.children('.txt-div').children('.cc-link').html();
                 var _inputUrl    = parent_li_item.children('.txt-div').children('.cc-link').attr('href');
-                var _linkParam   = parent_li_item.children('.txt-div').children('.cc-param').html();
-                var _isFree      = (parent_li_item.children('.txt-div').children('.cc-price').html()=='Free')?'check':'uncheck';
-                var _type        = parent_li_item.children('.txt-div').children('.cc-type').html();
+                var _linkParam   = parent_li_item.children('.txt-div').find('.cc-param').html();
+                var _isFree      = (parent_li_item.children('.txt-div').find('.cc-price').html()=='Free')?'check':'uncheck';
+                var _type        = parent_li_item.children('.txt-div').find('.cc-type').html();
 
                 parent_li_item.find('input[name="content-text"]').val(_inputText);
                 parent_li_item.find('textarea[name="content-url"]').val(_inputUrl);

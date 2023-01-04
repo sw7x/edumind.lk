@@ -8,7 +8,7 @@
     <link href="{{asset('admin/css/plugins/iCheck/custom.css')}}" rel="stylesheet">
 
     <!-- rangeslider CSS file-->
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.css'>
+    <link rel='stylesheet' href="{{asset('admin/plugins/rangeslider/css/rangeslider.min.css')}}">
 
 @stop
 
@@ -149,7 +149,7 @@
     <script src="{{asset('admin/js/plugins/select2/select2.full.min.js')}}"></script>
 
     <!-- rangeslider JS file-->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.js'></script>
+    <script src="{{asset('admin/plugins/rangeslider/js/rangeslider.min.js')}}"></script>
 @stop
 
 

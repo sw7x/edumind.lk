@@ -65,38 +65,26 @@ class CourseService
 
     public function getCourseValidationErrors($validationErrorsArr){
 
-
         $contentLinksErrMsgArr    = array();
         $contentErrMsgArr         = array();
         $infoErrMsgArr            = array();
 
-
-        foreach ($validationErrorsArr as $errField => $valErrMsgArr){
-            //dump($errField);
-            //dump($valErrMsgArr);
-            if(Str::startsWith($errField, 'contentArr.')){
-                $sectionHeading = Str::of($errField)->explode('.')[1];             
+        //dd($validationErrorsArr);
+        
+        foreach ($validationErrorsArr as $errField => $valErrMsgArr){            
+            if(Str::startsWith($errField, 'contentArr.')){                
                 
-                //dump($sectionHeading);
-                //dump($valErrMsgArr);
+                $sectionHeading = Str::of($errField)->explode('.')[1];             
                 foreach ($valErrMsgArr as $errMsg){
-
                     if(isset(Str::of($errField)->explode('.')[2])){
                         $linkIndex = Str::of($errField)->explode('.')[2];
-                        
-                        //dump($contentLinksErrMsgArr);
-                        //dump("contentLinksErrMsgArr-{$sectionHeading}-{$linkIndex}");
-                        //dump(isset($contentLinksErrMsgArr[$sectionHeading][$linkIndex]));                         
 
                         if(!isset($contentLinksErrMsgArr[$sectionHeading][$linkIndex])){
                             $contentLinksErrMsgArr[$sectionHeading][$linkIndex] = $errMsg;
                         }else{
                             $contentLinksErrMsgArr[$sectionHeading][$linkIndex] .= ', '.$errMsg;
                         }
-
-                        //dump($contentLinksErrMsgArr[$sectionHeading][$linkIndex]);
-                        //dump($contentLinksErrMsgArr);
-                        //dump("=====================");                        
+                    
                     }else{
                         $contentErrMsgArr[$sectionHeading][] = $errMsg;
                     }                    
@@ -105,18 +93,12 @@ class CourseService
                 $infoErrMsgArr[$errField] = $valErrMsgArr;               
             }
         }
-
+        
         return array(
             'contentLinksErrMsgArr' => $contentLinksErrMsgArr, 
             'contentErrMsgArr'      => $contentErrMsgArr,
             'infoErrMsgArr'         => $infoErrMsgArr
         );
     }
-
-
-
-
-
-
 
 }

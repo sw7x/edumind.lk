@@ -31,6 +31,7 @@ class EditorUpdateRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->recordId = $this->route('id');
+        //dd($this->recordId);
     }
 
 

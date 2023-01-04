@@ -153,7 +153,7 @@
 
 
 
-
+                        <?php dd($courseData->content); ?>
 
 
                         @if($courseData->content)
@@ -186,11 +186,11 @@
                                                         @endif
 
                                                         <div class="link_div mr-2 text-justify">
-                                                            <a class="_underline link" href="{{route('course-watch',['slug'=>$courseData->slug, 'videoId'=>$liCount])}}">{{$arr['text']}}</a>
+                                                            <a class="_underline link" href="{{route('course-watch',['slug'=>$courseData->slug, 'videoId'=>$liCount])}}">{{$arr['inputText']}}</a>
                                                         </div>
 
-                                                        @if($arr['param'] !='')
-                                                            <span class="param text-sm ml-auto">{{$arr['param']}}</span>
+                                                        @if($arr['linkParam'] !='')
+                                                            <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
                                                         @endif
 
                                                     </li>

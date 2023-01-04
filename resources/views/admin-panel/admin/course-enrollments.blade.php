@@ -8,7 +8,7 @@
 
     <!-- datatables -->
     <link href="{{asset('admin/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="{{asset('admin/css/plugins/dataTables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 
     <!-- Magnific Popup core CSS file 
     <link rel="stylesheet" href="{{asset('admin/css/magnific-popup.css')}}">-->
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{asset('admin/css/plugins/sweetalert2/sweetalert2.min.css')}}">-->
 	
 	<!-- Date Range Picker CSS file-->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="{{asset('admin/plugins/daterangepicker/css/daterangepicker.css')}}" />
 @stop
 
 @section('page-css')
@@ -129,8 +129,8 @@
     <!-- sweetalert2 js file
     <script src="{{asset('admin/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>-->
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="{{asset('admin/js/moment.min.js')}}"></script>
+	<script type="text/javascript" src="{{asset('admin/plugins/daterangepicker/js/daterangepicker.min.js')}}"></script>
 @stop
 
 

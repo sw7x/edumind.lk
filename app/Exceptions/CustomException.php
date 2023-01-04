@@ -15,8 +15,8 @@ class CustomException extends Exception
         parent::__construct($message);
     }
 
-    public function getData()
+    public function getData($key=null)
     {
-        return $this->_data;
+        return ($key===null)?$this->_data:($this->_data[$key]??'');
     }
 }

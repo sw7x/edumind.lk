@@ -102,7 +102,8 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {        
-
+        //session(['key' => 'value']);
+        //dd(session('key'));
         try{
             $this->authorize('create',User::class);            
             return view('admin-panel.user-add');           
@@ -127,6 +128,7 @@ class UserController extends Controller
     public function storeTeacher(TeacherStoreRequest $request){
         //dd($request->all());
         //username
+
         try{
 
             throw new AuthorizationException('Form validation failed');
@@ -136,8 +138,12 @@ class UserController extends Controller
             $usernameMsg = ($username != $request->get('teacher-uname'))?"Given username is already there, ∴ system updated username to {$username}":'';
 
             if (isset($request->validator) && $request->validator->fails()) {
-                throw new CustomException('Form validation failed');
+                /*throw new CustomException('Form validation failed'[
+                    'cls'     => 'flash-danger',
+                    'msgTitle'=> 'Error!',
+                ]);*/
             }
+
 
             $file = $request->input('teacher_profile_img');
             if(isset($file)){
@@ -185,8 +191,8 @@ class UserController extends Controller
                 'teacher_submit_message'  => $e->getMessage(),
                 //'teacher_submit_message2' => $pwResetTxt,
                 //'teacher_submit_title'   => 'Student Registration submit page',
-                'teacher_submit_cls'     => 'flash-danger',
-                'teacher_submit_msgTitle'=> 'Error !',
+                'teacher_submit_cls'     => $e->getMessage('cls') ?? 'flash-danger',
+                'teacher_submit_msgTitle'=> $e->getMessage('msgTitle') ?? 'Error !',
             ]);
 
         }catch(AuthorizationException $e){
