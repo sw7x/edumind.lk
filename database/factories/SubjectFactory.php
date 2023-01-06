@@ -35,7 +35,12 @@ class SubjectFactory extends Factory
             'name'          => $subjectName,
             'description'   => $this->faker->text(),
             'image'         => '',
-            'status'        => $this->faker->randomElement(['published','draft']),
+            //'status'        => $this->faker->randomElement(['published','draft']),
+            'status'        => $this->faker->randomElement([
+                $this->model::PUBLISHED, 
+                $this->model::DRAFT, 
+                $this->model::PUBLISHED
+            ]),
             'slug'          => $slug,
             'author_id'     => function () {
                 $teacherIdArr   = Sentinel::findRoleBySlug(Role::TEACHER)->users()->with('roles')->pluck('id')->toArray();

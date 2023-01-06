@@ -172,65 +172,79 @@
 
                     <!-- course Curriculum -->
                     <div id="curriculum" class="tube-card p-5 lg:p-8">
-                        <h3 class="mb-4 text-xl font-semibold lg:mb-5"> Course Curriculum </h3>
-                        @if(isset($courseData->content) && is_array($courseData->content))
-                            <ul uk-accordion="multiple: true" class="divide-y space-y-3">
-                                @php($liCount = 1)
-                                @foreach($courseData->content as $sectionHeading => $sectionContent)
-                                    <li class="bg-gray-200 px-0 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
+                        <h3 class="mb-4 text-xl font-semibold lg:mb-5"> Course Curriculum</h3>
+                        @if(isset($courseContent))
+                            @if($courseContentInvFormat == false)
+                                <ul uk-accordion="multiple: true" class="divide-y space-y-3">
+                                    @php($liCount = 1)
+                                    @foreach($courseContent as $sectionHeading => $sectionContent)
+                                        <li class="bg-gray-200 px-0 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
 
-                                        <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
-                                            <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
+                                            <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
+                                                <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
 
-                                        <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
+                                            <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
 
-                                            <ul class="course-curriculum-list font-normal">
-                                                @foreach($sectionContent as $arr)
-                                                    <li class=" hover:bg-gray-100 p-2 flex _rounded-md
-                                                        {{($arr['isFree'] == true)?' text-blue-500':''}}
-                                                        {{($arr['type'] == 'Download')?' __pl-8':''}}">
+                                                <ul class="course-curriculum-list font-normal">
+                                                    @foreach($sectionContent as $arr)
+                                                        <li class=" hover:bg-gray-100 p-2 flex _rounded-md
+                                                            {{($arr['isFree'] == true)?' text-blue-500':''}}
+                                                            {{($arr['type'] == 'Download')?' __pl-8':''}}">
 
 
-                                                        @if(strtolower($arr['type']) == 'video')
-                                                            <i class="fa fa-play-circle leading-6 text-3xl mr-2"></i>
-                                                        @elseif (strtolower($arr['type']) =="download")
-                                                            <i class="fa fa-download leading-6 text-3xl mr-2"></i>
-                                                        @elseif (strtolower($arr['type']) =="other")
-                                                            <i class="fa fa-link leading-6 text-3xl mr-2"></i>
-                                                        @else
-                                                            <i class="fa fa-info-circle leading-6 text-3xl mr-2"></i>
-                                                        @endif
-
-                                                        <div class="link_div mr-2 text-justify">
-                                                            @if($arr['isFree'] == true)
-                                                                @if($arr['type'] == 'Video')
-                                                                    <a href="#preview-modal-{{$liCount}}" class="_underline link" uk-toggle>{{$arr['inputText']}}</a>
-                                                                    <a href="#preview-modal-{{$liCount}}" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle>Preview</a>
-                                                                @elseif($arr['type'] == 'Download')
-                                                                    <a class="_underline link" download href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>
-                                                                    <a href="{{$arr['inputUrl']}}" download class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs">Download</a>
-                                                                @else
-                                                                    <a class="_underline link" href="{{$arr['inputUrl']}}" target="_blank">{{$arr['inputText']}}</a>
-                                                                @endif
+                                                            @if(strtolower($arr['type']) == 'video')
+                                                                <i class="fa fa-play-circle leading-6 text-3xl mr-2"></i>
+                                                            @elseif (strtolower($arr['type']) =="download")
+                                                                <i class="fa fa-download leading-6 text-3xl mr-2"></i>
+                                                            @elseif (strtolower($arr['type']) =="other")
+                                                                <i class="fa fa-link leading-6 text-3xl mr-2"></i>
                                                             @else
-                                                                {{$arr['inputText']}}
+                                                                <i class="fa fa-info-circle leading-6 text-3xl mr-2"></i>
                                                             @endif
-                                                        </div>
 
-                                                        @if($arr['linkParam'] !='')
-                                                            <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
-                                                        @endif
+                                                            <div class="link_div mr-2 text-justify">
+                                                                
 
-                                                    </li>
-                                                    @php($liCount++)
-                                                @endforeach
-                                            </ul>
 
-                                        </div>
-                                    </li>
-                                @endforeach
 
-                            </ul>
+                                                                @if($arr['isFree'] == true)
+                                                                    @if(strtolower($arr['type']) == 'video')
+                                                                        @if(ValidUrl($arr['inputUrl']))
+                                                                            <a href="#preview-modal-{{$liCount}}" class="_underline link" uk-toggle>{{$arr['inputText']}}</a>
+                                                                            <a href="#preview-modal-{{$liCount}}" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle>Preview</a>
+                                                                        @else
+                                                                            <a class="_underline link" href="{{$arr['inputUrl']}}" target="_blank">{{$arr['inputText']}}</a>
+                                                                        @endif
+
+                                                                    @elseif(strtolower($arr['type']) == 'download')
+                                                                        <a class="_underline link" download href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>
+                                                                        <a href="{{$arr['inputUrl']}}" download class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs">Download</a>
+                                                                    @else
+                                                                        <a class="_underline link" href="{{$arr['inputUrl']}}" target="_blank">{{$arr['inputText']}}</a>
+                                                                    @endif
+
+
+
+                                                                @else
+                                                                    {{$arr['inputText']}}
+                                                                @endif
+                                                            </div>
+
+                                                            @if($arr['linkParam'] !='')
+                                                                <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
+                                                            @endif
+
+                                                        </li>
+                                                        @php($liCount++)
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-center text-sm font-semibold text-red-600">Course content is not in correct format</p>
+                            @endif
                         @else
                             <p class="text-center text-sm font-semibold">Course content is empty</p>
                         @endif
@@ -623,23 +637,23 @@
 
 @section('bootstrap-modals')
 
-    @if(isset($courseData->content) && is_array($courseData->content))
+    @if(isset($courseContent) && ($courseContentInvFormat == false))
+
         @php($liCount = 1)
         @foreach($courseData->content as $sectionHeading => $sectionContent)
-
             @foreach($sectionContent as $arr)
                 @if($arr['isFree'] == true)
-                    @if($arr['type'] == 'Video')
+                    @if(strtolower($arr['type']) == 'video')
                     <!-- model for video {{$liCount}} -->
                         <div id="preview-modal-{{$liCount}}" uk-modal>
                             <div class="uk-modal-dialog shadow-lg rounded-md">
                                 <button class="uk-modal-close-default m-2.5" type="button" uk-close></button>
                                 <div class="uk-modal-header  rounded-t-md">
-                                    <h4 class="text-lg font-semibold mb-2">{{$liCount}} . {{$arr['text']}}</h4>
+                                    <h4 class="text-lg font-semibold mb-2">{{$liCount}} . {{$arr['inputText']}}</h4>
                                 </div>
 
                                 <div class="embed-video">
-                                    <iframe src="{{$arr['url']}}" class="w-full" uk-video="automute: false;autoplay:true"
+                                    <iframe src="{{$arr['inputUrl']}}" class="w-full" uk-video="automute: false;autoplay:true"
                                             frameborder="0" allow="autoplay; fullscreen" allowfullscreen uk-responsive></iframe>
                                 </div>
 
@@ -655,8 +669,8 @@
                 @endif
                 @php($liCount++)
             @endforeach
-
         @endforeach
+
     @endif
 
 @stop
@@ -726,75 +740,7 @@
 	})
 
 
-	//delete course
-	$('.delete-course-btn').on('click', function(event){
-
-		var courseId = $(this).data('courseid');
-		var form     = $(this).parent().parent().find('form.course-destroy');
-
-		Swal.fire({
-			title: 'Delete course',
-			text: "Are you sure you want to course this user ?",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			cancelButtonColor: '#3fcc98',
-			confirmButtonText: 'Delete'
-		}).then((result) => {
-
-
-			if (result.isConfirmed) {
-
-				$.ajax({
-					url: "{{route('admin.course.check-empty')}}",
-					type: "post",
-					async:true,
-					dataType:'json',
-					data:{
-						_token : '{{ csrf_token() }}',
-						courseId : courseId
-					},
-					success: function (response) {
-
-						if(response.status === 'success'){
-
-							if(response.message === true){
-								// course content is empty
-								//submit form
-								form.submit();
-							}else{
-								// course content is empty
-								Swal.fire({
-									title: 'Course already have content',
-									text: "Are you sure you want to delete this course",
-									icon: 'warning',
-									showCancelButton: true,
-									confirmButtonColor: '#d33',
-									cancelButtonColor: '#3fcc98',
-									confirmButtonText: 'Delete'
-								}).then((result) => {
-
-									if (result.isConfirmed) {
-										//sumit form
-										form.submit();
-									}
-								})
-							}
-						}else if(response.status == 'error'){
-							toastr[response.status](response.message);
-						}
-					},
-					error:function(request,errorType,errorMessage)
-					{
-						//alert ('error - '+errorType+'with message - '+errorMessage);
-						//toastr["success"]("User updated successfully! ", "Good Job!")
-						toastr["error"]("Course check failed!")
-					}
-				});
-			}
-		});
-		event.preventDefault();
-	});
+	
 
 
 

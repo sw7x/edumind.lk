@@ -58,7 +58,7 @@
                                     </td>
 
                                     <td>
-                                        @if($item->status == 'published')
+                                        @if($item->status == App\Models\Subject::PUBLISHED)
                                             <span class="label label-primary">Published</span>
                                         @else
                                             <span class="label label-disable">Draft</span>

@@ -238,64 +238,83 @@
 
 
                                 @if(strtolower($arr['type']) == 'video')
-                                    <li>
-                                        <div class="embed-video">
-                                            <iframe uk-video="automute: false;autoplay:false" src="{{$arr['inputUrl']}}" allow="autoplay; fullscreen" allowfullscreen></iframe>
-                                        </div>
-                                    </li>
+                                    @if(ValidUrl($arr['inputUrl']))
+                                        <li>
+                                            <div class="embed-video">
+                                                <iframe uk-video="automute: false;autoplay:false" src="{{$arr['inputUrl']}}" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                                            </div>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                                <div class=" font-bold text-4xl text-red">Error</div>
+                                                <div class="my-5 inline-block top-div">
+                                                    <i class="text-red fa fa-ban text-9xl" aria-hidden="true"></i>
+                                                </div>                                                
+                                                <p class="text-2xl font-bold mt-0 text-red">Invalid Link - 
+                                                    <a href="{{$arr['inputUrl']}}" target="_blank" class="text-white underline hover:underline inline-block" title="Open">{{$arr['inputText']}}</a>
+                                                    @if($arr['linkParam'] !='')
+                                                        <span class="text-white text-sm font-normal">({{$arr['linkParam']}})<span>
+                                                    @endif
+                                                </p>
+
+                                            </div>
+                                        </li>
+                                    @endif
+
                                 @elseif (strtolower($arr['type']) =="download")
                                     <li>
-                                        <div class="text-center text-white link p-10 bg-gray-800 min-h-screen-half">
-
-                                            <div class=" font-bold text-4xl">{{$arr['inputText']}}</div>
-
-                                            <div class="my-5 inline-block top-div">
-                                                <div class="border-8 rounded-full mb-1">
-                                                    <a href="{{$arr['inputUrl']}}" download class="down_icon py-5 inline-block" title="Download">
-                                                        <i class="fa fa-download text-6xl"></i>
-                                                    </a>
-                                                </div>
+                                        <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                            <div class=" font-bold text-4xl">Download Link</div>
+                                            <div class="my-5 inline-block top-div">                                                                                          
+                                                <i class="fa fa-download text-9xl"></i>                                                 
                                             </div>
-                                            @if($arr['linkParam'] !='')
-                                            <p class="text-2xl font-bold mt-0">({{$arr['linkParam']}})</p>
-                                            @endif
+                                                                                        
+                                            <p class="text-2xl font-bold mt-0">
+                                                Click here to download - 
+                                                <a href="{{$arr['inputUrl']}}" download class="underline hover:underline down_icon py-5 inline-block" title="Download">{{$arr['inputText']}}</a>
+                                                @if($arr['linkParam'] !='')
+                                                    <span class="text-sm font-normal">({{$arr['linkParam']}})<span>
+                                                @endif    
+                                            </p>
+                                            
                                         </div>
                                     </li>
                                 @elseif (strtolower($arr['type']) =="other")
                                     <li>
-                                        <div class="text-center text-white link p-10 bg-gray-800 min-h-screen-half">
-
-                                            <div class=" font-bold text-4xl">{{$arr['inputText']}}</div>
-
+                                        <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                            <div class=" font-bold text-4xl">External Link</div>
                                             <div class="my-5 inline-block top-div">
-                                                <div class="border-8 rounded-full mb-1">
-                                                    <a href="{{$arr['inputUrl']}}" target="_blank" class="down_icon py-5 inline-block" title="Download">
-                                                        <i class="fa fa-link text-6xl"></i>
-                                                    </a>
+                                                <div class="border-8 rounded-full mb-1 p-4">                                                    
+                                                    <i class="fa fa-link text-8xl"></i>                                                    
                                                 </div>
-                                            </div>
-                                            @if($arr['linkParam'] !='')
-                                            <p class="text-2xl font-bold mt-0">{{$arr['linkParam']}}</p>
-                                            @endif
+                                            </div>                                            
+                                            
+                                            <p class="text-2xl font-bold mt-0">
+                                                Click here to open - 
+                                                <a href="{{$arr['inputUrl']}}" target="_blank" class="underline hover:underline down_icon py-5 inline-block" title="Open">{{$arr['inputText']}}</a>
+                                                @if($arr['linkParam'] !='')
+                                                    <span class="text-sm font-normal">({{$arr['linkParam']}})<span>
+                                                @endif    
+                                            </p>
+                                                                                    
                                         </div>
                                     </li>
                                 @else
                                     <li>
-                                        <div class="text-center text-white link p-10 bg-gray-800 min-h-screen-half">
-
-                                            <div class=" font-bold text-4xl">{{$arr['text']}}</div>
-
+                                        <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                            <div class=" font-bold text-4xl text-yellow-400">Invalid Link</div>
                                             <div class="my-5 inline-block top-div">
-                                                <div class="border-8 rounded-full mb-1">
-                                                    <a href="{{$arr['inputUrl']}}" target="_blank" class="down_icon py-5 inline-block" title="Download">
-                                                        <i class="fa fa-info-circle text-6xl"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            @if($arr['linkParam'] !='')
-                                            <p class="text-2xl font-bold mt-0">{{$arr['linkParam']}}</p>
-                                            @endif
-                                        </div>
+                                                <i class="fa fa-info-circle text-9xl" aria-hidden="true"></i>
+                                            </div>                                                
+                                            <p class="text-2xl font-bold mt-0 text-yellow-400">
+                                                Invalid Link type - 
+                                                <a href="{{$arr['inputUrl']}}" target="_blank" class="text-white underline hover:underline inline-block" title="Open">{{$arr['inputText']}}</a>
+                                                @if($arr['linkParam'] !='')
+                                                    <span class="text-sm font-normal text-white">({{$arr['linkParam']}})<span>
+                                                @endif
+                                            </p>
+                                        </div>                                        
                                     </li>
                                 @endif
 

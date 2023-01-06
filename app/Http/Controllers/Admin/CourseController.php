@@ -21,7 +21,7 @@ use App\Services\CourseService;
 use App\Utils\FileUploadUtil;
 use App\Utils\UrlUtil;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Arr;
 
 class CourseController extends Controller
 {
@@ -164,7 +164,7 @@ class CourseController extends Controller
         //=============`todo - client side val for course content
         //=============`todo - user input characters filetr
 
-        //dd($dd);
+        //dd($dd);isValidContentJson
 
         //dump(Session::all());
         //dump(Session::get('errors'));
@@ -182,7 +182,7 @@ class CourseController extends Controller
         if(null != Session::get('errors') && null != Session::get('errors')->courseCreate->getMessages()){
             $courseValErrors = $this->courseService->getCourseValidationErrors(Session::get('errors')->courseCreate->getMessages());
         }
-        //dump($courseValErrors);
+        //dd($courseValErrors);
 
 
         /*
@@ -238,23 +238,40 @@ class CourseController extends Controller
             //$this->authorize('createTeachers',User::class);            
             
 
-
+            //dd($request->get('contentArr'));
 
             //dump($request->get('contentArr'));
 
             
             //$contentString = json_encode($request->get('contentArr'),JSON_THROW_ON_ERROR|JSON_UNESCAPED_LINE_TERMINATORS ,512);
-            $contentString = array();
-            foreach ($request->get('contentArr') as $key => $value) {
-                $contentString[base64_decode($key)] = $value;
+            
+
+            
+
+
+
+            if($request->isValidContentJson === true){
+                $contentString = array();
+                foreach ($request->get('contentArr') as $key => $value) {
+                    $contentString[base64_decode($key)] = $value;
+                }
+
+                $topicsString = array();
+                foreach ($request->get('topicsArr') as $key => $value) {
+                    $topicsString[$key] = base64_decode($value);
+                }
+
+                $validationErrMsg = '';
+                $contentInputStr  = json_encode($contentString,512);
+
+            }else{
+                $validationErrMsg = 'Course content is not in valid format';
+                $contentInputStr  = '{}';
+
             }
 
-            $topicsString = array();
-            foreach ($request->get('topicsArr') as $key => $value) {
-                $topicsString[$key] = base64_decode($value);
-            }
 
-
+            $request->merge(['contentInputStr' => $contentInputStr]);
 
             //$topicsString  = json_encode($request->get('topicsArr'),JSON_THROW_ON_ERROR,512);
             //$topicsString  = $request->get('topicsArr');
@@ -268,7 +285,7 @@ class CourseController extends Controller
 
 
 
-            $validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
+            //$validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
 
             if (isset($request->validator) && $request->validator->fails()) {
                 $validationErrMsg .= ($validationErrMsg != '') ? ' and ':'';
@@ -295,7 +312,7 @@ class CourseController extends Controller
 
             
            
-            $courseStatus = ($request->get('course_stat')=='published')? 'published': 'draft';
+            $courseStatus = ($request->get('course_stat')== Course::PUBLISHED)? Course::PUBLISHED: Course::DRAFT;
             
 
 
@@ -364,6 +381,7 @@ class CourseController extends Controller
             return redirect()->back()
             ->withErrors($courseValErrors['contentErrMsgArr'],'contentErrMsgArr')            
             ->withErrors($courseValErrors['infoErrMsgArr'],'infoErrMsgArr')
+            ->withInput($request->input())            
             ->with([
                 'message'               => $e->getMessage(),
                 //'message'             => $e->getMessage(),         
@@ -463,25 +481,38 @@ class CourseController extends Controller
             //dd();
             if($course == null){
                 throw new ModelNotFoundException;                
-            }           
-            
+            }
+
+
+            //validate course content format
+            if(is_array($course->content) && Arr::isAssoc($course->content)){
+                $courseContent          = $course->content;
+                $courseContentInvFormat = false;
+            }else{
+                $courseContent = [];
+                $courseContentInvFormat = true;
+            }         
+    
+            return view('admin-panel.course-view')->with([
+                'course'                => $course,
+                'courseContent'         => $courseContent,
+                'courseContentInvFormat'=> $courseContentInvFormat,
+            ]);
 
         }catch(CustomException $e){
             session()->flash('message',$e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            unset($course);       
+            return view('admin-panel.course-view');      
 
         }catch(\Exception $e){
             session()->flash('message','Course does not exist!');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!'); 
-            unset($course);           
+            return view('admin-panel.course-view');           
         }
 
-        return view('admin-panel.course-view')->with([
-            'course' => $course??null
-        ]);        
+        
     }
 
     /**
@@ -612,15 +643,49 @@ class CourseController extends Controller
                 throw new CustomException('Invalid id');
             }
             $course = Course::find($id);
-            //dd(Session::get('errors')->courseUpdate->getMessages());
+            //dump(Session::get('errors')->courseUpdate->getMessages());
 
             if(null != Session::get('errors') && null != Session::get('errors')->courseUpdate->getMessages()){
                 $courseValErrors = $this->courseService->getCourseValidationErrors(Session::get('errors')->courseUpdate->getMessages());
             }
 
+            //dd($courseValErrors);
 
 
-            $validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
+
+            if($request->isValidContentJson === true){
+                $contentString = array();
+                foreach ($request->get('contentArr') as $key => $value) {
+                    $contentString[base64_decode($key)] = $value;
+                }
+
+                $topicsString = array();
+                foreach ($request->get('topicsArr') as $key => $value) {
+                    $topicsString[$key] = base64_decode($value);
+                }
+
+                $validationErrMsg = '';
+                $contentInputStr  = json_encode($contentString,512);
+
+            }else{
+                $validationErrMsg = 'Course content is not in valid format';
+                $contentInputStr  = '{}';
+
+            }
+
+
+            $request->merge(['contentInputStr' => $contentInputStr]);
+
+
+
+
+
+
+
+
+
+
+            //$validationErrMsg = ($request->isValidContentJson == false) ? 'Course content is not in valid format':'';
 
             if (isset($request->validator) && $request->validator->fails()) {
                 $validationErrMsg .= ($validationErrMsg != '') ? ' and ':'';
@@ -690,7 +755,7 @@ class CourseController extends Controller
                     $course->video_count             = $request->get('video-count');
                     $course->author_share_percentage = $request->get('author_share_percentage');
                     $course->price                   = $request->get('course-price');
-                    $course->status                  = ($request->get('course_stat')=='published')?'published': 'draft';
+                    $course->status                  = ($request->get('course_stat') == Course::PUBLISHED)? Course::PUBLISHED :Course::DRAFT;
                     $course->image                   = $imgDest;
                     
 

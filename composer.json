@@ -33,7 +33,8 @@
         },
         "files": [
             "app/Helpers/string.php",
-            "app/Helpers/color.php"
+            "app/Helpers/color.php",
+            "app/Helpers/url.php"
         ]
     },
     "autoload-dev": {

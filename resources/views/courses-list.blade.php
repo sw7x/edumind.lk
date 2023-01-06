@@ -178,7 +178,7 @@
 
                         <div class="">
                             <div class="text-xl font-semibold"> Web Development Courses </div>
-                            <div class="text-sm mt-2 font-medium text-gray-500 leading-6">  Choose from +10.000 courses with new  additions published every months  </div>
+                            <div class="text-sm mt-2 font-medium text-gray-500 leading-6">Choose from +10.000 courses with new  additions published every months</div>
                         </div>
 
                         <div class="flex items-center space-x-3 justify-end">

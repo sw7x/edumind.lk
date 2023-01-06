@@ -57,10 +57,10 @@
                             <label class="col-sm-4 col-form-label">Submit status</label>
                             <div class="col-sm-8">
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="draft" name="subject_stat" {{$subject->status == 'draft'? 'checked':''}}> <i></i> Draft </label>
+                                    <label> <input type="radio" value="draft" name="subject_stat" {{$subject->status == App\Models\Subject::DRAFT ? 'checked':''}}> <i></i> Draft </label>
                                 </div>
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="published" name="subject_stat" {{$subject->status == 'published'? 'checked':''}}> <i></i> Published </label>
+                                    <label> <input type="radio" value="published" name="subject_stat" {{$subject->status == App\Models\Subject::PUBLISHED ? 'checked':''}}> <i></i> Published </label>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,8 @@
 
                         <div class="form-group row">
                             <div class="col-sm-4 offset-sm-4">
-                                <a href="{{route('admin.subject.index')}}" class="btn btn-danger btn-sm" type="reset">Go back</a>
+                                <a href="{{route('admin.subject.index')}}" class="btn btn-danger btn-sm mr-2" type="reset">Go back</a>
+                                <a class="btn btn-info btn-sm" target="_blank" href="{{route('viewTopic',$subject->slug)}}" title="">Open subject in new tab</a>
                             </div>
                         </div>
                         {{csrf_field ()}}

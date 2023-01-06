@@ -70,10 +70,10 @@
                             <label class="col-sm-4 col-form-label">Submit status</label>
                             <div class="col-sm-8">
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="draft" name="subject_stat" {{$subject->status == 'draft'? 'checked':''}}> <i></i> Draft </label>
+                                    <label> <input type="radio" value="draft" name="subject_stat" {{$subject->status == App\Models\Subject::DRAFT ? 'checked':''}}> <i></i> Draft </label>
                                 </div>
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="published" name="subject_stat" {{$subject->status == 'published'? 'checked':''}}> <i></i> Published </label>
+                                    <label> <input type="radio" value="published" name="subject_stat" {{$subject->status == App\Models\Subject::PUBLISHED ? 'checked':''}}> <i></i> Published </label>
                                 </div>
                             </div>
                         </div>

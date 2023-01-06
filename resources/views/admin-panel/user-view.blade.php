@@ -146,8 +146,11 @@
                         @endif
 
                         <div class="form-group row">
-                            <div class="col-sm-4 offset-sm-3 mt-5">
-                                <a class="btn btn-info btn-sm font-semibold" style="min-width: 150px" type="submit" href="{{route('admin.user.index')}}">Go back</a>
+                            <div class="col-sm-6 offset-sm-3 mt-5">
+                                <a class="btn btn-danger btn-sm font-semibold mr-2" style="min-width: 150px" type="submit" href="{{route('admin.user.index')}}">Go back</a>
+                                @if(isset($userType) && $userType =='teacher')
+                                    <a class="btn btn-info btn-sm" target="_blank" href="{{route('teacher.view-profile',$userData->username)}}" title="">Open Teacher profile in new tab</a>
+                                @endif
                             </div>
                         </div>                   
                         

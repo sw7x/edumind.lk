@@ -153,13 +153,14 @@
 
 
 
-                        <?php dd($courseData->content); ?>
+                        <?php //dump($courseContent); ?>
 
 
-                        @if($courseData->content)
+                        @if(isset($courseContent))
+                            @if($courseContentInvFormat == false)
                             <ul uk-accordion="multiple: true" class="divide-y space-y-3">
                                 @php($liCount = 1)
-                                @foreach($courseData->content as $sectionHeading => $sectionContent)
+                                @foreach($courseContent as $sectionHeading => $sectionContent)
                                     <li class="bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
 
                                         <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
@@ -202,6 +203,9 @@
                                     </li>
                                 @endforeach
                             </ul>
+                            @else
+                                <p class="text-center text-sm font-semibold text-red-600">Course content is not in correct format</p>
+                            @endif
                         @else
                             <p class="text-center text-sm font-semibold">Course content is empty</p>
                         @endif

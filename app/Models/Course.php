@@ -11,6 +11,10 @@ use App\Casts\Json;
 class Course extends Model
 {
     use HasFactory,Sluggable;
+
+    const PUBLISHED = 'published';
+    const DRAFT     = 'draft';
+    
     
     protected $casts = [
         //'topics'  => 'array',

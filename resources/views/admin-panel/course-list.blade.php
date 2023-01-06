@@ -115,7 +115,7 @@
                                 </td>
                                 <td>
                                     <input type="checkbox" class="js-switch-course"
-                                           courseId="{{$item->id}}" {{($item->status === 'published')?'checked':''}}/>
+                                           courseId="{{$item->id}}" {{($item->status === App\Models\Course::PUBLISHED)?'checked':''}}/>
                                 </td>
 
                                 <td class="text-right">
@@ -346,11 +346,11 @@
 		//if switch in on  state, before change checked = 2  then checked = 1
 		var status;
 		if(checked === 1){
-			status = 'published';
+			status = App\Models\Course::PUBLISHED;
 		}else if(checked === 2){
-			status = 'draft';
+			status = App\Models\Course::DRAFT;
 		}else{
-			status = 'draft';
+			status = App\Models\Course::DRAFT;
 		}
 
 		$.ajax({

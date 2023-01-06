@@ -57,7 +57,6 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name</label>
                                                 <label class="col-sm-8 col-form-label">{{$course->name}}</label>
-
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
@@ -148,8 +147,9 @@
 
                                             <div class="form-group row">
                                                 <div class="col-sm-4 offset-sm-4">
-                                                    <a class="btn btn-danger btn-sm" href="{{route('admin.course.index')}}">Go back</a>
-                                                </div>
+                                                    <a class="btn btn-danger btn-sm mr-2" href="{{route('admin.course.index')}}">Go back</a>
+                                                    <a class="btn btn-info btn-sm" target="_blank" href="{{route('course-single',$course->slug)}}">Open course in new tab</a>
+                                                </div>                                                
                                             </div>
 
                                         </form>
@@ -169,59 +169,61 @@
                                                 //dump($course->content);
                                             @endphp
 
-                                            @if($course->content)
-                                            <ul uk-accordion="multiple: true" class="divide-y space-y-3">
+                                            @if(isset($courseContent))
+                                                @if($courseContentInvFormat == false)
+                                                    <ul uk-accordion="multiple: true" class="divide-y space-y-3">
+                                                        @foreach($courseContent as $sectionHeading => $sectionContent)
+                                                        <li class="uk-open bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':''}}">
 
-                                                @foreach($course->content as $sectionHeading => $sectionContent)
-                                                <li class="uk-open bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':''}}">
+                                                            <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
+                                                                <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
 
-                                                    <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
-                                                        <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
+                                                            <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
 
-                                                    <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
+                                                                <ul class="course-curriculum-list font-medium">                                                                                               
 
-                                                        <ul class="course-curriculum-list font-medium">                                                                                               
+                                                                    @foreach($sectionContent as $arr)
+                                                                    <li class=" hover:bg-gray-100 p-2 flex rounded-md
+                                                                        {{($arr['isFree'] == true)?' text-blue-500':''}}
+                                                                        {{($arr['type'] == 'Download')?' __pl-8-important':''}}">
 
-                                                            @foreach($sectionContent as $arr)
-                                                            <li class=" hover:bg-gray-100 p-2 flex rounded-md
-                                                                {{($arr['isFree'] == true)?' text-blue-500':''}}
-                                                                {{($arr['type'] == 'Download')?' __pl-8-important':''}}">
+                                                                        @if(strtolower($arr['type']) == 'video')
+                                                                            <i class="fa fa-play-circle text-2xl mr-2"></i>
+                                                                            <!-- <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> -->
+                                                                        @elseif (strtolower($arr['type']) =="download")
+                                                                            <i class="fa fa-download leading-6 text-2xl mr-2"></i>
+                                                                            <!-- <ion-icon class="icon-feather-download text-2xl mr-2"></ion-icon> -->
+                                                                        @elseif (strtolower($arr['type']) =="other")
+                                                                            <i class="fa fa-link leading-6 text-2xl mr-2"></i>
+                                                                            <!-- <ion-icon class="icon-feather-link text-2xl mr-2"></ion-icon> -->
+                                                                        @else
+                                                                            <i class="fa fa-info-circle leading-6 text-2xl mr-2"></i>
+                                                                            <!-- <ion-icon class="icon-feather-box text-2xl mr-2"></ion-icon> -->
+                                                                        @endif
 
-                                                                @if(strtolower($arr['type']) == 'video')
-                                                                    <i class="fa fa-play-circle text-2xl mr-2"></i>
-                                                                    <!-- <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> -->
-                                                                @elseif (strtolower($arr['type']) =="download")
-                                                                    <i class="fa fa-download leading-6 text-2xl mr-2"></i>
-                                                                    <!-- <ion-icon class="icon-feather-download text-2xl mr-2"></ion-icon> -->
-                                                                @elseif (strtolower($arr['type']) =="other")
-                                                                    <i class="fa fa-link leading-6 text-2xl mr-2"></i>
-                                                                    <!-- <ion-icon class="icon-feather-link text-2xl mr-2"></ion-icon> -->
-                                                                @else
-                                                                    <i class="fa fa-info-circle leading-6 text-2xl mr-2"></i>
-                                                                    <!-- <ion-icon class="icon-feather-box text-2xl mr-2"></ion-icon> -->
-                                                                @endif
+                                                                        <div class="link_div mr-2 text-justify">    
+                                                                            <a class="link" href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>                                                    
 
-                                                                <div class="link_div mr-2 text-justify">    
-                                                                    <a class="link" href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>                                                    
+                                                                            @if($arr['isFree'] == true)
+                                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                                            @endif
+                                                                        </div>
 
-                                                                    @if($arr['isFree'] == true)
-                                                                    <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
-                                                                    @endif
-                                                                </div>
+                                                                        @if($arr['linkParam'] !='')
+                                                                        <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
+                                                                        @endif
+                                                                    </li>
+                                                                    @endforeach
 
-                                                                @if($arr['linkParam'] !='')
-                                                                <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
-                                                                @endif
-                                                            </li>
-                                                            @endforeach
+                                                                </ul>
 
-                                                        </ul>
-
-                                                    </div>
-                                                </li>
-                                                @endforeach
-
-                                            </ul>
+                                                            </div>
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @else
+                                                    <p class="text-center text-sm font-semibold text-red-600">Course content is not in correct format</p>
+                                                @endif
                                             @else
                                                 <p class="text-center text-sm font-semibold">Course content is empty</p>
                                             @endif

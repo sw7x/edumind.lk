@@ -127,22 +127,22 @@ class CourseStoreRequest extends FormRequest
                 }
             ],
             
-            'contentArr.*'                  => 'array',
+            'contentArr.*'                  => 'array', //OK  
             //'contentArr.*'                  => 'required|array',
             
-            'contentArr.*.*'                => 'required|array',            
+            'contentArr.*.*'                => 'required|array',   //OK          
             //'contentArr.*.*'                => 'required|string',
 
-            'contentArr.*.*.inputText'      => 'required|string',
+            'contentArr.*.*.inputText'      => 'required|string', //OK
             //'contentArr.*.*.inputText'      => 'string|email',
 
-            'contentArr.*.*.inputUrl'       => 'required|string',
+            'contentArr.*.*.inputUrl'       => 'required|url', //OK
             //'contentArr.*.*.inputUrl'       => 'string|email',
 
-            'contentArr.*.*.linkParam'      => 'present|string',
+            'contentArr.*.*.linkParam'      => 'present|string', //OK
             //'contentArr.*.*.linkParam'      => 'string|email',
             
-            'contentArr.*.*.isFree'         => 'required|boolean',
+            'contentArr.*.*.isFree'         => 'required|boolean', //OK
             //'contentArr.*.*.isFree'         => 'string|email',
             
             'contentArr.*.*.type'           => [
@@ -189,7 +189,7 @@ class CourseStoreRequest extends FormRequest
 
                     /* 'contentArr.*.*.inputUrl'  => 'required|string' */ 
                     $contentArrMessages['contentArr.' . $encrypt_secHeading . '.'. $linkIndex .'.inputUrl'.'.required']   = 'url is required';
-                    $contentArrMessages['contentArr.' . $encrypt_secHeading . '.'. $linkIndex .'.inputUrl'.'.string']     = 'url must be string';
+                    $contentArrMessages['contentArr.' . $encrypt_secHeading . '.'. $linkIndex .'.inputUrl'.'.url']     = 'must be vali URL';
                     //$contentArrMessages['contentArr.' . $encrypt_secHeading . '.'. $linkIndex .'.inputUrl'.'.string']   = 'url must be string';
                     //$contentArrMessages['contentArr.' . $encrypt_secHeading . '.'. $linkIndex .'.inputUrl'.'.email']     = 'url must be email';
 

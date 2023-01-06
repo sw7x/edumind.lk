@@ -145,19 +145,19 @@
 
                             //dd($xsr);
                             //dd($contentLinksErrMsgArr);
-                        ?>
+                        ?>                       
 
-                        
+
                         <?php  //dump($errors->contentErrMsgArr->getMessages()); ?>
                         @if(($errors->contentErrMsgArr->getMessages() != null) && is_array($errors->contentErrMsgArr->getMessages()))
                             @foreach ($errors->contentErrMsgArr->getMessages() as $key => $errorMsgArr)
                                 <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
                                     <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
                                     <div class="card-body py-1">                                
-                                        <ul class="mt-1 ml-4 list-disc mb-2 text-xs">                                    
-                                        @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                            <li class="@if(($i+1) != count($errorMsgArr)) pb-2 mb-1 border-b border-red-300 @endif">{{$errorMsgArr[$i]}}</li>
-                                        @endfor
+                                        <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
+                                            @foreach($errorMsgArr as $errKey => $errmsg)
+                                                <li class="@if(!$loop->last) pb-2 mb-1 border-b border-red-300 @endif">{{$errmsg}}</li>
+                                            @endforeach
                                         </ul>                                   
                                     </div>
                                 </div>
@@ -171,10 +171,10 @@
                                     <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
                                     <div class="card-body py-1">                                
                                         <ul class="mt-1 ml-4 list-disc mb-2 text-xs">
-                                        @for ($i = 0; $i < count($errorMsgArr); $i++)
-                                            <li class="@if(($i+1) != count($errorMsgArr)) pb-2 mb-1 border-b border-red-300 @endif">Link {{($i+1)}}  ⟹  {{$errorMsgArr[$i]}}</li>
-                                        @endfor
-                                        </ul>                                   
+                                            @foreach($errorMsgArr as $errKey => $errmsg)
+                                                <li class="@if(!$loop->last) pb-2 mb-1 border-b border-red-300 @endif">Link {{($errKey+1)}}  ⟹  {{$errmsg}}</li>
+                                            @endforeach
+                                        </ul>                                 
                                     </div>
                                 </div>
                             @endforeach
@@ -183,9 +183,14 @@
                     </x-slot>
                 </x-flash-message>            
             @endif
-
+            
+            <div class="mb-3 float-right">                
+                <button id="restroreLinks" class="btn hover:bg-green-400 bg-green-600 text-white btn-sm" type="submit">Restore previously entered links</button>
+            </div>
+            
             <div class="ibox">
                 <div class="ibox-content">
+
                     <form id="course-edit-form" method="post" action="{{route('admin.course.update',$course->id)}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -568,133 +573,7 @@
 
                         <input name="topicsJson" id="topicsJson" type="hidden" value=''>
                         <input name="contentJson" id="contentJson" type="hidden" value=''>
-
-                        <input name="__topicsJson" id="__topicsJson" type="hidden" value='{"0":"aa","1":"bb","2":"cc","3":"dd","4":"xyz"}'>
-                        <input name="__contentJson" id="__contentJson" type="hidden" value='{
-                           "aa":[
-                              {
-                                 "inputText":"aa1",
-                                 "inputUrl":"aa12",
-                                 "linkParam":"aa13",
-                                 "isFree":false,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"bb1",
-                                 "inputUrl":"bb12",
-                                 "linkParam":"bb13",
-                                 "isFree":true,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":"cc3",
-                                 "inputUrl":"cc32",
-                                 "linkParam":"cc33",
-                                 "isFree":false,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"dd4",
-                                 "inputUrl":"dd41",
-                                 "linkParam":"dd42",
-                                 "isFree":true,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"ee5",
-                                 "inputUrl":"ee51",
-                                 "linkParam":"ee52",
-                                 "isFree":true,
-                                 "type":"video"
-                              }
-                           ],
-                           "bb":[
-                              {
-                                 "inputText":"zz",
-                                 "inputUrl":"zzq",
-                                 "linkParam":"zzq",
-                                 "isFree":false,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"xx",
-                                 "inputUrl":"xx1",
-                                 "linkParam":"xx2",
-                                 "isFree":false,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":"cc",
-                                 "inputUrl":"cc2",
-                                 "linkParam":"cc3",
-                                 "isFree":true,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"vv",
-                                 "inputUrl":"vvf",
-                                 "linkParam":"vvr",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "cc":[
-                              {
-                                 "inputText":"gg",
-                                 "inputUrl":"gg1",
-                                 "linkParam":"gg2",
-                                 "isFree":true,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"hh1",
-                                 "inputUrl":"hh2",
-                                 "linkParam":"hh3",
-                                 "isFree":true,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"jj1",
-                                 "inputUrl":"jj2",
-                                 "linkParam":"jj3",
-                                 "isFree":false,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"kk1",
-                                 "inputUrl":"kk2",
-                                 "linkParam":"kk3",
-                                 "isFree":true,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":"ll1",
-                                 "inputUrl":"ll2",
-                                 "linkParam":"ll3",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "dd":[
-                              {
-                                 "inputText":"susa1",
-                                 "inputUrl":"su",
-                                 "linkParam":"sae",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "ee":[],
-                           "ff":[
-                              {
-                                 "inputText":"ff-susa1",
-                                 "inputUrl":"f-su",
-                                 "linkParam":"f-sae",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ]
-                        }'>
+                        
                     </form>
                 </div>
             </div>
@@ -821,138 +700,10 @@
         var inputLinkType;
 
         /* course content from Database */
-        // ok \'
-        //var courseContentFromDb0 = '{\n                           "aa111":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
-        var courseContentFromDb = {{ Js::from($courseContent) }};
-        //var courseContentFromDb = {{ $courseContent }};
-        // . " \ ${} `
-        var courseContentFromDb1 = `{
-                           "aa":[
-                              "",
-                              {
-                                 "inputText":"a1",
-                                 "inputUrl":"aa12",
-                                 "isFree":"",
-                                 "type":""
-                              },
-                              {
-                                 "inputText":"bb1",
-                                 "inputUrl":"bb12",
-                                 "linkParam":"b22",
-                                 "isFree":true,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":7,
-                                 "inputUrl":"cc32",
-                                 "linkParam":"cc33",
-                                 "isFree":false,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"dd4",
-                                 "inputUrl":"dd41",
-                                 "linkParam":"dd42",
-                                 "isFree":true,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"ee5",
-                                 "inputUrl":"ee51",
-                                 "linkParam":"ee52",
-                                 "isFree":true,
-                                 "type":"video"
-                              }
-                           ],
-                           "bb":[
-                              {
-                                 "inputText":"zz",
-                                 "inputUrl":"zzq",
-                                 "linkParam":"zzq",
-                                 "isFree":false,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"xx",
-                                 "inputUrl":"xx1",
-                                 "linkParam":"xx2",
-                                 "isFree":false,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":"cc",
-                                 "inputUrl":"cc2",
-                                 "linkParam":"cc3",
-                                 "isFree":true,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"vv",
-                                 "inputUrl":"vvf",
-                                 "linkParam":"vvr",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "cc":[
-                              {
-                                 "inputText":"gg",
-                                 "inputUrl":"gg1",
-                                 "linkParam":"gg2",
-                                 "isFree":true,
-                                 "type":"video"
-                              },
-                              {
-                                 "inputText":"hh1",
-                                 "inputUrl":"hh2",
-                                 "linkParam":"hh3",
-                                 "isFree":true,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"jj1",
-                                 "inputUrl":"jj2",
-                                 "linkParam":"jj3",
-                                 "isFree":false,
-                                 "type":"other"
-                              },
-                              {
-                                 "inputText":"kk1",
-                                 "inputUrl":"kk2",
-                                 "linkParam":"kk3",
-                                 "isFree":true,
-                                 "type":"download"
-                              },
-                              {
-                                 "inputText":"ll1",
-                                 "inputUrl":"ll2",
-                                 "linkParam":"ll3",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "dd":[
-                              {
-                                 "inputText":"susa1",
-                                 "inputUrl":"su",
-                                 "linkParam":"sae",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ],
-                           "ee":[],
-                           "kiooo":[
-                              {
-                                 "inputText":"ff-susa1",
-                                 "inputUrl":"f-su",
-                                 "linkParam":"f-sae",
-                                 "isFree":true,
-                                 "type":"download"
-                              }
-                           ]
-                        }`;
-        //var courseContentFromDb = '';
-        //console.log(JSON.parse(courseContentFromDb));
+        //var courseContentFromDb   = '{\n                           "aa111":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
+        var courseContentFromDb     = {{ Js::from($courseContent) }};
+        //var courseContentFromDb   = {{ $courseContent }};
+        
 
 
 
@@ -1442,8 +1193,9 @@
             const _fillInitialValues = () => {
                 var dbCourseContentJson
                 try {
-                    dbCourseContentJson = JSON.parse(courseContentFromDb) || {};
-
+                    //dbCourseContentJson = JSON.parse(courseContentFromDb) || {};
+                    dbCourseContentJson = JSON.parse(courseContentFromDb);
+                    
                     // fix for prevent page load error if data format is 
                     if(!(dbCourseContentJson instanceof Object)){throw new Error();}
                 }
@@ -1957,7 +1709,8 @@
             const _fillInitialValues = () => {
                 var dbCourseContentJson
                 try {
-                    dbCourseContentJson = JSON.parse(courseContentFromDb)  || {};
+                    //dbCourseContentJson = JSON.parse(courseContentFromDb)  || {};
+                    dbCourseContentJson = JSON.parse(courseContentFromDb);
                     
                     // fix for prevent page load error if data format is 
                     if(!(dbCourseContentJson instanceof Object)){throw new Error();}                   
@@ -2219,8 +1972,13 @@
                 }
 
                 if(inputUrl.val() == "") {
-                    toastr['error'](`Content url cannott be empty!`);
+                    toastr['error'](`Content url cannot be empty!`);
                     return false;
+                }else{
+                    if(!isValidHttpUrl(inputUrl.val())){
+                        toastr['error'](`Invalid URL !`);
+                        return false;
+                    }
                 }
 
                 //get selected topic value
@@ -2503,8 +2261,13 @@
                 }
 
                 if(_inputUrl == ""){
-                    thisTab.find(".msg-div").text("content url cant be empty!");
+                    thisTab.find(".msg-div").text("Content url cant be empty!");
                     return false;
+                }else{
+                    if(!isValidHttpUrl(_inputUrl)){
+                        thisTab.find(".msg-div").text(`Invalid URL !`);
+                        return false;
+                    }
                 }
 
                 parent_li_item.find('.cc-link').html(_inputText);

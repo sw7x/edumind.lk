@@ -37,10 +37,16 @@ class CourseFactory extends Factory
 
 
 
+
         return [
             'name'          => $courseName,
             'description'   => $this->faker->text(),
-            'status'        => $this->faker->randomElement(['draft','published']),
+            //'status'        => $this->faker->randomElement(['draft','published']),
+            'status'        => $this->faker->randomElement([
+                $this->model::PUBLISHED, 
+                $this->model::DRAFT, 
+                $this->model::PUBLISHED
+            ]),
 
             'subject_id'    => Subject::factory(),
 

@@ -73,7 +73,15 @@ class UserFactory extends Factory
 
             //'remember_token' => Str::random(10),  //
 
-            'gender' => $this->faker->randomElement(['male', 'female', 'other']),
+            //'gender' => $this->faker->randomElement(['male', 'female', 'other']),
+            'gender' => $this->faker->randomElement([
+                $this->model::GENDER_MALE, 
+                $this->model::GENDER_FEMALE, 
+                $this->model::GENDER_OTHER, 
+                $this->model::GENDER_MALE, 
+                $this->model::GENDER_FEMALE
+            ]),
+
             'dob_year' => 1987,
             'status' => $this->faker->randomElement([1,0]),
             'password' => bcrypt('Pa$$w0rd!'),

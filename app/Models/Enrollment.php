@@ -9,6 +9,12 @@ class Enrollment extends Model
 {
     use HasFactory;
 
+    const CART_ADDED    = 'cart_added';
+    const ENROLLED      = 'enrolled';
+    const COMPLETED     = 'completed';
+
+    
+
     protected $table    = 'enrollments';
     protected $fillable = [
         'cart_add_date',

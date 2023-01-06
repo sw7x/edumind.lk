@@ -11,6 +11,11 @@ class Subject extends Model
 {
     use HasFactory;
     use Sluggable;
+
+    const PUBLISHED = 'published';
+    const DRAFT     = 'draft';
+
+    
     protected $table = 'subjects';
     protected $fillable = ['name','description','image','status','slug','author_id'];
 

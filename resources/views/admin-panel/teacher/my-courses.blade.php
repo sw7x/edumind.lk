@@ -63,7 +63,7 @@
 		                                <div class="tube-card py-3 divide-y">
 
 		                                    @forelse ($teacher_courses as $course)
-		                                        <div class="flex md:space-x-6 space-x-3 relative course-item py-2 pl-2 pr-3 mb-3 border {{ ($course->status == 'published') ? '' : 'disabled'}}">
+		                                        <div class="flex md:space-x-6 space-x-3 relative course-item py-2 pl-2 pr-3 mb-3 border {{ ($course->status == App\Models\Course::PUBLISHED) ? '' : 'disabled'}}">
 		                                            <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
 		                                                @if($course->image)
 		                                                    <img src="{{URL('/')}}/storage/{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
@@ -96,8 +96,9 @@
 		                                                    @endif
 		                                                </div>
 		                                            </div>
+		                                            
 		                                            <div class="absolute top-2 right-2 cursor-pointer">
-		                                                @if($course->status == 'published')
+		                                                @if($course->status == App\Models\Course::PUBLISHED)
 		                                                    <i class="fa fa-trash text-2xl text-red-500 course-status" aria-hidden="true" title="Make draft"></i>
 		                                                @else
 		                                                    <i class="fa fa-check-circle text-2xl text-green-500 course-status" aria-hidden="true" title="Make published"></i>	                                                    

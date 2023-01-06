@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Sentinel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+
 
 class CourseController extends Controller
 {
@@ -128,10 +130,12 @@ class CourseController extends Controller
                 'discount_amount'   => 0
             ], true);
             */
+            
+            
 
             if($course != null){
 
-                if($course->status){
+                if($course->status == Course::PUBLISHED){
 
                     if($course->image){
                         $img = URL('/').'/storage/'.$course->image;
@@ -150,7 +154,7 @@ class CourseController extends Controller
                             if($isAuthor){
                                 $viewFile = 'course-single-enrolled';
                             }else{
-                                $viewFile = 'course-single-free';
+                                $viewFile = 'course-single-before-enrolled';
                             }
 
                         }else if($userRole == 'student'){
@@ -162,29 +166,42 @@ class CourseController extends Controller
                                 if($enrolled_status == 'enrolled' || $enrolled_status == 'completed'){
                                     $viewFile = 'course-single-enrolled';
                                 }else{
-                                    $viewFile = 'course-single-free';
+                                    $viewFile = 'course-single-before-enrolled';
                                 }
                             }else{
-                                $viewFile = 'course-single-free';
+                                $viewFile = 'course-single-before-enrolled';
                             }
 
                         }else{
-                            $viewFile = 'course-single-free';
+                            $viewFile = 'course-single-before-enrolled';
                         }
                     }else{
-                        $viewFile = 'course-single-free';
+                        $viewFile = 'course-single-before-enrolled';
                     }
 
                     if($course->price==0){
                         $viewFile = 'course-single-enrolled';
                     }
 
+
+                    //validate course content format
+                    if(is_array($course->content) && Arr::isAssoc($course->content)){
+                        $courseContent          = $course->content;
+                        $courseContentInvFormat = false;
+                    }else{
+                        $courseContent = [];
+                        $courseContentInvFormat = true;
+                    }
+
+
                     return view($viewFile)->with([
-                        'courseData'      => $course,
-                        'bgColor'         => $bannerColors['bgColor'],
-                        'txtColor'        => $bannerColors['txtColor'],
-                        'invColor'        => $bannerColors['invColor'],
-                        'enrolled_status' => ($enrolled_status = $enrolled_status ?? "")
+                        'courseData'             => $course,                        
+                        'courseContent'          => $courseContent,
+                        'courseContentInvFormat' => $courseContentInvFormat,
+                        'bgColor'                => $bannerColors['bgColor'],
+                        'txtColor'               => $bannerColors['txtColor'],
+                        'invColor'               => $bannerColors['invColor'],
+                        'enrolled_status'        => ($enrolled_status = $enrolled_status ?? "")
                     ]);
 
                 }else{
@@ -197,13 +214,13 @@ class CourseController extends Controller
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('course-single-free');
+            return view('course-single-before-enrolled');
 
         }catch(\Exception $e){
             session()->flash('message', 'Failed to show course');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error ');
-            return view('course-single-free');
+            return view('course-single-before-enrolled');
         }
 
     }
@@ -406,14 +423,14 @@ class CourseController extends Controller
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('course-single-free');
+            return view('course-single-before-enrolled');
         
         }catch(\Exception $e){
             //dd($e->getMessage());
             session()->flash('message', 'Failed to load course');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('course-single-free');
+            return view('course-single-before-enrolled');
             
         }
 

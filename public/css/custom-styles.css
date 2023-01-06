@@ -165,31 +165,18 @@ input[readonly] {
 .font-normal {font-weight: 400;}
 .font-black  {font-weight: 900;}
 
-.pl-1 {
-  padding-left: 0.25rem;
-}
-.pl-2 {
-  padding-left: 0.5rem;
-}
-
-
+.pl-1 {padding-left: 0.25rem;}
+.pl-2 {padding-left: 0.5rem;}
 
 
 .border-4{border-width: 4px;}
 .border-8{border-width: 8px;}
 
 
+.text-red{ color: red;}
 
-.text-red{
-    color: red;
-}
-
-.align-text-bottom{
-    vertical-align: text-bottom;
-}
-.align-middle{
-    vertical-align: middle;
-}
+.align-text-bottom{vertical-align: text-bottom;}
+.align-middle{vertical-align: middle;}
 
 
 .underline{text-decoration: underline; }
@@ -328,6 +315,19 @@ input[readonly] {
 .w-45-precent{
     width: 45%;
 }
+
+/* additional font sizes font-sixe*/
+.text-7xl{font-size: 4.5rem;line-height: 1;}
+.text-8xl{font-size: 6rem;line-height: 1;}
+.text-9xl{font-size: 8rem;line-height: 1;}
+
+/* padding */
+.px-10{padding-left: 2.5rem;padding-right: 2.5rem;}
+.py-11{padding-top: 2.75rem;padding-bottom: 2.75rem;}
+.py-12{padding-top: 3rem;padding-bottom: 3rem;}
+.py-14{padding-top: 3.5rem;padding-bottom: 3.5rem;}
+.py-16{padding-top: 4rem;padding-bottom: 4rem;}
+
 /*------------------*/
 /*------------------*/
 

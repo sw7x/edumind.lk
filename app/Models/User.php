@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Models\Role;
 use App\Models\Subject;
 //use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\Course;
 
 use Cartalyst\Sentinel\Users\EloquentUser as CartalystUser;
 class User extends CartalystUser
@@ -23,6 +23,13 @@ class User extends CartalystUser
     use HasApiTokens, HasFactory, Notifiable, Authorizable ;
     
 
+    const GENDER_MALE   = 'male';
+    const GENDER_FEMALE = 'female';
+    const GENDER_OTHER  = 'other';
+
+
+
+   
 
     /**
      * The attributes that are mass assignable.
@@ -190,7 +197,7 @@ class User extends CartalystUser
         $userRole = $this->roles()->first()->slug;
 
         if($userRole == Role::TEACHER){
-            return($this->getTeachingCourses()->where('status','published')->count());
+            return($this->getTeachingCourses()->where('status', Course::PUBLISHED)->count());
         }else{
             return null;
         }

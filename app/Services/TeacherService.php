@@ -8,6 +8,8 @@ namespace App\Services;
 
 use App\Models\User;
 use Sentinel;
+use App\Models\Course;
+
 
 class TeacherService
 {
@@ -30,7 +32,7 @@ class TeacherService
 
 
     public function getPublishedCoursesByTeacher(User $teacher){
-        return $teacher->getTeachingCourses()->where('status','published')->get();
+        return $teacher->getTeachingCourses()->where('status',Course::PUBLISHED)->get();
     }
 
     public function getAllCoursesByTeacher(User $teacher){

@@ -105,7 +105,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="absolute top-4 -right-1 cursor-pointer">
-                                                            @if($course->status == 'published')
+                                                            @if($course->status == App\Models\Course::PUBLISHED)
                                                                 <ion-icon name="bag-check-sharp" class="text-2xl text-green-500 course-status" title="published"></ion-icon>
                                                             @else
                                                                 <ion-icon name="trash-bin-sharp" class="text-2xl text-red-500 course-status" title="Draft"></ion-icon>
