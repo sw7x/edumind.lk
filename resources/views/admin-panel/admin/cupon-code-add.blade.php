@@ -49,7 +49,7 @@
                             </label>
                             <div class="col-sm-8">
                                 <div class="text-2xl text-center font-bold output"></div><br>
-                                <input type="range" name="discount_percentage" value="10" min="0" max="100" step="1">
+                                <input type="range" name="discount_percentage" value="10" min="0" max="20" step="1">
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -59,6 +59,7 @@
                             <label class="col-sm-4 col-form-label">Select course</label>
                             <div class="col-sm-8">
                                 <select class="form-control m-b" name="account">
+                                    <option>Any course</option>
                                     <option>option 1</option>
                                     <option>option 2</option>
                                     <option>option 3</option>
@@ -76,6 +77,7 @@
                             <label class="col-sm-4 col-form-label">Select Marketer/Teacher <span class="text-xs text-red font-semibold">(course created teacher)</span></label>
                             <div class="col-sm-8">
                                 <select class="form-control m-b" name="account">
+                                    <option>not select anyone</option>
                                     <option>option 1</option>
                                     <option>option 2</option>
                                     <option>option 3</option>
@@ -102,9 +104,10 @@
                                 <input type="range" name="author_share_percentage" value="100" min="0" max="100" step="1">
                             </div>
                         </div>
+                        //when not select Marketer/Teacher doable it
                         <div class="hr-line-dashed"></div>
 
-
+                        
 
 
 
@@ -123,7 +126,9 @@
                         <div class="hr-line-dashed"></div>
 
 
-
+                        // on the fly validate cupon code precentage<br>
+                        //for edumind total income from course is not less than 0<br>
+                        //for this calc use Marketer/Teacher share  value also
                         <div class="form-group row">
                             <div class="col-sm-4 offset-sm-4">
                                 <button class="btn btn-primary btn-sm" type="submit">Save changes</button>

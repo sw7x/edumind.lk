@@ -386,28 +386,49 @@
                     <tr>
                         <td>Course original price</td>
                         <td>RS 6000.00</td>
-                    </tr>
-                    <tr class="">
+                    </tr>                       
+                    
+                    <tr>
                         <td>Edumind share from course fee</td>
-                        <td>40%</td>
+                        <td>60%</td>
                     </tr>
-                    <tr class="">
+                    <tr class="text-red-600 font-bold text-lg">
+                        <td>Edumind earn amount from course fee</td>
+                        <td>RS 3240.00 = (6000*60%)</td>
+                    </tr>
+                </table>                    
+            </div>
+            <div class="mb-4 w-3/4  ml-3 border">
+                <table class="w-full">
+                    <tr>
+                        <td>Course original price</td>
+                        <td>RS 6000.00</td>
+                    </tr>
+                    <tr>
                         <td>Cupon code discount %</td>
                         <td>10%</td>
                     </tr>
-                    <tr class="">
-                        <td>Reduced share of cupon code discount from Edumind</td>
-                        <td>100%</td>
+                    <tr>
+                        <td>Cupon code discount amount</td>
+                        <td>RS 600.00 = (6000*10%)</td>
+                    </tr>                       
+                    <tr>
+                        <td>Marketer/Teacher share from discount</td>
+                        <td>80%</td>
                     </tr>
+                    <tr>
+                        <td>Edumind share from discount</td>
+                        <td>20%</td>
+                    </tr>                       
                     <tr class="">
-                        <td>New Edumind share (if cupon code used)</td>
-                        <td>30% = (40% - 10%*100%)</td>
+                        <td>Marketer/Teacher commission from cupon code discount</td>
+                        <td>RS 600.00 = (600*80%)</td>
                     </tr>
-                    <tr class="text-red-600 font-bold">
-                        <td>Edumind claimed Amount from course fee</td>
-                        <td>RS 1800.00 = (6000*30%)</td>
-                    </tr> 
-                </table>                    
+                    <tr class="text-red-600 font-bold text-lg">
+                        <td>Edumind lose Amount due to cupon code use</td>
+                        <td>RS 600.00 = 600*(200% - 20%)</td>
+                    </tr>                                       
+                </table>
             </div>
         </div>
         `);

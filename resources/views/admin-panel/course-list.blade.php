@@ -35,127 +35,127 @@
                     <p>{{ Session::get('message') ?? 'Info!' }}</p>
                     <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
                 </div>
-            @endif           
+            @else     
 
+            	<div class="ibox">
+	                <div class="ibox-content">
+	                    <div class="px-3 row mb-3">
+	                        <div class="offset-sm-3 col-sm-2 align-middle">
+	                            <h3><b>Filter by subject: </b></h3>
+	                        </div>
+	                        <div class="col-md-7">
+	                            <select class="form-control" id="status">
+	                                <option value="all">All subjects</option>
+	                                <option value="active">Active</option>
+	                                <option value="pending">Pending</option>
+	                                <option value="deleted">Deleted</option>
+	                            </select>
+	                        </div>
+	                    </div>
+	                    <hr>
 
-            <div class="ibox">
-                <div class="ibox-content">
-                    <div class="px-3 row mb-3">
-                        <div class="offset-sm-3 col-sm-2 align-middle">
-                            <h3><b>Filter by subject: </b></h3>
-                        </div>
-                        <div class="col-md-7">
-                            <select class="form-control" id="status">
-                                <option value="all">All subjects</option>
-                                <option value="active">Active</option>
-                                <option value="pending">Pending</option>
-                                <option value="deleted">Deleted</option>
-                            </select>
-                        </div>
-                    </div>
-                    <hr>
+	                    <div class="table-responsive">
+	                        <table id="course-list" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+	                            <thead>
+	                            <tr>
+	                                <th>Course</th>
+	                                <th>Subject</th>
+	                                <!-- <th>Teacher</th> -->
+	                                <th>
+	                                    Teacher<br>
+	                                    Enrolled <small>(count)</small><br>
+	                                    Completed <small>(count)</small><br>
+	                                    Rating
+	                                </th>
+	                                <!-- <th>Last updated</th> -->
+	                                <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
+	                                <th>Status</th>
+	                                <th class="text-right">Action</th>
+	                            </tr>
+	                            </thead>
 
-                    <div class="table-responsive">
-                        <table id="course-list" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                            <thead>
-                            <tr>
-                                <th>Course</th>
-                                <th>Subject</th>
-                                <!-- <th>Teacher</th> -->
-                                <th>
-                                    Teacher<br>
-                                    Enrolled <small>(count)</small><br>
-                                    Completed <small>(count)</small><br>
-                                    Rating
-                                </th>
-                                <!-- <th>Last updated</th> -->
-                                <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
-                                <th>Status</th>
-                                <th class="text-right">Action</th>
-                            </tr>
-                            </thead>
+	                            <tbody>
 
-                            <tbody>
+	                            @foreach($data as $item)
+	                            <tr class="course_{{$item->id}}">
 
-                            @foreach($data as $item)
-                            <tr class="course_{{$item->id}}">
+	                                {{-- // todo add frontend link--}}
+	                                <td width="22%"><a href="" target="_blank">{{ $item->name}}</a></td>
 
-                                {{-- // todo add frontend link--}}
-                                <td width="22%"><a href="" target="_blank">{{ $item->name}}</a></td>
+	                                {{-- // todo add frontend link--}}
+	                                <td><a href="" target="_blank">{{$item->subject->name}}</a></td>
 
-                                {{-- // todo add frontend link--}}
-                                <td><a href="" target="_blank">{{$item->subject->name}}</a></td>
+	                                <td>{{$item->teacher->full_name}}<br>
+	                                    {{--   todo
+	                                    123 <small>(Enrolled)</small><br>
+	                                    345 <small>(Completed)</small><br>
+	                                    4.9/5.0
+	                                    --}}
+	                                </td>
 
-                                <td>{{$item->teacher->full_name}}<br>
-                                    {{--   todo
-                                    123 <small>(Enrolled)</small><br>
-                                    345 <small>(Completed)</small><br>
-                                    4.9/5.0
-                                    --}}
-                                </td>
+	                                <!-- <td>12/04/2015</td>-->
+	                                <td>
+	                                    @if($item->price)
+	                                        Rs {{$item->price}}<br>
+	                                    @endif
 
-                                <!-- <td>12/04/2015</td>-->
-                                <td>
-                                    @if($item->price)
-                                        Rs {{$item->price}}<br>
-                                    @endif
+	                                    @if($item->duration)
+	                                    {{$item->duration}}<br>
+	                                    @endif
 
-                                    @if($item->duration)
-                                    {{$item->duration}}<br>
-                                    @endif
+	                                    @if($item->video_count)
+	                                        {{$item->video_count}} <small>(videos)</small><br>
+	                                    @endif
 
-                                    @if($item->video_count)
-                                        {{$item->video_count}} <small>(videos)</small><br>
-                                    @endif
+	                                    @if($item->updated_at)
+	                                    {{--$item->updated_at--}}
+	                                    {{$item->getLastUpdatedTime()}}
+	                                     @endif
+	                                </td>
+	                                <td>
+	                                    <input type="checkbox" class="js-switch-course"
+	                                           courseId="{{$item->id}}" {{($item->status === App\Models\Course::PUBLISHED)?'checked':''}}/>
+	                                </td>
 
-                                    @if($item->updated_at)
-                                    {{--$item->updated_at--}}
-                                    {{$item->getLastUpdatedTime()}}
-                                     @endif
-                                </td>
-                                <td>
-                                    <input type="checkbox" class="js-switch-course"
-                                           courseId="{{$item->id}}" {{($item->status === App\Models\Course::PUBLISHED)?'checked':''}}/>
-                                </td>
+	                                <td class="text-right">
+	                                    <div class="btn-group">
+	                                        <a href="{{route ('admin.course.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
+	                                        <a href="{{route ('admin.course.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
+	                                        <a href="javascript:void(0);" data-courseId="{{$item->id}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
+	                                    </div>
+	                                    <form class="course-destroy" action="{{ route('admin.course.destroy', $item->id) }}" method="POST">
+	                                        @method('DELETE')
+	                                        <input name="courseId" type="hidden" value="{{$item->id}}">
+	                                        @csrf
+	                                    </form>
+	                                </td>
 
-                                <td class="text-right">
-                                    <div class="btn-group">
-                                        <a href="{{route ('admin.course.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
-                                        <a href="{{route ('admin.course.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
-                                        <a href="javascript:void(0);" data-courseId="{{$item->id}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
-                                    </div>
-                                    <form class="course-destroy" action="{{ route('admin.course.destroy', $item->id) }}" method="POST">
-                                        @method('DELETE')
-                                        <input name="courseId" type="hidden" value="{{$item->id}}">
-                                        @csrf
-                                    </form>
-                                </td>
+	                            </tr>
+	                            @endforeach
 
-                            </tr>
-                            @endforeach
+	                            </tbody>
 
-                            </tbody>
+	                            <tfoot>
+	                            <th>Course</th>
+	                            <th>Subject</th>
+	                            <!-- <th>Teacher</th> -->
+	                            <th>
+	                                Teacher<br>
+	                                Enrolled <small>(count)</small><br>
+	                                Ecomplete <small>(count)</small><br>
+	                                Rating
+	                            </th>
+	                            <!-- <th>Last updated</th> -->
+	                            <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
+	                            <th>Status</th>
+	                            <th class="text-right">Action</th>
+	                            </tfoot>
 
-                            <tfoot>
-                            <th>Course</th>
-                            <th>Subject</th>
-                            <!-- <th>Teacher</th> -->
-                            <th>
-                                Teacher<br>
-                                Enrolled <small>(count)</small><br>
-                                Ecomplete <small>(count)</small><br>
-                                Rating
-                            </th>
-                            <!-- <th>Last updated</th> -->
-                            <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
-                            <th>Status</th>
-                            <th class="text-right">Action</th>
-                            </tfoot>
-
-                        </table>
-                    </div>
-                </div>
-            </div>
+	                        </table>
+	                    </div>
+	                </div>
+	            </div>
+            @endif
 
 
         </div>
@@ -346,11 +346,11 @@
 		//if switch in on  state, before change checked = 2  then checked = 1
 		var status;
 		if(checked === 1){
-			status = App\Models\Course::PUBLISHED;
+			status = 'published';
 		}else if(checked === 2){
-			status = App\Models\Course::DRAFT;
+			status = 'draft';
 		}else{
-			status = App\Models\Course::DRAFT;
+			status = 'draft';
 		}
 
 		$.ajax({

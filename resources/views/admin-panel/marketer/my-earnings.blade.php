@@ -64,7 +64,7 @@
 									<th></th>
 									<th>Enrollment <br>Link</th>								
 									<th>Enrolled <br>Date/time</th>
-									<th>Total <br>claimed Amount Rs</th>									
+									<th class="text-base">Commission <br>Amount Rs</th>									
 									<th>Used <br>cupon code</th>
 									<th>Cupon code <br>discount %</th>
 									<th>is Paid</th>																	
@@ -78,7 +78,7 @@
 									<td></td>
 									<td>ABC<?php echo $x; ?></td>									
 									<td>2022/7/16 06:45 PM</td>
-									<td><?php echo $x.'000.00'; ?></td>									
+									<td class="text-base"><?php echo $x.'000.00'; ?></td>									
 									<td>
 										@if($x%2 ==0)
                                             CCC123
@@ -103,7 +103,7 @@
 									<th></th>
 									<th></th>							
 									<th></th>
-									<th></th>
+									<th class="text-red"></th>
 									<th></th>
 									<th></th>
 									<th></th>
@@ -205,7 +205,7 @@
                     </li>
                 </ul>
 
-                <div class="mb-4 w-3/4  ml-3 border">
+                <div class="mb-4 w-4/5  ml-3 border">
                     <table class="w-full">
                         <tr>
 							<td>Course original price</td>
@@ -221,19 +221,19 @@
                         </tr>						
                         <tr>
                         	<td>Marketer/Teacher share from discount</td>
-                            <td>100%</td>
+                            <td>80%</td>
                         </tr>
                         <tr>
                         	<td>Edumind share from discount</td>
-                            <td>0%</td>
+                            <td>20%</td>
                         </tr>						
-						<tr class="text-red-600 font-bold">
-							<td>Marketer/Teacher claimed Amount from cupon code discount</td>
-							<td>RS 600.00 = (600*100%)</td>
+						<tr class="text-red-600 font-bold text-base">
+							<td>Your(Marketer) commission from cupon code discount</td>
+							<td class="text-xl">RS 600.00 = (600*80%)</td>
 						</tr>
-						<tr class="text-red-600 font-bold">
-							<td>Edumind claimed Amount from cupon code discount</td>
-							<td>RS 00.00 = (600*0%)</td>
+						<tr class="text-base">
+							<td>Edumind lose Amount due to cupon code use</td>
+							<td>RS 600.00 = 600*(200% - 20%)</td>
 						</tr>                                       
                     </table>
                 </div>

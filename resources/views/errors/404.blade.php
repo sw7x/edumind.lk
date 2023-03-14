@@ -6,20 +6,20 @@
 
     <div class="main-container container">
         <div class="max-w-5xl md:p-5 mx-auto">
-            <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
+            <div class="plg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
                 <div class="">
 
                     <div>
-                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">Page Not Found 404</h2>
+                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">404 Page Not Found </h2>
                         <hr class="mb-5">
-                        <h4 class="font-semibold mb-2 text-base"> 404 page </h4>
+                        <!-- <h4 class="font-semibold mb-2 text-base"> 404 page </h4> -->
 
 
                         <div class="content centered">
-                         	<img style="width:500px;" src="{{asset('images/something-lost.png')}}">
-                            <h1 class="font-semibold mb-2 text-xl">Oops, looks like the page is lost.</h1>
+                         	<img style="width:500px;" class="m-auto mb-3" src="{{asset('images/404.svg')}}">
+                            <h1 class="text-center font-semibold mb-2 text-xl">Oops, looks like the page is lost.</h1>
 
-							<div class="flex mt-5">
+							<div class="flex mt-5 justify-center">
 								<div class="mr-5">
 									<a href="{{url()->previous()}}" title="" class="btn bg-blue-500 hover:bg-blue-700 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Go Back</a>
 								</div>

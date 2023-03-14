@@ -17,32 +17,42 @@ class CreateEnrollmentsTable extends Migration
     {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
-
-
-
-
-            $table->timestamp("cart_add_date")->nullable();
-            $table->timestamp("enroll_date")->nullable();
+            $table->timestamp("enroll_date")->nullable();                       
+            $table->boolean('is_complete')->default(False);
             $table->timestamp("complete_date")->nullable();
 
-            $table->decimal('discount_amount',10,2)->nullable();
 
             $table->integer('rating')->nullable();
+            $table->decimal('discount_amount',10,2)->nullable();
+            $table->decimal('price_afeter_discouunt',10,2)->nullable();
+            
+       
+
+            $table->decimal('edumind_amount',10,2)->nullable();
+            $table->decimal('author_amount',10,2)->nullable();
+            $table->decimal('edumind_lose_amount',10,2)->nullable();          
+            $table->decimal('benificiary_earn_amount',10,2)->nullable();
+
+
+            //orders - fk
+            $table->integer('order_id')->unsigned();
+            $table->foreign('order_id')->references('id')->on('orders');
+
+            //invoices - fk
+            $table->integer('invoice_id')->unsigned();
+            $table->foreign('invoice_id')->references('id')->on('invoices');
+
+            //salaries - fk
+            $table->integer('salary_id')->unsigned();
+            $table->foreign('salary_id')->references('id')->on('salaries');
+
+            $table->string('cupon_code');
+            $table->foreign('cupon_code')->references('code')->on('coupons');
+              //->onDelete('cascade');
 
 
 
-            //course - fk
-            $table->integer('course_id')->unsigned();
-            $table->foreign('course_id')->references('id')->on('courses');
-
-            //student - fk
-            $table->integer('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('users');
-
-
-            $table->integer('comment_id')->nullable(); //todo fk link to enrollment_comments table
-
-            $table->enum('status', ['cart_added','enrolled','completed'])->default('cart_added');
+        
 
             $table->timestamps();
             $table->softDeletes();

@@ -42,7 +42,8 @@ class HomeController extends Controller
     //
     public function index()
     {
-
+        
+        
         //dd(Sentinel::getUser()->id);
 
 

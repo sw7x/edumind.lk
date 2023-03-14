@@ -384,7 +384,9 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             return view('admin-panel.11');
         })->name('admin11');
 
-
+        Route::get('/empty', function () {
+            return view('admin-panel.empty');
+        })->name('empty');
 
 
 
@@ -421,7 +423,9 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         Route::group(['prefix'=>'salary','as'=>'salary.'], function(){
             Route::get('/pay-teacher',function(){return view('admin-panel.admin.salary-pay-teacher');})->name('pay-teacher');
             Route::get('/pay-marketer',function(){return view('admin-panel.admin.salary-pay-marketer');})->name('pay-marketer');
-            Route::get('/salary-slip',function(){return view('admin-panel.salary-slip');})->name('salary-slip');
+            Route::get('/teacher-salary-slip',function(){return view('admin-panel.salary-slip-teacher');})->name('teacher-salary-slip');
+            Route::get('/marketer-salary-slip',function(){return view('admin-panel.salary-slip-marketer');})->name('marketer-salary-slip');
+        
         });
 
 

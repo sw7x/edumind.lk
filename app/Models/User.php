@@ -220,6 +220,11 @@ class User extends CartalystUser
         //dd(static::id);
         return ($this->id == $subject->creator->id);        
     }
+    
+    public function isCourseAuthor(Course $course){
+        return ($this->id == $course->teacher->id);  
+    } 
+    
 
 
 }

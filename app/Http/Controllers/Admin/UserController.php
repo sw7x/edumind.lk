@@ -62,7 +62,7 @@ class UserController extends Controller
 
             $teachers1   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
             
-//dd($teachers->first());
+            //dd($teachers->first());
 
             //dd($teachers);
             return view('admin-panel.user-list')->with([
@@ -81,7 +81,7 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-        dd($e);        
+            //dd($e);        
             session()->flash('message','Failed to show all users');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
@@ -131,17 +131,17 @@ class UserController extends Controller
 
         try{
 
-            throw new AuthorizationException('Form validation failed');
+            throw new \Exception('Form validation failed');
 
             $this->authorize('createTeachers',User::class);
             $username    = $this->userService->generateUniqueUsername($request->get('teacher-uname'));
             $usernameMsg = ($username != $request->get('teacher-uname'))?"Given username is already there, ∴ system updated username to {$username}":'';
 
             if (isset($request->validator) && $request->validator->fails()) {
-                /*throw new CustomException('Form validation failed'[
+                throw new CustomException('Form validation failed',[
                     'cls'     => 'flash-danger',
                     'msgTitle'=> 'Error!',
-                ]);*/
+                ]);
             }
 
 
@@ -191,13 +191,13 @@ class UserController extends Controller
                 'teacher_submit_message'  => $e->getMessage(),
                 //'teacher_submit_message2' => $pwResetTxt,
                 //'teacher_submit_title'   => 'Student Registration submit page',
-                'teacher_submit_cls'     => $e->getMessage('cls') ?? 'flash-danger',
-                'teacher_submit_msgTitle'=> $e->getMessage('msgTitle') ?? 'Error !',
+                'teacher_submit_cls'     => $e->getData('cls') ?? 'flash-danger',
+                'teacher_submit_msgTitle'=> $e->getData('msgTitle') ?? 'Error !',
             ]);
 
         }catch(AuthorizationException $e){
             //return redirect(url()->previous().'#tab-teachers')->with([
-            return redirect(route('admin.user.create').'#tab-students')
+            return redirect(route('admin.user.create').'#tab-teachers')
             ->withErrors($request->validator)
             ->withInput()
             ->with([            

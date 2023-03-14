@@ -30,9 +30,14 @@ class UrlUtil
     }
 
 
+    public static function generateCourseShortUrl($string){
+        $limit = 15;
+        $urlString  = self::wordsToUrl($string,15); 
+        return self::generateCourseUrl($urlString);      
+    }
 
-
-
+    
+           
 
 
 

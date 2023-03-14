@@ -60,28 +60,30 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Enrollments</label>
                         <div class="col-sm-9">
-                            <table class="table table-condensed border-2">
+                            <table class="table table-striped table-bordered mb-0">
+                                <thead  class="thead-dark">
+                                    <tr>
+                                        <th>Enrollement </th>
+                                        <th>Comission</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
-                                    <tr class="">
-                                        <td>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                            <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                        </td>
-                                    </tr>                                            
+                                    <tr>
+                                        <td class="font-bold text-base"><a href="hhh" target="_blank">ABC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                        <td class="font-bold text-base text-red-500">RS 2000</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="font-bold text-base"><a href="hhh" target="_blank">CCC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                        <td class="font-bold text-base text-red-500">RS 2000</td>
+                                    </tr> 
+
+                                    <tr>
+                                        <td class="font-bold text-base"><a href="hhh" target="_blank">FBC173 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                        <td class="font-bold text-base text-red-500">RS 2500</td>
+                                    </tr>
                                 </tbody>
-                            </table>                            
+                            </table>                      
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>

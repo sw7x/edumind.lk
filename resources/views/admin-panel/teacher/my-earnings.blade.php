@@ -61,11 +61,14 @@
 							<thead>
 								<tr>
 									<th></th>
-									<th>Enrollment <br>Link</th>									
-									<th>Total <br>claimed Amount Rs</th>
+									<th>Enrollmentxx <br>Link</th>									
+									
+									<th>Commission</th>
+									<th>Course fee</th>
+									<th class="text-base">Total</th>
+									
 									<th>Course</th>
 									<th>Enrolled <br>Date/time</th>
-									<th>Used <br>cupon code</th>
 									<th>is Paid</th>																	
 								</tr>
 							</thead>
@@ -76,16 +79,14 @@
 								<tr>
 									<td></td>
 									<td>ABC<?php echo $x; ?></td>
+									
 									<td><?php echo $x.'000.00'; ?></td>	
+									<td><?php echo $x.'000.00'; ?></td>	
+									<td class="text-base"><?php echo $x.'000.00'; ?></td>	
+
+
 									<td>Course<?php echo $x; ?></td>
 									<td>2022/7/16 06:45 PM</td>
-									<td>
-										@if($x%2 ==0)
-                                            CCC123
-                                        @else
-                                            -
-                                        @endif
-									</td>
 									<td>
                                         @if($x%2 ==0)
                                             <span class="label label-primary">Yes : <a href="">DDE123</a></span>
@@ -100,12 +101,15 @@
 							<tfoot>
 								<tr>
 									<th></th>
+									<th></th>
+
+									<th></th>
 									<th></th>							
+									<th class="text-red"></th>
+
 									<th></th>
 									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>								
+									<th></th>														
 								</tr>
 							</tfoot>
 
@@ -185,7 +189,7 @@
                                     <table class="table table-condensed">
                                         <thead>
                                             <tr class="table-primary">
-												<th>Teacher</th>
+												<th>Cupon code</th>
 												<th>Course original price</th>
 												<th>Student</th>
 												<th>Cupon code <br>discount %</th>
@@ -193,7 +197,7 @@
                                         </thead>
                                         <tbody>
 	                                        <tr class="">
-	                                            <td>A.B.C Saman Fernando</td>
+	                                            <td>ABC123</td>
 												<td>RS 6000.00</td>
 												<td>A.B.C Vikum Amaraweera</td>
 												<td>10%</td>
@@ -217,8 +221,8 @@
                         	<td>Teacher share from course fee</td>
                             <td>60%</td>
                         </tr>
-                        <tr class="text-red-600 font-bold">
-							<td>Teacher claimed Amount from course fee</td>
+                        <tr class="text-red-600 font-bold text-base">
+							<td>Teacher earn amount from course fee</td>
 							<td>RS 3240.00 = (6000*60%)</td>
 						</tr>
 					</table>					
@@ -239,19 +243,19 @@
                         </tr>						
                         <tr>
                         	<td>Marketer/Teacher share from discount</td>
-                            <td>100%</td>
+                            <td>80%</td>
                         </tr>
                         <tr>
                         	<td>Edumind share from discount</td>
-                            <td>0%</td>
+                            <td>20%</td>
                         </tr>						
-						<tr class="text-red-600 font-bold">
-							<td>Marketer/Teacher claimed Amount from cupon code discount</td>
-							<td>RS 600.00 = (600*100%)</td>
+						<tr class="text-red-600 font-bold text-base">
+							<td>Your(Teacher) commission from cupon code discount</td>
+							<td class="text-xl">RS 600.00 = (600*80%)</td>
 						</tr>
-						<tr class="text-red-600 font-bold">
-							<td>Edumind claimed Amount from cupon code discount</td>
-							<td>RS 00.00 = (600*0%)</td>
+						<tr class="text-base">
+							<td>Edumind lose Amount due to cupon code use</td>
+							<td>RS 600.00 = 600*(200% - 20%)</td>
 						</tr>                                       
                     </table>
                 </div>                
@@ -273,11 +277,14 @@
 					defaultContent: '',
 				},
 				{ data: 'enrollment link' },
+
+				{ data: 'commission' },
+				{ data: 'course fee' },
+				{ data: 'total',width: "20%" },
+
 				{ data: 'course' },
-				{ data: 'enrollment date' },
-				{ data: 'claimed Amount' },
+				{ data: 'enrollment date' },				
 				{ data: 'is paid',visible: true },
-				{ data: 'discount precentage',visible: true },
 			],
 			footerCallback: function (row, data, start, end, display) {
                 var api = this.api();
@@ -289,7 +296,7 @@
 
                 // Total over all pages
                 total = api
-                    .column(2)
+                    .column(4)
                     .data()
                     .reduce(function (a, b) {
                         return intVal(a) + intVal(b);
@@ -305,7 +312,7 @@
 
                 // Update footer
                 //$(api.column(0).footer()).html('Total : ');
-                $(api.column(2).footer()).html('Total : Rs ' + pageTotal + '<br>( Rs ' + total + ' total )');
+                $(api.column(4).footer()).html('Total : Rs ' + pageTotal + '<br>( Rs ' + total + ' total )');
 
                 //console.log(api.column(5));
             },

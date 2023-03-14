@@ -107,156 +107,159 @@
             <?php //dump(old('contentInputStr','')); ?>
             <?php //dump(old('contentJson')); ?>            
             <?php //dump(old('course-name')); ?>
+            <?php //dump($errors); ?>
+            <?php //dump($errors->infoErrMsgArr->getMessages()); ?>
+            
+           
 
             @if(Session::has('message'))
-            <x-flash-message
-                class="{{ Session::get('cls', 'flash-info')}}" 
-                :title="Session::get('msgTitle')"
-                :message="Session::get('message')">
-
-                <x-slot name="insideContent">
-                    @if ($errors->infoErrMsgArr->getMessages())
-                        <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
-                            @foreach ($errors->infoErrMsgArr->getMessages() as $field => $errorMsgArr)
-                                @foreach ($errorMsgArr as $errorMsg)
-                                    <li class="">{{ $errorMsg }}</li>
+                <x-flash-message
+                    class="{{ Session::get('cls', 'flash-info')}}" 
+                    :title="Session::get('msgTitle')"
+                    :message="Session::get('message')">
+                    tttttttt
+                    <x-slot name="insideContent">
+                        @if ($errors->infoErrMsgArr->getMessages())
+                            <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
+                                @foreach ($errors->infoErrMsgArr->getMessages() as $field => $errorMsgArr)
+                                    @foreach ($errorMsgArr as $errorMsg)
+                                        <li class="">{{ $errorMsg }}</li>
+                                    @endforeach
                                 @endforeach
+                            </ul>
+                        @endif
+                                            
+                        <?php 
+                            //dump($errors);
+                            //dump($errors->courseCreate->any());
+                            //dump($errors->all());
+                            //dump($errors->courseCreate);
+                            //dump($errors->courseCreate->getMessages());
+
+                            ////dump($errors->courseCreate['messages']);
+                            //dump($errors->courseCreate->get('course-name'));
+
+                            //dump($errors->courseCreate->has('subject'));
+                            //dump($errors->courseCreate->all());
+                            
+                            //dump($errors->contentErrMsgArr->getMessages());
+                            //dump($errors->contentLinksErrMsgArr->getMessages());
+                            //dd($errors->contentLinksErrMsgArr->getMessages());
+                            //dump($errors->uuu);
+
+                            //dd($contentLinksErrMsgArr);
+                        ?>
+
+                        <?php  //dump($errors->contentErrMsgArr->getMessages()); ?>
+                        @if(($errors->contentErrMsgArr->getMessages() != null) && is_array($errors->contentErrMsgArr->getMessages()))
+                            @foreach ($errors->contentErrMsgArr->getMessages() as $key => $errorMsgArr)
+                                <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
+                                    <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
+                                    <div class="card-body py-1">                                
+                                        <ul class="mt-1 ml-4 list-disc mb-2 text-xs">                                   
+                                            @foreach($errorMsgArr as $errKey => $errmsg)
+                                                <li class="@if(!$loop->last) pb-2 mb-1 border-b border-red-300 @endif">{{$errmsg}}</li>
+                                            @endforeach
+                                        </ul>                                   
+                                    </div>
+                                </div>
                             @endforeach
-                        </ul>
-                    @endif
-                                        
-                    <?php 
-                        //dump($errors);
-                        //dump($errors->courseCreate->any());
-                        //dump($errors->all());
-                        //dump($errors->courseCreate);
-                        //dump($errors->courseCreate->getMessages());
+                        @endif   
 
-                        ////dump($errors->courseCreate['messages']);
-                        //dump($errors->courseCreate->get('course-name'));
-
-                        //dump($errors->courseCreate->has('subject'));
-                        //dump($errors->courseCreate->all());
-                        
-                        //dump($errors->contentErrMsgArr->getMessages());
-                        //dump($errors->contentLinksErrMsgArr->getMessages());
-                        //dd($errors->contentLinksErrMsgArr->getMessages());
-                        //dump($errors->uuu);
-
-                        //dd($contentLinksErrMsgArr);
-                    ?>
-
-                    <?php  //dump($errors->contentErrMsgArr->getMessages()); ?>
-                    @if(($errors->contentErrMsgArr->getMessages() != null) && is_array($errors->contentErrMsgArr->getMessages()))
-                        @foreach ($errors->contentErrMsgArr->getMessages() as $key => $errorMsgArr)
-                            <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
-                                <div class="card-body py-1">                                
-                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">                                   
-                                        @foreach($errorMsgArr as $errKey => $errmsg)
-                                            <li class="@if(!$loop->last) pb-2 mb-1 border-b border-red-300 @endif">{{$errmsg}}</li>
-                                        @endforeach
-                                    </ul>                                   
+                        <?php //dump(Session::get('contentLinksErrMsgArr'));?>
+                        @if(Session::has('contentLinksErrMsgArr') && is_array(Session::get('contentLinksErrMsgArr')))
+                            @foreach (Session::get('contentLinksErrMsgArr') as $key => $errorMsgArr)
+                                <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
+                                    <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
+                                    <div class="card-body py-1">                                
+                                        <ul class="mt-1 ml-4 list-disc mb-2 text-xs">                                    
+                                            @foreach($errorMsgArr as $errKey => $errmsg)
+                                                <li class="@if(!$loop->last) pb-2 mb-1 border-b border-red-300 @endif">Link {{($errKey+1)}}  ⟹  {{$errmsg}}</li>
+                                            @endforeach
+                                        </ul>                                   
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    @endif   
+                            @endforeach
+                        @endif
+                    </x-slot>
+                </x-flash-message>
+            @else           
+                <div class="ibox">
+                    <div class="ibox-content">                    
+                        <form id="course-add-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
+                            {{csrf_field ()}}
+                            <h1>Details</h1>
+                            <fieldset>
+                                <h2>Add course details</h2>
+                                <div class="row">
+                                    <div class="col-lg-12">
 
-                    <?php //dump(Session::get('contentLinksErrMsgArr'));?>
-                    @if(Session::has('contentLinksErrMsgArr') && is_array(Session::get('contentLinksErrMsgArr')))
-                        @foreach (Session::get('contentLinksErrMsgArr') as $key => $errorMsgArr)
-                            <div class="card mb-4 rounded-none border-danger text-red-600 w-11/12 font-bold bg-transparent">
-                                <div class="card-header pt-1 pb-2 text-xs border-danger bg-transparent">Section - {{base64_decode($key)}}</div>
-                                <div class="card-body py-1">                                
-                                    <ul class="mt-1 ml-4 list-disc mb-2 text-xs">                                    
-                                        @foreach($errorMsgArr as $errKey => $errmsg)
-                                            <li class="@if(!$loop->last) pb-2 mb-1 border-b border-red-300 @endif">Link {{($errKey+1)}}  ⟹  {{$errmsg}}</li>
-                                        @endforeach
-                                    </ul>                                   
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-                </x-slot>
-            </x-flash-message>
-            @endif           
-            
-
-            <div class="ibox">
-                <div class="ibox-content">                    
-                    <form id="course-add-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
-                        {{csrf_field ()}}
-                        <h1>Details</h1>
-                        <fieldset>
-                            <h2>Add course details</h2>
-                            <div class="row">
-                                <div class="col-lg-12">
-
-
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="course-name" class="form-control" value="{{old('course-name')}}">
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('course-name'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('course-name') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Subject <span class="text-red-500 text-sm font-bold">*</span></label>
-                                        <div class="col-sm-8">
-                                            <select class="form-control m-b" id="subject" name="subject">
-												<option></option>
-												@foreach ($subjects as $subject)
-													<option value="{{$subject['id']}}" @if(old('subject') == $subject['id']) selected @endif>{{$subject['name']}}</option>
-												@endforeach
-                                            </select>
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('subject'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('subject') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Teacher <span class="text-red-500 text-sm font-bold">*</span></label>
-                                        <div class="col-sm-8">
-                                            <select class="form-control m-b" id="teacher" name="teacher">
-												<option></option>
-												@foreach ($teachers as $teacher)
-													<option value="{{$teacher['id']}}" @if(old('teacher') == $teacher['id']) selected @endif>{{$teacher['full_name']}}</option>
-												@endforeach
-                                            </select>
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('teacher'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('teacher') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row"><label class="col-sm-4 col-form-label">Heading text</label>
-                                        <div class="col-sm-8">
-                                            <div class="border">
-                                                <textarea class="form-control" name="course-heading"
-                                                          cols="30" rows="7" placeholder="" autocomplete="off">{{old('course-heading')}}</textarea>
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="course-name" class="form-control" value="{{old('course-name')}}">
                                                 <div class="error-msg"></div>
+                                                @if ($errors->infoErrMsgArr->has('course-name'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-name') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                            
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Subject <span class="text-red-500 text-sm font-bold">*</span></label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control m-b" id="subject" name="subject">
+    												<option></option>
+    												@foreach ($subjects as $subject)
+    													<option value="{{$subject['id']}}" @if(old('subject') == $subject['id']) selected @endif>{{$subject['name']}}</option>
+    												@endforeach
+                                                </select>
+                                                <div class="error-msg"></div>
+                                                @if ($errors->infoErrMsgArr->has('subject'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('subject') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Teacher <span class="text-red-500 text-sm font-bold">*</span></label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control m-b" id="teacher" name="teacher">
+    												<option></option>
+    												@foreach ($teachers as $teacher)
+    													<option value="{{$teacher['id']}}" @if(old('teacher') == $teacher['id']) selected @endif>{{$teacher['full_name']}}</option>
+    												@endforeach
+                                                </select>
+                                                <div class="error-msg"></div>
+                                                @if ($errors->infoErrMsgArr->has('teacher'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('teacher') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row"><label class="col-sm-4 col-form-label">Heading text</label>
+                                            <div class="col-sm-8">
+                                                <div class="border">
+                                                    <textarea class="form-control" name="course-heading"
+                                                              cols="30" rows="7" placeholder="" autocomplete="off">{{old('course-heading')}}</textarea>
+                                                    <div class="error-msg"></div>
+                                                </div>
                                                 @if ($errors->infoErrMsgArr->has('course-heading'))
                                                     <ul class="mt-1">
                                                         @foreach ($errors->infoErrMsgArr->get('course-heading') as $error)
@@ -266,282 +269,283 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
+                                        <div class="hr-line-dashed"></div>
 
-                                    <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
-                                        <div class="col-sm-8">
-                                            <div class="border-edu">
-                                                <textarea rows="3" class="form-control" name="course-description"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>                                    
-
-                                    <div class="form-group row"><label class="col-sm-4 col-form-label">Course image</label>
-                                        <div class="col-sm-8">
-                                            {{--<input type="file" id="course-img" name="course-img"/>--}}
-                                            <input 
-                                                type="file" class="filepond-img" name="course-img"
-                                                data-max-file-size="1MB"
-                                                accept="image/webp, image/png, image/jpeg, image/gif"/>                                          
-                                            <div class="__error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('course-img'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('course-img') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif                                            
-
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="video-duration" class="form-control" value="{{old('video-duration')}}">
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="video-count" class="form-control" value="{{old('video-count')}}">
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('video-count'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('video-count') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    {{--
-									<div class="form-group  row">
-										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-										<div class="col-sm-8 text-base">60%</div>
-									</div>
-									<div class="hr-line-dashed"></div>
-                                    --}}
-
-									<div class="form-group row">
-										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-										<div class="col-sm-8">
-											<div class="text-2xl text-center font-bold output"></div><br>
-											<input type="range" name="author_share_percentage" value="{{old('author_share_percentage',60)}}" min="0" max="100" step="1">
-										</div>
-									</div>
-									<div class="hr-line-dashed"></div>
-
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Price</label>
-                                        <div class="col-sm-8">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-addon">Rs</span>
-                                                </div>
-                                                <input type="text" name="course-price" class="form-control" value="{{old('course-price')}}"><br>
-                                            </div>
-
-                                            <!--
-                                            <div class="input-group-append">
-                                                <span class="input-group-addon">.00</span>
-                                            </div> -->
-                                            <span class="form-text m-b-none">Leave blank or fill 0 if course is free.</span>
-
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Submit status</label>
-
-                                        <div class="col-sm-8">
-                                            <div class="">
-                                                <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{(old('course_stat')) == 'draft'? 'checked':''}}> <i></i>Draft </label>
-                                            </div>
-                                            <div class="">
-                                                <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{(old('course_stat')) != 'draft'? 'checked':''}}> <i></i>Published </label>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    {{--
-                                    <div class="form-group row">
-                                        <div class="col-sm-4 offset-sm-4">
-                                            <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
-                                            <button class="btn btn-danger btn-sm" type="reset">Cancel</button>
-                                        </div>
-                                    </div>
-                                    --}}
-                                </div>
-                            </div>
-                        </fieldset>
-
-
-                        <h1>Topics</h1>
-                        <fieldset>
-                            <h2>Add topics</h2>
-                            <div class="row">
-                                <div class="col-lg-12" id="tab-add-topics">                                    
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <input type="text" class="input add-topics form-control" placeholder="Enter here topic name:">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12 align-middle">
-                                            <input type="button" id="add-topics-btn" class="float-right btn btn-primary btn-sm" value="Add">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <div class="msg-div text-base text-red font-semibold"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="course-topic-list-area col-sm-12">
-                                            <ul id="course-topic-list"></ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3 alert alert-warning px-0 border border-sky-500">                                        
-                                        <div class="col-sm-8">
-                                            <div class="course-topics-json-result"></div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <input type="button" class="float-right btn btn-primary btn-sm" id="json-btn" value="json">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-
-                        <h1>links</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-12" id="tab-add-course-content">
-                                    <div class="_px-3 row mb-5">
-                                        <div class="col-sm-12 select-topics-wrapper">
-                                            <h2>1.Select a Topic</h2>
-                                            <select class="form-control" id="course-topics">
-                                                 <option></option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <h2>2.Add links</h2>
-                                            <div class="course-content-form add px-1 py-1">
-                                                <div class="form-group  row">
-                                                    <div class="col-sm-12 mb-2">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-addon">Text</span>
-                                                            </div>
-                                                            <input type="text" name="content-text" class="form-control"><br>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-addon">Embed Url</span>
-                                                            </div>
-                                                            <!-- <input type="text" name="content-url" class="form-control"><br> -->                                                            
-                                                            <textarea rows="5" class="form-control" placeholder="Enter Embed URL" name="content-url"></textarea><br>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <div class="col-sm-3">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-addon"><b>Duration/Size</b></span>
-                                                            </div>
-                                                            <input id="link_param" name="link_param" type="text" class="form-control"><br>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="offset-sm-4 col-sm-2">
-                                                        <div class="float-right i-checks">
-                                                            <label class="mb-0"> <input type="checkbox" value="" name="is_free"> <i></i> <b>Free</b> </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-3 -ml-1">
-                                                        
-                                                        <div class="three-state checkbox-container" id="input_link_type">                                                            
-                                                            <span class="three-state-checkbox"></span>
-                                                            <span class="font-semibold">Link type : </span>
-                                                            <span class="label">Other(Zoom)</span>
-                                                            <input type="hidden" name="link_type" value="other">
-                                                        </div>
-
-                                                    </div>
-
+                                        <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
+                                            <div class="col-sm-8">
+                                                <div class="border-edu">
+                                                    <textarea rows="3" class="form-control" name="course-description"></textarea>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="hr-line-dashed"></div>                                    
 
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12 align-middle">
-                                            <input type="button" id="add-course-content" class="float-right btn btn-primary btn-sm" value="Add">
-                                        </div>
-                                    </div>
+                                        <div class="form-group row"><label class="col-sm-4 col-form-label">Course image</label>
+                                            <div class="col-sm-8">
+                                                {{--<input type="file" id="course-img" name="course-img"/>--}}
+                                                <input 
+                                                    type="file" class="filepond-img" name="course-img"
+                                                    data-max-file-size="1MB"
+                                                    accept="image/webp, image/png, image/jpeg, image/gif"/>                                          
+                                                <div class="__error-msg"></div>
+                                                @if ($errors->infoErrMsgArr->has('course-img'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-img') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif                                            
 
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <div class="msg-div text-base text-red font-semibold"></div>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="hr-line-dashed"></div>
 
-                                    <div class="row mb-3">
-                                        <div class="course-content-list-area col-sm-12">
-                                            <ul id="course-content-list"></ul>
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="video-duration" class="form-control" value="{{old('video-duration')}}">
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="hr-line-dashed"></div>
 
-                                    <div class="row mb-3 alert alert-warning px-0 border border-sky-500">
-                                        <div class="col-sm-8">
-                                            <div class="course-content-json-result"></div>
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="video-count" class="form-control" value="{{old('video-count')}}">
+                                                <div class="error-msg"></div>
+                                                @if ($errors->infoErrMsgArr->has('video-count'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('video-count') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <input type="button" class="float-right btn btn-primary btn-sm" id="json-btn" value="json">
-                                        </div>
-                                    </div>
+                                        <div class="hr-line-dashed"></div>
 
+                                        {{--
+    									<div class="form-group  row">
+    										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
+    										<div class="col-sm-8 text-base">60%</div>
+    									</div>
+    									<div class="hr-line-dashed"></div>
+                                        --}}
+
+    									<div class="form-group row">
+    										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
+    										<div class="col-sm-8">
+    											<div class="text-2xl text-center font-bold output"></div><br>
+    											<input type="range" name="author_share_percentage" value="{{old('author_share_percentage',60)}}" min="0" max="100" step="1">
+    										</div>
+    									</div>
+    									<div class="hr-line-dashed"></div>
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Price</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-addon">Rs</span>
+                                                    </div>
+                                                    <input type="text" name="course-price" class="form-control" value="{{old('course-price')}}"><br>
+                                                </div>
+
+                                                <!--
+                                                <div class="input-group-append">
+                                                    <span class="input-group-addon">.00</span>
+                                                </div> -->
+                                                <span class="form-text m-b-none">Leave blank or fill 0 if course is free.</span>
+
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Submit status</label>
+
+                                            <div class="col-sm-8">
+                                                <div class="">
+                                                    <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{(old('course_stat')) == 'draft'? 'checked':''}}> <i></i>Draft </label>
+                                                </div>
+                                                <div class="">
+                                                    <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{(old('course_stat')) != 'draft'? 'checked':''}}> <i></i>Published </label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        {{--
+                                        <div class="form-group row">
+                                            <div class="col-sm-4 offset-sm-4">
+                                                <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
+                                                <button class="btn btn-danger btn-sm" type="reset">Cancel</button>
+                                            </div>
+                                        </div>
+                                        --}}
+                                    </div>
                                 </div>
-                            </div>
-                        </fieldset>
+                            </fieldset>
 
-                        <!-- <h1>Finish</h1>
-                        <fieldset>
-                            <h2>Terms and Conditions</h2>
-                            <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
-                        </fieldset> -->
 
-                        <input name="topicsJson" id="topicsJson" type="hidden" value=''>
-                        <input name="contentJson" id="contentJson" type="hidden" value="">
-                        
-                    </form>
+                            <h1>Topics</h1>
+                            <fieldset>
+                                <h2>Add topics</h2>
+                                <div class="row">
+                                    <div class="col-lg-12" id="tab-add-topics">                                    
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <input type="text" class="input add-topics form-control" placeholder="Enter here topic name:">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12 align-middle">
+                                                <input type="button" id="add-topics-btn" class="float-right btn btn-primary btn-sm" value="Add">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <div class="msg-div text-base text-red font-semibold"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="course-topic-list-area col-sm-12">
+                                                <ul id="course-topic-list"></ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 alert alert-warning px-0 border border-sky-500">                                        
+                                            <div class="ml-2 col-sm-10">
+                                                <div class="course-topics-json-result"></div>
+                                            </div>
+                                            <div class="-ml-2 col-sm-2">
+                                                <input type="button" class="mr-2 float-right btn btn-primary btn-sm" id="json-btn" value="json">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+                            <h1>links</h1>
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-12" id="tab-add-course-content">
+                                        <div class="_px-3 row mb-5">
+                                            <div class="col-sm-12 select-topics-wrapper">
+                                                <h2>1.Select a Topic</h2>
+                                                <select class="form-control" id="course-topics">
+                                                     <option></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <h2>2.Add links</h2>
+                                                <div class="course-content-form add px-1 py-1">
+                                                    <div class="form-group  row">
+                                                        <div class="col-sm-12 mb-2">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-addon">Text</span>
+                                                                </div>
+                                                                <input type="text" name="content-text" class="form-control"><br>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-addon">Embed Url</span>
+                                                                </div>
+                                                                <!-- <input type="text" name="content-url" class="form-control"><br> -->                                                            
+                                                                <textarea rows="5" class="form-control" placeholder="Enter Embed URL" name="content-url"></textarea><br>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-addon"><b>Duration/Size</b></span>
+                                                                </div>
+                                                                <input id="link_param" name="link_param" type="text" class="form-control"><br>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="offset-sm-4 col-sm-2">
+                                                            <div class="float-right i-checks">
+                                                                <label class="mb-0"> <input type="checkbox" value="" name="is_free"> <i></i> <b>Free</b> </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-3 -ml-1">
+                                                            
+                                                            <div class="three-state checkbox-container" id="input_link_type">                                                            
+                                                                <span class="three-state-checkbox"></span>
+                                                                <span class="font-semibold">Link type : </span>
+                                                                <span class="label">Other(Zoom)</span>
+                                                                <input type="hidden" name="link_type" value="other">
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12 align-middle">
+                                                <input type="button" id="add-course-content" class="float-right btn btn-primary btn-sm" value="Add">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <div class="msg-div text-base text-red font-semibold"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="course-content-list-area col-sm-12">
+                                                <ul id="course-content-list"></ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 alert alert-warning px-0 border border-sky-500">
+                                            <div class="ml-2 col-sm-10">
+                                                <div class="course-content-json-result"></div>
+                                            </div>
+                                            <div class="-ml-2 col-sm-2">
+                                                <input type="button" class="mr-2 float-right btn btn-primary btn-sm" id="json-btn" value="json">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- 
+                            <h1>Finish</h1>
+                            <fieldset>
+                                <h2>Terms and Conditions</h2>
+                                <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
+                            </fieldset> 
+                            -->
+
+                            <input name="topicsJson" id="topicsJson" type="hidden" value=''>
+                            <input name="contentJson" id="contentJson" type="hidden" value="">
+                            
+                        </form>
+                    </div>
                 </div>
-            </div>
-            
+            @endif  
 
         </div>
     </div>
@@ -656,8 +660,6 @@
 				FilePondPluginImagePreview,
 
 				FilePondPluginFileValidateType
-
-
 			);
 		})();
 
@@ -666,19 +668,19 @@
         var inputLinkType;
 
         /* course content from Database */
-        //var courseContentFromDb   = '{\n                           "aa111":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
-        var courseContentFromDb     = {{ Js::from(old('contentInputStr','{}')) }};
+        //var courseContentFromOld   = '{\n                           "aa111":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
+        var courseContentFromOld     = {{ Js::from(old('contentInputStr','{}')) }};
         
         
 		/* percentage range slider */
-		function valueOutput(element) {
+		$(document).on('input', 'input[name="author_share_percentage"]', function(e) {
+            valueOutput(e.target);
+        });
+
+        function valueOutput(element) {
 			let value  = $(element).val();
 			$(element).parent().find('.output').html(value + '%');
-		}
-
-		$(document).on('input', 'input[name="author_share_percentage"]', function(e) {
-			valueOutput(e.target);
-		});
+		}		
 		/***************************/
 
 
@@ -745,7 +747,6 @@
 						height: 250,
 						width: '100%',
 						toolbar: [
-
 							['style', ['style']],
 							//['font', ['bold', 'italic', 'underline', 'clear']],
 							['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
@@ -1075,8 +1076,8 @@
             const _fillInitialValues = () => {
                 var dbCourseContentJson
                 try {
-                    //dbCourseContentJson = JSON.parse(courseContentFromDb) || {};
-                    dbCourseContentJson = JSON.parse(courseContentFromDb);
+                    //dbCourseContentJson = JSON.parse(courseContentFromOld) || {};
+                    dbCourseContentJson = JSON.parse(courseContentFromOld);
 
                     // fix for prevent page load error if data format is 
                     if(!(dbCourseContentJson instanceof Object)){throw new Error();}
@@ -1588,8 +1589,8 @@
             const _fillInitialValues = () => {
                 var dbCourseContentJson
                 try {
-                    //dbCourseContentJson = JSON.parse(courseContentFromDb)  || {};
-                    dbCourseContentJson = JSON.parse(courseContentFromDb);
+                    //dbCourseContentJson = JSON.parse(courseContentFromOld)  || {};
+                    dbCourseContentJson = JSON.parse(courseContentFromOld);
 
                     // fix for prevent page load error if data format is 
                     if(!(dbCourseContentJson instanceof Object)){throw new Error();}                   

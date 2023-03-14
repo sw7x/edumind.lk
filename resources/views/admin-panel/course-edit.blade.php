@@ -108,6 +108,12 @@
     <div class="row" id="">
         <div class="col-lg-12">          
             
+            <?php //dump(old('contentArr')); ?>
+            <?php //dump(old('contentInputStr','')); ?>
+            <?php //dump(old('contentJson')); ?>            
+            <?php //dump(old('course-name')); ?>
+
+
             @if(Session::has('message'))
                 <x-flash-message
                     class="{{ Session::get('cls', 'flash-info')}}" 
@@ -182,401 +188,457 @@
 
                     </x-slot>
                 </x-flash-message>            
-            @endif
+            @else
             
-            <div class="mb-3 float-right">                
-                <button id="restroreLinks" class="btn hover:bg-green-400 bg-green-600 text-white btn-sm" type="submit">Restore previously entered links</button>
-            </div>
-            
-            <div class="ibox">
-                <div class="ibox-content">
+                @if(old('contentInputStr') != '')
+                    <div class="mb-3 float-right">                
+                        <button id="restroreLinks" class="btn hover:bg-green-400 bg-green-600 text-white btn-sm" type="submit">Restore previously entered links</button>
+                    </div>
+                @endif
 
-                    <form id="course-edit-form" method="post" action="{{route('admin.course.update',$course->id)}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="id" value="{{$course->id}}">                      
-                        <h1>Details</h1>
-                        <fieldset>
-                            <h2>Add course details</h2>
-                            <div class="row">
-                                <div class="col-lg-12">
+                <?php //dump($errors->infoErrMsgArr); ?>
+                <div class="ibox">
+                    <div class="ibox-content">
+
+                        <form id="course-edit-form" method="post" action="{{route('admin.course.update',$course->id)}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="id" value="{{$course->id}}">                      
+                            <h1>Details</h1>
+                            <fieldset>
+                                <h2>Add course details</h2>
+                                <div class="row">
+                                    <div class="col-lg-12">
 
 
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="course-name" class="form-control" value="{{$course->name}}">
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('course-name'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('course-name') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-                                    
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Subject <span class="text-red-500 text-sm font-bold">*</span></label>
-                                        <div class="col-sm-8">
-                                            <select class="form-control m-b" id="subject" name="subject">
-                                                <option></option>
-                                                @foreach ($subjects as $subject)
-                                                    <option value="{{$subject['id']}}" @if($course->subject_id == $subject['id']) selected @endif>{{$subject['name']}}</option>
-                                                @endforeach
-                                            </select>
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('subject'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('subject') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Teacher <span class="text-red-500 text-sm font-bold">*</span></label>
-                                        <div class="col-sm-8">
-                                            <select class="form-control m-b" id="teacher" name="teacher">
-                                                <option></option>
-                                                @foreach ($teachers as $teacher)
-                                                    <option value="{{$teacher['id']}}" @if($course->teacher_id == $teacher['id']) selected @endif>{{$teacher['full_name']}}</option>
-                                                @endforeach
-                                            </select>
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('teacher'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('teacher') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row"><label class="col-sm-4 col-form-label">Heading text</label>
-                                        <div class="col-sm-8">
-                                            <div class="border">
-                                                <textarea class="form-control" name="course-heading"
-                                                          cols="30" rows="7" placeholder="" autocomplete="off">{{$course->heading_text}}</textarea>
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="course-name" class="form-control" value="{{$course->name}}">
                                                 <div class="error-msg"></div>
-                                                @if ($errors->infoErrMsgArr->has('course-heading'))
+                                                
+                                                @if (old('course-name'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('course-name')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{old('course-name')}}</span>
+                                                @endif
+
+                                                @if ($errors->infoErrMsgArr->has('course-name'))
                                                     <ul class="mt-1">
-                                                        @foreach ($errors->infoErrMsgArr->get('course-heading') as $error)
+                                                        @foreach ($errors->infoErrMsgArr->get('course-name') as $error)
                                                             <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
                                                         @endforeach
                                                     </ul>
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
-                                        <div class="col-sm-8">
-                                            <div class="border-edu">
-                                                <textarea rows="3" class="form-control" name="course-description"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-
-
-                                    <div class="form-group row"><label class="col-sm-4 col-form-label">Course image</label>
-                                        <div class="col-sm-8">
-                                            {{--<input type="file" id="course-img" name="course-img"/>--}}                                                
-                                            <input 
-                                                type="file" 
-                                                class="filepond-img" 
-                                                name="course-img"
-                                                data-max-file-size="1MB"
-                                                accept="image/webp, image/png, image/jpeg, image/gif"
-                                                />                                       
-                                            <div class="__error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('course-img'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('course-img') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                        <div class="hr-line-dashed"></div>
+                                        
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Subject <span class="text-red-500 text-sm font-bold">*</span></label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control m-b" id="subject" name="subject">
+                                                    <option></option>
+                                                    @foreach ($subjects as $subject)
+                                                        <option value="{{$subject['id']}}" @if($course->subject_id == $subject['id']) selected @endif>{{$subject['name']}}</option>
                                                     @endforeach
-                                                </ul>
-                                            @endif                                            
+                                                </select>
+                                                <div class="error-msg"></div>                                            
+                                                
+                                                @if(old('subject'))
+                                                    @foreach ($subjects as $subject)
+                                                        @if($subject['id'] == old('subject'))
+                                                            <span class="block mt-1 @if($errors->infoErrMsgArr->has('subject')) text-red-600 @else text-green-600 @endif
+                                                                text-xs font-bold">Previously you entered - {{$subject['name']}}</span>
+                                                        @endif
+                                                    @endforeach    
+                                                @endif
 
+                                                @if ($errors->infoErrMsgArr->has('subject'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('subject') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <input type="hidden" value="{{URL('/')}}/storage/{{$course->image}}"
-                                           name="hidden_course_img" data-url="{{$course->image}}"/>
-                                    <input type="hidden" value="{{$course->image}}" name="hidden_course_img_url"/>
-                                    <input type="hidden" value="1" name="hidden_file_add_count"/>
+                                        <div class="hr-line-dashed"></div>
 
-
-
-                                    <div class="hr-line-dashed"></div>
-
-
-
-
-
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="video-duration" class="form-control" value="{{$course->duration}}">
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
-                                        <div class="col-sm-8">
-                                            <input type="text" name="video-count" class="form-control" value="{{$course->video_count}}">
-                                            <div class="error-msg"></div>
-                                            @if ($errors->infoErrMsgArr->has('video-count'))
-                                                <ul class="mt-1">
-                                                    @foreach ($errors->infoErrMsgArr->get('video-count') as $error)
-                                                        <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Teacher <span class="text-red-500 text-sm font-bold">*</span></label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control m-b" id="teacher" name="teacher">
+                                                    <option></option>
+                                                    @foreach ($teachers as $teacher)
+                                                        <option value="{{$teacher['id']}}" @if($course->teacher_id == $teacher['id']) selected @endif>{{$teacher['full_name']}}</option>
                                                     @endforeach
-                                                </ul>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
+                                                </select>
+                                                <div class="error-msg"></div>
 
-                                    {{--
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-                                        <div class="col-sm-8 text-base">60%</div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-                                    --}}
+                                                @if(old('teacher'))
+                                                    @foreach ($teachers as $teacher)
+                                                        @if($teacher['id'] == old('teacher'))
+                                                            <span class="block mt-1 @if($errors->infoErrMsgArr->has('teacher')) text-red-600 @else text-green-600 @endif
+                                                                text-xs font-bold">Previously you entered - {{$teacher['full_name']}}</span>
+                                                        @endif
+                                                    @endforeach    
+                                                @endif
 
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-                                        <div class="col-sm-8">
-                                            <div class="text-2xl text-center font-bold output"></div><br>
-                                            <input type="range" name="author_share_percentage" value="{{$course->author_share_percentage}}" min="0" max="100" step="1">
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-
-
-
-                                    <div class="form-group  row">
-                                        <label class="col-sm-4 col-form-label">Price</label>
-                                        <div class="col-sm-8">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-addon">Rs</span>
-                                                </div>
-                                                <input type="text" name="course-price" class="form-control" value="{{$course->price}}"><br>
-                                            </div>
-
-                                            <!--
-                                            <div class="input-group-append">
-                                                <span class="input-group-addon">.00</span>
-                                            </div> -->
-                                            <span class="form-text m-b-none">Leave blank or fill 0 if course is free.</span>
-
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Submit status</label>
-
-                                        <div class="col-sm-8">
-                                            <div class="">
-                                                <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{($course->status) == 'draft'? 'checked':''}}> <i></i>Draft </label>
-                                            </div>
-                                            <div class="">
-                                                <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{($course->status) != 'draft'? 'checked':''}}> <i></i>Published </label>
+                                                @if ($errors->infoErrMsgArr->has('teacher'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('teacher') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
                                             </div>
                                         </div>
+                                        <div class="hr-line-dashed"></div>
 
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-
-                                    {{--
-                                    <div class="form-group row">
-                                        <div class="col-sm-4 offset-sm-4">
-                                            <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
-                                            <button class="btn btn-danger btn-sm" type="reset">Cancel</button>
-                                        </div>
-                                    </div>
-                                    --}}
-                                </div>
-                            </div>
-                        </fieldset>
-
-
-                        <h1>Topics</h1>
-                        <fieldset>
-                            <h2>Add topics</h2>
-
-                            <div class="row">
-                                <div class="col-lg-12" id="tab-add-topics">
-
-
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <input type="text" class="input add-topics form-control" placeholder="Enter here topic name:">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12 align-middle">
-                                            <input type="button" id="add-topics-btn" class="float-right btn btn-primary btn-sm" value="Add">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <div class="msg-div text-base text-red font-semibold"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="course-topic-list-area col-sm-12">
-                                            <ul id="course-topic-list"></ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3 alert alert-warning px-0 border border-sky-500">                                        
-                                        <div class="col-sm-8">
-                                            <div class="course-topics-json-result"></div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <input type="button" class="float-right btn btn-primary btn-sm" id="json-btn" value="json">
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </fieldset>
-
-
-                        <h1>links</h1>
-                        <fieldset>
-
-                            <div class="row">
-                                <div class="col-lg-12" id="tab-add-course-content">
-
-
-                                    <div class="_px-3 row mb-5">
-                                        <div class="col-sm-12 select-topics-wrapper">
-                                            <h2>1.Select a Topic</h2>
-                                            <select class="form-control" id="course-topics">
-                                                 <option></option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <h2>2.Add links</h2>
-                                            <div class="course-content-form add px-1 py-1">
-                                                <div class="form-group  row">
-                                                    <div class="col-sm-12 mb-2">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-addon">Text</span>
-                                                            </div>
-                                                            <input type="text" name="content-text" class="form-control"><br>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-addon">Embed Url</span>
-                                                            </div>
-                                                            <!-- <input type="text" name="content-url" class="form-control"><br> -->                                                            
-                                                            <textarea rows="5" class="form-control" placeholder="Enter Embed URL" name="content-url"></textarea><br>
-                                                        </div>
-                                                    </div>
+                                        <div class="form-group row"><label class="col-sm-4 col-form-label">Heading text</label>
+                                            <div class="col-sm-8">
+                                                <div class="border">
+                                                    <textarea class="form-control" name="course-heading"
+                                                              cols="30" rows="7" placeholder="" autocomplete="off">{{$course->heading_text}}</textarea>
+                                                    <div class="error-msg"></div>
                                                 </div>
 
-                                                <div class="form-group row">
-                                                    <div class="col-sm-3">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-addon"><b>Duration/Size</b></span>
+                                                @if (old('course-heading'))
+                                                    <span class="block mt-2 @if($errors->infoErrMsgArr->has('course-heading')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{old('course-heading')}}</span>
+                                                @endif
+
+                                                @if ($errors->infoErrMsgArr->has('course-heading'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-heading') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif                                            
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
+                                            <div class="col-sm-8">
+                                                <div class="border-edu">
+                                                    <textarea rows="3" class="form-control" name="course-description"></textarea>
+                                                </div>
+                                                @if (old('course-description'))
+                                                    <span class="block mt-2 @if($errors->infoErrMsgArr->has('course-description')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {!! old('course-description') !!}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+
+
+                                        <div class="form-group row"><label class="col-sm-4 col-form-label">Course image</label>
+                                            <div class="col-sm-8">
+                                                {{--<input type="file" id="course-img" name="course-img"/>--}}                                                
+                                                <input 
+                                                    type="file" 
+                                                    class="filepond-img" 
+                                                    name="course-img"
+                                                    data-max-file-size="1MB"
+                                                    accept="image/webp, image/png, image/jpeg, image/gif"
+                                                    />                                       
+                                                <div class="__error-msg"></div>
+                                                @if ($errors->infoErrMsgArr->has('course-img'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-img') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif                                            
+
+                                            </div>
+                                        </div>
+                                        <input type="hidden" value="{{URL('/')}}/storage/{{$course->image}}"
+                                               name="hidden_course_img" data-url="{{$course->image}}"/>
+                                        <input type="hidden" value="{{$course->image}}" name="hidden_course_img_url"/>
+                                        <input type="hidden" value="1" name="hidden_file_add_count"/>
+                                        <div class="hr-line-dashed"></div>
+
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="video-duration" class="form-control" value="{{$course->duration}}">
+                                                @if (old('video-duration'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('video-duration')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{ old('video-duration') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="video-count" class="form-control" value="{{$course->video_count}}">
+                                                <div class="error-msg"></div>
+
+                                                @if (old('video-count'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('video-count')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{ old('video-count') }}</span>
+                                                @endif
+
+                                                @if ($errors->infoErrMsgArr->has('video-count'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('video-count') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        {{--
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
+                                            <div class="col-sm-8 text-base">60%</div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        --}}
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
+                                            <div class="col-sm-8">
+                                                <div class="text-2xl text-center font-bold output"></div><br>
+                                                <input type="range" name="author_share_percentage" value="{{$course->author_share_percentage}}" min="0" max="100" step="1">
+                                                @if (old('author_share_percentage'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('author_share_percentage')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{ old('author_share_percentage') }}%</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+
+
+
+                                        <div class="form-group  row">
+                                            <label class="col-sm-4 col-form-label">Price</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-addon">Rs</span>
+                                                    </div>
+                                                    <input type="text" name="course-price" class="form-control" value="{{$course->price}}"><br>
+                                                </div>
+
+                                                <!--
+                                                <div class="input-group-append">
+                                                    <span class="input-group-addon">.00</span>
+                                                </div> -->
+                                                <span class="form-text m-b-none">Leave blank or fill 0 if course is free.</span>
+
+                                                @if (old('course-price'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('course-price')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - RS {{ old('course-price') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Submit status</label>
+
+                                            <div class="col-sm-8">
+                                                <div class="">
+                                                    <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{($course->status) == 'draft'? 'checked':''}}> <i></i>Draft </label>
+                                                </div>
+                                                <div class="">
+                                                    <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{($course->status) != 'draft'? 'checked':''}}> <i></i>Published </label>
+                                                </div>
+                                                @if (old('course_stat'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('course_stat')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{ old('course_stat') }}</span>
+                                                @endif
+                                            </div>
+
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+
+
+                                        {{--
+                                        <div class="form-group row">
+                                            <div class="col-sm-4 offset-sm-4">
+                                                <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
+                                                <button class="btn btn-danger btn-sm" type="reset">Cancel</button>
+                                            </div>
+                                        </div>
+                                        --}}
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+                            <h1>Topics</h1>
+                            <fieldset>
+                                <h2>Add topics</h2>
+
+                                <div class="row">
+                                    <div class="col-lg-12" id="tab-add-topics">
+
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <input type="text" class="input add-topics form-control" placeholder="Enter here topic name:">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12 align-middle">
+                                                <input type="button" id="add-topics-btn" class="float-right btn btn-primary btn-sm" value="Add">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <div class="msg-div text-base text-red font-semibold"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="course-topic-list-area col-sm-12">
+                                                <ul id="course-topic-list"></ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 alert alert-warning px-0 border border-sky-500">                                        
+                                            <div class="ml-2 col-sm-10">
+                                                <div class="course-topics-json-result"></div>
+                                            </div>
+                                            <div class="-ml-2 col-sm-2">
+                                                <input type="button" class="mr-2 float-right btn btn-primary btn-sm" id="json-btn" value="json">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+                            <h1>links</h1>
+                            <fieldset>
+
+                                <div class="row">
+                                    <div class="col-lg-12" id="tab-add-course-content">
+
+
+                                        <div class="_px-3 row mb-5">
+                                            <div class="col-sm-12 select-topics-wrapper">
+                                                <h2>1.Select a Topic</h2>
+                                                <select class="form-control" id="course-topics">
+                                                     <option></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <h2>2.Add links</h2>
+                                                <div class="course-content-form add px-1 py-1">
+                                                    <div class="form-group  row">
+                                                        <div class="col-sm-12 mb-2">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-addon">Text</span>
+                                                                </div>
+                                                                <input type="text" name="content-text" class="form-control"><br>
                                                             </div>
-                                                            <input id="link_param" name="link_param" type="text" class="form-control"><br>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-addon">Embed Url</span>
+                                                                </div>
+                                                                <!-- <input type="text" name="content-url" class="form-control"><br> -->                                                            
+                                                                <textarea rows="5" class="form-control" placeholder="Enter Embed URL" name="content-url"></textarea><br>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="offset-sm-4 col-sm-2">
-                                                        <div class="float-right i-checks">
-                                                            <label class="mb-0"> <input type="checkbox" value="" name="is_free"> <i></i> <b>Free</b> </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-3 -ml-1">
-                                                        
-                                                        <div class="three-state checkbox-container" id="input_link_type">                                                            
-                                                            <span class="three-state-checkbox"></span>
-                                                            <span class="font-semibold">Link type : </span>
-                                                            <span class="label">Other(Zoom)</span>
-                                                            <input type="hidden" name="link_type" value="other">
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-addon"><b>Duration/Size</b></span>
+                                                                </div>
+                                                                <input id="link_param" name="link_param" type="text" class="form-control"><br>
+                                                            </div>
                                                         </div>
 
-                                                    </div>
+                                                        <div class="offset-sm-4 col-sm-2">
+                                                            <div class="float-right i-checks">
+                                                                <label class="mb-0"> <input type="checkbox" value="" name="is_free"> <i></i> <b>Free</b> </label>
+                                                            </div>
+                                                        </div>
 
+                                                        <div class="col-sm-3 -ml-1">
+                                                            
+                                                            <div class="three-state checkbox-container" id="input_link_type">                                                            
+                                                                <span class="three-state-checkbox"></span>
+                                                                <span class="font-semibold">Link type : </span>
+                                                                <span class="label">Other(Zoom)</span>
+                                                                <input type="hidden" name="link_type" value="other">
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12 align-middle">
-                                            <input type="button" id="add-course-content" class="float-right btn btn-primary btn-sm" value="Add">
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12 align-middle">
+                                                <input type="button" id="add-course-content" class="float-right btn btn-primary btn-sm" value="Add">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <div class="msg-div text-base text-red font-semibold"></div>
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <div class="msg-div text-base text-red font-semibold"></div>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row mb-3">
-                                        <div class="course-content-list-area col-sm-12">
-                                            <ul id="course-content-list"></ul>
+                                        <div class="row mb-3">
+                                            <div class="course-content-list-area col-sm-12">
+                                                <ul id="course-content-list"></ul>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row mb-3 alert alert-warning px-0 border border-sky-500">
-                                        <div class="col-sm-8">
-                                            <div class="course-content-json-result"></div>
+                                        <div class="row mb-3 alert alert-warning px-0 border border-sky-500">
+                                            <div class="ml-2 col-sm-10">
+                                                <div class="course-content-json-result"></div>
+                                            </div>
+                                            <div class="-ml-2 col-sm-2">
+                                                <input type="button" class="mr-2 float-right btn btn-primary btn-sm" id="json-btn" value="json">
+                                            </div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <input type="button" class="float-right btn btn-primary btn-sm" id="json-btn" value="json">
-                                        </div>
-                                    </div>
 
+                                    </div>
                                 </div>
-                            </div>
-                        </fieldset>
+                            </fieldset>
 
-                        <!-- <h1>Finish</h1>
-                        <fieldset>
-                            <h2>Terms and Conditions</h2>
-                            <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
-                        </fieldset> -->
+                            <!-- <h1>Finish</h1>
+                            <fieldset>
+                                <h2>Terms and Conditions</h2>
+                                <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
+                            </fieldset> -->
 
-                        <input name="topicsJson" id="topicsJson" type="hidden" value=''>
-                        <input name="contentJson" id="contentJson" type="hidden" value=''>
-                        
-                    </form>
+                            <input name="topicsJson" id="topicsJson" type="hidden" value=''>
+                            <input name="contentJson" id="contentJson" type="hidden" value=''>
+                            
+                        </form>
+                    </div>
                 </div>
-            </div>
+            @endif
             
 
         </div>
@@ -672,1663 +734,1656 @@
 
 @section('javascript')
     <script>
+        @if(!Session::has('message'))
+            (function () {
+                //We want to preview images, so we need to register the Image Preview plugin
+                FilePond.registerPlugin(
 
-        (function () {
-            //We want to preview images, so we need to register the Image Preview plugin
-            FilePond.registerPlugin(
+                    // encodes the file as base64 data
+                    FilePondPluginFileEncode,
 
-                // encodes the file as base64 data
-                FilePondPluginFileEncode,
+                    // validates the size of the file
+                    FilePondPluginFileValidateSize,
 
-                // validates the size of the file
-                FilePondPluginFileValidateSize,
+                    // corrects mobile image orientation
+                    FilePondPluginImageExifOrientation,
 
-                // corrects mobile image orientation
-                FilePondPluginImageExifOrientation,
+                    // previews dropped images
+                    FilePondPluginImagePreview,
 
-                // previews dropped images
-                FilePondPluginImagePreview,
+                    FilePondPluginFileValidateType
+                );
+            })();
 
-                FilePondPluginFileValidateType
+            var courseTopicFunctionality;
+            var courseContentFunctionality;
+            var inputLinkType;
 
+            /* course content from Database */
+            //var courseContentFromDb   = '{\n                           "aa111":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
+            var courseContentFromDb     = {{ Js::from($courseContent) ?? '{}'}};
+            //var courseContentFromDb   = {{ $courseContent }};
 
-            );
-        })();
-
-        var courseTopicFunctionality;
-        var courseContentFunctionality;
-        var inputLinkType;
-
-        /* course content from Database */
-        //var courseContentFromDb   = '{\n                           "aa111":[\n                              {\n                                 "inputText":"aa1",\n                                 "inputUrl":"aa12",\n                                 "linkParam":"aa13",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"bb1",\n                                 "inputUrl":"bb12",\n                                 "linkParam":"bb13",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc3",\n                                 "inputUrl":"cc32",\n                                 "linkParam":"cc33",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"dd4",\n                                 "inputUrl":"dd41",\n                                 "linkParam":"dd42",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"ee5",\n                                 "inputUrl":"ee51",\n                                 "linkParam":"ee52",\n                                 "isFree":true,\n                                 "type":"video"\n                              }\n                           ],\n                           "bb":[\n                              {\n                                 "inputText":"zz",\n                                 "inputUrl":"zzq",\n                                 "linkParam":"zzq",\n                                 "isFree":false,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"xx",\n                                 "inputUrl":"xx1",\n                                 "linkParam":"xx2",\n                                 "isFree":false,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"cc",\n                                 "inputUrl":"cc2",\n                                 "linkParam":"cc3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"vv",\n                                 "inputUrl":"vvf",\n                                 "linkParam":"vvr",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "cc":[\n                              {\n                                 "inputText":"gg",\n                                 "inputUrl":"gg1",\n                                 "linkParam":"gg2",\n                                 "isFree":true,\n                                 "type":"video"\n                              },\n                              {\n                                 "inputText":"hh1",\n                                 "inputUrl":"hh2",\n                                 "linkParam":"hh3",\n                                 "isFree":true,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"jj1",\n                                 "inputUrl":"jj2",\n                                 "linkParam":"jj3",\n                                 "isFree":false,\n                                 "type":"other"\n                              },\n                              {\n                                 "inputText":"kk1",\n                                 "inputUrl":"kk2",\n                                 "linkParam":"kk3",\n                                 "isFree":true,\n                                 "type":"download"\n                              },\n                              {\n                                 "inputText":"ll1",\n                                 "inputUrl":"ll2",\n                                 "linkParam":"ll3",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "dd":[\n                              {\n                                 "inputText":"susa1",\n                                 "inputUrl":"su",\n                                 "linkParam":"sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ],\n                           "ee":[],\n                           "ff":[\n                              {\n                                 "inputText":"ff-susa1",\n                                 "inputUrl":"f-su",\n                                 "linkParam":"f-sae",\n                                 "isFree":true,\n                                 "type":"download"\n                              }\n                           ]\n                        }';
-        var courseContentFromDb     = {{ Js::from($courseContent) }};
-        //var courseContentFromDb   = {{ $courseContent }};
-        
-
-
-
-
-
-        /* percentage range slider */
-        function valueOutput(element) {
-            let value  = $(element).val();
-            $(element).parent().find('.output').html(value + '%');
-        }
-
-        $(document).on('input', 'input[name="author_share_percentage"]', function(e) {
-            valueOutput(e.target);
-        });
-        /***************************/
-
-
-
-        $(document).ready(function(){
+            
+            /* Previously enterd course content */
+            var courseContentFromOld    = {{ Js::from(old('contentInputStr','')) }};        
+            
+            
+            /* to restored Previously enterd course content */
+            $('#restroreLinks').click(function(event){
+                if(courseContentFromOld != ''){
+                    courseTopicFunctionality.fillValues(courseContentFromOld);
+                    courseContentFunctionality.fillValues(courseContentFromOld);
+                    toastr['success']('Previously enterd course content restored');
+                }else{
+                    toastr['error']('Unable to restore previously enterd course content');
+                }
+            });
 
 
             
+            /* percentage range slider */
+            $(document).on('input', 'input[name="author_share_percentage"]', function(e) {
+                valueOutput(e.target);
+            });
+
+            function valueOutput(element) {
+                let value  = $(element).val();
+                $(element).parent().find('.output').html(value + '%');
+            }        
+            /***************************/
 
 
 
+            $(document).ready(function(){
+
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2200",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
 
 
-            
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "2200",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
+                var courseForm = $("#course-edit-form");
+                let pond;
+
+                courseForm.steps({
+                    bodyTag: "fieldset",
+                    transitionEffect: "fade",
+                    transitionEffectSpeed:500,
+                    //titleTemplate: '<span class="step">#index#</span> #title#',
+                    labels: {
+                        finish: "Submit",
+                        //next : '>>'
+                    },
+                    onInit:function (event, currentIndex, newIndex){
+
+                        // Select the file input and use create() to turn it into a pond                    
+                        pond = FilePond.create(document.querySelector('.filepond-img'));                   
 
 
-
-
-
-            var courseForm = $("#course-edit-form");
-            let pond;
-
-
-            courseForm.steps({
-                bodyTag: "fieldset",
-                transitionEffect: "fade",
-                transitionEffectSpeed:500,
-                //titleTemplate: '<span class="step">#index#</span> #title#',
-                labels: {
-                    finish: "Submit",
-                    //next : '>>'
-                },
-                onInit:function (event, currentIndex, newIndex){
-
-                    // Select the file input and use create() to turn it into a pond                    
-                    pond = FilePond.create(document.querySelector('.filepond-img'));
-                    
-
-
-
-                    let courseImg = $('form#course-edit-form input[name="hidden_course_img"]').val();
-                    let courseUrl = $('form#course-edit-form input[name="hidden_course_img_url"]').val();
-                    if(courseUrl){
-                        pond.addFile(courseImg);
-                    }
-
-
-                    /*
-                     $('form.course-edit-form input[name="hidden_file_add_count"]') is use to track
-                     user submit form without changing previously uploaded image => then no need invoke image upload
-                     or
-                     user submit form by changing previously uploaded image => then need invoke image upload
-                    */
-                    $('.filepond-img').on('FilePond:addfile', function(e) {
-
-                        let $countElem = $('form.course-edit-form input[name="hidden_file_add_count"]');
-                        let count = $countElem.val();
-                        count--;
-                        $countElem.val(count);
-
-                        if(count<0){
-                            $('form.course-edit-form input[name="hidden_course_img_url"]').val('');
+                        let courseImg = $('form#course-edit-form input[name="hidden_course_img"]').val();
+                        let courseUrl = $('form#course-edit-form input[name="hidden_course_img_url"]').val();
+                        if(courseUrl){
+                            pond.addFile(courseImg);
                         }
-                    });
 
-                    $('.filepond-img').on('FilePond:removefile', function(e) {
+                        /*
+                         $('form.course-edit-form input[name="hidden_file_add_count"]') is use to track
+                         user submit form without changing previously uploaded image => then no need invoke image upload
+                         or
+                         user submit form by changing previously uploaded image => then need invoke image upload
+                        */
+                        $('.filepond-img').on('FilePond:addfile', function(e) {
 
+                            let $countElem = $('form.course-edit-form input[name="hidden_file_add_count"]');
+                            let count = $countElem.val();
+                            count--;
+                            $countElem.val(count);
 
-                    });
-
-
-
-
-                    
-
-                    $("#subject").select2({
-                        placeholder: "Select student gender",
-                        allowClear: true,
-                        width: '100%'
-                    });
-                    $("#teacher").select2({
-                        placeholder: "Select marketer gender",
-                        allowClear: true,
-                        width: '100%'
-                    });
-
-                    $('#course-topics').select2({
-                        placeholder: "Select a topic",
-                        //allowClear: false,
-                        width: '100%',
-                        placeholder: "Please select a topic",
-                        allowClear: true
-                    });
-
-                    $('[name="course-description"]').summernote({
-                        //placeholder: 'Hello bootstrap 4',
-                        tabsize: 2,
-                        height: 250,
-                        width: '100%',
-                        toolbar: [
-
-                            ['style', ['style']],
-                            //['font', ['bold', 'italic', 'underline', 'clear']],
-                            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
-                            ['fontname', ['fontname']],
-                            ['fontsize', ['fontsize']],
-                            ['color', ['color']],
-                            ['para', ['ul', 'ol', 'paragraph']],
-                            ['height', ['height']],
-                            ['table', ['table']],
-                            ['insert', [
-                                'link',
-                                //'picture',
-                                //'video',
-                                'hr'
-                            ]
-                            ],
-                            ['view', [
-                                //'fullscreen',
-                                'codeview',
-                                'help']
-                            ]
-                        ],
-                    });
-                    @if(isset($course->description))
-                        //$('[name="course-description"]').summernote('code', '{{$course->description}}');
-                        $('[name="course-description"]').summernote('code', `{!!$course->description!!}`);
-                    @endif
-
-
-
-                    $('input').iCheck({
-                        checkboxClass: 'icheckbox_square-green',
-                        radioClass: 'iradio_square-green',
-                    });
-
-
-                    /***** precentage range slider *******/
-                    let $inputRange = $('input[name="author_share_percentage"]');
-                    $inputRange.rangeslider({
-                        polyfill: false
-                    });
-                    for (let i = $inputRange.length - 1; i >= 0; i--) {
-                        valueOutput($inputRange[i]);
-                    }
-                    /*************************************/
-
-                    
-                    //activate topicsModule,courseContentModule, 3state checkbon input
-                    courseTopicFunctionality   = topicsModule(window,jQuery);
-                    courseContentFunctionality = courseContentModule(window,jQuery);
-                    inputLinkType = threeStateCheckboxModule(window,jQuery,$('#input_link_type'));                    
-
-                },
-                onStepChanging: function (event, currentIndex, newIndex)
-                {                    
-                    //var fv = $("#course-edit-form").data('formValidation');
-                    //var fv = courseForm.data('formValidation');
-
-                    // The current step container
-                    //$container = $("#course-edit-form").find('section[data-step="' + currentIndex +'"]');
-                    
-                    /*console.log('=========pond========');
-                    console.log(pond);
-                    console.log(typeof pond);
-                    console.log(typeof pond);
-                    console.log(pond.getFile());
-                    console.log(pond.getFile(1));
-                    console.log(pond.getFile().fileExtension);
-                    console.log(pond.getFile().fileSize);*/
-
-                    
-                    if(currentIndex === 0){
-                        // validate course image
-                        if(pond.getFile(0)){
-                            try {                      
-                                let fileExt     = pond.getFile(0).fileExtension;
-                                let fileSize    = pond.getFile(0).fileSize;
-                                let msg         = '';
-
-                                if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
-                                    msg += 'only image type jpg/png/jpeg/gif/webp is allowed';                          
-                                }
-
-                                if(fileSize /1024 > 1000){
-                                    if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
-                                        msg += ' and '
-                                    }
-                                    msg += 'file size must be less than 1MB';
-                                }
-
-                                if(msg != ''){
-                                    msg = 'Course image - ' + msg + '. !';
-                                    toastr['error'](msg);
-                                    return; 
-                                }
-
+                            if(count<0){
+                                $('form.course-edit-form input[name="hidden_course_img_url"]').val('');
                             }
-                            catch(err) {                          
-                                toastr['error'](err.message);
+                        });
+
+
+                        $('.filepond-img').on('FilePond:removefile', function(e) {
+                        });
+
+
+                    
+                        $("#subject").select2({
+                            placeholder: "Select student gender",
+                            allowClear: true,
+                            width: '100%'
+                        });
+
+                        $("#teacher").select2({
+                            placeholder: "Select marketer gender",
+                            allowClear: true,
+                            width: '100%'
+                        });
+
+                        $('#course-topics').select2({
+                            placeholder: "Select a topic",
+                            //allowClear: false,
+                            width: '100%',
+                            placeholder: "Please select a topic",
+                            allowClear: true
+                        });
+
+                        $('[name="course-description"]').summernote({
+                            //placeholder: 'Hello bootstrap 4',
+                            tabsize: 2,
+                            height: 250,
+                            width: '100%',
+                            toolbar: [
+                                ['style', ['style']],
+                                //['font', ['bold', 'italic', 'underline', 'clear']],
+                                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                                ['fontname', ['fontname']],
+                                ['fontsize', ['fontsize']],
+                                ['color', ['color']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['height', ['height']],
+                                ['table', ['table']],
+                                ['insert', [
+                                    'link',
+                                    //'picture',
+                                    //'video',
+                                    'hr'
+                                ]
+                                ],
+                                ['view', [
+                                    //'fullscreen',
+                                    'codeview',
+                                    'help']
+                                ]
+                            ],
+                        });
+                        @if(isset($course->description))
+                            //$('[name="course-description"]').summernote('code', '{{$course->description}}');
+                            $('[name="course-description"]').summernote('code', `{!!$course->description!!}`);
+                        @endif
+
+
+
+                        $('input').iCheck({
+                            checkboxClass: 'icheckbox_square-green',
+                            radioClass: 'iradio_square-green',
+                        });
+
+
+                        /***** precentage range slider *******/
+                        let $inputRange = $('input[name="author_share_percentage"]');
+                        $inputRange.rangeslider({ polyfill: false });
+                        for (let i = $inputRange.length - 1; i >= 0; i--) {
+                            valueOutput($inputRange[i]);
+                        }
+                        /*************************************/
+
+                        
+                        //activate topicsModule,courseContentModule, 3state checkbon input
+                        courseTopicFunctionality   = topicsModule(window,jQuery);
+                        courseContentFunctionality = courseContentModule(window,jQuery);
+                        inputLinkType = threeStateCheckboxModule(window,jQuery,$('#input_link_type'));                    
+
+                    },
+                    onStepChanging: function (event, currentIndex, newIndex)
+                    {                    
+                        //var fv = $("#course-edit-form").data('formValidation');
+                        //var fv = courseForm.data('formValidation');
+
+                        // The current step container
+                        //$container = $("#course-edit-form").find('section[data-step="' + currentIndex +'"]');
+                        
+                        /*console.log('=========pond========');
+                        console.log(pond);
+                        console.log(typeof pond);
+                        console.log(typeof pond);
+                        console.log(pond.getFile());
+                        console.log(pond.getFile(1));
+                        console.log(pond.getFile().fileExtension);
+                        console.log(pond.getFile().fileSize);*/
+
+                        
+                        if(currentIndex === 0){
+                            // validate course image
+                            if(pond.getFile(0)){
+                                try {                      
+                                    let fileExt     = pond.getFile(0).fileExtension;
+                                    let fileSize    = pond.getFile(0).fileSize;
+                                    let msg         = '';
+
+                                    if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
+                                        msg += 'only image type jpg/png/jpeg/gif/webp is allowed';                          
+                                    }
+
+                                    if(fileSize /1024 > 1000){
+                                        if(!['webp', 'png', 'jpeg', 'jpg', 'gif'].includes(fileExt)){
+                                            msg += ' and '
+                                        }
+                                        msg += 'file size must be less than 1MB';
+                                    }
+
+                                    if(msg != ''){
+                                        msg = 'Course image - ' + msg + '. !';
+                                        toastr['error'](msg);
+                                        return; 
+                                    }
+
+                                }
+                                catch(err) {                          
+                                    toastr['error'](err.message);
+                                    return;
+                                }
+                            }
+                        }
+
+
+                        console.log(currentIndex);
+                        //console.log(newIndex);
+
+
+                        // step2  ==>  step3
+                        // step2  ==>  step1
+                        if(currentIndex === 1){
+                            if(!courseTopicFunctionality.isTopicEditFinished()){
+                                toastr['error'](`Finish topic editing before change step!`);
                                 return;
                             }
                         }
-                    }
 
-
-
-
-
-                    
-
-
-                    console.log(currentIndex);
-                    //console.log(newIndex);
-
-
-                    // step2  ==>  step3
-                    // step2  ==>  step1
-                    if(currentIndex === 1){
-                        if(!courseTopicFunctionality.isTopicEditFinished()){
-                            toastr['error'](`Finish topic editing before change step!`);
-                            return;
+                        // step3  ==>  step2
+                        // step3  ==>  step4
+                        if(currentIndex === 2){
+                            if(!courseContentFunctionality.isContentEditFinished()){
+                                toastr['error'](`Finish links editing before change step!`);
+                                return;
+                            }
                         }
-                    }
-
-                    // step3  ==>  step2
-                    // step3  ==>  step4
-                    if(currentIndex === 2){
-                        if(!courseContentFunctionality.isContentEditFinished()){
-                            toastr['error'](`Finish links editing before change step!`);
-                            return;
-                        }
-                    }
 
 
 
-                    // Validate the container
-                    //fv.validateContainer(currentIndex);
+                        // Validate the container
+                        //fv.validateContainer(currentIndex);
 
-                    //return true;
+                        //return true;
 
-                    //var form = $(this);
-                    $(this).validate().settings.ignore = ":disabled,:hidden";
-                    return $(this).valid();
-                    
-
-                },
-                onStepChanged: function (event, currentIndex, priorIndex)
-                {
-                    if(currentIndex ==2){
-                        courseContentFunctionality.renderTopicsDropdown();
-                        courseContentFunctionality.resetTopicsDropdown();
-                        courseContentFunctionality.clearJsonPrev();
+                        //var form = $(this);
+                        $(this).validate().settings.ignore = ":disabled,:hidden";
+                        return $(this).valid();
                         
-                        /*if(!courseContentFunctionality.checkSelectedTopic()){
-                            toastr['error'](`Please select a topic!`);
+
+                    },
+                    onStepChanged: function (event, currentIndex, priorIndex)
+                    {
+                        if(currentIndex ==2){
+                            courseContentFunctionality.renderTopicsDropdown();
+                            courseContentFunctionality.resetTopicsDropdown();
+                            courseContentFunctionality.clearJsonPrev();
+                            
+                            /*if(!courseContentFunctionality.checkSelectedTopic()){
+                                toastr['error'](`Please select a topic!`);
+                            }*/
+                        }                  
+
+                    },
+                    onFinishing: function (event, currentIndex){
+                        console.log('onFinishing');
+                        var form = $(this);
+
+                        // Disable validation on fields that are disabled.
+                        // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                        form.validate().settings.ignore = ":disabled";
+
+                        // Start validation; Prevent form submission if false
+                        return form.valid();
+
+                    },
+                    onFinished: function (event, currentIndex){
+                        console.log('onFinished');
+                        if(!courseTopicFunctionality.isTopicEditFinished()){
+                            toastr['error'](`Before submit, finish the editing topics!`);
+                            return;
+                        }
+                                    
+                        if(!courseContentFunctionality.isContentEditFinished()){
+                            toastr['error'](`Before submit, finish the editing links!`);
+                            return;
+                        }
+                        
+
+                        var form = $(this);
+                        /*var formdata = new FormData(this);
+                        
+
+                        // append FilePond files into the form data
+                        pondFiles = pond.getFiles();
+                        //console.log(pond.getFiles());
+                        console.log(pondFiles[0].file);
+
+
+                        //formdata.append('course-image', pondFiles[0].file);
+                        //console.log(formdata);
+                        $('#hidden-course-img').append($('<input type="hidden" ' + 
+                                                        'name="course-image-hidden" ' + 
+                                                        'value="' + pondFiles[0].file + '">')
+                        );
+
+                        $('#hidden-course-img').append($('<input type="text" ' + 
+                                                        'name="xxx" ' + 
+                                                        'value="777">')
+                        );
+                        */
+
+
+                        // Submit form input
+                        form.submit();
+                    }
+
+                });
+
+
+
+                /**/
+                var validObjCourseForm = courseForm.validate({
+                    //ignore: [],
+                    onkeyup: false,
+                    errorClass: "validationErrorCls",
+                    rules:{
+                        "course-name": {
+                            //required: true,
+                            //minlength: 3
+                        },
+                        //"subject"         : {required: true},
+                        //"teacher"         : {required: true},
+                        //"course-heading"  : {required: true},
+                        //"video-count"     : {number: true,min:0},
+                        /*
+                        "course-img"        : { 
+                            accept: "image/*",
+                           filesize: 1 // 1MB
                         }*/
-                    }                  
 
-                },
-                onFinishing: function (event, currentIndex){
-                    console.log('onFinishing');
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-
-                },
-                onFinished: function (event, currentIndex){
-                    console.log('onFinished');
-                    if(!courseTopicFunctionality.isTopicEditFinished()){
-                        toastr['error'](`Before submit, finish the editing topics!`);
-                        return;
-                    }
-                                
-                    if(!courseContentFunctionality.isContentEditFinished()){
-                        toastr['error'](`Before submit, finish the editing links!`);
-                        return;
-                    }
-                    
-
-
-
-
-
-
-
-
-
-
-                    var form = $(this);
-                    /*var formdata = new FormData(this);
-                    
-
-                    // append FilePond files into the form data
-                    pondFiles = pond.getFiles();
-                    //console.log(pond.getFiles());
-                    console.log(pondFiles[0].file);
-
-
-                    //formdata.append('course-image', pondFiles[0].file);
-                    //console.log(formdata);
-                    $('#hidden-course-img').append($('<input type="hidden" ' + 
-                                                    'name="course-image-hidden" ' + 
-                                                    'value="' + pondFiles[0].file + '">')
-                    );
-
-                    $('#hidden-course-img').append($('<input type="text" ' + 
-                                                    'name="xxx" ' + 
-                                                    'value="777">')
-                    );
-*/
-
-
-                    // Submit form input
-                    form.submit();
-                }
-
-            });
-
-
-
-            /**/
-            var validObjCourseForm = courseForm.validate({
-                //ignore: [],
-                onkeyup: false,
-                errorClass: "validationErrorCls",
-                rules:{
-                    "course-name": {
-                        //required: true,
-                        //minlength: 3
                     },
-                    //"subject"         : {required: true},
-                    //"teacher"         : {required: true},
-                    //"course-heading"  : {required: true},
-                    //"video-count"     : {number: true,min:0},
-                    /*
-                    "course-img"        : { 
-                        accept: "image/*",
-                       filesize: 1 // 1MB
-                    }*/
+                    messages:{
+                        "course-name": {
+                            required:"Course name is required",
+                            minlength:"Please enter at least 3 characters"
+                        },
+                        "subject":          {required: "Subject name is required"},
+                        "teacher":          {required: "Teacher name is required"},
+                        "course-heading":   {required: "Course heading is required"},
+                        "video-count":      {digits:   "Video count must be digits only"},
+                        /*                    
+                        "course-img" :      { 
+                            accept: 'Only image type jpg/png/jpeg/gif/webp is allowed',
+                            filesize:" file size must be less than 1MB.",
+                        }*/
 
-                },
-                messages:{
-                    "course-name": {
-                        required:"Course name is required",
-                        minlength:"Please enter at least 3 characters"
+
+
                     },
-                    "subject":          {required: "Subject name is required"},
-                    "teacher":          {required: "Teacher name is required"},
-                    "course-heading":   {required: "Course heading is required"},
-                    "video-count":      {digits:   "Video count must be digits only"},
-                    /*                    
-                    "course-img" :      { 
-                        accept: 'Only image type jpg/png/jpeg/gif/webp is allowed',
-                        filesize:" file size must be less than 1MB.",
-                    }*/
+                    submitHandler: function(form){
+                        console.log('submitHandler');
+                        form.submit();
+                    },
+                    errorPlacement: function (error, element)
+                    {
+                        console.log(element);
+                        //element.before(error);
+                        //element.after(error);
+                        error.appendTo(element.parent().find('.error-msg'));
+                        element.parent().find('.error-msg').css('color','red');
+                        element.parent().find('.error-msg').css('fontSize','12px');
+                        error.css('margin','0px');
+                    },
 
 
+                    //When there is an error normally you just add the class to the element.
+                    // But in the case of select2s you must add it to a UL to make it visible.
+                    // The select element, which would otherwise get the class, is hidden from
+                    // view.
+                    highlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.is("select")) {
+                            elem.parent().find('.select2-selection--single').addClass(errorClass);
+                            //$("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                        } else {
+                            elem.addClass(errorClass);
+                        }
+                    },
 
-                },
-                submitHandler: function(form){
-                    console.log('submitHandler');
-                    form.submit();
-                },
-                errorPlacement: function (error, element)
-                {
-                    console.log(element);
-                    //element.before(error);
-                    //element.after(error);
-                    error.appendTo(element.parent().find('.error-msg'));
-                    element.parent().find('.error-msg').css('color','red');
-                    element.parent().find('.error-msg').css('fontSize','12px');
-                    error.css('margin','0px');
-                },
-
-
-                //When there is an error normally you just add the class to the element.
-                // But in the case of select2s you must add it to a UL to make it visible.
-                // The select element, which would otherwise get the class, is hidden from
-                // view.
-                highlight: function (element, errorClass, validClass) {
-                    var elem = $(element);
-                    if (elem.is("select")) {
-                        elem.parent().find('.select2-selection--single').addClass(errorClass);
-                        //$("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
-                    } else {
-                        elem.addClass(errorClass);
+                    //When removing make the same adjustments as when adding
+                    unhighlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.is("select")) {
+                            //$("#s2id_" + elem.attr("id") + " ul").removeClass(errorClass);
+                            elem.parent().find('.select2-selection--single').removeClass(errorClass);
+                        } else {
+                            elem.removeClass(errorClass);
+                        }
                     }
-                },
 
-                //When removing make the same adjustments as when adding
-                unhighlight: function (element, errorClass, validClass) {
-                    var elem = $(element);
-                    if (elem.is("select")) {
-                        //$("#s2id_" + elem.attr("id") + " ul").removeClass(errorClass);
-                        elem.parent().find('.select2-selection--single').removeClass(errorClass);
-                    } else {
-                        elem.removeClass(errorClass);
+                });
+
+
+                //If the change event fires we want to see if the form validates.
+                //But we don't want to check before the form has been submitted by the user
+                //initially.
+                $(document).on("change", "select", function () {   
+                    console.log("=========");         
+                     if (!$.isEmptyObject(validObjCourseForm.submitted)) {
+                        validObjCourseForm.form();
                     }
-                }
+                });
+                
+
 
             });
 
 
-            //If the change event fires we want to see if the form validates.
-            //But we don't want to check before the form has been submitted by the user
-            //initially.
-            $(document).on("change", "select", function () {   
-                console.log("=========");         
-                 if (!$.isEmptyObject(validObjCourseForm.submitted)) {
-                    validObjCourseForm.form();
-                }
-            });
+
             
 
 
-        });
+
+            var topicsModule = (function(window,$){
+
+                let form;
+                let thisTab;
+                let addBtn;
+                let topicListArea;
+                let topicList;
+                let inp_ele;
+                let jsonBtn;
+                let jsonResultDiv;
+                let delTopicBtn;//
+                let $topicsField;//
 
 
-
-        
-
-
-
-        var topicsModule = (function(window,$){
-
-            let form;
-            let thisTab;
-            let addBtn;
-            let topicListArea;
-            let topicList;
-            let inp_ele;
-            let jsonBtn;
-            let jsonResultDiv;
-            let delTopicBtn;//
-            let $topicsField;//
-
-
-            const _init = () => {
-                _cacheDom();
-                _bindEvents();
-                _fillInitialValues();
-                if($('input[name=topicsJson]').length){
-                    _render();
-                }
-                _sorting();              
-            };
-
-
-
-            const _fillInitialValues = () => {
-                var dbCourseContentJson
-                try {
-                    //dbCourseContentJson = JSON.parse(courseContentFromDb) || {};
-                    dbCourseContentJson = JSON.parse(courseContentFromDb);
-                    
-                    // fix for prevent page load error if data format is 
-                    if(!(dbCourseContentJson instanceof Object)){throw new Error();}
-                }
-                catch(e) {
-                    //console.log(e);
-                    dbCourseContentJson = {};
-                    toastr['error'](`Course content set empty because invalid course content load from Database!`);
-                }
-
-                
-                console.log(dbCourseContentJson);
-                var _tempObj = {};
-                Object.keys(dbCourseContentJson).forEach((key, index) => {
-                    //console.log(key);
-                    //console.log(dbCourseContentJson[key]);
-                    _tempObj[index] = key;                    
-                });
-
-                console.log(_tempObj);
-                console.log("_tempObj");
-                _updateTopicsFieldVal(_tempObj);             
-            };
-
-
-
-            const _cacheDom = () => {
-                form          = $("#course-edit-form");
-                thisTab       = $("#tab-add-topics");
-                addBtn        = thisTab.find("#add-topics-btn");
-                inp_ele       = thisTab.find("input.add-topics");
-
-                topicListArea = thisTab.find(".course-topic-list-area");
-                topicList     = topicListArea.find("ul#course-topic-list");
-
-                jsonBtn       = thisTab.find("#json-btn");
-                jsonResultDiv = thisTab.find('.course-topics-json-result');
-                delTopicBtn   = thisTab.find(".delete-btn");
-                $topicsField  = $("input[name=topicsJson]");
-            };
-
-            const _bindEvents = () => {
-                inp_ele.on("keyup",_addEnter);
-                addBtn.on("click", _addTopic);
-                jsonBtn.on("click", _showJson);
-
-                $(document).on("click","#tab-add-topics .delete-btn",_deleteTopic);
-                $(document).on("click","#tab-add-topics .edit-btn",_editTopic);
-                $(document).on("click","#tab-add-topics .ok-btn",_editTopicSubmit);
-                $(document).on("click","#tab-add-topics .undo-btn",_editCancel);
-
-                topicList.on("keyup",'input.edit:not(.close)',_editEnter);
-            };
-
-            const _sorting = () => {
-                topicList.sortable({
-                    start: function( event, ui ) {
-                        $(ui.item).addClass("highlight");
-                    },
-                    stop:function( event, ui ) {
-                        $(ui.item).removeClass("highlight");
-
-                        //update input field after sorting
-                        var topicsJson = generateTopicsJson();
-                        _updateTopicsFieldVal(topicsJson);
-                        courseContentFunctionality.arrangContentArrByTopics(topicsJson);
+                const _init = () => {
+                    _cacheDom();
+                    _bindEvents();
+                    _fillInitialValues();
+                    if($('input[name=topicsJson]').length){
+                        _render();
                     }
-                });
-                topicList.disableSelection();
-            };
+                    _sorting();              
+                };
 
-
-            const _render = () => {
-
-                var objTopics = getTopics();
-                var _topicList = '';
-
-                Object.keys(objTopics).forEach((key, index) => {
-                    //console.log(`${key}: ${objTopics[key]}`);
-
-                    var inp_ele_txt = objTopics[key];
-                    var close_i     = '<a href="" class="delete-btn fa fa-trash" title="Delete"></a>';
-                    var edit_i      = '<a href="" class="edit-btn fa fa-pencil" title="Edit"></a>';
-                    var edit_inp    = '<input type="text" class="edit close">';
-                    var undo_i      = '<a href="" class="undo-btn fa fa-undo" title="Cancel changes"></a>';
-                    var ok_i        = '<a href="" class="ok-btn fa edit fa-check" title="Update changes"></a>';
-
-                    _topicList   +=  "<li>"+
-                                        "<p style='width:calc(100% - 60px);'>" + inp_ele_txt + "</p>" +
-                                        close_i + edit_i + undo_i + ok_i + edit_inp +
-                                    "</li>";
-                });
-
-                if(_topicList == ''){
-                    _topicList = '<div class="alert alert-danger" role="alert"><span class="font-bold">No Topics!</span></div>';
+                const fillValues = (inputJsonStr) => {
+                    _fillInitialValues(inputJsonStr);
+                    if($('input[name=topicsJson]').length){
+                        _render();
+                    }
+                    _sorting();
                 }
 
-                topicList.html('');
-                topicList.append(_topicList);
-                inp_ele.val("");
-            };
+                const _fillInitialValues = (jsonStr = null) => {
+                    var dbCourseContentJson
+                    try {
+                        //dbCourseContentJson = JSON.parse(courseContentFromDb) || {};
+                        dbCourseContentJson = JSON.parse(jsonStr || courseContentFromDb);
+                        
+                        // fix for prevent page load error if data format is 
+                        if(!(dbCourseContentJson instanceof Object)){throw new Error();}
+                    }
+                    catch(e) {
+                        //console.log(e);
+                        dbCourseContentJson = {};
+                        toastr['error'](`Course content set empty because invalid course content load from Database!`);
+                    }
 
-            const _updateTopicsFieldVal = (topicsJson) => {
-                topicsJson = JSON.stringify(topicsJson);
-                if(form.find($("input[name=topicsJson]")).length === 0){
+                    
+                    console.log(dbCourseContentJson);
+                    var _tempObj = {};
+                    Object.keys(dbCourseContentJson).forEach((key, index) => {
+                        //console.log(key);
+                        //console.log(dbCourseContentJson[key]);
+                        _tempObj[index] = key;                    
+                    });
 
-                    $("<input>").attr({
-                        name: "topicsJson",
-                        id: "topicsJson",
-                        type: "hidden",
-                        value: topicsJson
-                    }).appendTo(form);
+                    console.log(_tempObj);
+                    console.log("_tempObj");
+                    _updateTopicsFieldVal(_tempObj);             
+                };
 
-                }else{
-                    form.find($("input[name=topicsJson]")).val(topicsJson);
-                }
-            };
 
-            // input element click enter
-            const _addEnter = (event) => {
-                if (event.keyCode === 13) {
-                    // Cancel the default action, if needed
-                    event.preventDefault();
-                    // Trigger the button element with a click
-                    addBtn.click();
-                }
-            };
 
-            const _addTopic = (event) => {
+                const _cacheDom = () => {
+                    form          = $("#course-edit-form");
+                    thisTab       = $("#tab-add-topics");
+                    addBtn        = thisTab.find("#add-topics-btn");
+                    inp_ele       = thisTab.find("input.add-topics");
 
-                if (inp_ele.val() == "") {
-                    toastr['error']("Topic cannot be empty!");
-                    return false;
-                }
+                    topicListArea = thisTab.find(".course-topic-list-area");
+                    topicList     = topicListArea.find("ul#course-topic-list");
 
-                if(checkItemExist(inp_ele.val(),null) == true){
-                    toastr['error']("Topic already exists!");
-                    return false;
-                }
+                    jsonBtn       = thisTab.find("#json-btn");
+                    jsonResultDiv = thisTab.find('.course-topics-json-result');
+                    delTopicBtn   = thisTab.find(".delete-btn");
+                    $topicsField  = $("input[name=topicsJson]");
+                };
 
-                if(!isTopicEditFinished()){
-                    toastr['error']("Finish editing before add new one!");
-                    return false;
-                }
+                const _bindEvents = () => {
+                    inp_ele.on("keyup",_addEnter);
+                    addBtn.on("click", _addTopic);
+                    jsonBtn.on("click", _showJson);
 
-                var txt = inp_ele.val();
-                var objTopics   = getTopics();
-                var mvar = {};
-                var _index = -1;
-                Object.keys(objTopics).forEach((key, index) => {
-                    //console.log(`${key}: ${objTopics[key]}`);
-                    mvar[index] = objTopics[key];
-                    _index = index;
-                });
-                _index++;
-                mvar[_index] = txt;
+                    $(document).on("click","#tab-add-topics .delete-btn",_deleteTopic);
+                    $(document).on("click","#tab-add-topics .edit-btn",_editTopic);
+                    $(document).on("click","#tab-add-topics .ok-btn",_editTopicSubmit);
+                    $(document).on("click","#tab-add-topics .undo-btn",_editCancel);
 
-                _updateTopicsFieldVal(mvar);
-                _render();
-                courseContentFunctionality.addEmptyContent(txt);
-            };
+                    topicList.on("keyup",'input.edit:not(.close)',_editEnter);
+                };
 
-            const checkItemExist = (inputTxt,excludeElement) => {
-                var mvar = [];
-                topicList.find("li p").not(excludeElement).each(function(i,el) {
-                    mvar.push($(this).html())
-                });
-                return mvar.includes(inputTxt);
-            };
+                const _sorting = () => {
+                    topicList.sortable({
+                        start: function( event, ui ) {
+                            $(ui.item).addClass("highlight");
+                        },
+                        stop:function( event, ui ) {
+                            $(ui.item).removeClass("highlight");
 
-            const isTopicEditFinished = () => {
-                return (topicsInEditState() === 0);
-            };
-
-            const topicsInEditState = () => {
-                var vc = [];
-                topicList.find("li input.edit:not(.close)").each(function(i,el){
-                    vc.push(el);
-                });
-                return vc.length;
-            };
-
-            // watch html document and generate topics json
-            const generateTopicsJson = () => {
-                var mvar = {};
-                topicList.find("li p").each(function(i,el) {
-                    mvar[i] = $(this).html();
-                });
-                return mvar;
-            };
-
-            const _showJson = (event) => {
-                if(isTopicEditFinished()){
-                    jsonResultDiv.html('<pre>' + JSON.stringify(getTopics(),undefined,2) + '</pre>');
-                }else{
-                    toastr['error']('Finish editing before view json!');
-                }
-            };
-
-            //
-            const getTopics = () => {
-                var topicsFieldValue = form.find($("input[name=topicsJson]")).val() || {};
-                var objTopics;
-                try {
-                    objTopics = JSON.parse(topicsFieldValue);
-                }
-                catch(e) {
-                    objTopics = {};
-                }
-                return objTopics;
-            };
-
-            const _deleteTopic = async (event) => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                if(topicsInEditState() > 0){
-                    toastr['error']('Finish Edit before delete.');
-                    return false;
-                }
-
-                var objTopics       = getTopics();
-                var delTopicTxt     = $(event.target).parent().find('p').html();
-                var topicContents   = courseContentFunctionality.getContentByTopic(delTopicTxt);
-                var arr;
-                var stopDelete;
-
-                arr = ($.isEmptyObject(topicContents))?[]:topicContents[delTopicTxt];
-
-                // if topic has links(content) then user need to confirm deletion
-                if(arr.length > 0){
-                    await Swal.fire({
-                        title: 'Delete topic' ,
-                        text:`There is already ${arr.length} links are associated with this topic`,
-                        icon: 'warning',
-                        allowOutsideClick: false,
-                        //showCancelButton: true,
-                        showConfirmButton: true,
-                        confirmButtonText: 'Delete',
-                        confirmButtonColor: '#e24545',
-                        showDenyButton: true,
-                        denyButtonText: `Don't delete`,
-                        denyButtonColor: '#7d7d7d',
-                        heightAuto: false,
-                        didClose: () => {
-                            return false;
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            stopDelete = false;
-                        }else if (result.isDenied) {
-                            stopDelete = true;
+                            //update input field after sorting
+                            var topicsJson = generateTopicsJson();
+                            _updateTopicsFieldVal(topicsJson);
+                            courseContentFunctionality.arrangContentArrByTopics(topicsJson);
                         }
                     });
-                }else{
-                    stopDelete = false;
-                }
+                    topicList.disableSelection();
+                };
 
-                if(!stopDelete){
-                    var mvar = {};
-                    var _index = 0;
+
+                const _render = () => {
+
+                    var objTopics = getTopics();
+                    var _topicList = '';
 
                     Object.keys(objTopics).forEach((key, index) => {
                         //console.log(`${key}: ${objTopics[key]}`);
-                        if(objTopics[key] != delTopicTxt){
-                            mvar[_index] = objTopics[key];
-                            _index++;
-                        }
+
+                        var inp_ele_txt = objTopics[key];
+                        var close_i     = '<a href="" class="delete-btn fa fa-trash" title="Delete"></a>';
+                        var edit_i      = '<a href="" class="edit-btn fa fa-pencil" title="Edit"></a>';
+                        var edit_inp    = '<input type="text" class="edit close">';
+                        var undo_i      = '<a href="" class="undo-btn fa fa-undo" title="Cancel changes"></a>';
+                        var ok_i        = '<a href="" class="ok-btn fa edit fa-check" title="Update changes"></a>';
+
+                        _topicList   +=  "<li>"+
+                                            "<p style='width:calc(100% - 60px);'>" + inp_ele_txt + "</p>" +
+                                            close_i + edit_i + undo_i + ok_i + edit_inp +
+                                        "</li>";
                     });
 
-                    //console.log(mvar);
-                    _updateTopicsFieldVal(mvar)
-                    _render();
+                    if(_topicList == ''){
+                        _topicList = '<div class="alert alert-danger" role="alert"><span class="font-bold">No Topics!</span></div>';
+                    }
 
-                    // delete links (content) of the topic
-                    courseContentFunctionality.deleteContentByTopic(delTopicTxt);
-                }
-            };
+                    topicList.html('');
+                    topicList.append(_topicList);
+                    inp_ele.val("");
+                };
 
-            const _editEnter = (event) => {
-                if (event.keyCode === 13) {
-                    // Cancel the default action, if needed
-                    event.preventDefault();
-                    var parent_li_item  = $(event.target).parent();
+                const _updateTopicsFieldVal = (topicsJson) => {
+                    topicsJson = JSON.stringify(topicsJson);
+                    if(form.find($("input[name=topicsJson]")).length === 0){
 
-                    // Trigger the button element with a click
-                    parent_li_item.children('.ok-btn').click();
-                }
-            };
+                        $("<input>").attr({
+                            name: "topicsJson",
+                            id: "topicsJson",
+                            type: "hidden",
+                            value: topicsJson
+                        }).appendTo(form);
 
-            const _editTopic = (event) => {
-                event.preventDefault();
-                if(topicsInEditState() > 0){
-                    toastr['error']('Can\'t edit more than one topic at the same time.');
-                    return false;
-                }
-
-                var parent_li_item  = $(event.target).parent();
-                parent_li_item.addClass('edit');
-                parent_li_item.children('p').hide();
-
-                parent_li_item.children('input.edit')
-                    .removeClass("close")
-                    .val(parent_li_item.children('p').text())
-                    .focus();
-
-                $(event.target).fadeOut(500, function(){ $(this).hide();});
-
-                parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).show();});
-                parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).show();});
-            };
-
-            const _editTopicSubmit = (event) => {
-
-                var parent_li_item;
-                parent_li_item  = $(event.target).parent();
-
-                var newText = parent_li_item.children('input.edit').val();
-                var oldText = parent_li_item.children('p').html();
-
-                if (newText != ""){
-                    if(checkItemExist(newText,parent_li_item.children('p'))==true){
-                        parent_li_item.children('input.edit').focus();
-                        toastr['error'](`Can't update ${newText} already exsist`);
                     }else{
-                        //change topic view from edit to normal
-                        parent_li_item.children('p').text(parent_li_item.children('input.edit').val());
-                        parent_li_item.children('p').show();
-                        parent_li_item.children('input.edit').addClass("close");
-                        parent_li_item.children('.ok-btn').fadeOut(500, function(){ $(this).hide();});
-                        parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
-                        parent_li_item.children('.edit-btn').show();
-                        parent_li_item.removeClass('edit');
-
-                        var topicsJson = generateTopicsJson();
-                        _updateTopicsFieldVal(topicsJson);
-
-                        //update content json key(= topic)
-                        courseContentFunctionality.renameContentJsonKey(oldText,newText);
+                        form.find($("input[name=topicsJson]")).val(topicsJson);
                     }
-                }else{
-                    toastr['error'](`Topic cannot be empty!`);
-                }
-                event.preventDefault();
-            };
-
-            const _editCancel = (event) => {
-                var parent_li_item;
-
-                parent_li_item  = $(event.target).parent();
-                parent_li_item.removeClass('edit');
-
-                parent_li_item.children('p').show();
-                parent_li_item.children('input.edit').addClass("close");
-
-                parent_li_item.children('.edit-btn').fadeIn(500, function(){ $(this).show();});
-                parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).hide();});
-                parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
-
-                event.preventDefault();
-            };
-
-            _init();
-
-            return {
-                generateTopicsJson,
-                isTopicEditFinished,
-                topicsInEditState,
-                getTopics,
-                checkItemExist
-            }
-        });
-        
-
-
-
-        const threeStateCheckboxModule = (function (window, $,$checkBoxContainer) {
-            let thisContainer;
-            let checkbox;
-            let lbl;
-            let field;
-
-            const _init = () => {
-                _cacheDom();
-                _bindEvents();
-                _bind();
-                
-            }        
-           
-            const _cacheDom = () => {                
-                thisContainer       = $checkBoxContainer;
-                checkbox            = thisContainer.find('.three-state-checkbox');
-                lbl                 = thisContainer.find('.label');
-                field               = thisContainer.find('input[name="link_type"]');
-            }
-            
-            const _bindEvents = () => {   
-                checkbox.click(_changeCheckbox);                
-            }
-
-            const _bind = () => {
-                checkbox.bind('video',switch2Video);
-                checkbox.bind('other',switch2Other);
-                checkbox.bind('download',switch2Download);
-            }
-
-            const _changeCheckbox = (event) => {
-
-                /*
-                * neutral   - other
-                * positive  - video
-                * negative  - download
-                * 
-                */
-
-                if(checkbox.hasClass('positive')){
-                    switch2Download();
-                }else if (checkbox.hasClass('negative')){
-                    switch2Other();
-                }else {
-                    switch2Video();
-                }
-                //console.log(checkbox.parent().find('.label').text());
-            }  
-
-            const switch2Video = () => {
-                checkbox.addClass('positive');
-                checkbox.html('<svg width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="10.9375%"><use xlink:href="#video_icon"></use></svg>');
-                //checkbox.next().text('Positive');
-                //checkbox.parent().find('.label').text('Video');
-                lbl.text('Video');
-                checkbox.parent().find('input[name="link_type"]').val('video');
-            }
-
-            const switch2Other = () => {
-                checkbox.removeClass('negative');                                                        
-                checkbox.html('');
-                //checkbox.next().text('Neutral');
-                lbl.text('Other(Zoom)');
-                checkbox.parent().find('input[name="link_type"]').val('other');
-            }
-
-            const switch2Download = () => {
-                checkbox.removeClass('positive');
-                checkbox.addClass('negative');               
-                checkbox.html('<svg width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="10.9375%"><use xlink:href="#download_icon"></use></svg>');
-                //checkbox.next().text('Negative');
-                lbl.text('Download');
-                checkbox.parent().find('input[name="link_type"]').val('download');
-            }
-
-             _init();
-
-            return {
-                switch2Video,
-                switch2Other,
-                switch2Download, 
-            };                 
-        });
-
-
-
-        // course links module
-        const courseContentModule = (function (window, $) {
-
-            let form;
-            let thisTab;
-            let addBtn;
-            let contentListArea;
-            let contentList;
-            let jsonBtn;
-            let jsonResultDiv;
-            let inputText;
-            let inputUrl;
-            let linkParam;
-            let isFree;
-            let linkType;
-            let $topicsField;
-            let $topicDropDown;
-
-            const _init = () => {
-                _cacheDom();
-                _bindEvents();
-                _fillInitialValues();
-                if($('input[name=contentJson]').length){
-                    _render();
-                }
-                _sorting();
-                //alert('2-init');
-            };
-           
-            const addEmptyContent = (currentTopic) => {                
-                var contentJson = _getContents();
-                contentJson[currentTopic] = [];
-                _updateContentFieldVal(contentJson);                
-            }
-
-            //
-            const arrangContentArrByTopics = (topicsJson) => {
-                var contentJson = _getContents();                
-                var tempObj = {};
-
-                Object.keys(topicsJson).forEach((key, index) => {                   
-                    tempObj[topicsJson[key]] = contentJson[topicsJson[key]]
-                }); 
-
-                _updateContentFieldVal(tempObj); 
-            }
-
-           
-            const _fillInitialValues = () => {
-                var dbCourseContentJson
-                try {
-                    //dbCourseContentJson = JSON.parse(courseContentFromDb)  || {};
-                    dbCourseContentJson = JSON.parse(courseContentFromDb);
-                    
-                    // fix for prevent page load error if data format is 
-                    if(!(dbCourseContentJson instanceof Object)){throw new Error();}                   
-                }
-                catch(e) {
-                    dbCourseContentJson = {};
-                    //toastr['error'](`Course content set empty because invalid course content load from Database!`);
-                }               
-                _updateContentFieldVal(dbCourseContentJson);             
-            };
-
-
-            const _cacheDom = () => {
-                form                = $("#course-edit-form");
-                thisTab             = $("#tab-add-course-content");
-                addBtn              = thisTab.find("#add-course-content");
-                contentListArea     = thisTab.find(".course-content-list-area");
-                contentList         = thisTab.find(".course-content-list-area ul#course-content-list");
-                jsonBtn             = thisTab.find("#json-btn");
-                jsonResultDiv       = thisTab.find('.course-content-json-result');
-                
-                inputText           = thisTab.find('input[name="content-text"]');
-                inputUrl            = thisTab.find('textarea[name="content-url"]');
-                linkParam           = thisTab.find('input[name="link_param"]');
-                isFree              = thisTab.find('input[name="is_free"]');
-                linkType            = thisTab.find('input[name="link_type"]');
-                
-
-                $topicDropDown      = $('#course-topics');
-
-                $topicsField        = form.find("input[name=topicsJson]");
-                $el_topicsField     = $("input[name=topicsJson]");
-                $contentField       = thisTab.find("input[name=contentJson]");
-            };
-
-
-            const _bindEvents = () => {
-                addBtn.on("click", _addContent);
-                jsonBtn.on("click",_showJson);
-                $topicDropDown.on("change",_changeTopic);
-                $(contentList).on("click","li a.delete-btn",_deleteContentItem);
-                $(contentList).on("click","li a.edit-btn",_editContentItem);
-                $(contentList).on("click","li a.ok-btn",_editContentItemSubmit);
-                $(contentList).on("click","li a.undo-btn",_editContentItemCancel);
-            };
-
-
-            const _sorting = () => {
-                contentList.sortable({
-                    start: function( event, ui ) {
-                        $(ui.item).addClass("highlight");
-                    },
-                    stop:function( event, ui ) {
-                        $(ui.item).removeClass("highlight");
-
-                        //cant sort if topic is not selected
-                        if (!$topicDropDown.val()) {
-                            toastr['error'](`Please select a topic before sort!`);
-                            $(this).sortable("cancel");
-                        }else{
-                            _rearrangeContnetjsonfield();
-                        }
-                    },
-                });
-                contentList.disableSelection();
-            };
-
-            //update contentJson input field value according to html doc
-            const _rearrangeContnetjsonfield = (excludeElement) => {
-                var currentTopic = $topicDropDown.val();
-                var contentJson = _getContents();
-                var arr = [];
-
-                contentList.find('li').not(excludeElement).each(function(index, li_item) {
-                    var is_Free         = ($(li_item).find('.cc-price').html() == 'Paid')?false:true;
-                    //var is_Download   = ($(li_item).find('.cc-type').html() == 'Video')?false:true;
-                    var is_Download     = $(li_item).find('.cc-type').html();
-
-
-                    var infoObj = {
-                        inputText   : $(li_item).find('.cc-link').html(),
-                        inputUrl    : $(li_item).find('.cc-link').attr('href'),
-                        linkParam   : $(li_item).find('.cc-param').html(),
-                        isFree      : is_Free,
-                        type  : is_Download,
-                    };
-                    arr.push(infoObj);
-                });
-                contentJson[currentTopic] = arr;
-                _updateContentFieldVal(contentJson);
-            };
-
-
-            const checkSelectedTopic = () => {
-                return $topicDropDown.val();
-
-            };
-
-            const _render = (topic = null) => {
-                var contentListHtml ='';
-                var currentTopic = (topic)?topic:$topicDropDown.val();
-
-                if(currentTopic == ''){
-                    //toastr['error'](`Please select a topic!`);
-                    contentListHtml =   `<div class="alert alert-primary" role="alert">
-                                            <span class="font-bold">Please select a topic to display the content!</span>
-                                        </div>`;                                        
-                }else{
-
-                    var content      = getContentByTopic(currentTopic);
-
-                    var close_i     = '<a href="" class="delete-btn fa fa-trash" title="Delete"></a>';
-                    var edit_i      = '<a href="" class="edit-btn fa fa-pencil" title="Edit"></a>';
-                    var undo_i      = '<a href="" class="undo-btn fa fa-undo" title="Cancel changes"></a>';
-                    var ok_i        = '<a href="" class="ok-btn fa edit fa-check" title="Update changes"></a>';
-
-                    var formHtml =  `<div class="course-content-div __mt-2 close w-11/12">
-                                        <div class="course-content-form p-0">
-
-                                            <div class="form-group  row">
-                                                <div class="col-sm-12 mb-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-addon">Text</span>
-                                                        </div>
-                                                        <input type="text" name="content-text" class="form-control"><br>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-addon">Url</span>
-                                                        </div>
-                                                        <textarea rows="5" class="form-control" name="content-url"></textarea><br>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <div class="col-sm-3">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-addon"><b>Duration/Size</b></span>
-                                                        </div>
-                                                        <input id="link_param" name="link_param" type="text" class="form-control"><br>
-                                                    </div>
-                                                </div>
-                                                <div class="offset-sm-4 col-sm-2">
-                                                    <div class="float-right i-checks">
-                                                        <label class="mb-0"> <input type="checkbox" value="" name="is_free"> <i></i> <b>Free</b> </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-3 -ml-1 three-state checkbox-container">
-                                                    <span class="three-state-checkbox"></span>
-                                                    <span class="font-semibold">Link type : </span>                                                            
-                                                    <span class="label">Other(Zoom)</span>
-                                                    <input type="hidden" name="link_type" value="other">
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>`;
-                    var freeVal;
-                    var c_type;
-
-                    if (typeof content[currentTopic] != 'undefined'){
-                        
-                        
-
-
-                        var tty = content[currentTopic];
-
-                        if (!Array.isArray(content[currentTopic]) || !content[currentTopic].length) {
-                            // array does not exist, is not an array, or is empty
-                            // ⇒ do not attempt to process array
-
-                            contentListHtml +=   `<div class="alert alert-danger" role="alert">
-                                                    <span class="font-bold">No Links available for the selected Topic!</span>
-                                                </div>`;
-                        }else{
-
-                            content[currentTopic].forEach((element, index) => {
-                                freeVal   = (element.isFree == true)?'Free':'Paid';
-                                //c_type    = (element.link_type == true)?'Download':'Video';
-                                c_type    = element.type;
-
-
-                                contentListHtml +=  "<li>" +
-                                                        '<div class="txt-div border pl-2 py-1" style="font-size:14px; width:calc(100% - 60px);">' +
-                                                            '<a class="cc-link" href="' + element.inputUrl + '">' + element.inputText + '</a>' +
-                                                            
-                                                            '<div class="-ml-2 border-b border-gray-300 my-2"></div>' + 
-                                                            
-                                                            '<div class="text-xs font-semibold">' + 
-                                                                'Duration/Size - <span class="cc-param">' + element.linkParam + '</span><br>' +
-                                                                'Price - <span class="cc-price">' + freeVal + '</span><br>' +
-                                                                'Type - <span class="cc-type capitalize">' + c_type + '</span>' +
-                                                            '</div>' + 
-                                                        '</div>' +
-                                                        close_i + edit_i + undo_i +ok_i +  formHtml +
-                                                    "</li>";
-                            });
-                        }
-
-
-
-
+                };
+
+                // input element click enter
+                const _addEnter = (event) => {
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        addBtn.click();
                     }
-                }
+                };
 
+                const _addTopic = (event) => {
 
-
-                /*if(contentListHtml == ''){
-                    
-                }*/
-
-                contentList.html('');
-                contentList.append(contentListHtml);
-
-
-                // for free checkbox
-                contentList.find('li').each(function( index, element ){
-                    $(element).find('.i-checks').iCheck({
-                        checkboxClass: 'icheckbox_square-green',
-                        radioClass: 'iradio_square-green',
-                    });
-
-                    var checkbox_container = $(element).find('.three-state.checkbox-container');  
-                    threeStateCheckboxModule(window,jQuery,checkbox_container);
-                });
-
-                
-
-            };
-
-            //when change topic, render links
-            const _changeTopic = (event) => {
-                var topic = $(event.target).val();
-                _render(topic);
-            };
-
-            //get input values
-            const _getInputObj = () => {
-                return {
-                    inputText   : thisTab.find('input[name="content-text"]').val(),
-                    inputUrl    : thisTab.find('textarea[name="content-url"]').val(),
-                    linkParam   : thisTab.find('input[name="link_param"]').val(),
-                    isFree      : thisTab.find('input[name="is_free"]').is(":checked"),
-                    type        : thisTab.find('input[name="link_type"]').val(),
-                }
-            };
-
-
-            const _addContent = () => {
-
-                if (inputText.val() == ""){
-                    toastr['error'](`Content text cannot be empty!`);
-                    return false;
-                }
-
-                if(inputUrl.val() == "") {
-                    toastr['error'](`Content url cannot be empty!`);
-                    return false;
-                }else{
-                    if(!isValidHttpUrl(inputUrl.val())){
-                        toastr['error'](`Invalid URL !`);
+                    if (inp_ele.val() == "") {
+                        toastr['error']("Topic cannot be empty!");
                         return false;
                     }
-                }
 
-                //get selected topic value
-                var currentTopic = $topicDropDown.val();
-                if(currentTopic == "") {
-                    toastr['error'](`Please select a topic before add content!`);
-                    return false;
-                }
-
-                if(_contentItemCounInEditState() > 0){
-                    toastr['error']('Finish Editing before Add new links!');
-                    return false;
-                }
-
-                var contentJson = _getContents();
-                var content = getContentByTopic(currentTopic);
-                var inputobj = _getInputObj();
-                var tempObj = [];
-
-                if(!$.isEmptyObject(content)){
-                    content[currentTopic].forEach(element => {
-                        tempObj.push(element);
-                    });
-                }
-                tempObj.push(inputobj);
-                contentJson[currentTopic] = tempObj;
-
-                _updateContentFieldVal(contentJson);
-                _resetInputForm();
-                _render();
-            };
-
-
-            const _resetInputForm = () => {
-                inputText.val('');
-                inputUrl.val('');
-                linkParam.val('');
-                isFree.iCheck('uncheck');
-                inputLinkType.switch2Other();
-            };
-
-
-            const _updateContentFieldVal = (contentJson) => {
-                contentJsonStr = JSON.stringify(contentJson, null, 4);
-
-                if(form.find($("input[name=contentJson]")).length === 0){
-                    $("<input>").attr({
-                        name: "contentJson",
-                        id: "contentJson",
-                        type: "hidden",
-                        value: contentJsonStr
-                    }).appendTo("#course-edit-form");
-                }else{
-                    form.find($("input[name=contentJson]")).val(contentJsonStr);
-                }
-            };
-
-            //excludeElement - string, jquery selector,null
-            const check_content_exist = (inputTxt,excludeElement) => {
-                var mvar = [];
-                contentList.find('li').not(excludeElement).each(function(i,el) {
-                    mvar.push($(this).find('.txt-div .cc-link').html());
-                });
-                return mvar.includes(inputTxt);
-            };
-
-            const _contentItemCounInEditState = () => {
-                var vc = [];
-                contentList.find("li.edit").each(function(i,el){
-                    vc.push(el);
-                });
-                return vc.length;
-            };
-
-            const isContentEditFinished = () => {
-                return (_contentItemCounInEditState() === 0);
-            };
-
-
-            const _getContents = () => {
-                var contentFieldValue = form.find("input[name=contentJson]").val() || {};
-                var objContent;
-                try {
-                    objContent = JSON.parse(contentFieldValue);
-                }
-                catch(e) {
-                    objContent = {};
-                }
-                return objContent;
-            };
-
-            //render topics dropdown in content tab
-            const renderTopicsDropdown = () => {
-
-                var objTopics = courseTopicFunctionality.getTopics();
-                $topicDropDown.html('');
-                var topicItems  = '<option></option>';
-                var uid; // add uuid if future needs
-
-                Object.keys(objTopics).forEach((key, index) => {
-                    //console.log(`${key}: ${objTopics[key]}`);
-                    uid = Math.random().toString(16).slice(2);
-                    topicItems += '<option data-uid="' + uid + '" data-key="' + key + '" value="' + objTopics[key] +'">'+ objTopics[key] +'</option>'
-                });
-                $topicDropDown.append(topicItems);
-            };
-
-
-            const resetTopicsDropdown = () => {
-                $topicDropDown.select2("val", "");
-            };
-
-
-            const clearJsonPrev = () => {
-                jsonResultDiv.html('');
-            };
-
-            //get all links and their info, according to provided topic
-            const getContentByTopic = (topic) => {
-                contentObj = _getContents();
-                var mvar = {};
-
-                Object.keys(contentObj).forEach((key, index) => {
-                    //console.log(`${key}: ${contentObj[key]}`);
-                    if(key == topic){
-                        mvar[key] = contentObj[key];
+                    if(checkItemExist(inp_ele.val(),null) == true){
+                        toastr['error']("Topic already exists!");
+                        return false;
                     }
-                });
-                return mvar;
-            };
 
-            const _showJson = (event) => {
-                if(isContentEditFinished()){
-                    jsonResultDiv.html('<pre>' + JSON.stringify(_getContents(),undefined,2) + '</pre>');
-                }else{
-                    toastr['error']('Finish editing before view json!');
+                    if(!isTopicEditFinished()){
+                        toastr['error']("Finish editing before add new one!");
+                        return false;
+                    }
+
+                    var txt = inp_ele.val();
+                    var objTopics   = getTopics();
+                    var mvar = {};
+                    var _index = -1;
+                    Object.keys(objTopics).forEach((key, index) => {
+                        //console.log(`${key}: ${objTopics[key]}`);
+                        mvar[index] = objTopics[key];
+                        _index = index;
+                    });
+                    _index++;
+                    mvar[_index] = txt;
+
+                    _updateTopicsFieldVal(mvar);
+                    _render();
+                    courseContentFunctionality.addEmptyContent(txt);
+                };
+
+                const checkItemExist = (inputTxt,excludeElement) => {
+                    var mvar = [];
+                    topicList.find("li p").not(excludeElement).each(function(i,el) {
+                        mvar.push($(this).html())
+                    });
+                    return mvar.includes(inputTxt);
+                };
+
+                const isTopicEditFinished = () => {
+                    return (topicsInEditState() === 0);
+                };
+
+                const topicsInEditState = () => {
+                    var vc = [];
+                    topicList.find("li input.edit:not(.close)").each(function(i,el){
+                        vc.push(el);
+                    });
+                    return vc.length;
+                };
+
+                // watch html document and generate topics json
+                const generateTopicsJson = () => {
+                    var mvar = {};
+                    topicList.find("li p").each(function(i,el) {
+                        mvar[i] = $(this).html();
+                    });
+                    return mvar;
+                };
+
+                const _showJson = (event) => {
+                    if(isTopicEditFinished()){
+                        jsonResultDiv.html('<pre>' + JSON.stringify(getTopics(),undefined,2) + '</pre>');
+                    }else{
+                        toastr['error']('Finish editing before view json!');
+                    }
+                };
+
+                //
+                const getTopics = () => {
+                    var topicsFieldValue = form.find($("input[name=topicsJson]")).val() || {};
+                    var objTopics;
+                    try {
+                        objTopics = JSON.parse(topicsFieldValue);
+                    }
+                    catch(e) {
+                        objTopics = {};
+                    }
+                    return objTopics;
+                };
+
+                const _deleteTopic = async (event) => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    if(topicsInEditState() > 0){
+                        toastr['error']('Finish Edit before delete.');
+                        return false;
+                    }
+
+                    var objTopics       = getTopics();
+                    var delTopicTxt     = $(event.target).parent().find('p').html();
+                    var topicContents   = courseContentFunctionality.getContentByTopic(delTopicTxt);
+                    var arr;
+                    var stopDelete;
+
+                    arr = ($.isEmptyObject(topicContents))?[]:topicContents[delTopicTxt];
+
+                    // if topic has links(content) then user need to confirm deletion
+                    if(arr.length > 0){
+                        await Swal.fire({
+                            title: 'Delete topic' ,
+                            text:`There is already ${arr.length} links are associated with this topic`,
+                            icon: 'warning',
+                            allowOutsideClick: false,
+                            //showCancelButton: true,
+                            showConfirmButton: true,
+                            confirmButtonText: 'Delete',
+                            confirmButtonColor: '#e24545',
+                            showDenyButton: true,
+                            denyButtonText: `Don't delete`,
+                            denyButtonColor: '#7d7d7d',
+                            heightAuto: false,
+                            didClose: () => {
+                                return false;
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                stopDelete = false;
+                            }else if (result.isDenied) {
+                                stopDelete = true;
+                            }
+                        });
+                    }else{
+                        stopDelete = false;
+                    }
+
+                    if(!stopDelete){
+                        var mvar = {};
+                        var _index = 0;
+
+                        Object.keys(objTopics).forEach((key, index) => {
+                            //console.log(`${key}: ${objTopics[key]}`);
+                            if(objTopics[key] != delTopicTxt){
+                                mvar[_index] = objTopics[key];
+                                _index++;
+                            }
+                        });
+
+                        //console.log(mvar);
+                        _updateTopicsFieldVal(mvar)
+                        _render();
+
+                        // delete links (content) of the topic
+                        courseContentFunctionality.deleteContentByTopic(delTopicTxt);
+                    }
+                };
+
+                const _editEnter = (event) => {
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        var parent_li_item  = $(event.target).parent();
+
+                        // Trigger the button element with a click
+                        parent_li_item.children('.ok-btn').click();
+                    }
+                };
+
+                const _editTopic = (event) => {
+                    event.preventDefault();
+                    if(topicsInEditState() > 0){
+                        toastr['error']('Can\'t edit more than one topic at the same time.');
+                        return false;
+                    }
+
+                    var parent_li_item  = $(event.target).parent();
+                    parent_li_item.addClass('edit');
+                    parent_li_item.children('p').hide();
+
+                    parent_li_item.children('input.edit')
+                        .removeClass("close")
+                        .val(parent_li_item.children('p').text())
+                        .focus();
+
+                    $(event.target).fadeOut(500, function(){ $(this).hide();});
+
+                    parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).show();});
+                    parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).show();});
+                };
+
+                const _editTopicSubmit = (event) => {
+
+                    var parent_li_item;
+                    parent_li_item  = $(event.target).parent();
+
+                    var newText = parent_li_item.children('input.edit').val();
+                    var oldText = parent_li_item.children('p').html();
+
+                    if (newText != ""){
+                        if(checkItemExist(newText,parent_li_item.children('p'))==true){
+                            parent_li_item.children('input.edit').focus();
+                            toastr['error'](`Can't update ${newText} already exsist`);
+                        }else{
+                            //change topic view from edit to normal
+                            parent_li_item.children('p').text(parent_li_item.children('input.edit').val());
+                            parent_li_item.children('p').show();
+                            parent_li_item.children('input.edit').addClass("close");
+                            parent_li_item.children('.ok-btn').fadeOut(500, function(){ $(this).hide();});
+                            parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
+                            parent_li_item.children('.edit-btn').show();
+                            parent_li_item.removeClass('edit');
+
+                            var topicsJson = generateTopicsJson();
+                            _updateTopicsFieldVal(topicsJson);
+
+                            //update content json key(= topic)
+                            courseContentFunctionality.renameContentJsonKey(oldText,newText);
+                        }
+                    }else{
+                        toastr['error'](`Topic cannot be empty!`);
+                    }
+                    event.preventDefault();
+                };
+
+                const _editCancel = (event) => {
+                    var parent_li_item;
+
+                    parent_li_item  = $(event.target).parent();
+                    parent_li_item.removeClass('edit');
+
+                    parent_li_item.children('p').show();
+                    parent_li_item.children('input.edit').addClass("close");
+
+                    parent_li_item.children('.edit-btn').fadeIn(500, function(){ $(this).show();});
+                    parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).hide();});
+                    parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
+
+                    event.preventDefault();
+                };
+
+                _init();
+
+                return {
+                    fillValues,
+
+                    generateTopicsJson,
+                    isTopicEditFinished,
+                    topicsInEditState,
+                    getTopics,
+                    checkItemExist
                 }
-            };
+            });
+            
 
 
-            const _deleteContentItem = (event) => {
-                event.preventDefault();
 
-                if(!isContentEditFinished()){
-                    toastr['error']('Finish editing before delete!');
-                    return false;
+            const threeStateCheckboxModule = (function (window, $,$checkBoxContainer) {
+                let thisContainer;
+                let checkbox;
+                let lbl;
+                let field;
+
+                const _init = () => {
+                    _cacheDom();
+                    _bindEvents();
+                    _bind();
+                    
+                }        
+               
+                const _cacheDom = () => {                
+                    thisContainer       = $checkBoxContainer;
+                    checkbox            = thisContainer.find('.three-state-checkbox');
+                    lbl                 = thisContainer.find('.label');
+                    field               = thisContainer.find('input[name="link_type"]');
+                }
+                
+                const _bindEvents = () => {   
+                    checkbox.click(_changeCheckbox);                
                 }
 
-                var currentTopic = $topicDropDown.val();
-                if(currentTopic == ''){
-                    toastr['error'](`Please select a topic before delete!`);
-                    return false;
+                const _bind = () => {
+                    checkbox.bind('video',switch2Video);
+                    checkbox.bind('other',switch2Other);
+                    checkbox.bind('download',switch2Download);
                 }
 
-                let randString = Math.random().toString(16).substr(2, 12);
-                let cls = 'remove_' + randString;
-                $(event.target).parent().addClass(cls);
-                var contentJson = _getContents();
+                const _changeCheckbox = (event) => {
 
-                var arr = [];
+                    /*
+                    * neutral   - other
+                    * positive  - video
+                    * negative  - download
+                    * 
+                    */
 
-                //get all links except the item that going to delete
-                contentList.find('li:not(".' + cls + '")').each(function(index, li_item) {
-                    var is_Free   = ($(li_item).find('.cc-price').html() == 'Paid')?false:true;
-                    var is_Download    = ($(li_item).find('.cc-type').html() == 'Video')?false:true;
-                    var type = $(li_item).find('.cc-type').html()
+                    if(checkbox.hasClass('positive')){
+                        switch2Download();
+                    }else if (checkbox.hasClass('negative')){
+                        switch2Other();
+                    }else {
+                        switch2Video();
+                    }
+                    //console.log(checkbox.parent().find('.label').text());
+                }  
 
-                    var infoObj = {
+                const switch2Video = () => {
+                    checkbox.addClass('positive');
+                    checkbox.html('<svg width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="10.9375%"><use xlink:href="#video_icon"></use></svg>');
+                    //checkbox.next().text('Positive');
+                    //checkbox.parent().find('.label').text('Video');
+                    lbl.text('Video');
+                    checkbox.parent().find('input[name="link_type"]').val('video');
+                }
+
+                const switch2Other = () => {
+                    checkbox.removeClass('negative');                                                        
+                    checkbox.html('');
+                    //checkbox.next().text('Neutral');
+                    lbl.text('Other(Zoom)');
+                    checkbox.parent().find('input[name="link_type"]').val('other');
+                }
+
+                const switch2Download = () => {
+                    checkbox.removeClass('positive');
+                    checkbox.addClass('negative');               
+                    checkbox.html('<svg width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="10.9375%"><use xlink:href="#download_icon"></use></svg>');
+                    //checkbox.next().text('Negative');
+                    lbl.text('Download');
+                    checkbox.parent().find('input[name="link_type"]').val('download');
+                }
+
+                 _init();
+
+                return {
+                    switch2Video,
+                    switch2Other,
+                    switch2Download, 
+                };                 
+            });
+
+
+
+            // course links module
+            const courseContentModule = (function (window, $) {
+
+                let form;
+                let thisTab;
+                let addBtn;
+                let contentListArea;
+                let contentList;
+                let jsonBtn;
+                let jsonResultDiv;
+                let inputText;
+                let inputUrl;
+                let linkParam;
+                let isFree;
+                let linkType;
+                let $topicsField;
+                let $topicDropDown;
+
+                const _init = () => {
+                    _cacheDom();
+                    _bindEvents();
+                    _fillInitialValues();
+                    if($('input[name=contentJson]').length){
+                        _render();
+                    }
+                    _sorting();
+                    //alert('2-init');
+                };
+               
+                const addEmptyContent = (currentTopic) => {                
+                    var contentJson = _getContents();
+                    contentJson[currentTopic] = [];
+                    _updateContentFieldVal(contentJson);                
+                }
+
+                //
+                const arrangContentArrByTopics = (topicsJson) => {
+                    var contentJson = _getContents();                
+                    var tempObj = {};
+
+                    Object.keys(topicsJson).forEach((key, index) => {                   
+                        tempObj[topicsJson[key]] = contentJson[topicsJson[key]]
+                    }); 
+
+                    _updateContentFieldVal(tempObj); 
+                }
+
+                const fillValues = (inputJsonStr) => {
+                    _fillInitialValues(inputJsonStr);
+                    if($('input[name=contentJson]').length){
+                        _render();
+                    }
+                    _sorting();
+                }
+                          
+                const _fillInitialValues = (jsonStr = null) => {
+                    var dbCourseContentJson
+                    try {
+                        //dbCourseContentJson = JSON.parse(courseContentFromDb)  || {};
+                        dbCourseContentJson = JSON.parse(jsonStr || courseContentFromDb);
+                        
+                        // fix for prevent page load error if data format is 
+                        if(!(dbCourseContentJson instanceof Object)){throw new Error();}                   
+                    }
+                    catch(e) {
+                        dbCourseContentJson = {};
+                        //toastr['error'](`Course content set empty because invalid course content load from Database!`);
+                    }               
+                    _updateContentFieldVal(dbCourseContentJson);             
+                };
+
+
+                const _cacheDom = () => {
+                    form                = $("#course-edit-form");
+                    thisTab             = $("#tab-add-course-content");
+                    addBtn              = thisTab.find("#add-course-content");
+                    contentListArea     = thisTab.find(".course-content-list-area");
+                    contentList         = thisTab.find(".course-content-list-area ul#course-content-list");
+                    jsonBtn             = thisTab.find("#json-btn");
+                    jsonResultDiv       = thisTab.find('.course-content-json-result');
+                    
+                    inputText           = thisTab.find('input[name="content-text"]');
+                    inputUrl            = thisTab.find('textarea[name="content-url"]');
+                    linkParam           = thisTab.find('input[name="link_param"]');
+                    isFree              = thisTab.find('input[name="is_free"]');
+                    linkType            = thisTab.find('input[name="link_type"]');
+                    
+
+                    $topicDropDown      = $('#course-topics');
+
+                    $topicsField        = form.find("input[name=topicsJson]");
+                    $el_topicsField     = $("input[name=topicsJson]");
+                    $contentField       = thisTab.find("input[name=contentJson]");
+                };
+
+
+                const _bindEvents = () => {
+                    addBtn.on("click", _addContent);
+                    jsonBtn.on("click",_showJson);
+                    $topicDropDown.on("change",_changeTopic);
+                    $(contentList).on("click","li a.delete-btn",_deleteContentItem);
+                    $(contentList).on("click","li a.edit-btn",_editContentItem);
+                    $(contentList).on("click","li a.ok-btn",_editContentItemSubmit);
+                    $(contentList).on("click","li a.undo-btn",_editContentItemCancel);
+                };
+
+
+                const _sorting = () => {
+                    contentList.sortable({
+                        start: function( event, ui ) {
+                            $(ui.item).addClass("highlight");
+                        },
+                        stop:function( event, ui ) {
+                            $(ui.item).removeClass("highlight");
+
+                            //cant sort if topic is not selected
+                            if (!$topicDropDown.val()) {
+                                toastr['error'](`Please select a topic before sort!`);
+                                $(this).sortable("cancel");
+                            }else{
+                                _rearrangeContnetjsonfield();
+                            }
+                        },
+                    });
+                    contentList.disableSelection();
+                };
+
+                //update contentJson input field value according to html doc
+                const _rearrangeContnetjsonfield = (excludeElement) => {
+                    var currentTopic = $topicDropDown.val();
+                    var contentJson = _getContents();
+                    var arr = [];
+
+                    contentList.find('li').not(excludeElement).each(function(index, li_item) {
+                        var is_Free         = ($(li_item).find('.cc-price').html() == 'Paid')?false:true;
+                        //var is_Download   = ($(li_item).find('.cc-type').html() == 'Video')?false:true;
+                        var is_Download     = $(li_item).find('.cc-type').html();
+
+
+                        var infoObj = {
                             inputText   : $(li_item).find('.cc-link').html(),
                             inputUrl    : $(li_item).find('.cc-link').attr('href'),
                             linkParam   : $(li_item).find('.cc-param').html(),
                             isFree      : is_Free,
-                            type        : type,
+                            type  : is_Download,
                         };
-                    arr.push(infoObj);
-                });
+                        arr.push(infoObj);
+                    });
+                    contentJson[currentTopic] = arr;
+                    _updateContentFieldVal(contentJson);
+                };
 
-                contentJson[currentTopic] = arr;
-               _updateContentFieldVal(contentJson);
-               _render();
-            };
 
-            //delete all the links of a topic
-            const deleteContentByTopic = (topic = null) => {
-                if(!topic){
-                    toastr['error'](`Select a topic first`);
-                    return false;
-                }
+                const checkSelectedTopic = () => {
+                    return $topicDropDown.val();
 
-                var contentJson = _getContents();
+                };
 
-                if(contentJson.hasOwnProperty(topic) === true){
-                    delete contentJson[topic];
-                }else{
-                    return false;
-                }
-                _updateContentFieldVal(contentJson);
-                return true;
-            };
+                const _render = (topic = null) => {
+                    var contentListHtml ='';
+                    var currentTopic = (topic)?topic:$topicDropDown.val();
 
-            
-            const _editContentItem = (event) => {
-
-                if(_contentItemCounInEditState() > 0){
-                    toastr['error']('Can\'t edit more than one link at the same time.');
-                    return false;
-                }
-
-                var parent_li_item  = $(event.target).parent();
-                parent_li_item.addClass('edit');
-                parent_li_item.children('.txt-div').hide();
-
-                var _inputText   = parent_li_item.children('.txt-div').children('.cc-link').html();
-                var _inputUrl    = parent_li_item.children('.txt-div').children('.cc-link').attr('href');
-                var _linkParam   = parent_li_item.children('.txt-div').find('.cc-param').html();
-                var _isFree      = (parent_li_item.children('.txt-div').find('.cc-price').html()=='Free')?'check':'uncheck';
-                var _type        = parent_li_item.children('.txt-div').find('.cc-type').html();
-
-                parent_li_item.find('input[name="content-text"]').val(_inputText);
-                parent_li_item.find('textarea[name="content-url"]').val(_inputUrl);
-                parent_li_item.find('textarea[name="content-url"]').addClass('_inputUrl');
-                parent_li_item.find('input[name="link_param"]').val(_linkParam);
-                parent_li_item.find('input[name="is_free"]').iCheck(_isFree);
-                
-                // change 3 stste checkbox
-                var elex = parent_li_item.find('.three-state.checkbox-container').find('.three-state-checkbox');
-                if(_type == 'video'){
-                    elex.trigger('video');
-                }else if(_type == 'download'){
-                    elex.trigger('download');
-                }else{
-                    elex.trigger('other');
-                }
-
-                parent_li_item.children('.course-content-div').removeClass("close");
-                parent_li_item.find('input[name="content-text"]').focus();            
-
-                $(event.target).fadeOut(300, function(){ $(this).hide();});
-
-                parent_li_item.children('.ok-btn').show();
-                parent_li_item.children('.undo-btn').show();
-                $topicDropDown.prop('disabled', true);
-                event.preventDefault();
-            };
-
-            //after topic rename in topics tab(tab2) update the contentJson field
-            const renameContentJsonKey = (oldVal,newVal) => {
-                var contentJson = _getContents();
-                var mvar = {};
-                Object.keys(contentJson).forEach((key, index) => {
-                    //console.log(`${key}: ${contentJson[key]}`);
-                    if(key == oldVal){
-                        mvar[newVal] = contentJson[key]
+                    if(currentTopic == ''){
+                        //toastr['error'](`Please select a topic!`);
+                        contentListHtml =   `<div class="alert alert-primary" role="alert">
+                                                <span class="font-bold">Please select a topic to display the content!</span>
+                                            </div>`;                                        
                     }else{
-                        mvar[key] = contentJson[key];
+
+                        var content      = getContentByTopic(currentTopic);
+
+                        var close_i     = '<a href="" class="delete-btn fa fa-trash" title="Delete"></a>';
+                        var edit_i      = '<a href="" class="edit-btn fa fa-pencil" title="Edit"></a>';
+                        var undo_i      = '<a href="" class="undo-btn fa fa-undo" title="Cancel changes"></a>';
+                        var ok_i        = '<a href="" class="ok-btn fa edit fa-check" title="Update changes"></a>';
+
+                        var formHtml =  `<div class="course-content-div __mt-2 close w-11/12">
+                                            <div class="course-content-form p-0">
+
+                                                <div class="form-group  row">
+                                                    <div class="col-sm-12 mb-2">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-addon">Text</span>
+                                                            </div>
+                                                            <input type="text" name="content-text" class="form-control"><br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-addon">Url</span>
+                                                            </div>
+                                                            <textarea rows="5" class="form-control" name="content-url"></textarea><br>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <div class="col-sm-3">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-addon"><b>Duration/Size</b></span>
+                                                            </div>
+                                                            <input id="link_param" name="link_param" type="text" class="form-control"><br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="offset-sm-4 col-sm-2">
+                                                        <div class="float-right i-checks">
+                                                            <label class="mb-0"> <input type="checkbox" value="" name="is_free"> <i></i> <b>Free</b> </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 -ml-1 three-state checkbox-container">
+                                                        <span class="three-state-checkbox"></span>
+                                                        <span class="font-semibold">Link type : </span>                                                            
+                                                        <span class="label">Other(Zoom)</span>
+                                                        <input type="hidden" name="link_type" value="other">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>`;
+                        var freeVal;
+                        var c_type;
+
+                        if (typeof content[currentTopic] != 'undefined'){
+                            
+                            
+
+
+                            var tty = content[currentTopic];
+
+                            if (!Array.isArray(content[currentTopic]) || !content[currentTopic].length) {
+                                // array does not exist, is not an array, or is empty
+                                // ⇒ do not attempt to process array
+
+                                contentListHtml +=   `<div class="alert alert-danger" role="alert">
+                                                        <span class="font-bold">No Links available for the selected Topic!</span>
+                                                    </div>`;
+                            }else{
+
+                                content[currentTopic].forEach((element, index) => {
+                                    freeVal   = (element.isFree == true)?'Free':'Paid';
+                                    //c_type    = (element.link_type == true)?'Download':'Video';
+                                    c_type    = element.type;
+
+
+                                    contentListHtml +=  "<li>" +
+                                                            '<div class="txt-div border pl-2 py-1" style="font-size:14px; width:calc(100% - 60px);">' +
+                                                                '<a class="cc-link" href="' + element.inputUrl + '">' + element.inputText + '</a>' +
+                                                                
+                                                                '<div class="-ml-2 border-b border-gray-300 my-2"></div>' + 
+                                                                
+                                                                '<div class="text-xs font-semibold">' + 
+                                                                    'Duration/Size - <span class="cc-param">' + element.linkParam + '</span><br>' +
+                                                                    'Price - <span class="cc-price">' + freeVal + '</span><br>' +
+                                                                    'Type - <span class="cc-type capitalize">' + c_type + '</span>' +
+                                                                '</div>' + 
+                                                            '</div>' +
+                                                            close_i + edit_i + undo_i +ok_i +  formHtml +
+                                                        "</li>";
+                                });
+                            }
+
+
+
+
+                        }
                     }
-                });
 
-                if(!$.isEmptyObject(mvar)){
-                    _updateContentFieldVal(mvar);
-                    return true
-                }
-                return false;
-            };
 
-            
-            const _editContentItemSubmit = (event) => {
-                //var thisTab = $("#tab-add-course-content");
-                var parent_li_item  = $(event.target).parent();
 
-                var _inputText   = parent_li_item.find('input[name="content-text"]').val();
-                var _inputUrl    = parent_li_item.find('textarea[name="content-url"]').val();
-                var _linkParam   = parent_li_item.find('input[name="link_param"]').val();
-                var _isFree      = (parent_li_item.find('input[name="is_free"]').is(":checked")==true)?'Free':'Paid';
-                var _type        = parent_li_item.find('input[name="link_type"]').val();
+                    /*if(contentListHtml == ''){
+                        
+                    }*/
 
-                if (_inputText == ""){
-                    thisTab.find(".msg-div").text("content text cant be empty!");
-                    return false;
-                }
+                    contentList.html('');
+                    contentList.append(contentListHtml);
 
-                if(_inputUrl == ""){
-                    thisTab.find(".msg-div").text("Content url cant be empty!");
-                    return false;
-                }else{
-                    if(!isValidHttpUrl(_inputUrl)){
-                        thisTab.find(".msg-div").text(`Invalid URL !`);
+
+                    // for free checkbox
+                    contentList.find('li').each(function( index, element ){
+                        $(element).find('.i-checks').iCheck({
+                            checkboxClass: 'icheckbox_square-green',
+                            radioClass: 'iradio_square-green',
+                        });
+
+                        var checkbox_container = $(element).find('.three-state.checkbox-container');  
+                        threeStateCheckboxModule(window,jQuery,checkbox_container);
+                    });
+
+                    
+
+                };
+
+                //when change topic, render links
+                const _changeTopic = (event) => {
+                    var topic = $(event.target).val();
+                    _render(topic);
+                };
+
+                //get input values
+                const _getInputObj = () => {
+                    return {
+                        inputText   : thisTab.find('input[name="content-text"]').val(),
+                        inputUrl    : thisTab.find('textarea[name="content-url"]').val(),
+                        linkParam   : thisTab.find('input[name="link_param"]').val(),
+                        isFree      : thisTab.find('input[name="is_free"]').is(":checked"),
+                        type        : thisTab.find('input[name="link_type"]').val(),
+                    }
+                };
+
+
+                const _addContent = () => {
+
+                    if (inputText.val() == ""){
+                        toastr['error'](`Content text cannot be empty!`);
                         return false;
                     }
-                }
 
-                parent_li_item.find('.cc-link').html(_inputText);
-                parent_li_item.find('.cc-link').attr("href", _inputUrl);
-                parent_li_item.find('.cc-param').html(_linkParam);
-                parent_li_item.find('.cc-price').html(_isFree);
-                parent_li_item.find('.cc-type').html(_type);
+                    if(inputUrl.val() == "") {
+                        toastr['error'](`Content url cannot be empty!`);
+                        return false;
+                    }else{
+                        if(!isValidHttpUrl(inputUrl.val())){
+                            toastr['error'](`Invalid URL !`);
+                            return false;
+                        }
+                    }
+
+                    //get selected topic value
+                    var currentTopic = $topicDropDown.val();
+                    if(currentTopic == "") {
+                        toastr['error'](`Please select a topic before add content!`);
+                        return false;
+                    }
+
+                    if(_contentItemCounInEditState() > 0){
+                        toastr['error']('Finish Editing before Add new links!');
+                        return false;
+                    }
+
+                    var contentJson = _getContents();
+                    var content = getContentByTopic(currentTopic);
+                    var inputobj = _getInputObj();
+                    var tempObj = [];
+
+                    if(!$.isEmptyObject(content)){
+                        content[currentTopic].forEach(element => {
+                            tempObj.push(element);
+                        });
+                    }
+                    tempObj.push(inputobj);
+                    contentJson[currentTopic] = tempObj;
+
+                    _updateContentFieldVal(contentJson);
+                    _resetInputForm();
+                    _render();
+                };
 
 
-                parent_li_item.children('.txt-div').show();
-                parent_li_item.find('.course-content-div').addClass("close");
+                const _resetInputForm = () => {
+                    inputText.val('');
+                    inputUrl.val('');
+                    linkParam.val('');
+                    isFree.iCheck('uncheck');
+                    inputLinkType.switch2Other();
+                };
 
-                $(event.target).fadeOut(300, function(){ $(this).hide();});
-                parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
-                parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).hide();});
 
-                parent_li_item.children('.edit-btn').fadeIn(500, function(){ $(this).show();});
+                const _updateContentFieldVal = (contentJson) => {
+                    contentJsonStr = JSON.stringify(contentJson, null, 4);
 
-                parent_li_item.removeClass('edit');
-                thisTab.find(".msg-div").text("");
+                    if(form.find($("input[name=contentJson]")).length === 0){
+                        $("<input>").attr({
+                            name: "contentJson",
+                            id: "contentJson",
+                            type: "hidden",
+                            value: contentJsonStr
+                        }).appendTo("#course-edit-form");
+                    }else{
+                        form.find($("input[name=contentJson]")).val(contentJsonStr);
+                    }
+                };
 
-                _rearrangeContnetjsonfield();
-                $topicDropDown.prop('disabled', false);
-                event.preventDefault();
-            };
+                //excludeElement - string, jquery selector,null
+                const check_content_exist = (inputTxt,excludeElement) => {
+                    var mvar = [];
+                    contentList.find('li').not(excludeElement).each(function(i,el) {
+                        mvar.push($(this).find('.txt-div .cc-link').html());
+                    });
+                    return mvar.includes(inputTxt);
+                };
 
-            //undo the changes
-            const _editContentItemCancel = (event) => {
+                const _contentItemCounInEditState = () => {
+                    var vc = [];
+                    contentList.find("li.edit").each(function(i,el){
+                        vc.push(el);
+                    });
+                    return vc.length;
+                };
 
-                var parent_li_item  = $(event.target).parent();
-                parent_li_item.removeClass('edit');
+                const isContentEditFinished = () => {
+                    return (_contentItemCounInEditState() === 0);
+                };
 
-                parent_li_item.children('.txt-div').show();
-                parent_li_item.children('.course-content-div').addClass("close");
 
-                parent_li_item.children('.edit-btn').fadeIn(500, function(){ $(this).show();});
-                parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).hide();});
-                parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
-                $topicDropDown.prop('disabled', false);
-                event.preventDefault();
-            };
+                const _getContents = () => {
+                    var contentFieldValue = form.find("input[name=contentJson]").val() || {};
+                    var objContent;
+                    try {
+                        objContent = JSON.parse(contentFieldValue);
+                    }
+                    catch(e) {
+                        objContent = {};
+                    }
+                    return objContent;
+                };
 
-            _init();
+                //render topics dropdown in content tab
+                const renderTopicsDropdown = () => {
 
-            return {
-                renderTopicsDropdown,
-                resetTopicsDropdown,
-                clearJsonPrev,
-                isContentEditFinished,
-                check_content_exist,
-                deleteContentByTopic,
-                renameContentJsonKey,
-                getContentByTopic,
-                //_resetInputForm,
-                //_getContents
-                addEmptyContent,
-                arrangContentArrByTopics,
-                checkSelectedTopic
-            };
+                    var objTopics = courseTopicFunctionality.getTopics();
+                    $topicDropDown.html('');
+                    var topicItems  = '<option></option>';
+                    var uid; // add uuid if future needs
 
-        });
+                    Object.keys(objTopics).forEach((key, index) => {
+                        //console.log(`${key}: ${objTopics[key]}`);
+                        uid = Math.random().toString(16).slice(2);
+                        topicItems += '<option data-uid="' + uid + '" data-key="' + key + '" value="' + objTopics[key] +'">'+ objTopics[key] +'</option>'
+                    });
+                    $topicDropDown.append(topicItems);
+                };
+
+
+                const resetTopicsDropdown = () => {
+                    $topicDropDown.select2("val", "");
+                };
+
+
+                const clearJsonPrev = () => {
+                    jsonResultDiv.html('');
+                };
+
+                //get all links and their info, according to provided topic
+                const getContentByTopic = (topic) => {
+                    contentObj = _getContents();
+                    var mvar = {};
+
+                    Object.keys(contentObj).forEach((key, index) => {
+                        //console.log(`${key}: ${contentObj[key]}`);
+                        if(key == topic){
+                            mvar[key] = contentObj[key];
+                        }
+                    });
+                    return mvar;
+                };
+
+                const _showJson = (event) => {
+                    if(isContentEditFinished()){
+                        jsonResultDiv.html('<pre>' + JSON.stringify(_getContents(),undefined,2) + '</pre>');
+                    }else{
+                        toastr['error']('Finish editing before view json!');
+                    }
+                };
+
+
+                const _deleteContentItem = (event) => {
+                    event.preventDefault();
+
+                    if(!isContentEditFinished()){
+                        toastr['error']('Finish editing before delete!');
+                        return false;
+                    }
+
+                    var currentTopic = $topicDropDown.val();
+                    if(currentTopic == ''){
+                        toastr['error'](`Please select a topic before delete!`);
+                        return false;
+                    }
+
+                    let randString = Math.random().toString(16).substr(2, 12);
+                    let cls = 'remove_' + randString;
+                    $(event.target).parent().addClass(cls);
+                    var contentJson = _getContents();
+
+                    var arr = [];
+
+                    //get all links except the item that going to delete
+                    contentList.find('li:not(".' + cls + '")').each(function(index, li_item) {
+                        var is_Free   = ($(li_item).find('.cc-price').html() == 'Paid')?false:true;
+                        var is_Download    = ($(li_item).find('.cc-type').html() == 'Video')?false:true;
+                        var type = $(li_item).find('.cc-type').html()
+
+                        var infoObj = {
+                                inputText   : $(li_item).find('.cc-link').html(),
+                                inputUrl    : $(li_item).find('.cc-link').attr('href'),
+                                linkParam   : $(li_item).find('.cc-param').html(),
+                                isFree      : is_Free,
+                                type        : type,
+                            };
+                        arr.push(infoObj);
+                    });
+
+                    contentJson[currentTopic] = arr;
+                   _updateContentFieldVal(contentJson);
+                   _render();
+                };
+
+                //delete all the links of a topic
+                const deleteContentByTopic = (topic = null) => {
+                    if(!topic){
+                        toastr['error'](`Select a topic first`);
+                        return false;
+                    }
+
+                    var contentJson = _getContents();
+
+                    if(contentJson.hasOwnProperty(topic) === true){
+                        delete contentJson[topic];
+                    }else{
+                        return false;
+                    }
+                    _updateContentFieldVal(contentJson);
+                    return true;
+                };
+
+                
+                const _editContentItem = (event) => {
+
+                    if(_contentItemCounInEditState() > 0){
+                        toastr['error']('Can\'t edit more than one link at the same time.');
+                        return false;
+                    }
+
+                    var parent_li_item  = $(event.target).parent();
+                    parent_li_item.addClass('edit');
+                    parent_li_item.children('.txt-div').hide();
+
+                    var _inputText   = parent_li_item.children('.txt-div').children('.cc-link').html();
+                    var _inputUrl    = parent_li_item.children('.txt-div').children('.cc-link').attr('href');
+                    var _linkParam   = parent_li_item.children('.txt-div').find('.cc-param').html();
+                    var _isFree      = (parent_li_item.children('.txt-div').find('.cc-price').html()=='Free')?'check':'uncheck';
+                    var _type        = parent_li_item.children('.txt-div').find('.cc-type').html();
+
+                    parent_li_item.find('input[name="content-text"]').val(_inputText);
+                    parent_li_item.find('textarea[name="content-url"]').val(_inputUrl);
+                    parent_li_item.find('textarea[name="content-url"]').addClass('_inputUrl');
+                    parent_li_item.find('input[name="link_param"]').val(_linkParam);
+                    parent_li_item.find('input[name="is_free"]').iCheck(_isFree);
+                    
+                    // change 3 stste checkbox
+                    var elex = parent_li_item.find('.three-state.checkbox-container').find('.three-state-checkbox');
+                    if(_type == 'video'){
+                        elex.trigger('video');
+                    }else if(_type == 'download'){
+                        elex.trigger('download');
+                    }else{
+                        elex.trigger('other');
+                    }
+
+                    parent_li_item.children('.course-content-div').removeClass("close");
+                    parent_li_item.find('input[name="content-text"]').focus();            
+
+                    $(event.target).fadeOut(300, function(){ $(this).hide();});
+
+                    parent_li_item.children('.ok-btn').show();
+                    parent_li_item.children('.undo-btn').show();
+                    $topicDropDown.prop('disabled', true);
+                    event.preventDefault();
+                };
+
+                //after topic rename in topics tab(tab2) update the contentJson field
+                const renameContentJsonKey = (oldVal,newVal) => {
+                    var contentJson = _getContents();
+                    var mvar = {};
+                    Object.keys(contentJson).forEach((key, index) => {
+                        //console.log(`${key}: ${contentJson[key]}`);
+                        if(key == oldVal){
+                            mvar[newVal] = contentJson[key]
+                        }else{
+                            mvar[key] = contentJson[key];
+                        }
+                    });
+
+                    if(!$.isEmptyObject(mvar)){
+                        _updateContentFieldVal(mvar);
+                        return true
+                    }
+                    return false;
+                };
+
+                
+                const _editContentItemSubmit = (event) => {
+                    //var thisTab = $("#tab-add-course-content");
+                    var parent_li_item  = $(event.target).parent();
+
+                    var _inputText   = parent_li_item.find('input[name="content-text"]').val();
+                    var _inputUrl    = parent_li_item.find('textarea[name="content-url"]').val();
+                    var _linkParam   = parent_li_item.find('input[name="link_param"]').val();
+                    var _isFree      = (parent_li_item.find('input[name="is_free"]').is(":checked")==true)?'Free':'Paid';
+                    var _type        = parent_li_item.find('input[name="link_type"]').val();
+
+                    if (_inputText == ""){
+                        thisTab.find(".msg-div").text("content text cant be empty!");
+                        return false;
+                    }
+
+                    if(_inputUrl == ""){
+                        thisTab.find(".msg-div").text("Content url cant be empty!");
+                        return false;
+                    }else{
+                        if(!isValidHttpUrl(_inputUrl)){
+                            thisTab.find(".msg-div").text(`Invalid URL !`);
+                            return false;
+                        }
+                    }
+
+                    parent_li_item.find('.cc-link').html(_inputText);
+                    parent_li_item.find('.cc-link').attr("href", _inputUrl);
+                    parent_li_item.find('.cc-param').html(_linkParam);
+                    parent_li_item.find('.cc-price').html(_isFree);
+                    parent_li_item.find('.cc-type').html(_type);
+
+
+                    parent_li_item.children('.txt-div').show();
+                    parent_li_item.find('.course-content-div').addClass("close");
+
+                    $(event.target).fadeOut(300, function(){ $(this).hide();});
+                    parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
+                    parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).hide();});
+
+                    parent_li_item.children('.edit-btn').fadeIn(500, function(){ $(this).show();});
+
+                    parent_li_item.removeClass('edit');
+                    thisTab.find(".msg-div").text("");
+
+                    _rearrangeContnetjsonfield();
+                    $topicDropDown.prop('disabled', false);
+                    event.preventDefault();
+                };
+
+                //undo the changes
+                const _editContentItemCancel = (event) => {
+
+                    var parent_li_item  = $(event.target).parent();
+                    parent_li_item.removeClass('edit');
+
+                    parent_li_item.children('.txt-div').show();
+                    parent_li_item.children('.course-content-div').addClass("close");
+
+                    parent_li_item.children('.edit-btn').fadeIn(500, function(){ $(this).show();});
+                    parent_li_item.children('.ok-btn').fadeIn(500, function(){ $(this).hide();});
+                    parent_li_item.children('.undo-btn').fadeIn(500, function(){ $(this).hide();});
+                    $topicDropDown.prop('disabled', false);
+                    event.preventDefault();
+                };
+
+                _init();
+
+                return {
+                    fillValues,
+
+                    renderTopicsDropdown,
+                    resetTopicsDropdown,
+                    clearJsonPrev,
+                    isContentEditFinished,
+                    check_content_exist,
+                    deleteContentByTopic,
+                    renameContentJsonKey,
+                    getContentByTopic,
+                    //_resetInputForm,
+                    //_getContents
+                    addEmptyContent,
+                    arrangContentArrByTopics,
+                    checkSelectedTopic
+                };
+
+            });
+        @endif
 
     </script>
 @stop

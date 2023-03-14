@@ -109,6 +109,11 @@
                                 <button type="button" class="checkout-btn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Checkout</button>
                             </div>
 
+                            //when apply cupon code works for any course and multiple courses in cart<br>
+                            //then ask which course to apply cupon code
+
+                            <br><br><br>
+                            checkout btn move last step(after entering billing info)
                         </div>
 
                     </div>

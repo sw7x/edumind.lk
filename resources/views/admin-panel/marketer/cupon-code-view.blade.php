@@ -129,9 +129,9 @@
 
 													<div class="detail detail-main">
 														<fieldset>
-															<div>
-																<table class="table table-condensed">
-																	<thead>
+															<div class="p-1">
+																<table class="table table-striped table-bordered">
+																	<thead class="thead-dark">
 																	<tr>
 																		<th>Course</th>
 																		<th>Course Price</th>

@@ -54,7 +54,7 @@
 
                         <h1 style="color:{{$txtColor ?? '#fff'}}" class="lg:leading-10 lg:text-3xl text-xl leading-8 font-bold">{{$courseData->name}}</h1>
                         <p class="lg:w-4/5 mt-2 md:text-lg md:block hidden">{{$courseData->heading_text}}</p>
-
+                        
                         {{--
                         <ul class="flex text-gray-300 gap-4 mt-4 mb-3">
                             <li class="flex items-center">

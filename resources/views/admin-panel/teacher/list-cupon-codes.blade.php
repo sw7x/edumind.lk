@@ -54,7 +54,7 @@
 									<th>Used</th>
 									<th>Available</th>
 									<th>Total</th>
-									<th>Assigned Date/time</th>
+									<th>Created Date/time</th>
 									<th>Total Discount<br> <small>(teacher claimed amount)</small></th>
 								</tr>
 							</thead>
@@ -88,7 +88,7 @@
 									<th>Used</th>
 									<th>Available</th>
 									<th>Total</th>
-									<th>Assigned Date/time</th>
+									<th>Created Date/time</th>
 									<th>Discount <br> <small>(teacher claimed amount)</small></th>
 								</tr>
 							</tfoot>

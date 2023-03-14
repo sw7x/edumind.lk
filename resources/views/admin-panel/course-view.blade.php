@@ -83,7 +83,7 @@
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Description</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->description}}</label>
+                                                <label class="col-sm-8 col-form-label">{!! $course->description !!}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 

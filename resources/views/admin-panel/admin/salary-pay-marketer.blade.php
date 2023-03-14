@@ -18,55 +18,7 @@
 
 @section('page-css')
     <style>
-
-        .custom-checkbox-form-group input {
-          padding: 0;
-          height: initial;
-          width: initial;
-          margin-bottom: 0;
-          display: none;
-          cursor: pointer;
-        }
-
-        .custom-checkbox-form-group label {
-          position: relative;
-          cursor: pointer;
-          
-          margin-bottom: 0px;
-        }
-
-        .custom-checkbox-form-group label:before {
-          content:'';
-          -webkit-appearance: none;
-          background-color: transparent;
-          border: 2px solid #fff;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
-          padding: 8px;
-          display: inline-block;
-          position: relative;
-          vertical-align: middle;
-          cursor: pointer;
-          margin-right: 15px;
-        }
-
-        .custom-checkbox-form-group label span{
-            top: 2px;
-            position: relative;
-            font-size: 14px;
-        }
-
-        .custom-checkbox-form-group input:checked + label:after {
-            content: '';
-            display: block;
-            position: absolute;
-            top: 1px;
-            left: 8px;
-            width: 5px;
-            height: 14px;
-            border: solid #fff;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
+       
 
     </style>
 @stop
@@ -92,11 +44,21 @@
                 <div class="ibox-content px-3">
                  
                     <form class="edit-user-form" id="add-subject" action="{{route('admin.subject.store')}}" method="POST">
+                        
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Amount (Rs)</label>
-                            <div class="col-sm-8"><input type="text" name="amount" class="form-control" required="required"></div>
+                            <label class="col-sm-4 col-form-label">Select Teacher</label>
+                            <div class="col-sm-8">
+                                <select class="form-control m-b" name="account">
+                                    <option>option 1</option>
+                                    <option>option 2</option>
+                                    <option>option 3</option>
+                                    <option>option 4</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="hr-line-dashed"></div>
+
+
 
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Time period</label>
@@ -109,33 +71,50 @@
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Enrollments</label>
                             <div class="col-sm-8">
-                                <table class="table table-condensed border-2">
-                                    <tbody>
-                                        <tr class="">
-                                            <td>
-                                                <?php 
-                                                $arr = [
-                                                    'DDE123','CSS','HTML','JAVA','Javascript',
-                                                    'HTML','DDE123','CSS','JAVA','Javascript',
-                                                    'CSS','HTML','JAVA','Javascript','DDE123',
-                                                    'HTML','JAVA','Javascript','ABC123','FFF56',
-                                                    'JAVA','ABC123','FFF56','DDE123','CSS'
-                                                ];
-                                                for ($x = 0; $x < 20; $x+=1): ?>
-                                                <span class="custom-checkbox-form-group">
-                                                    <span class="label label-primary mr-3 mb-2 inline-block pt-1 pb-2 pl-2 pr-4">
-                                                        <input type="checkbox" id="Javascript<?= $x ?>">
-                                                        <label for="Javascript<?= $x ?>">
-                                                            <span><a href="hhh" target="_blank"><?= $arr[$x] ?></a></span>
-                                                        </label>
-                                                    </span>
-                                                </span>
-                                                <?php endfor;  ?>
-                                            </td>
-                                        </tr>                                            
-                                    </tbody>
-                                </table>                            
+                                <div class="p-1 border-1 mb-1">
+                                    <table class="table table-striped table-bordered mb-0">
+                                        <thead  class="thead-dark">
+                                            <tr>
+                                                <th></th>
+                                                <th>Enrollement </th>
+                                                <th>Comission</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input class="iCheck" type="checkbox" value="" name="is_free">
+                                                </td>
+                                                <td class="font-bold text-base"><a href="hhh" target="_blank">ABC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                                <td class="font-bold text-base text-red-500">RS 2000</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <input class="iCheck" type="checkbox" value="" name="is_free">
+                                                </td>
+                                                <td class="font-bold text-base"><a href="hhh" target="_blank">CCC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                                <td class="font-bold text-base text-red-500">RS 2000</td>
+                                            </tr> 
+
+                                            <tr>
+                                                <td>
+                                                    <input class="iCheck" type="checkbox" value="" name="is_free">
+                                                </td>
+                                                <td class="font-bold text-base"><a href="hhh" target="_blank">FBC173 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                                <td class="font-bold text-base text-red-500">RS 2500</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-base text-red">Amount for selected enrollemens : RS 200</div>                          
                             </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Amount (Rs)</label>
+                            <div class="col-sm-8"><input type="text" name="amount" class="form-control" required="required"></div>
                         </div>
                         <div class="hr-line-dashed"></div>
 
@@ -194,6 +173,8 @@
 @section('javascript')
 <script>
 
+
+
     (function () {
         /* We want to preview images, so we need to register the Image Preview plugin  */
         FilePond.registerPlugin(
@@ -213,6 +194,11 @@
             FilePondPluginFileValidateType
         );
 
+
+        $('input.iCheck').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
 
 
         $('input[name="daterange"]').daterangepicker({

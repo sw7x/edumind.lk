@@ -27,15 +27,8 @@ class AdminSeeder extends Seeder
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
             'status'    =>  1
-
-
-//            'first_name' => 'Developer',
-//            'last_name' => 'Cybertech',
-//            'email' => 'developer@cybertech.lk',
-//            'username' => 'developer@cybertech.lk',
-//            'password' =>'123456',
-//            'confirmed'=>1
         ];
+        
         $user_admin = Sentinel::registerAndActivate($admin);
         //$user_admin->makeRoot();
         $role_admin = Sentinel::findRoleById(1);

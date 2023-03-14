@@ -6,27 +6,27 @@
 
     <div class="main-container container">
         <div class="max-w-5xl md:p-5 mx-auto">
-            <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
+            <div class="---lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
                 <div class="">
 
                     <div>
-                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">Access Denied 403</h2>
+                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">403 Access Denied </h2>
                         <hr class="mb-5">
-                        <h4 class="font-semibold mb-2 text-base"> 403 page </h4>
+                        <!-- <h4 class="font-semibold mb-2 text-base"> 403 page </h4> -->
 
 
                             
                         
                         <div class="content centered">
-                         	<img class="align-center" style="width:500px;" src="{{asset('images/access-denied.png')}}">
+                         	<img class="align-center m-auto" style="width:500px;" src="{{asset('images/access-denied.png')}}">
                             
                             @if(Session::get('message'))
-                                <h1 class="font-semibold mb-2 text-xl">{{Session::get('message')}}</h1>                                
+                                <h1 class="font-semibold mb-2 text-xl text-center">{{Session::get('message')}}</h1>                                
                             @else
-                                <h1 class="font-semibold mb-2 text-xl">It appears you don't have permission to access this page.</h1>
+                                <h1 class="font-semibold mb-2 text-xl text-center">It appears you don't have permission to access this page.</h1>
                             @endif
 
-                            <div class="flex mt-5">
+                            <div class="flex mt-5 justify-center">
                                 <div class="mr-5">
                                     <a href="{{url()->previous()}}" title="" class="btn bg-blue-500 hover:bg-blue-700 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Go Back</a>
                                 </div>

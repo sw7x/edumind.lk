@@ -104,7 +104,8 @@
 					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.salary.*', Route::currentRouteName()) ? 'true' : 'false' }}">
 						<li class="{{ Route::is('admin.salary.pay-teacher') ? 'current' : '' }}"><a href="{{route('admin.salary.pay-teacher')}}">Pay Teacher salary</a></li>
 						<li class="{{ Route::is('admin.salary.pay-marketer') ? 'current' : '' }}"><a href="{{route('admin.salary.pay-marketer')}}">Pay Marketer salary</a></li>
-                        <li class="{{ Route::is('admin.salary.salary-slip') ? 'current' : '' }}"><a href="{{route('admin.salary.salary-slip')}}">Salary slip(single)</a></li>
+                        <li class="{{ Route::is('admin.salary.teacher-salary-slip') ? 'current' : '' }}"><a href="{{route('admin.salary.teacher-salary-slip')}}">Salary slip(Teacher-single)</a></li>
+                        <li class="{{ Route::is('admin.salary.marketer-salary-slip') ? 'current' : '' }}"><a href="{{route('admin.salary.marketer-salary-slip')}}">Salary slip(Marketer-single)</a></li>
                     </ul>
 				</li>
 

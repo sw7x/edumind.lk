@@ -196,32 +196,37 @@
                         <div class="detail"></div>
                         <div class="detail detail-main">
                             <fieldset>
-                                <div>
-                                    <table class="table table-condensed">
-                                        <thead>
-                                            <tr class="">
-                                                <th class="text-base text-center">Enrollments</th>
+                                <div class="p-1">
+                                    <table class="table table-striped table-bordered mb-0">
+                                        <thead  class="thead-dark">
+                                            <tr>
+                                                <th>Enrollement </th>
+                                                <th>Course Fee</th>
+                                                <th>Comission</th>
+                                                <th class="font-bold text-base text-red-500">Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="">
-                                                <td>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-	                                                <span class="label label-primary mr-3 mb-3 inline-block py-2 px-4"><a class="font-semibold text-sm hover:text-red-500" href="">DDE123</a></span>
-                                                </td>
-                                            </tr>                                            
+                                            <tr>
+                                                <td class="font-bold text-base"><a href="hhh" target="_blank">ABC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                                <td>RS 1000</td>
+                                                <td>RS 1000</td>
+                                                <td class="font-bold text-base text-red-500">RS 2000</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="font-bold text-base"><a href="hhh" target="_blank">CCC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                                <td>RS 2000</td>
+                                                <td>RS 0</td>
+                                                <td class="font-bold text-base text-red-500">RS 2000</td>
+                                            </tr> 
+
+                                            <tr>
+                                                <td class="font-bold text-base"><a href="hhh" target="_blank">FBC173 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                                <td>RS 500</td>
+                                                <td>RS 2000</td>
+                                                <td class="font-bold text-base text-red-500">RS 2500</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
