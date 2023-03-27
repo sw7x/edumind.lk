@@ -99,9 +99,9 @@ class UserFactory extends Factory
         //array_merge($user,array('qq'=> '666'));
         //return array('user'=>$user,'roleId' => $roleId);
 
-        var_dump ($user);
+        //var_dump ($user);
 
-       return $user;
+        return $user;
 
 
         //$user = User->registerAndActivate($user);

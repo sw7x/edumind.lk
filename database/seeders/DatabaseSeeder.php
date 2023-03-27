@@ -24,10 +24,27 @@ class DatabaseSeeder extends Seeder
         $this->call(StudentSeeder::class);
 
         $this->call(UserSeeder::class);
-
-
-        $this->call(CourseSeeder::class);
         $this->call(Contact_usSeeder::class);
+        
+        $this->call(SubjectSeeder::class);
+        $this->call(CourseSeeder::class);
+        
+
+
+        
+
+
+        $this->call(InvoiceSeeder::class);
+        $this->call(CouponSeeder::class);
+        $this->call(CourseSelectionSeeder::class);
+
+        
+
+
+
+        $this->call(EnrollmentSeeder::class);
+
+
 
     }
 }

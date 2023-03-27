@@ -228,9 +228,17 @@
                                                 <td class="font-bold text-base text-red-500">RS 2500</td>
                                             </tr>
                                         </tbody>
-                                    </table>
+                                    </table>                    
                                 </div>
                             </fieldset>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Remarks</label>
+                                <div class="col-sm-9">
+                                    <p class="text-base font-bold">Note that you can also use other methods provided by the Carbon library to perform other types of date calculations, such as adding or subtracting days, weeks, months, years, etc.</p>
+                                </div>
+                            </div>
                         </div>
                     </li>
                 </ul>             

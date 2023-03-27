@@ -20,8 +20,8 @@ class CreateCouponsTable extends Migration
             $table->string('code', 6)->primary();
 
             //100.00% is stored as 100.00
-            $table->decimal('discount_percentage', 5,2);
-            $table->decimal('beneficiary_commision_percentage_from_discount', 5,2);
+            $table->decimal('discount_percentage', 5,2)->default(10.00);
+            $table->decimal('beneficiary_commision_percentage_from_discount', 5,2)->default(100.00);
 
             $table->integer('total_count');
             $table->integer('used_count');          

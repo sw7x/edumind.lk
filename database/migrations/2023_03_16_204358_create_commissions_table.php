@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSalariesTable extends Migration
+class CreateCommissionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateSalariesTable extends Migration
      */
     public function up()
     {
-        Schema::create('salaries', function (Blueprint $table) {
+        Schema::create('commissions', function (Blueprint $table) {
             $table->increments('id');            
             $table->text('image')->nullable();
             $table->decimal('paid_amount',10,2)->nullable();
             $table->timestamp("paid_date")->nullable();
-            $table->string('remarks')->nullable();
+            $table->string('remarks')->nullable();            
             $table->date('from_date');
-            $table->date('to_date');           
+            $table->date('to_date');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +33,6 @@ class CreateSalariesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('salaries');
+        Schema::dropIfExists('commissions');
     }
 }

@@ -139,6 +139,16 @@
                         <div class="hr-line-dashed"></div>
 
 
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Remarks</label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control" name="remarks"
+                                            cols="30" rows="7" placeholder="" autocomplete="off"></textarea>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+
                         <div class="form-group row"><label class="col-sm-4 col-form-label">Salary slip image</label>
                             <div class="col-sm-8">
                                 {{--                                        <input type="file" class="form-control" name="subject_image">--}}

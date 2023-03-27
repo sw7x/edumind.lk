@@ -15,6 +15,10 @@ use App\Models\Role;
 use App\Models\Subject;
 //use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Course;
+use App\Models\CourseSelection;
+use App\Models\Coupon;
+
+
 
 use Cartalyst\Sentinel\Users\EloquentUser as CartalystUser;
 class User extends CartalystUser
@@ -76,6 +80,15 @@ class User extends CartalystUser
     ];
 
 
+
+
+    public function course_selections()
+    {
+        return $this->hasMany(CourseSelection::class,'student_id');        
+    }
+
+
+
     public function getTeachingCourses(){
         return $this->hasMany(Course::class,'teacher_id','id');
     }
@@ -84,31 +97,17 @@ class User extends CartalystUser
         return $this->hasMany(Contact_us::class,'user_id','id');
     }
 
-    public function enrolled_courses()
-    {
-        return $this->belongsToMany('App\Models\Course',
-            'enrollments',
-            'student_id',
-            'course_id')
-            ->withPivot(
-                'id',
-                'cart_add_date',
-                'enroll_date',
-                'complete_date',
-                'discount_amount',
-                'rating',
-                //'course_id',
-                //'student_id',
-                'comment_id',
-                'status'
-            )->withTimestamps();
-    }
+
 
     public function subjects(){
         return $this->hasMany(Subject::class,'author_id','id');
     }
 
-
+    
+    public function cupons()
+    {
+        return $this->hasMany(Coupon::class,'beneficiary_id','id');
+    }
 
 
     public function getLastLoginTime(){

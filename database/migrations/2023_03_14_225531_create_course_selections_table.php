@@ -28,7 +28,10 @@ class CreateCourseSelectionsTable extends Migration
             $table->integer('student_id')->unsigned();
             $table->foreign('student_id')->references('id')->on('users');
 
-            $table->softDeletes();
+            $table->unique(['course_id','student_id']);
+
+
+            //$table->timestamps();
             $table->softDeletes();
         });
     }

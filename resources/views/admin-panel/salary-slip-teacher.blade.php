@@ -61,40 +61,50 @@
                         <label class="col-sm-3 col-form-label">Enrollments</label>
                         <div class="col-sm-9">
                              <table class="table table-striped table-bordered mb-0">
-                                        <thead  class="thead-dark">
-                                            <tr>
-                                                <th>Enrollement </th>
-                                                <th>Course Fee</th>
-                                                <th>Comission</th>
-                                                <th class="font-bold text-base text-red-500">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="font-bold text-base"><a href="hhh" target="_blank">ABC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
-                                                <td>RS 1000</td>
-                                                <td>RS 1000</td>
-                                                <td class="font-bold text-base text-red-500">RS 2000</td>
-                                            </tr>
+                                <thead  class="thead-dark">
+                                    <tr>
+                                        <th>Enrollement </th>
+                                        <th>Course Fee</th>
+                                        <th>Comission</th>
+                                        <th class="font-bold text-base text-red-500">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-bold text-base"><a href="hhh" target="_blank">ABC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                        <td>RS 1000</td>
+                                        <td>RS 1000</td>
+                                        <td class="font-bold text-base text-red-500">RS 2000</td>
+                                    </tr>
 
-                                            <tr>
-                                                <td class="font-bold text-base"><a href="hhh" target="_blank">CCC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
-                                                <td>RS 2000</td>
-                                                <td>RS 0</td>
-                                                <td class="font-bold text-base text-red-500">RS 2000</td>
-                                            </tr> 
+                                    <tr>
+                                        <td class="font-bold text-base"><a href="hhh" target="_blank">CCC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                        <td>RS 2000</td>
+                                        <td>RS 0</td>
+                                        <td class="font-bold text-base text-red-500">RS 2000</td>
+                                    </tr> 
 
-                                            <tr>
-                                                <td class="font-bold text-base"><a href="hhh" target="_blank">FBC173 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
-                                                <td>RS 500</td>
-                                                <td>RS 2000</td>
-                                                <td class="font-bold text-base text-red-500">RS 2500</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>                           
+                                    <tr>
+                                        <td class="font-bold text-base"><a href="hhh" target="_blank">FBC173 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
+                                        <td>RS 500</td>
+                                        <td>RS 2000</td>
+                                        <td class="font-bold text-base text-red-500">RS 2500</td>
+                                    </tr>
+                                </tbody>
+                            </table>                           
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Remarks</label>
+                        <div class="col-sm-9">
+                            <p class="text-base font-bold">Note that you can also use other methods provided by the Carbon library to perform other types of date calculations, such as adding or subtracting days, weeks, months, years, etc.</p>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    
                 </div>
             </div>
 

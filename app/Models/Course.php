@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Casts\Json;
+use App\Models\CourseSelection;
+use App\Models\Coupon;
+
 
 class Course extends Model
 {
@@ -104,26 +107,15 @@ class Course extends Model
         return $this->belongsTo(User::class,'teacher_id','id');
     }
 
-    public function students()
+    public function course_selections()
     {
-        return $this->belongsToMany('App\Models\User',
-            'enrollments',
-            'course_id',
-            'student_id')
-            ->withPivot(
-                'cart_add_date',
-                'enroll_date',
-                'complete_date',
-                'discount_amount',
-                'rating',
-                //'course_id',
-                //'student_id',
-                'comment_id',
-                'status'
-            )->withTimestamps();
+        return $this->hasMany(CourseSelection::class,'course_id','id');        
     }
 
-
+    public function coupons()
+    {
+        return $this->hasMany(Coupon::class,'course_id','id');        
+    }
 
 
     public function getLastUpdatedTime(){

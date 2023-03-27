@@ -49,7 +49,7 @@ class CourseFactory extends Factory
                 $this->model::PUBLISHED
             ]),
 
-            'subject_id'    => Subject::factory(),
+            'subject_id'    => Subject::inRandomOrder()->first()->id,
 
             //fill only teacher account user id's
             'teacher_id'    => function () {

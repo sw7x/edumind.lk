@@ -11,13 +11,18 @@ use App\Models\Subject;
 use App\Models\Role;
 use Sentinel;
 use App\Models\Contact_us;
+use App\Models\CourseSelection;
+
+
+
+
 
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Gate;
 
-
-
+use App\Models\Coupon;
+use Faker\Generator as Faker;
 
 
 class HomeController extends Controller
@@ -44,6 +49,15 @@ class HomeController extends Controller
     {
         
         
+        
+        
+        //$seeder = new \Database\Seeders\EnrollmentSeeder();        
+        //$seeder->run();
+        
+        
+        /*
+
+
         //dd(Sentinel::getUser()->id);
 
 
@@ -123,10 +137,9 @@ class HomeController extends Controller
         //$this->authorize('view');
 
         //dd(Sentinel::getUser()->isAdmin());
-
-
         //Course::groupby('passing_score')->get();
 
+        */
 
         //load recent teachers
         $teacherService = new TeacherService();

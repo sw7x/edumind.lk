@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-
-class OrderSeeder extends Seeder
+use App\Models\Coupon;
+class CouponSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +13,6 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Coupon::factory()->count(30)->create();
     }
 }
