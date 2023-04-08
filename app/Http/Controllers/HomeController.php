@@ -22,8 +22,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 use App\Models\Coupon;
-use Faker\Generator as Faker;
+use App\Models\Course;
 
+use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -49,7 +51,10 @@ class HomeController extends Controller
     {
         
         
-        
+       
+        dump2(Course::all()->pluck('status')->toArray());
+        dd2(Course::withoutGlobalScope('published')->get()->pluck('status')->toArray());
+        //dd2(User::find(28)->subjects()->get());
         
         //$seeder = new \Database\Seeders\EnrollmentSeeder();        
         //$seeder->run();

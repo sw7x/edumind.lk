@@ -65,6 +65,17 @@ class UserFactory extends Factory
 
 
         $roleId = $this->faker->randomElement([2,3,4,5]);
+        if($roleId == 4){
+            $profilePic = 'users/' . $this->faker->image('public/storage/users', 630, 820, 'users', false, true);
+        }else{
+            $profilePic = null;
+        }
+
+        
+
+
+
+
         //var_dump ($roleId);
         $user =  [
             'full_name' => $this->faker->name(),
@@ -81,6 +92,8 @@ class UserFactory extends Factory
                 $this->model::GENDER_MALE, 
                 $this->model::GENDER_FEMALE
             ]),
+            'profile_pic'   => $profilePic,
+
 
             'dob_year' => 1987,
             'status' => $this->faker->randomElement([1,0]),

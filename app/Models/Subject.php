@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-
+use Illuminate\Database\Eloquent\Builder;
 
 class Subject extends Model
 {
@@ -18,6 +18,17 @@ class Subject extends Model
     
     protected $table = 'subjects';
     protected $fillable = ['name','description','image','status','slug','author_id'];
+
+
+    protected static function booted(){
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('status', self::PUBLISHED);
+        });
+    }
+
+
+
+
 
 
 

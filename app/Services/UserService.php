@@ -142,6 +142,21 @@ class UserService
     }
 
 
+    //view all teachers
+    //view all stu
+    //view all marketers
+    //view all editors
+
+
+
+
+    //add 
+    //edit
+    //delete
+    //view use Single(teachers,stu,marketers,editors)
+    //change user status
+
+
 
 
 }

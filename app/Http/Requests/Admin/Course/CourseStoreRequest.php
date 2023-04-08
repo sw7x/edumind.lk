@@ -33,7 +33,7 @@ class CourseStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        //dump($this->request);
+        //dd($this->request);
         if(!$this->get('course-price')){
             $this->merge(['course-price' => 0]);
         }
@@ -85,7 +85,16 @@ class CourseStoreRequest extends FormRequest
             'subject'       => 'required',
             'teacher'       => 'required',
             'course-heading'=> 'required',
-            'video-count'   => 'nullable|numeric|min:0',            
+            'video-count'   => 'nullable|numeric|min:0', 
+
+            'course-duration-minutes'   => 'required|numeric|between:0,59',
+            'course-duration-hours'     => 'numeric|min:0',
+
+
+                    
+
+
+
             
             'course-img'    =>  [
                 function ($attribute, $value, $fail) {               
@@ -224,7 +233,14 @@ class CourseStoreRequest extends FormRequest
             'teacher.required'          => 'Teacher need to assign for a course.',            
             'course-heading.required'   => 'Course heading field is required.',
             'video-count.numeric'       => ':attribute must be a number.',
-            'video-count.min'           => ':attribute value must be greater than zero.',            
+            'video-count.min'           => ':attribute value must be greater than zero.',   
+
+            'course-duration-hours.numeric'     => "Course duration hour count must be a number",
+            'course-duration-hours.min'         => "Course duration hour count cannot be minus",
+            
+            'course-duration-minutes.required'  => "Course duration minute count is required",
+            'course-duration-minutes.numeric'   => "Course duration minute count is invalid",
+            'course-duration-minutes.between'   => "Course duration minute count must be a number between 0 and 59, including both 0 and 59",                         
         
         ] + $contentArrMessages;
         

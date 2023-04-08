@@ -1,5 +1,5 @@
 @extends('admin-panel.layouts.master')
-@section('title','Cupon code-course')
+@section('title','Coupon code-course')
 
 @section('css-files')
     <link href="{{asset('admin/css/plugins/switchery/switchery.css')}}" rel="stylesheet">

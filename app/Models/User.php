@@ -17,7 +17,7 @@ use App\Models\Subject;
 use App\Models\Course;
 use App\Models\CourseSelection;
 use App\Models\Coupon;
-
+use Illuminate\Database\Eloquent\Builder;
 
 
 use Cartalyst\Sentinel\Users\EloquentUser as CartalystUser;
@@ -79,6 +79,12 @@ class User extends CartalystUser
         'email_verified_at' => 'datetime',
     ];
 
+    protected static function booted(){
+        static::addGlobalScope('active', function (Builder $builder) {
+            $builder->where('status', 1);
+        });
+    }
+
 
 
 
@@ -104,7 +110,7 @@ class User extends CartalystUser
     }
 
     
-    public function cupons()
+    public function coupons()
     {
         return $this->hasMany(Coupon::class,'beneficiary_id','id');
     }

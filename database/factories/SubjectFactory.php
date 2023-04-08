@@ -34,7 +34,11 @@ class SubjectFactory extends Factory
             //'name' => substr($this->faker->name,0,24),
             'name'          => $subjectName,
             'description'   => $this->faker->text(),
-            'image'         => '',
+            
+            //'image'         => $this->faker->imageUrl($width = 200, $height = 200),
+            //'image'         => '',
+            'image'         => 'subjects/' . $this->faker->image('public/storage/subjects', 200, 200, 'subject', false, true),
+            
             //'status'        => $this->faker->randomElement(['published','draft']),
             'status'        => $this->faker->randomElement([
                 $this->model::PUBLISHED, 

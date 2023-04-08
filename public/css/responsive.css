@@ -479,7 +479,7 @@ header .header_inner .right-side .triger::before {
         box-shadow: unset;
     }
 
-    .cart .cupon-wrapper{
+    .cart .coupon-wrapper{
         flex: 0.65
     }
 }
@@ -506,7 +506,7 @@ header .header_inner .right-side .triger::before {
         font-size: 14px;        
     }
 
-    .cart .cupon-wrapper {
+    .cart .coupon-wrapper {
         flex: 0.75;
     }
 
@@ -603,7 +603,7 @@ header .header_inner .right-side .triger::before {
         margin-bottom: 20px;
     }
 
-    .cart .cupon-wrapper {
+    .cart .coupon-wrapper {
         flex: 1;
     }
 
@@ -626,11 +626,11 @@ header .header_inner .right-side .triger::before {
         width: 100%;
     }
 
-    .cart .cupon-wrapper{
+    .cart .coupon-wrapper{
         flex-wrap: wrap;
     }
 
-    .cart .cupon-wrapper *{
+    .cart .coupon-wrapper *{
         flex: 1 0 100%;
         margin-bottom: 10px;
         min-height: 50px;

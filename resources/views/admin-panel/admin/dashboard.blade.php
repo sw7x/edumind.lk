@@ -497,7 +497,7 @@
             <div class="ibox">
                 <div class="ibox-title pt-2">                                                       
                     <i class="float-left fa fa-credit-card fa-2x py-1 w-5 mr-5"></i>                            
-                    <h2 class="float-left font-bold my-0 p-0 text-2xl">Cupon codes</h2>
+                    <h2 class="float-left font-bold my-0 p-0 text-2xl">Coupon codes</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>

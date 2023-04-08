@@ -9,6 +9,8 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use App\Casts\Json;
 use App\Models\CourseSelection;
 use App\Models\Coupon;
+use Illuminate\Database\Eloquent\Builder;
+
 
 
 class Course extends Model
@@ -97,6 +99,20 @@ class Course extends Model
             return "";
         }        
     }*/
+
+
+    protected static function booted(){
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('status', self::PUBLISHED);
+        });
+    }
+
+
+
+
+
+
+
 
 
     public function subject(){

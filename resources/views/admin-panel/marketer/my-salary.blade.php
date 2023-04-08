@@ -54,7 +54,7 @@
                     </div>
                    
                     <div class="table-responsive">
-                        <table id="cupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                        <table id="coupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -242,7 +242,7 @@
 
 
 
-        var table = $('#cupon-code-list-tbl').DataTable({
+        var table = $('#coupon-code-list-tbl').DataTable({
             //ajax: './ajax.txt',
             columns: [
                 {
@@ -266,7 +266,7 @@
         });
 
         // Add event listener for opening and closing details
-        $('#cupon-code-list-tbl tbody').on('click', 'td.dt-control', function () {
+        $('#coupon-code-list-tbl tbody').on('click', 'td.dt-control', function () {
             var tr = $(this).closest('tr');
             var row = table.row(tr);
 
@@ -283,7 +283,7 @@
             }
         });
 
-        $("#cupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
+        $("#coupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
 
 
 

@@ -171,7 +171,7 @@
                             </ul>
 
                             <div class="cart_footer row">
-                                <div class="col-md-6 text-left"><a href="{{route('cart')}}" class="text-blue-500">View cart</a></div>
+                                <div class="col-md-6 text-left"><a href="{{route('view-cart')}}" class="text-blue-500">View cart</a></div>
                                 <div class="col-md-6 text-right"><span>Subtotal : $ 320</span></div>
                                 <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
                             </div>

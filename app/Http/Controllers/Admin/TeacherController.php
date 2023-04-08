@@ -64,7 +64,7 @@ class TeacherController extends Controller
     }        
 
 
-    // list-cupon-codes.blade
+    // list-coupon-codes.blade
     // my-courses.blade
     // my-earnings.blade
 

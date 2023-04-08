@@ -247,7 +247,7 @@
 
 
                         <fieldset class="p-3 border-solid border-2 border-gray-400 mb-5">
-                            <legend class="col-sm-2 pt-0 text-base">Cupon code</legend>
+                            <legend class="col-sm-2 pt-0 text-base">Coupon code</legend>
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Teacher Accounts need to approve :</label>
                                 <div class="col-sm-8">

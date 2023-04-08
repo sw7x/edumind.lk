@@ -32,12 +32,12 @@ use App\Http\Controllers\Admin\ContactUsMessagesController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SubjectController as Admin_SubjectController;
 use App\Http\Controllers\Auth\ChangePasswordController;
-use App\Http\Controllers\ContactUsMessagesController as User_ContactUsMessagesController;
+
 use App\Http\Controllers\Admin\CourseController as Admin_CourseController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CouponsController;
 
-
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\StudentController;
@@ -232,19 +232,39 @@ Route::get('/faq',function(){ return view('faq-page');})->name('faq');
 Route::get('/bill-info',function(){ return view('bill-info');})->name('bill-info');
 Route::get('/empty',function(){ return view('empty');})->name('empty');
 Route::get('/help',function(){ return view('help-page');})->name('help');
-Route::get('/cart',function(){ return view('cart');})->name('cart');
+
+
+
+Route::get ('/cart', [StudentController::class,'viewCart'])->name('view-cart');
+Route::post ('/cart/remove/{id}', [StudentController::class,'removeFromCart'])->name('remove-cart');
+
+
 Route::get('/terms-and-services',function(){ return view('terms-and-services');})->name('terms-and-services');
 Route::get('/courses',function(){ return view('courses');})->name('courses');
-Route::get('/search',function(){ return view('search');})->name('search');
+
+
+
+
 Route::get('/test',function(){ return view('test');})->name('test');
 
 //Route::get('/course-watch', function () {     return view('course-watch'); })->name('course-watch');
 Route::get ('/course/guest-enroll', [User_CourseController::class,'guestEnroll'])->name ('course-guest-enroll');
 Route::post ('/course/enroll', [User_CourseController::class,'enroll'])->name ('course.enroll');
 Route::post ('/course/complete', [User_CourseController::class,'complete'])->name ('course.complete');
+
+Route::get('/course/search', [User_CourseController::class,'viewSearchPage'])->name ('course-search');
+Route::post('/course/search', [User_CourseController::class,'SearchCourse'])->name ('course-search-submit');
+
+
 Route::get ('/course/{slug?}', [User_CourseController::class,'ViewCourse'])->name('course-single');
 Route::get ('/course/watch/{slug?}/{videoId?}', [User_CourseController::class,'watchCourse'])->name ('course-watch');
 //Route::get ('/course-single-enrolled/{slug?}', [User_CourseController::class,'ViewEnrolledCourse'])->name ('course-single-enrolled');
+
+
+
+
+
+
 
 
 
@@ -325,8 +345,8 @@ Route::get ('/teacher/{slug?}/courses', [TeacherController::class,'viewCourses']
 
 
 Route::group(['prefix'=>'contact','as'=>'contact.','namespace' =>''], function(){
-    Route::get ('/', [ContactController::class,'index'])->name ('index');
-    Route::post('/store', [ContactController::class,'store'])->name ('store');
+    Route::get ('/', [ContactUsController::class,'index'])->name ('index');
+    Route::post('/store', [ContactUsController::class,'store'])->name ('store');
 });
 
 
@@ -430,21 +450,31 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
 
 
-        Route::group(['prefix'=>'cupon-code','as'=>'cupon-code.'], function(){
-            Route::get('/add',function(){return view('admin-panel.admin.cupon-code-add');})->name('add');
-            Route::get('/marketers',function(){return view('admin-panel.admin.cupon-code-list-marketers');})->name('marketers');
-            Route::get('/teachers',function(){return view('admin-panel.admin.cupon-code-list-teachers');})->name('teachers');
+        Route::group(['prefix'=>'coupon-code','as'=>'coupon-code.'], function(){
 
-            //Route::get('/courses',function(){return view('aadmin-panelcupon-code-courses');})->name('courses');
-            //Route::get('/marketers',function(){return view('aadmin-panelcupon-code-marketers');})->name('marketers');
+            //Route::get('/add',function(){return view('admin-panel.admin.coupon-code-add');})->name('add');          
+            //Route::get('/add',function(){return view('admin-panel.admin.coupon-code-add');})->name('add');
+            Route::get ('/add', [CouponsController::class,'create'])->name('create');
+            Route::post ('/generate-code', [CouponsController::class,'generateCode'])->name('generate-code');
 
-            Route::get('/view',function(){return view('admin-panel.marketer.list-cupon-codes');})->name('view');
-            Route::get('/new',function(){return view('admin-panel.marketer.new-cupon-codes');})->name('new');
-            Route::get('/usage',function(){return view('admin-panel.marketer.usage-cupon-codes');})->name('usage');
+            Route::post ('/beneficiaries', [CouponsController::class,'loadBeneficiaries'])->name('load-beneficiaries');
+
+
+
+
+            Route::get('/marketers',function(){return view('admin-panel.admin.coupon-code-list-marketers');})->name('marketers');
+            Route::get('/teachers',function(){return view('admin-panel.admin.coupon-code-list-teachers');})->name('teachers');
+
+            //Route::get('/courses',function(){return view('aadmin-panelcoupon-code-courses');})->name('courses');
+            //Route::get('/marketers',function(){return view('aadmin-panelcoupon-code-marketers');})->name('marketers');
+
+            Route::get('/view',function(){return view('admin-panel.marketer.list-coupon-codes');})->name('view');
+            Route::get('/new',function(){return view('admin-panel.marketer.new-coupon-codes');})->name('new');
+            Route::get('/usage',function(){return view('admin-panel.marketer.usage-coupon-codes');})->name('usage');
             //Route::get('/dashboard',function(){return view('admin-panel.marketer.dashboard');})->name('dashboard');
-            Route::get('/single',function(){return view('admin-panel.marketer.cupon-code-view');})->name('single');
+            Route::get('/single',function(){return view('admin-panel.marketer.coupon-code-view');})->name('single');
         
-            Route::get('/teacher-view',function(){return view('admin-panel.teacher.list-cupon-codes');})->name('teacher-view');
+            Route::get('/teacher-view',function(){return view('admin-panel.teacher.list-coupon-codes');})->name('teacher-view');
             
             Route::get ('/earnings', [Admin_MarketerController::class,'ViewEarnings'])->name ('earnings');
             Route::get ('/my-salary', [Admin_MarketerController::class,'viewMySalary'])->name ('my-salary');
@@ -527,10 +557,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
 
 
-//testing purpose
-Route::group(['namespace'=>'Admin'], function(){
-    Route::get ('/students', [User_ContactUsMessagesController::class,'students'])->name ('students');
-});
+
 
 
 //Route::fallback(function(){ return response()->view('errors.404', [], 404); });

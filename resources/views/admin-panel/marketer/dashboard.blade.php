@@ -94,7 +94,7 @@
             		<div class="ibox">
                         <div class="ibox-title pt-2">                        	                     		
                         	<i class="float-left fa fa-credit-card fa-2x py-1 w-5 mr-5"></i>                        	
-                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Cupon codes - Count</h2>
+                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Coupon codes - Count</h2>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -193,7 +193,7 @@
             		<div class="ibox">
                         <div class="ibox-title pt-2">                        	                     		
                         	<i class="float-left fa fa-credit-card fa-2x py-1 w-5 mr-5"></i>                        	
-                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Cupon codes - Works for</h2>
+                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Coupon codes - Works for</h2>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -294,7 +294,7 @@
             		<div class="ibox">
                         <div class="ibox-title pt-2">                        	                     		
                         	<i class="float-left fa fa-credit-card fa-2x py-1 w-5 mr-5"></i>                        	
-                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Cupon codes - Used count</h2>
+                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Coupon codes - Used count</h2>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -339,7 +339,7 @@
             		<div class="ibox">
                         <div class="ibox-title pt-2">                        	                     		
                         	<i class="float-left fa fa-credit-card fa-2x py-1 w-5 mr-5"></i>                        	
-                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Cupon codes - Discount amount</h2>
+                            <h2 class="float-left font-bold my-0 p-0 text-2xl">Coupon codes - Discount amount</h2>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>

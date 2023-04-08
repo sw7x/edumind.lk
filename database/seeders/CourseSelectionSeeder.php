@@ -23,7 +23,6 @@ class CourseSelectionSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
 
-        //CourseSelection::factory()->count(100)->create();
         $data = array();
         $studentsIdArr           = Sentinel::findRoleBySlug('student')->users()->with('roles')->get()->pluck('id')->toArray();    
         $courseIdArr             = Course::inRandomOrder()->get()->pluck('id')->toArray();
@@ -49,11 +48,47 @@ class CourseSelectionSeeder extends Seeder
                     if ($resultCount >= 250 || $j > $limit) {
                         break;
                     }else{
+
+                        $course         = Course::find($courseId);
+                        $edumindAmount  = $course->price * ((100 - $course->author_share_percentage)/100);              
+                        $authorAmount   = $course->price * ($course->author_share_percentage/100);
+
+                        //coupon code assign  
+                        $coupons            = $course->coupons;
+                        $assignedCouponCode = $coupons->shuffle()->first();          
+                        $code               = is_null($assignedCouponCode)?null: $assignedCouponCode->code;
+
+
+                        //====== when coupon code use by customer(student) ==================/          
+                        $discountAmount         = is_null($assignedCouponCode)? 0 : ($course->price * ($assignedCouponCode->discount_percentage/100));
+                        $commisionPercentage    = is_null($assignedCouponCode)? 0 : ($assignedCouponCode->beneficiary_commision_percentage_from_discount);
+                       
+                        $edumindLoseAmount       = ($discountAmount/100) * (100 + $commisionPercentage);
+                        $benificiaryEarnAmount   = $discountAmount * ($commisionPercentage/100);
+                        //=================================================================/
+
+
                         $data[]     =   array(                
                             'cart_add_date' => $faker->dateTimeBetween('-6 week', '-5 week'),
                             'is_checkout'   => $faker->randomElement([false,true,true,true]),                                
                             'course_id'     => $courseId,          
-                            'student_id'    => $studentsIdArr[$j]
+                            'student_id'    => $studentsIdArr[$j],
+
+
+
+                            'edumind_amount'    =>  $edumindAmount,           
+                            'author_amount'     =>  $authorAmount,
+
+                            'discount_amount'       => $discountAmount,             
+                            'price_afeter_discouunt'=> $course->price - $discountAmount,
+
+
+
+                            'edumind_lose_amount'       => $edumindLoseAmount,
+                            'benificiary_earn_amount'   => $benificiaryEarnAmount,
+                            'used_coupon_code'   => $code,
+
+
                         );                    
                     }
                     $resultCount++;

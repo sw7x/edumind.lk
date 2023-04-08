@@ -34,7 +34,7 @@
 				<div class="col-lg-12">
 					<h2 class="font-bold my-1">salary</h2>
                 	<h2 class="font-bold my-1">earnings</h2>
-                	<h2 class="font-bold my-1">cupon code</h2>
+                	<h2 class="font-bold my-1">coupon code</h2>
                 </div>
             </div>
                

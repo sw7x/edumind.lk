@@ -31,6 +31,36 @@ class CreateCourseSelectionsTable extends Migration
             $table->unique(['course_id','student_id']);
 
 
+
+
+
+            $table->decimal('edumind_amount',10,2)->nullable();//
+            $table->decimal('author_amount',10,2)->nullable();//
+            
+            $table->string('used_coupon_code')->nullable();/////
+            $table->foreign('used_coupon_code')->references('code')->on('coupons');/////
+            //->onDelete('cascade');
+            
+            $table->decimal('discount_amount',10,2)->nullable();////
+            $table->decimal('price_afeter_discouunt',10,2)->nullable();  /////         
+            
+            $table->decimal('edumind_lose_amount',10,2)->nullable();   //       
+            $table->decimal('benificiary_earn_amount',10,2)->nullable();////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             //$table->timestamps();
             $table->softDeletes();
         });

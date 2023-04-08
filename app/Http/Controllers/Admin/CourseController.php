@@ -20,8 +20,9 @@ use Illuminate\Support\Facades\Session;
 use App\Services\CourseService;
 use App\Utils\FileUploadUtil;
 use App\Utils\UrlUtil;
-//use Illuminate\Support\Str;
+
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class CourseController extends Controller
 {
@@ -117,9 +118,9 @@ class CourseController extends Controller
             //dump(Session::all());
             //dump(Session::get('errors'));
             //dump(Session::get('errors')->courseCreate);
-            //dump(Session::get('errors')->courseCreate->getMessages());                      
+            //dd(Session::get('errors')->courseCreate->getMessages());                      
 
-            throw new \Exception("Error Processing Request", 1);
+            //throw new \Exception("Error Processing Request", 1);
                                   
             /* if course content is in correct format then 
             send it to view to recive as old values */
@@ -169,6 +170,16 @@ class CourseController extends Controller
             }else{
                 $destination =null;
             }
+
+
+
+
+            $hours  = $request->get('course-duration-hours');
+            $minutes = $request->get('course-duration-minutes');                      
+
+            $duration  = (!$hours)?'0 Hours : ':(($hours ==1)?'1 Hour : ':$hours.' Hours : ');
+            $duration .= (!$minutes)?'0 Minutes':(($minutes ==1)?'1 Minute':$hours.' Minutes');
+
             
             Course::create([
                 'name'                    => $request->get('course-name'),
@@ -176,7 +187,7 @@ class CourseController extends Controller
                 'teacher_id'              => $request->get('teacher'),
                 'heading_text'            => $request->get('course-heading'),
                 'description'             => $request->get('course-description'),
-                'duration'                => $request->get('video-duration'),
+                'duration'                => $duration,
                 'video_count'             => $request->get('video-count'),
                 'author_share_percentage' => $request->get('author_share_percentage'),
                 'price'                   => $request->get('course-price'),                
@@ -317,10 +328,11 @@ class CourseController extends Controller
                 throw new CustomException('Course does not found');             
             }
                  
-            $subjectsDataSet =  Subject::all ('id','name')->toArray();            
-
+            $subjectsDataSet =  Subject::where('status',Subject::PUBLISHED)->get(['id','name'])->toArray();            
+            
             $teacherService = new TeacherService();
-            $allTeachers = $teacherService->getAllTeachers();
+            $allTeachers = $teacherService->getAllTeachers();            
+
             $teachersDataSet = $allTeachers->map(function ($teacher) {
                 return collect($teacher->toArray())
                     ->only(['id', 'full_name', 'email'])
@@ -328,6 +340,12 @@ class CourseController extends Controller
             })->toArray();
 
             $courseContent = json_encode($course->content,512);
+
+            // using duration string located in database get hour, minute count
+            $dur_parts = array_map('trim', Str::of($course->duration)->explode(':')->toArray());              
+            $course->duration_hours     =   intval(Str::of($dur_parts[0])->before('Hour')->trim()->__toString());
+            $course->duration_minutes   =   intval(Str::of($dur_parts[1])->before('Minute')->trim()->__toString());
+       
 
             return view('admin-panel.course-edit')->with([
                 'course'            => $course,
@@ -354,7 +372,8 @@ class CourseController extends Controller
 
         }
         catch(\Exception $e){
-            session()->flash('message'  ,'Failed to load course edit form!');
+            //session()->flash('message'  ,'Failed to load course edit form!');
+            session()->flash('message'  ,$e->getMessage());
             session()->flash('cls'      ,'flash-danger');
             session()->flash('msgTitle' ,'Error!'); 
             return view('admin-panel.course-edit');
@@ -453,14 +472,21 @@ class CourseController extends Controller
                 }
             }
             /* end  - upload image if have one */
-    
+            
+            $hours  = $request->get('course-duration-hours');
+            $minutes = $request->get('course-duration-minutes');                      
+
+            $duration  = (!$hours)?'0 Hours : ':(($hours ==1)?'1 Hour : ':$hours.' Hours : ');
+            $duration .= (!$minutes)?'0 Minutes':(($minutes ==1)?'1 Minute':$minutes.' Minutes');
+
+
 
             $course->name                    = $request->get('course-name');
             $course->subject_id              = $request->get('subject');
             $course->teacher_id              = $request->get('teacher');
             $course->heading_text            = $request->get('course-heading');
             $course->description             = $request->get('course-description');
-            $course->duration                = $request->get('video-duration');
+            $course->duration                = $duration;
             $course->video_count             = $request->get('video-count');
             $course->author_share_percentage = $request->get('author_share_percentage');
             $course->price                   = $request->get('course-price');
@@ -478,10 +504,14 @@ class CourseController extends Controller
             
 
         }catch(CustomException $e){
+
+            //dump($request->input());
+            //dd($courseValErrors);
+
             /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
             then laravel automatically remove all duplicated message in one key element in array */
-            return redirect(route('admin.course.edit'))
+            return redirect(route('admin.course.edit',$id))
                 ->withErrors($courseValErrors['contentErrMsgArr'] ?? [],'contentErrMsgArr')            
                 ->withErrors($courseValErrors['infoErrMsgArr'] ?? [],'infoErrMsgArr')
                 ->withInput($request->input())           
@@ -502,7 +532,7 @@ class CourseController extends Controller
                 ]);
 
         }catch(\Exception $e){
-            return redirect(route('admin.course.edit'))
+            return redirect(route('admin.course.edit',$id))
                 ->withErrors($courseValErrors['contentErrMsgArr'] ?? [],'contentErrMsgArr')            
                 ->withErrors($courseValErrors['infoErrMsgArr'] ?? [],'infoErrMsgArr')
                 ->withInput($request->input())

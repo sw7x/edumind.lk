@@ -91,6 +91,9 @@ class CourseUpdateRequest extends FormRequest
             'course-heading'=> 'required',
             'video-count'   => 'nullable|numeric|min:0',            
             
+            'course-duration-minutes'   => 'required|numeric|between:0,59',
+            'course-duration-hours'     => 'nullable|numeric|min:0',
+
             'course-img'    =>  [
                 function ($attribute, $value, $fail) {               
                     //validate file type
@@ -231,7 +234,14 @@ class CourseUpdateRequest extends FormRequest
             'teacher.required'          => 'Teacher need to assign for a course.',            
             'course-heading.required'   => 'Course heading field is required.',
             'video-count.numeric'       => ':attribute must be a number.',
-            'video-count.min'           => ':attribute value must be greater than zero.',            
+            'video-count.min'           => ':attribute value must be greater than zero.',
+
+            'course-duration-hours.numeric'     => "Course duration hour count must be a number",
+            'course-duration-hours.min'         => "Course duration hour count cannot be minus",
+            
+            'course-duration-minutes.required'  => "Course duration minute count is required",
+            'course-duration-minutes.numeric'   => "Course duration minute count is invalid",
+            'course-duration-minutes.between'   => "Course duration minute count must be a number between 0 and 59, including both 0 and 59", 
         
         ] + $contentArrMessages;
 

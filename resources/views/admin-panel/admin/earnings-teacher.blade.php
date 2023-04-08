@@ -358,8 +358,8 @@
                                         <thead>
                                             <tr class="table-primary">
                                                 <th>Course</th>
-                                                <th>cupon code</th>
-                                                <th>cupon code discount %</th>
+                                                <th>coupon code</th>
+                                                <th>coupon code discount %</th>
                                                 <th>Student</th>
                                             </tr>
                                         </thead>
@@ -401,11 +401,11 @@
                             <td>RS 6000.00</td>
                         </tr>
                         <tr>
-                            <td>Cupon code discount %</td>
+                            <td>Coupon code discount %</td>
                             <td>10%</td>
                         </tr>
                         <tr>
-                            <td>Cupon code discount amount</td>
+                            <td>Coupon code discount amount</td>
                             <td>RS 600.00 = (6000*10%)</td>
                         </tr>                       
                         <tr>
@@ -417,11 +417,11 @@
                             <td>20%</td>
                         </tr>                       
                         <tr class="">
-                            <td>Marketer/Teacher commission from cupon code discount</td>
+                            <td>Marketer/Teacher commission from coupon code discount</td>
                             <td>RS 600.00 = (600*80%)</td>
                         </tr>
                         <tr class="text-red-600 font-bold text-lg">
-                            <td>Edumind lose Amount due to cupon code use</td>
+                            <td>Edumind lose Amount due to coupon code use</td>
                             <td>RS 600.00 = 600*(200% - 20%)</td>
                         </tr>                                       
                     </table>

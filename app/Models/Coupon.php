@@ -7,11 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+
 
 
 class Coupon extends Model
 {
     use HasFactory;
+
+
+    const ENABLE 	= 1;
+    const DISABLE   = 0;
+
+
+
+
     
     protected $primaryKey 	= 'code';
 	public $incrementing 	= false;
@@ -32,9 +42,14 @@ class Coupon extends Model
 
 	public function enrollments()
     {
-        return $this->hasMany(Enrollment::class,'used_cupon_code','code');
+        return $this->hasMany(Enrollment::class,'used_coupon_code','code');
     }
 	
+	protected static function booted(){
+        static::addGlobalScope('enabled', function (Builder $builder) {
+            $builder->where('is_enabled', self::ENABLE);
+        });
+    }
 
 
 }

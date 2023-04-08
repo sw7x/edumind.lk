@@ -253,7 +253,7 @@
             <!--  slider courses -->
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
                 <h2 class="text-2xl font-semibold">New Courses</h2>
-                <a href="{{route('search')}}" class="text-blue-500 sm:block hidden"> Search Courses </a>
+                <a href="{{route('course-search')}}" class="text-blue-500 sm:block hidden"> Search Courses </a>
             </div>
 
             <div class="mt-3">

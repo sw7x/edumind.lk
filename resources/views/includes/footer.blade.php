@@ -77,7 +77,7 @@
                                         <li><a href="{{route('home')}}">Home</a></li>
                                         <li><a href="{{route('viewAllTopic')}}">Subject List</a></li>
                                         <li><a href="{{route('search2')}}">Search</a></li>
-                                        <li> <a href="{{route('cart')}}">cart</a></li>
+                                        <li> <a href="{{route('view-cart')}}">cart</a></li>
                                     </ul>
                                 </div>
                                 <!-- end /.footer-menu -->

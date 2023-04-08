@@ -188,7 +188,7 @@
 
                     </x-slot>
                 </x-flash-message>            
-            @else
+            @endif
             
                 @if(old('contentInputStr') != '')
                     <div class="mb-3 float-right">                
@@ -361,7 +361,57 @@
                                         <input type="hidden" value="1" name="hidden_file_add_count"/>
                                         <div class="hr-line-dashed"></div>
 
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Duration<br> 
+                                                <!-- <small>X Hours : Y minutes</small> -->
+                                            </label>
+                                            <div class="col-sm-8">                                          
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-addon">X Hours : Y minutes</span>
+                                                    </div>
+                                                    <input type="text" name="course-duration-hours" placeholder="Hours" 
+                                                        class="form-control" value="{{$course->duration_hours}}">                                                    
+                                                    <input type="text" name="course-duration-minutes" placeholder="Minutes" 
+                                                        class="form-control" value="{{$course->duration_minutes}}">                                                
+                                                </div>
 
+                                                <div class="mt-2 error-msg-hours"></div>
+                                                <div class="error-msg-minutes"></div>
+
+                                                
+                                                @if (old('course-duration-hours'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('course-duration-hours')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{old('course-duration-hours')}} Hour(s)</span>
+                                                @endif                                                
+                                                @if (old('course-duration-minutes'))
+                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('course-duration-minutes')) text-red-600 @else text-green-600 @endif
+                                                        text-xs font-bold">Previously you entered - {{old('course-duration-minutes')}} minute(s)</span>
+                                                @endif
+
+
+                                                @if ($errors->infoErrMsgArr->has('course-duration-hours'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-duration-hours') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                                @if ($errors->infoErrMsgArr->has('course-duration-minutes'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-duration-minutes') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+
+
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        
+                                        <!-- 
                                         <div class="form-group  row">
                                             <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
                                             <div class="col-sm-8">
@@ -372,7 +422,8 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="hr-line-dashed"></div>
+                                        <div class="hr-line-dashed"></div> 
+                                        -->
 
                                         <div class="form-group  row">
                                             <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
@@ -638,7 +689,7 @@
                         </form>
                     </div>
                 </div>
-            @endif
+            
             
 
         </div>
@@ -709,9 +760,9 @@
 
     <!-- jQuery validate -->
     <script src="{{asset('admin/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
     {{--
     <script src="{{asset('admin/js/plugins/validate/additional-methods.min.js')}}"></script>
-    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
     --}}
 
 
@@ -734,7 +785,10 @@
 
 @section('javascript')
     <script>
+        {{--
         @if(!Session::has('message'))
+        --}}
+
             (function () {
                 //We want to preview images, so we need to register the Image Preview plugin
                 FilePond.registerPlugin(
@@ -926,12 +980,14 @@
                         });
 
 
-                        /***** precentage range slider *******/
+                        /***** precentage range slider www *******/
                         let $inputRange = $('input[name="author_share_percentage"]');
                         $inputRange.rangeslider({ polyfill: false });
                         for (let i = $inputRange.length - 1; i >= 0; i--) {
                             valueOutput($inputRange[i]);
+                            console.log($inputRange[i]);
                         }
+                        console.log('iii');
                         /*************************************/
 
                         
@@ -1105,13 +1161,15 @@
                     errorClass: "validationErrorCls",
                     rules:{
                         "course-name": {
-                            //required: true,
-                            //minlength: 3
+                            required: true,
+                            minlength: 3
                         },
                         //"subject"         : {required: true},
                         //"teacher"         : {required: true},
                         //"course-heading"  : {required: true},
                         //"video-count"     : {number: true,min:0},
+                        //'course-duration-hours'     : {number: true, min:0},
+                        //'course-duration-minutes'   : {required: true, minutes: true},
                         /*
                         "course-img"        : { 
                             accept: "image/*",
@@ -1132,7 +1190,17 @@
                         "course-img" :      { 
                             accept: 'Only image type jpg/png/jpeg/gif/webp is allowed',
                             filesize:" file size must be less than 1MB.",
-                        }*/
+                        }, 
+                        'course-duration-hours'     : {
+                            number: "Course duration hour count must be number", 
+                            min:"Course duration hour count cannot be minus"
+                        },
+                        'course-duration-minutes'   : {
+                            required: "Course duration minute count is required", 
+                            minutes: "Course duration minute count is invalid",                         
+                        },*/
+
+                       
 
 
 
@@ -1143,13 +1211,22 @@
                     },
                     errorPlacement: function (error, element)
                     {
+                        var elementName = $(element).attr("name");
                         console.log(element);
                         //element.before(error);
                         //element.after(error);
-                        error.appendTo(element.parent().find('.error-msg'));
+                                          
+                        if(elementName == 'course-duration-minutes'){
+                            error.appendTo($(element).parent().parent().find('.error-msg-minutes'));
+                        }else if(elementName == 'course-duration-hours'){
+                             error.appendTo($(element).parent().parent().find('.error-msg-hours'));
+                        }else{
+                            error.appendTo(element.parent().find('.error-msg'));
+                        }
+
                         element.parent().find('.error-msg').css('color','red');
                         element.parent().find('.error-msg').css('fontSize','12px');
-                        error.css('margin','0px');
+                        error.css('margin','0px');         
                     },
 
 
@@ -2383,7 +2460,9 @@
                 };
 
             });
+        {{--
         @endif
+        --}}
 
     </script>
 @stop

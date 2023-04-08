@@ -33,8 +33,8 @@ class CreateEnrollmentsTable extends Migration
             
        
 
-            $table->decimal('edumind_amount',10,2)->nullable();
-            $table->decimal('author_amount',10,2)->nullable();
+            //$table->decimal('edumind_amount',10,2)->nullable();//
+            //$table->decimal('author_amount',10,2)->nullable();//
             
             //invoices - fk
             $table->integer('invoice_id')->unsigned();
@@ -47,19 +47,36 @@ class CreateEnrollmentsTable extends Migration
 
 
 
-            $table->string('used_cupon_code')->nullable();
-            $table->foreign('used_cupon_code')->references('code')->on('coupons');
+            //$table->string('used_coupon_code')->nullable();/////
+            //$table->foreign('used_coupon_code')->references('code')->on('coupons');/////
             //->onDelete('cascade');
             
-            $table->decimal('discount_amount',10,2)->nullable();
-            $table->decimal('price_afeter_discouunt',10,2)->nullable();           
+           // $table->decimal('discount_amount',10,2)->nullable();////
+           // $table->decimal('price_afeter_discouunt',10,2)->nullable();  /////         
             
-            $table->decimal('edumind_lose_amount',10,2)->nullable();          
-            $table->decimal('benificiary_earn_amount',10,2)->nullable();
+           // $table->decimal('edumind_lose_amount',10,2)->nullable();   //       
+           // $table->decimal('benificiary_earn_amount',10,2)->nullable();////
 
             //commissions - fk
             $table->integer('commission_id')->nullable()->unsigned();
             $table->foreign('commission_id')->references('id')->on('commissions');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         

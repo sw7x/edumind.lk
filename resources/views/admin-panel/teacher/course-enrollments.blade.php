@@ -71,15 +71,15 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table id="cupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                        <table id="coupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
 							<thead>
 								<tr>
 									<th>Enrollment <br>Link</th>									
 									<th>Enrolled <br>Date/time</th>
 									<th>Student</th>																									
 									<th>Course</th>
-									<th>Cupon code</th>
-									<th>Cupon code <br>discount %</th>
+									<th>Coupon code</th>
+									<th>Coupon code <br>discount %</th>
 								</tr>
 							</thead>
 
@@ -103,8 +103,8 @@
 									<th>Enrolled <br>Date/time</th>
 									<th>Student</th>																		
 									<th>Course</th>
-									<th>Cupon code</th>
-									<th>Cupon code <br>discount %</th>
+									<th>Coupon code</th>
+									<th>Coupon code <br>discount %</th>
 								</tr>
 							</tfoot>
 
@@ -190,15 +190,15 @@
 
 
 
-		var table = $('#cupon-code-list-tbl').DataTable({
+		var table = $('#coupon-code-list-tbl').DataTable({
 			//ajax: './ajax.txt',
 			columns: [
 				{ data: 'enrollment link' },
 				{ data: 'enrollment date' },
 				{ data: 'student' },				
 				{ data: 'course' },
-				{ data: 'cupon code' },
-				{ data: 'cupon code discount' },
+				{ data: 'coupon code' },
+				{ data: 'coupon code discount' },
 			],
 			//order: [[1, 'asc']],
 			"ordering": false,
@@ -208,7 +208,7 @@
 			//dom: 'Bfrtip',
 			lengthChange: false,
 		});
-		$("#cupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
+		$("#coupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
 
 
 

@@ -71,7 +71,7 @@
                     </div>
                    
                     <div class="table-responsive">
-                        <table id="cupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                        <table id="coupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
 							<thead>
 								<tr>
 									<th>Completed <br>Date/time</th>
@@ -185,7 +185,7 @@
 
 
 
-		var table = $('#cupon-code-list-tbl').DataTable({
+		var table = $('#coupon-code-list-tbl').DataTable({
 			//ajax: './ajax.txt',
 			columns: [
 				{ data: 'completed date' },
@@ -203,7 +203,7 @@
 			lengthChange: false,
 		});
 
-		$("#cupon-code-list-tbl thead tr").css("border-bottom","15px solid #000");
+		$("#coupon-code-list-tbl thead tr").css("border-bottom","15px solid #000");
 
 
 

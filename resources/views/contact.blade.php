@@ -220,7 +220,8 @@
 					hiddenRecaptcha :   {required:"Please confirm captcha to proceed"},
                 },
 				submitHandler: function(form){
-					var response = grecaptcha.getResponse();
+					
+                    var response = grecaptcha.getResponse();
 
 					//recaptcha failed validation
 					if (response.length == 0) {

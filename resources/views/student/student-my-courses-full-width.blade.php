@@ -56,8 +56,14 @@
                                 @if(isset($student_courses) && count($student_courses))
                                     <div class="col-lg-12">
                                         <div class="tube-card p-3 lg:p-6 divide-y">
-
+                                           <div class="mt-1 text-base font-semibold mb-3">{{$student_courses->count()}} Courses</div>
+                                            
                                             @foreach ($student_courses as $course)
+
+                                            <?php 
+                                            //dd($userData->id); 
+                                            //dd($userData->id); 
+                                            ?> 
                                             {{--@forelse ([] as $course)--}}
                                                 <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
                                                     <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
@@ -102,8 +108,8 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                                    <div class="absolute top-4 -right-1 cursor-pointer">
-                                                        @if($course->pivot->status == 'completed')
+                                                    <div class="absolute top-4 -right-1 cursor-pointer">                                                       
+                                                        @if($course->is_complete)
                                                             <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="completed"></ion-icon>
                                                         @else
                                                             <ion-icon name="checkmark-circle-sharp" class="text-2xl text-green-300 course-status" title="enrolled"></ion-icon>

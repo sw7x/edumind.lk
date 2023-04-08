@@ -10,7 +10,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 
+use DB;
+//use App\Models\Subject;
 
 class CourseController extends Controller
 {
@@ -75,7 +78,7 @@ class CourseController extends Controller
 
 
     public function ViewCourse($slug=null){
-
+        
         try{
 
             if(!$slug){
@@ -151,6 +154,7 @@ class CourseController extends Controller
 
                         if($userRole == 'teacher'){
                             $isAuthor = $course->teacher()->where('id', $currentUser->id)->first();
+                            
                             if($isAuthor){
                                 $viewFile = 'course-single-enrolled';
                             }else{
@@ -158,27 +162,70 @@ class CourseController extends Controller
                             }
 
                         }else if($userRole == 'student'){
-                            $isEnrolled = $currentUser->enrolled_courses()->where('course_id', $course->id)->first();
 
-                            if($isEnrolled != null){
-                                $enrolled_status = $isEnrolled->pivot->status;
+                            //------------------///////////////////---------------------------------------///                          
+                            $courseSelection = $currentUser->course_selections()->where('course_id', $course->id)->first();
+                            //dump($courseSelection);
+                            //dd('courseSelection');
+                            
+                            if($courseSelection != null){                                
 
-                                if($enrolled_status == 'enrolled' || $enrolled_status == 'completed'){
-                                    $viewFile = 'course-single-enrolled';
+                                if($courseSelection->is_checkout){                                    
+                                    
+                                    $enrollment = $courseSelection->enrollment()->first();
+                                    
+                                    if($enrollment){
+                                        if($enrollment->is_complete){                                      
+                                            $enroll_status  = 'COMPLETED';  // ---> COMPLETE COURSE
+                                            $viewFile       = 'course-single-enrolled';
+                                        }else{
+                                            $enroll_status  = 'ENROLLED';  // ---> COMPLETE COURSE
+                                            $viewFile       = 'course-single-enrolled';
+                                        }
+                                    }else{
+
+                                        /*
+                                            $courseSelection->is_checkout =true
+                                            $enrollment = null
+
+                                            if enrollment record is not there for courseSelection record
+                                            then update courseSelection.is_checkout to 0
+                                        */
+                                        $courseSelection->is_checkout = false;
+                                        $courseSelection->save();
+
+                                        $enroll_status  = 'ADDED_TO_CART';   //---> view cart
+                                        $viewFile       = 'course-single-before-enrolled';
+
+                                    }                     
+
                                 }else{
-                                    $viewFile = 'course-single-before-enrolled';
-                                }
-                            }else{
-                                $viewFile = 'course-single-before-enrolled';
-                            }
+                                    $enroll_status  = 'ADDED_TO_CART';   //---> view cart
+                                    $viewFile       = 'course-single-before-enrolled';
+                                }                               
 
+                            }else{
+                                $enroll_status  = 'START';   //---> add to cart
+                                $viewFile       = 'course-single-before-enrolled';
+                            }
+                            //------------------///////////////////---------------------------------------///
+                        
+                        }
+                        else if($userRole == 'editor'){
+                            $viewFile = 'course-single-enrolled';
+                        }else if($userRole == 'admin'){
+                            $viewFile = 'course-single-enrolled';
+                        }else if($userRole == 'marketer'){
+                            $viewFile = 'course-single-before-enrolled';
                         }else{
                             $viewFile = 'course-single-before-enrolled';
                         }
+                        
                     }else{
-                        $viewFile = 'course-single-before-enrolled';
+                        $viewFile       = 'course-single-before-enrolled';
                     }
 
+                    
                     if($course->price==0){
                         $viewFile = 'course-single-enrolled';
                     }
@@ -201,7 +248,7 @@ class CourseController extends Controller
                         'bgColor'                => $bannerColors['bgColor'],
                         'txtColor'               => $bannerColors['txtColor'],
                         'invColor'               => $bannerColors['invColor'],
-                        'enrolled_status'        => ($enrolled_status = $enrolled_status ?? "")
+                        'enroll_status'          => ($enroll_status  ?? "")
                     ]);
 
                 }else{
@@ -217,7 +264,8 @@ class CourseController extends Controller
             return view('course-single-before-enrolled');
 
         }catch(\Exception $e){
-            session()->flash('message', 'Failed to show course');
+            //session()->flash('message', 'Failed to show course');
+            session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error ');
             return view('course-single-before-enrolled');
@@ -437,4 +485,126 @@ class CourseController extends Controller
     }
 
 
+    public function viewSearchPage(){
+
+        $subjects = \App\Models\Subject::Where('status', \App\Models\Subject::PUBLISHED)->get();
+        $arr = array();    
+
+        $subjects->map(function ($item) use (&$arr){  
+            $arr[] = array(
+                'name' =>$item->name,
+                'id'   =>$item->id
+            );
+        });
+
+        //dd($arr);
+        return view('course-search')->with(['subjectData'=>$arr]);
+    }
+
+
+    public function SearchCourse(Request $request){
+                
+        $validator = Validator::make($request->all(), [
+            'subject'           =>  'numeric|nullable',
+            'course-type'       =>  'required|in:free,paid',
+            'course-duration'   =>  'required|in:short,medium,long,very-long'            
+        ],[
+            'subject.numeric'           =>  'subject is invalid',          
+            'course-type.required'      =>  'Course type is required',
+            'course-type.in'            =>  'Course type is invalid',
+            'course-duration.required'  =>  'Course duration is required',
+            'course-duration.in'        =>  'Course duration is invalid'          
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('course-search')->with([
+                'message'       => 'Search failed!',
+                //'message'     => $e->getMessage(),                    
+                'cls'           => 'flash-danger',
+                'msgTitle'      => 'Error!',
+                'valErrMsgArr'  => $validator->messages()->get('*') ?? []
+            ]);            
+        } else {
+            
+            $subjectId      = $request->get('subject');
+            $courseType     = $request->get('course-type');
+            $courseName     = $request->get('searchQueryInput');
+            $courseDuration = $request->get('course-duration');       
+
+            //dump('%'.$courseName.'%');
+            //DB::enableQueryLog();
+                    
+                     
+
+            $courses =  Course::join('subjects','courses.subject_id','=','subjects.id')                    
+                        ->where(function ($query) use($courseType, $subjectId, $courseName) { 
+                    
+                            if($courseName){
+                                $query->where('courses.name','like','%'.$courseName.'%');  
+                            }                                
+
+                            if($subjectId){
+                                $query->where('courses.subject_id', '=', $subjectId);
+                            }                                   
+                                
+                        
+                            if($courseType == 'free'){
+                                $query->where('courses.price', 0);
+                            }else{
+                                $query->where('courses.price', '>',0);
+                            }
+
+                            $query->where('subjects.status', '=', \App\Models\Subject::PUBLISHED)
+                                ->where('courses.status', 'published');                          
+                    
+                        })->where(function ($query) use($courseDuration) { 
+
+                            if($courseDuration == 'short'){
+                               // 0-1 Hour 
+                                $query->where('courses.duration', 'LIKE', '0 Hours :%')
+                                ->where('courses.duration', 'LIKE', '%minute%');                                  
+                            
+                            }elseif ($courseDuration == 'medium') {                                    
+                                // 1-3 Hour
+                                $query->where('courses.duration', 'LIKE', '1 Hour :%')
+                                    ->orWhere('courses.duration', 'LIKE', '2 Hours :%');
+
+                            }elseif ($courseDuration == 'long') {
+                                // 3-6 Hours
+                                $query->where('courses.duration', 'LIKE', '3 Hours :%')
+                                    ->orWhere('courses.duration', 'LIKE', '4 Hours :%')
+                                    ->orWhere('courses.duration', 'LIKE', '5 Hours :%');
+
+                            }elseif ($courseDuration == 'very-long') {
+                                // 6+ Hours
+                                $query->where('courses.duration', 'LIKE', '%Hours :%')
+                                   ->where('courses.duration', 'NOT LIKE', '0 Hours :%')
+                                   ->where('courses.duration', 'NOT LIKE', '2 Hours :%')
+                                   ->where('courses.duration', 'NOT LIKE', '3 Hours :%')
+                                   ->where('courses.duration', 'NOT LIKE', '4 Hours :%')
+                                   ->where('courses.duration', 'NOT LIKE', '5 Hours :%')
+                                   ->where('courses.duration', 'NOT LIKE', '1 Hour :%');                                 
+                            }else{
+
+                            }  
+
+                        })
+                        //->toSql();                    
+                        ->get('courses.*');                          
+                        
+                        //dump(DB::getQueryLog());
+                        //dd($courses->pluck('name','id')->toArray());                        
+          
+        }
+ 
+        return redirect(route('course-search'))
+            ->withInput($request->all())
+            ->with([
+                //'subjectData'   =>  $arr,
+                'courses'       =>  $courses
+            ]);
+
+    }
+
 }
+

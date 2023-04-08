@@ -101,4 +101,34 @@ class CourseService
         );
     }
 
+
+
+
+    //enrollToFreeCourse(Course)
+   
+    //search
+
+
+    //view all courses
+    //add 
+    //edit
+    //delete
+    //view Single
+    //change course status
+
+
+    
+
+
+
+    //view courses  by teacher               ==>view my courses (t)
+    
+
+
+    //view all the courses by subject
+
+
+    // enrolled courses by stud
+
+
 }

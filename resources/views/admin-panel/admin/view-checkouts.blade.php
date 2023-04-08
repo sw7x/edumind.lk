@@ -145,7 +145,7 @@
                             <table class="table invoice-total">
                                 <tbody>
                                 <tr>
-                                    <td><strong>Cupon Code :</strong></td>
+                                    <td><strong>Coupon Code :</strong></td>
                                     <td>ABCD123</td>
                                 </tr>
                                 <tr>
@@ -169,7 +169,7 @@
                                     <td>$235.98</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Cupon Code Discount Amount :</strong></td>
+                                    <td><strong>Coupon Code Discount Amount :</strong></td>
                                     <td>-$1026*45% = -$235.98</td>
                                 </tr>
                                 <tr class="total-price">

@@ -90,11 +90,10 @@
                                             </ul>
                                         </li>
 
-                                        <li> <a href="{{route('search')}}">search</a></li>
-                                        <li> <a href="{{route('search2')}}">search2</a></li>
+                                        <li> <a href="{{route('course-search')}}">Course search</a></li>                                        
                                         <li> <a href="{{route('courses-list')}}">courses-list</a></li>
                                         <li> <a href="{{route('course-watch')}}">course-watch</a></li>
-                                        <li> <a href="{{route('cart')}}">cart</a></li>
+                                        <li> <a href="{{route('view-cart')}}">cart</a></li>
                                         <li> <a href="{{route('bill-info')}}">bill-info</a></li>
                                         <li> <a href="{{route('viewAllTopic')}}">subject list</a></li>
                                         <li> <a href="{{route('contact.index')}}">contact</a></li>
@@ -211,11 +210,10 @@
                                             </div>
                                         </li>
 
-                                        <li> <a href="{{route('search')}}">search</a></li>
-                                        <li> <a href="{{route('search2')}}">search2</a></li>
+                                        <li> <a href="{{route('course-search')}}">search</a></li>                                        
                                         <li> <a href="{{route('courses-list')}}">courses-list</a></li>
                                         <li> <a href="{{route('course-watch')}}">course-watch</a></li>
-                                        <li> <a href="{{route('cart')}}">cart</a></li>
+                                        <li> <a href="{{route('view-cart')}}">cart</a></li>
                                         <li> <a href="{{route('bill-info')}}">bill-info</a></li>
                                         <li> <a href="{{route('viewAllTopic')}}">subject list</a></li>
                                         <li> <a href="{{route('contact.index')}}">contact</a></li>

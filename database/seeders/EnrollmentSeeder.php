@@ -9,12 +9,21 @@ use App\Models\Invoice;
 use App\Models\Salary;
 use App\Models\Commission;
 use App\Models\Coupon;
+use App\Models\Course;
+
+
 
 use Faker\Generator as Faker;
 use Carbon\Carbon;
 
+/*************************************************************************/      
+/*    In this seed file, we create enrollments and for those enrollments */
+/*    we also create relevant salaries for teachers and                  */
+/*    commissions for benificiaries.                                     */
+/*************************************************************************/
+
 class EnrollmentSeeder extends Seeder
-{
+{    
     /**
      * Run the database seeds.
      *
@@ -38,36 +47,36 @@ class EnrollmentSeeder extends Seeder
             //foreign key for course_selections table
             $courseSelectionId  = $checkoutCourseSelection->id; 
             
-
             //course
-            $course        = $checkoutCourseSelection->course;                     
+            //$course        = $checkoutCourseSelection->course;
+            $course        = Course::find($checkoutCourseSelection->course_id);                     
 			$isComplete    = $faker->randomElement([true,false,false]);
             $completeDate  = ($isComplete==false)?null:$faker->dateTimeBetween('-2 week', '-1 week');
             $rating        = ($isComplete==false)?null:$faker->randomElement([1,2,3,4,5,null]);
 
 
             //coupon code assign  
-			$cupons             = $course->coupons;
-			$assignedCouponCode = $cupons->shuffle()->first();          
-            $code               = is_null($assignedCouponCode)?null: $assignedCouponCode->code;
+			//$coupons             = $course->coupons;
+			//$assignedCouponCode = $coupons->shuffle()->first();          
+            //$code               = is_null($assignedCouponCode)?null: $assignedCouponCode->code;
                  
             
             // shares from course price 
-            $edumindAmount           = $course->price * ((100 - $course->author_share_percentage)/100);              
-            $authorAmount            = $course->price * ($course->author_share_percentage/100);
+            //$edumindAmount           = $course->price * ((100 - $course->author_share_percentage)/100);              
+            //$authorAmount            = $course->price * ($course->author_share_percentage/100);
 
             
             //----- divide shares from course price ----------  
-            $edumindAmount = $course->price * ((100 - $course->author_share_percentage)/100);              
-            $authorAmount  = $course->price * ($course->author_share_percentage/100);
+            //$edumindAmount = $course->price * ((100 - $course->author_share_percentage)/100);              
+            //$authorAmount  = $course->price * ($course->author_share_percentage/100);
 
 
-            //====== when cupon code use by customer(student) ==================/          
-            $discountAmount         = is_null($assignedCouponCode)? 0 : ($course->price * ($assignedCouponCode->discount_percentage/100));
-            $commisionPercentage    = is_null($assignedCouponCode)? 0 : ($assignedCouponCode->beneficiary_commision_percentage_from_discount);
+            //====== when coupon code use by customer(student) ==================/          
+            //$discountAmount         = is_null($assignedCouponCode)? 0 : ($course->price * ($assignedCouponCode->discount_percentage/100));
+            //$commisionPercentage    = is_null($assignedCouponCode)? 0 : ($assignedCouponCode->beneficiary_commision_percentage_from_discount);
            
-            $edumindLoseAmount       = ($discountAmount/100) * (100 + $commisionPercentage);
-            $benificiaryEarnAmount   = $discountAmount * ($commisionPercentage/100);
+            //$edumindLoseAmount       = ($discountAmount/100) * (100 + $commisionPercentage);
+            //$benificiaryEarnAmount   = $discountAmount * ($commisionPercentage/100);
             //=================================================================/
 
 
@@ -76,15 +85,19 @@ class EnrollmentSeeder extends Seeder
 
             //to generate commissions table records
             $ccArr[] = array(
-                'code'                      => $code,
-                'benificiary_earn_amount'   => $benificiaryEarnAmount,
+                //'code'                      => $code,
+                'code'                      => $checkoutCourseSelection->used_coupon_code,
+                //'benificiary_earn_amount'   => $benificiaryEarnAmount,
+                'benificiary_earn_amount'   => $checkoutCourseSelection->benificiary_earn_amount,
                 'used_date'                 => Invoice::find($invoiceId)->checkout_date
             );
 
             //to generate salaries table records
             $salArr[] = array(
-                'author_amount' => $authorAmount,
+                //'author_amount' => $authorAmount,
+                'author_amount' => $checkoutCourseSelection->author_amount,
                 'courseId'      => $course->id,
+                
                 'checkout_date' => Invoice::find($invoiceId)->checkout_date,
                 'teacherId'     => $course->teacher->id
             ); 
@@ -95,26 +108,26 @@ class EnrollmentSeeder extends Seeder
                 'complete_date' => $completeDate,
                 'rating'        => $rating,
                             
-                'discount_amount'       => $discountAmount,             
-                'price_afeter_discouunt'=> $course->price - $discountAmount,
+                //'discount_amount'       => $discountAmount,             
+                //'price_afeter_discouunt'=> $course->price - $discountAmount,
 
-                'edumind_amount'    =>  $edumindAmount,           
-                'author_amount'     =>  $authorAmount,
+                //'edumind_amount'    =>  $edumindAmount,           
+                //'author_amount'     =>  $authorAmount,
 
-                'edumind_lose_amount'       => $edumindLoseAmount,
-                'benificiary_earn_amount'   => $benificiaryEarnAmount,
+                //'edumind_lose_amount'       => $edumindLoseAmount,
+                //'benificiary_earn_amount'   => $benificiaryEarnAmount,
                         
                 'course_selection_id' => $courseSelectionId,
                          
                 'invoice_id'        => $invoiceId,
                 'salary_id'         => null,            
                 
-                'used_cupon_code'   => $code,
+                //'used_coupon_code'   => $code,
                 'commission_id'     => null,
 
                 //for temporary use - later remove this 
                 'teacher'       => CourseSelection::find($courseSelectionId)->course->teacher_id,
-                'benificiary'   => Coupon::find($code)->beneficiary_id ?? null                
+                'benificiary'   => Coupon::find($checkoutCourseSelection->used_coupon_code)->beneficiary_id ?? null                
             );            
             
         }   
@@ -180,12 +193,12 @@ class EnrollmentSeeder extends Seeder
         /////////////// START - commission records//////////////////////////                
         //filter coupon code not used records 
         //filter coupon codes that has no benificiary
+
         $cCodesForCommissions = collect($ccArr)->filter(function($value, $key) {            
             $ccRecord      = Coupon::Where('code',$value["code"])->first();
             return  ($ccRecord != null) && ($ccRecord->beneficiary_id != null);             
         });     
         
-
         //prepare array for each valid coupon code and it's usage details
         $ccodeUsageArr = array();
         $cCodesForCommissions->map(function ($item,$key) use (&$ccodeUsageArr){           
@@ -249,6 +262,7 @@ class EnrollmentSeeder extends Seeder
             );
             $count++;
         }
+        //dump2(collect($enrollmentArr)->pluck('benificiary'));     
         //dump2($commissionTblRecords);        
         /////////////// END - commission records//////////////////////////
         
@@ -300,7 +314,7 @@ class EnrollmentSeeder extends Seeder
                     
         }
         
-        
+        //dd();
 
         //batch insert records to DB
         Salary::insert($salTblRecords);

@@ -178,7 +178,7 @@
 
                         <fieldset class="p-3 border-solid border-1 border-gray-700 mb-5">
                             <legend class="font-bold rounded col-sm-3 text-xl py-1 border-gray-500 border-1">
-                                <p class="text-center">Cupon code</p>
+                                <p class="text-center">Coupon code</p>
                             </legend>
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">=== :</label>

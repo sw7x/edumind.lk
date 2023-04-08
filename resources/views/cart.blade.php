@@ -19,98 +19,101 @@
                     <div class="__space-y-2">
 
                         <div class="cart">
-                            <div class="tbl-div mb-5" style="overflow-x:auto;">
-                                <table class="table cart-table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col">Course</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Qty</th>
-                                        <th scope="col">remove</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td class="w-3/12 course-img">
-                                            <img src="{{asset('images/courses/img-3.jpg')}}" class="img-fluid img-thumbnail" alt="Sheep">
-                                        </td>
-                                        <td>Vans Sk8-Hi MTE Shoes</td>
-                                        <td>89$</td>
-                                        <td class="">1</td>
-                                        <td>
-                                            <a href="#" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full">
-                                                <i class="align-middle text-lg font-bold icon-feather-x"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
+                            @if(!empty($addedCourses))
+                                <div class="tbl-div mb-5" style="overflow-x:auto;">
+                                                                    
+                                        <table class="table cart-table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col"></th>
+                                                    <th scope="col">Course</th>
+                                                    <th scope="col">Price(Rs)</th>
+                                                    <th scope="col">Qty</th>
+                                                    <th scope="col">remove</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($addedCourses as $course)                                          
+                                                    <tr>
+                                                        <td class="w-3/12 course-img">
+                                                            @if($course->image)
+                                                                <img src="{{URL('/')}}/storage/{{$course->image}}" class="img-fluid img-thumbnail" alt="{{$course->name}}">
+                                                            @else
+                                                                <img src="{{asset('images/default-images/course.png')}}" class="img-fluid img-thumbnail" alt="{{$course->name}}">
+                                                            @endif
+                                                        </td>
+                                                        <td>{{$course->name}}</td>
 
-                                    <tr>
-                                        <td class="w-3/12 course-img">
-                                            <img src="{{asset('images/courses/img-1.jpg')}}" class="img-fluid img-thumbnail" alt="Sheep">
-                                        </td>
-                                        <td>Vans Sk8-Hi MTE Shoes</td>
-                                        <td>89$</td>
-                                        <td class="">1</td>
-                                        <td>
-                                            <a href="#" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full">
-                                                <i class="align-middle text-lg font-bold icon-feather-x"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                                        <td>
 
-                                    <tr>
-                                        <td class="w-3/12 course-img">
-                                            <img src="{{asset('images/courses/img-2.jpg')}}" class="img-fluid img-thumbnail" alt="Sheep">
-                                        </td>
-                                        <td>Vans Sk8-Hi MTE Shoes</td>
-                                        <td>89$</td>
-                                        <td class="">1</td>
-                                        <td>
-                                            <a href="#" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full">
-                                                <i class="align-middle text-lg font-bold icon-feather-x"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                                            
+                                                            @if( $loop->index == 0)
+                                                                <div class="line-through">{{$course->price}}</div>
+                                                                <div class="">2000.00</div>
+                                                            @else
+                                                                <div class="">{{$course->price}}</div>
+                                                            @endif
 
-                                <!--
-                                <div class="d-flex justify-content-end">
-                                    <h5>Total: <span class="price text-success">89$</span></h5>
-                                </div> -->
+                                                        </td>
+                                                        <td class="">1</td>
+                                                        <td>
+                                                            
+                                                            <form action="{{route('remove-cart',$course->id)}}" method="post" class='course-enroll-form'>
+                                                                {{csrf_field ()}}
+                                                                <div class="mt-4">
+                                                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full" style="width:40px; height: 40px">
+                                                                        <i class="align-middle text-2xl font-bold icon-feather-x leading-4"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </form>
 
-                            </div>
+                                                            
+                                                        </td>
+                                                    </tr>
+                                                @endforeach                                    
+                                            </tbody>
+                                        </table>
+                                    
 
-                            <div class="border-top-0 d-flex justify-content-end btn-div mb-5">
-                                <div class="d-flex justify-content-between cupon-wrapper">
-                                    <input type="text" placeholder="Cupon code" class="shadow-none with-border cupon_code" name="cupon_code">
-                                    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded">Apply coupon</button>
+                                    <!--
+                                    <div class="d-flex justify-content-end">
+                                        <h5>Total: <span class="price text-success">89$</span></h5>
+                                    </div> -->
+
                                 </div>
-                            </div>
 
-                            <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
-                                <div class=""><h2 class="font-bold mb-2 text-lg">Total Amount</h2></div>
-                            </div>
+                                <div class="border-top-0 d-flex justify-content-end btn-div mb-5">
+                                    <div class="d-flex justify-content-between coupon-wrapper">
+                                        <input type="text" placeholder="Coupon code" class="shadow-none with-border coupon_code" name="coupon_code">
+                                        <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded">Apply coupon</button>
+                                    </div>
+                                </div>
 
-                            <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
-                                <div class=""><span class="line-through text-base font-semibold">Rs 30000</span></div>
-                            </div>
+                                <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
+                                    <div class=""><h2 class="font-bold mb-2 text-lg">Total Amount</h2></div>
+                                </div>
 
-                            <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
-                                <div class=""><span class="text-base font-semibold">Rs 20000</span></div>
-                            </div>
+                                <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
+                                    <div class=""><span class="line-through text-base font-semibold">Rs {{$totalPrice}}</span></div>                                    
+                                </div>
 
-                            <div class="border-top-0 d-flex justify-content-end btn-div mb-5">
-                                <div class=""><p class="text-base">87% off</p></div>
-                            </div>
+                                <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
+                                    <div class=""><span class="text-base font-semibold">Rs 20000</span></div>
+                                </div>
 
-                            <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
-                                <button type="button" class="checkout-btn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Checkout</button>
-                            </div>
+                                <div class="border-top-0 d-flex justify-content-end btn-div mb-5">
+                                    <div class=""><p class="text-base">87% off</p></div>
+                                </div>
 
-                            //when apply cupon code works for any course and multiple courses in cart<br>
-                            //then ask which course to apply cupon code
+                                <div class="border-top-0 d-flex justify-content-end btn-div mb-1">
+                                    <button type="button" class="checkout-btn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Checkout</button>
+                                </div>
+                            @else
+                                <div class="">No Items</div>
+                            @endif
+
+                            //when apply coupon code works for any course and multiple courses in cart<br>
+                            //then ask which course to apply coupon code
 
                             <br><br><br>
                             checkout btn move last step(after entering billing info)

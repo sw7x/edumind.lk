@@ -57,15 +57,15 @@
                     </div>
                    
                     <div class="table-responsive">
-                        <table id="cupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                        <table id="coupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                             <thead>
                                 <tr>
                                     <th></th>
                                     <th>Total <br>claimed Amount Rs</th>
                                     <th>Order ID <br><small>(Enrollement)</small></th>                                    
                                     <th>Enrolled <br>Date/time</th>
-                                    <th>Used <br>cupon code</th>
-                                    <th>Cupon code <br>discount %</th>
+                                    <th>Used <br>coupon code</th>
+                                    <th>Coupon code <br>discount %</th>
                                 </tr>
                             </thead>
 
@@ -220,11 +220,11 @@
                             <td>RS 6000.00</td>
                         </tr>
                         <tr>
-                            <td>Cupon code discount %</td>
+                            <td>Coupon code discount %</td>
                             <td>10%</td>
                         </tr>
                         <tr>
-                            <td>Cupon code discount amount</td>
+                            <td>Coupon code discount amount</td>
                             <td>RS 600.00 = (6000*10%)</td>
                         </tr>                       
                         <tr>
@@ -236,11 +236,11 @@
                             <td>20%</td>
                         </tr>                       
                         <tr class="">
-                            <td>Marketer/Teacher commission from cupon code discount</td>
+                            <td>Marketer/Teacher commission from coupon code discount</td>
                             <td>RS 600.00 = (600*80%)</td>
                         </tr>
                         <tr class="text-red-600 font-bold text-lg">
-                            <td>Edumind lose Amount due to cupon code use</td>
+                            <td>Edumind lose Amount due to coupon code use</td>
                             <td>RS 600.00 = 600*(200% - 20%)</td>
                         </tr>                                       
                     </table>
@@ -254,7 +254,7 @@
 
 
 
-        var table = $('#cupon-code-list-tbl').DataTable({
+        var table = $('#coupon-code-list-tbl').DataTable({
             //ajax: './ajax.txt',
             columns: [
                 {
@@ -266,8 +266,8 @@
                 { data: 'claimed Amount' },                
                 { data: 'order' },
                 { data: 'enrollment date' },
-                { data: 'cupon code' },
-                { data: 'cupon code discount precentage',visible: true },
+                { data: 'coupon code' },
+                { data: 'coupon code discount precentage',visible: true },
             ],
             footerCallback: function (row, data, start, end, display) {
                 var api = this.api();
@@ -309,7 +309,7 @@
         });
 
         // Add event listener for opening and closing details
-        $('#cupon-code-list-tbl tbody').on('click', 'td.dt-control', function () {
+        $('#coupon-code-list-tbl tbody').on('click', 'td.dt-control', function () {
             var tr = $(this).closest('tr');
             var row = table.row(tr);
 
@@ -326,7 +326,7 @@
             }
         });
 
-        $("#cupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
+        $("#coupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
 
 
 

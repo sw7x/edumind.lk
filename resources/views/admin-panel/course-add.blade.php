@@ -183,7 +183,9 @@
                         @endif
                     </x-slot>
                 </x-flash-message>
-            @else           
+            
+            @endif    
+
                 <div class="ibox">
                     <div class="ibox-content">                    
                         <form id="course-add-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
@@ -300,10 +302,42 @@
                                         </div>
                                         <div class="hr-line-dashed"></div>
 
-                                        <div class="form-group  row">
-                                            <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Duration<br> 
+                                                <!-- <small>X Hours : Y minutes</small> -->
+                                            </label>
                                             <div class="col-sm-8">
-                                                <input type="text" name="video-duration" class="form-control" value="{{old('video-duration')}}">
+                                                <!-- <input type="text" name="video-duration" class="form-control" value="{{old('video-duration')}}">
+                                             -->
+
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-addon">X Hours : Y minutes</span>
+                                                    </div>
+                                                    <input type="text" name="course-duration-hours" placeholder="Hours" 
+                                                        class="form-control" value="{{old('course-duration-hours')}}">                                                    
+                                                    <input type="text" name="course-duration-minutes" placeholder="Minutes" 
+                                                        class="form-control" value="{{old('course-duration-minutes')}}">                                                
+                                                </div>
+
+                                                <div class="mt-2 error-msg-hours"></div>
+                                                <div class="error-msg-minutes"></div>
+
+                                                @if ($errors->infoErrMsgArr->has('course-duration-hours'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-duration-hours') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+
+                                                @if ($errors->infoErrMsgArr->has('course-duration-minutes'))
+                                                    <ul class="mt-1">
+                                                        @foreach ($errors->infoErrMsgArr->get('course-duration-minutes') as $error)
+                                                            <ol class="text-red-600 text-xs font-bold">{{ $error }}</ol>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
@@ -545,7 +579,7 @@
                         </form>
                     </div>
                 </div>
-            @endif  
+            
 
         </div>
     </div>
@@ -619,9 +653,9 @@
 
     <!-- jQuery validate -->
     <script src="{{asset('admin/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
     {{--
     <script src="{{asset('admin/js/plugins/validate/additional-methods.min.js')}}"></script>
-    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
     --}}
 
 
@@ -950,6 +984,12 @@
 
 
 
+            $.validator.addMethod( "maxWords", function( value, element, params ) {
+                return this.optional( element ) || stripHtml( value ).match( /\b\w+\b/g ).length <= params;
+            }, $.validator.format( "Please enter {0} words or less." ) );    
+
+
+
             /**/
             var validObjCourseForm = courseForm.validate({
                 //ignore: [],
@@ -957,13 +997,16 @@
                 errorClass: "validationErrorCls",
                 rules:{
                     "course-name": {
-                        //required: true,
-                        //minlength: 3
+                        required: true,
+                        minlength: 3
                     },
                     //"subject"         : {required: true},
                     //"teacher"         : {required: true},
                     //"course-heading"  : {required: true},
                     //"video-count"     : {number: true,min:0},
+
+                    //'course-duration-hours'     : {number: true, min:0},
+                    //'course-duration-minutes'   : {required: true, minutes: true},
                     /*
                     "course-img"        : { 
                         accept: "image/*",
@@ -984,7 +1027,19 @@
                     "course-img" :      { 
                         accept: 'Only image type jpg/png/jpeg/gif/webp is allowed',
                         filesize:" file size must be less than 1MB.",
-                    }*/
+                    }
+
+                    'course-duration-hours'     : {
+                        number: "Course duration hour count must be number", 
+                        min:"Course duration hour count cannot be minus"
+                    },
+                    'course-duration-minutes'   : {
+                        required: "Course duration minute count is required", 
+                        minutes: "Course duration minute count is invalid",                         
+                    },*/
+
+
+
 
                 },
                 submitHandler: function(form){
@@ -993,13 +1048,22 @@
                 },
                 errorPlacement: function (error, element)
                 {
+                    var elementName = $(element).attr("name");
                     console.log(element);
                     //element.before(error);
                     //element.after(error);
-                    error.appendTo(element.parent().find('.error-msg'));
+                                      
+                    if(elementName == 'course-duration-minutes'){
+                        error.appendTo($(element).parent().parent().find('.error-msg-minutes'));
+                    }else if(elementName == 'course-duration-hours'){
+                         error.appendTo($(element).parent().parent().find('.error-msg-hours'));
+                    }else{
+                        error.appendTo(element.parent().find('.error-msg'));
+                    }
+
                     element.parent().find('.error-msg').css('color','red');
                     element.parent().find('.error-msg').css('fontSize','12px');
-                    error.css('margin','0px');
+                    error.css('margin','0px');                 
                 },
 
 

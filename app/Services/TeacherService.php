@@ -49,4 +49,15 @@ class TeacherService
         return $teachers;
     }
 
+
+
+
+    //viewprofile()  - site frontend
+    //edit profile   - (teacher can edit his own profile in admin panel)
+
+    //view teacher courses   
+    //view earnings by teacher
+
+
+
 }

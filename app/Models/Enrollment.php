@@ -55,9 +55,9 @@ class Enrollment extends Model
     
 
 
-    public function cupon()
+    public function coupon()
     {
-        return $this->belongsTo(Coupon::class,'used_cupon_code','code');
+        return $this->belongsTo(Coupon::class,'used_coupon_code','code');
     }
 
 

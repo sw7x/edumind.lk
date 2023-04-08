@@ -31,7 +31,7 @@ class SubjectController extends Controller
             //dd($subjectData);
             //dd();
 
-            $this->authorize('viewSingleInSiteFrontend',$subjectData);
+            //$this->authorize('viewSingleInSiteFrontend',$subjectData);
 
             if($subjectData){
                 if($subjectData->image){

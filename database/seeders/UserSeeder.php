@@ -28,9 +28,16 @@ class UserSeeder extends Seeder
             $faker = \Faker\Factory::create();
             $roleId = $faker->randomElement([2,3,4,5]);
 
+            //TEACHERS
             if($roleId == 4){
                 $user = array_merge($user,array('edu_qualifications'=> $faker->text()));
+                
+                $user = array_merge($user,array('profile_pic'=> 'users/' .  $faker->image('public/storage/users', 630, 820, 'users', false, true)));
+                
             }
+
+
+            //STUDENTS
             if($roleId == 5){
                 $user = array_merge($user,array('profile_text'=> $faker->text()));
             }
