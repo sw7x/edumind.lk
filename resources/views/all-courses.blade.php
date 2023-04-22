@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title','Student enrolled courses')
+@section('title','All courses')
 
 
 @section('css-files')
@@ -34,7 +34,7 @@
 
                 <div style="flex:1">
 
-                    <h2 class="font-semibold mb-3 text-xl lg:text-3xl">My Courses</h2>
+                    <h2 class="font-semibold mb-3 text-xl lg:text-3xl">All Courses</h2>
                     <!--
                     <hr class="mb-5">
                     <h4 class="font-semibold mb-2 text-base"> Description </h4>
@@ -53,18 +53,18 @@
                             <div class="tab-pane active show" id="tab-1">
 
 
-                                @if(isset($student_courses) && count($student_courses))
+                                @if(isset($all_courses) && count($all_courses))
                                     <div class="col-lg-12">
                                         <div class="tube-card p-3 lg:p-6 divide-y">
-                                           <div class="mt-1 text-base font-semibold mb-3">{{$student_courses->count()}} Courses</div>
+                                           <div class="mt-1 text-base font-semibold mb-3">{{$all_courses->count()}} Courses</div>
                                             
-                                            @foreach ($student_courses as $course)
+                                            @foreach ($all_courses as $course)
 
                                             <?php 
-                                            //dd($userData->id); 
+                                            //dump($all_courses); 
                                             //dd($userData->id); 
                                             ?> 
-                                            {{--@forelse ([] as $course)--}}
+                                            
                                                 <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
                                                     <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
                                                         <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                                        
@@ -72,7 +72,7 @@
                                                     <div class="flex-1 md:space-y-2 space-y-1">
                                                         <a href="{{route('course-single',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
                                                         <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course->heading_text}}</p>
-                                                        <a href="{{route('teacher.view-profile',$course->teacher->username)}}" class="md:font-semibold block text-sm">{{$course->teacher->full_name}}</a>
+                                                        <a href="{{route('teacher.view-profile',$course->teacher_username ?? $course->teacher->username)}}" class="md:font-semibold block text-sm">{{$course->teacher_fullname ?? $course->teacher->full_name}}</a>
                                                         <div class="flex items-center justify-between">
                                                             <div class="flex __space-x-2 items-center text-sm">
                                                                 <div class="font-semibold">
@@ -104,12 +104,23 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                                    <div class="absolute top-4 -right-1 cursor-pointer">                                                       
-                                                        @if($course->is_complete)
-                                                            <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="completed"></ion-icon>
+                                                    <div class="absolute top-4 -right-1 cursor-pointer">                                                      
+                                                        
+                                                        
+                                                        @if($course->enrollments_status      == 'Fresh')
+                                                            <ion-icon name="list-circle-sharp" class="text-2xl text-red-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
+                                                        @elseif ($course->enrollments_status == 'Added to cart')
+                                                            <ion-icon name="bag-add-sharp" class="text-2xl text-yellow-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
+                                                        @elseif ($course->enrollments_status == 'Enrolled')
+                                                            <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
+                                                        @elseif ($course->enrollments_status == 'Completed')
+                                                            <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
                                                         @else
-                                                            <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="enrolled"></ion-icon>
-                                                        @endif
+                                                            <!-- for users other than students,guests -->
+                                                        @endif                                                 
+                                                        
+
+
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -151,9 +162,11 @@
 				touchDevices: true,
 				trigger: 'hover',
 				position: 'right',
-				contentAsHTML:true
+				//contentAsHTML:true
 				//content: $('<span><strong>prev text is in bold case !</strong></span>'),
 			});
+
+
 
 		});
 

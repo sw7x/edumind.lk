@@ -41,12 +41,8 @@
                         <div class="hr-line-dashed"></div>
 
                         <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
-                            <div class="col-sm-8">
-                                @if($subject->image)
-                                    <img style="max-width:500px" src="{{URL('/')}}/storage/{{$subject->image}}"/>
-                                @else
-                                    <p>no image</p>
-                                @endif
+                            <div class="col-sm-8">                                
+                                <img style="max-width:500px" src="{{$subject->image}}"/>                                
                                 <br>
                                 <small>Image Size should be 300X350</small>
                             </div>

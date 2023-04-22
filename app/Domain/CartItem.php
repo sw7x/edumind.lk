@@ -15,7 +15,7 @@ class CartItem{
 
 
 id 
-cart_add_date 
+cart_added_date 
 //is_checkout = false
 course_id ==> FK
 student_id ==> FK

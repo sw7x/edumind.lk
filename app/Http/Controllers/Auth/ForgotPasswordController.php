@@ -24,8 +24,10 @@ class ForgotPasswordController extends Controller
         $user = User::whereEmail($request->email)->first();
 
         if($user==null){
-           return redirect()->back()->with([
-               'message'  => 'Invalid email.',
+            
+            $userRec = User::withoutGlobalScope('active')->whereEmail($request->email)->first();          
+            return redirect()->back()->with([
+               'message' => ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
                'cls'     => 'flash-danger',
                'msgTitle'=> 'Error!',
            ]);
@@ -84,7 +86,11 @@ class ForgotPasswordController extends Controller
             $code = $reminder->code;
 
             if($user == null){
-                session()->flash('message','Invalid user');
+
+                $userRec     = User::withoutGlobalScope('active')->whereEmail($email)->first();    
+                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
+                
+                session()->flash('message',$err_message);
                 session()->flash('cls','flash-danger');
                 session()->flash('msgTitle','Error!');
                 return view('form-submit-page');
@@ -135,7 +141,11 @@ class ForgotPasswordController extends Controller
             $user = User::whereEmail($email)->first();
 
             if($user == null){
-                session()->flash('message', 'Invalid user');
+                $userRec     = User::withoutGlobalScope('active')->whereEmail($email)->first();    
+                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
+                
+                session()->flash('message',$err_message);
+                //session()->flash('message', 'Invalid user');
                 session()->flash('cls','flash-danger');
                 session()->flash('msgTitle','Error!');
                 return view('form-submit-page');

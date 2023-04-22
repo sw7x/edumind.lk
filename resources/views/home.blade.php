@@ -112,7 +112,9 @@
 
 
         <div class="main-container container mx-auto max-w-5xl __p-4">
-
+            @php
+                //dd($popular_courses);
+            @endphp
             @if(!empty($popular_courses))
                 <!--  Popular Courses  feature section -->
                 <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
@@ -123,11 +125,7 @@
                     <a href="{{route('course-single',$course->slug)}}" class="uk-link-reset">
                         <div class="horizontal-course-item bg-white md:flex shadow-sm rounded-lg uk-transition-toggle mb-5">
                             <div class="md:w-5/12 md:h-60 h-40 overflow-hidden rounded-l-lg relative">
-                                @if($course->image)
-                                    <img src="{{URL('/')}}/storage/{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                @else
-                                    <img src="{{asset('images/default-images/course.png')}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                @endif
+                                <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                
                             </div>
                             <div class="flex-1 md:p-6 p-4">
                                 <div class="font-semibold line-clamp-2 md:text-xl md:leading-relaxed">{{$course->name}}</div>
@@ -268,12 +266,7 @@
                                     <a href="{{route('course-single',$course->slug)}}" class="uk-link-reset">
                                         <div class="bg-white shadow-sm rounded-lg uk-transition-toggle">
                                             <div class="w-full h-40 overflow-hidden rounded-t-lg relative">
-                                                @if($course->image)
-                                                    <img src="{{URL('/')}}/storage/{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                                @else
-                                                    <img src="{{asset('images/default-images/course.png')}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                                @endif
-                                                {{--<img src="{{asset('images/courses/img-1.jpg')}}" alt="" class="w-full h-full absolute inset-0 object-cover">--}}
+                                                <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                               
                                                 <img src="{{asset('images/icon-play.svg')}}" class="w-12 h-12 uk-position-center uk-transition-fade" alt="">
                                             </div>
                                             <div class="p-4">
@@ -492,11 +485,7 @@
                     <a href="{{route('viewTopic',$subject_Item['slug'])}}" class="rounded-md overflow-hidden relative w-full lg:h-56 h-40">
                         <div class="absolute w-full h-3/4 -bottom-12 bg-gradient-to-b from-transparent to-gray-800 z-10">
                         </div>
-                        @if($subject_Item['image'])
-                            <img src="{{URL('/')}}/storage/{{$subject_Item['image']}}"    class="absolute w-full h-full object-cover" alt="">
-                        @else
-                            <img src="{{asset('images/default-images/subject.png')}}" class="absolute w-full h-full object-cover" alt="">
-                        @endif
+                        <img src="{{$subject_Item['image']}}" class="absolute w-full h-full object-cover" alt="">                       
                         {{--<img src="{{asset('images/category/design.jpg')}}" class="absolute w-full h-full object-cover" alt="">--}}
                         <div class="absolute bottom-0 w-full p-3 text-white z-20 font-semibold text-lg">{{$subject_Item['name']}}</div>
                     </a>

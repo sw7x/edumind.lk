@@ -89,11 +89,9 @@
 
                                             <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
                                                 <div class="col-sm-8">
-                                                    @if($course->image)
-                                                        <img style="max-width:500px" src="{{URL('/')}}/storage/{{$course->image}}"/>
-                                                    @else
-                                                        <p>no image</p>
-                                                    @endif
+                                                    
+                                                    <img style="max-width:500px" src="{{$course->image}}"/>
+                                                    
                                                     <br>
                                                     <small>Image Size should be 300X350</small>
                                                 </div>

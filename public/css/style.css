@@ -7057,7 +7057,7 @@ header.is_fixed {
           align-items: center;
   position: relative;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .dropdown_cart ul li:hover {
@@ -7116,8 +7116,8 @@ header.is_fixed {
 }
 
 .dropdown_cart ul li .cart_price span {
-  font-size: 17px;
-  color: #3d3e40;
+  /*font-size: 17px;
+  color: #3d3e40;*/
 }
 
 .dropdown_cart ul li .cart_price button {

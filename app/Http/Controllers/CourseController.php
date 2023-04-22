@@ -11,6 +11,11 @@ use Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use App\Models\CourseSelection;
+use App\Models\enrollment;
+use App\Models\Role;
+use App\Services\CourseService;
+
 
 use DB;
 //use App\Models\Subject;
@@ -85,178 +90,47 @@ class CourseController extends Controller
                 throw new CustomException('Course id not provided');
             }
 
-            //$slug1 = 'non-qui-necessitatibus-magni';
             $course = Course::where('slug', $slug)->first();
-            $currentUser = Sentinel::getUser();
-
-            //dd($currentUser);
-            //dd($currentUser->roles()->first()->slug);
-            //dd(Sentinel::check());
-
-            if($currentUser != null){
-                $userRole = $currentUser->roles()->first()->slug;
-            }else{
-                $userRole = null;
-            }
-
-            //=cart add=
-            /*
-            $currentUser->enrolled_courses()->attach(7, [
-                'cart_add_date' => Carbon::now(),
-                'status'        => 'cart_added',
-            ]);
-            */
-
-
-            //=enroll=
-            //discount_amount - todo
-            /*$update_rows = $currentUser->enrolled_courses()->updateExistingPivot(9, [
-                'enroll_date'       => Carbon::now(),
-                'status'            => 'enrolled',
-                'discount_amount'   => 0
-            ], true);
-            //if there is nor rows to update then insert new row
-            if($update_rows == 0) {
-                $currentUser->enrolled_courses()->attach(9, [
-                    'enroll_date'       => Carbon::now(),
-                    'status'            => 'enrolled',
-                    'discount_amount'   => 0
-                ]);
-            }*/
-
-            //=complete=
-            //complete_date
-            //status
-            /*$currentUser->enrolled_courses()->updateExistingPivot(7, [
-                'enroll_date'       => Carbon::now(),
-                'status'            => 'completed',
-                'discount_amount'   => 0
-            ], true);
-            */
+            $currentUser = Sentinel::getUser();            
+            $userRole = ($currentUser != null)? $currentUser->roles()->first()->slug : null;
             
-            
-
-            if($course != null){
-
-                if($course->status == Course::PUBLISHED){
-
-                    if($course->image){
-                        $img = URL('/').'/storage/'.$course->image;
-                    }else{
-                        $img = asset('images/default-images/course.png');
-                    }
-
-                    $bannerColors = ColorUtil::generateBannerColors($img);
-
-
-
-                    if($currentUser){
-
-                        if($userRole == 'teacher'){
-                            $isAuthor = $course->teacher()->where('id', $currentUser->id)->first();
-                            
-                            if($isAuthor){
-                                $viewFile = 'course-single-enrolled';
-                            }else{
-                                $viewFile = 'course-single-before-enrolled';
-                            }
-
-                        }else if($userRole == 'student'){
-
-                            //------------------///////////////////---------------------------------------///                          
-                            $courseSelection = $currentUser->course_selections()->where('course_id', $course->id)->first();
-                            //dump($courseSelection);
-                            //dd('courseSelection');
-                            
-                            if($courseSelection != null){                                
-
-                                if($courseSelection->is_checkout){                                    
-                                    
-                                    $enrollment = $courseSelection->enrollment()->first();
-                                    
-                                    if($enrollment){
-                                        if($enrollment->is_complete){                                      
-                                            $enroll_status  = 'COMPLETED';  // ---> COMPLETE COURSE
-                                            $viewFile       = 'course-single-enrolled';
-                                        }else{
-                                            $enroll_status  = 'ENROLLED';  // ---> COMPLETE COURSE
-                                            $viewFile       = 'course-single-enrolled';
-                                        }
-                                    }else{
-
-                                        /*
-                                            $courseSelection->is_checkout =true
-                                            $enrollment = null
-
-                                            if enrollment record is not there for courseSelection record
-                                            then update courseSelection.is_checkout to 0
-                                        */
-                                        $courseSelection->is_checkout = false;
-                                        $courseSelection->save();
-
-                                        $enroll_status  = 'ADDED_TO_CART';   //---> view cart
-                                        $viewFile       = 'course-single-before-enrolled';
-
-                                    }                     
-
-                                }else{
-                                    $enroll_status  = 'ADDED_TO_CART';   //---> view cart
-                                    $viewFile       = 'course-single-before-enrolled';
-                                }                               
-
-                            }else{
-                                $enroll_status  = 'START';   //---> add to cart
-                                $viewFile       = 'course-single-before-enrolled';
-                            }
-                            //------------------///////////////////---------------------------------------///
-                        
-                        }
-                        else if($userRole == 'editor'){
-                            $viewFile = 'course-single-enrolled';
-                        }else if($userRole == 'admin'){
-                            $viewFile = 'course-single-enrolled';
-                        }else if($userRole == 'marketer'){
-                            $viewFile = 'course-single-before-enrolled';
-                        }else{
-                            $viewFile = 'course-single-before-enrolled';
-                        }
-                        
-                    }else{
-                        $viewFile       = 'course-single-before-enrolled';
-                    }
-
-                    
-                    if($course->price==0){
-                        $viewFile = 'course-single-enrolled';
-                    }
-
-
-                    //validate course content format
-                    if(is_array($course->content) && Arr::isAssoc($course->content)){
-                        $courseContent          = $course->content;
-                        $courseContentInvFormat = false;
-                    }else{
-                        $courseContent = [];
-                        $courseContentInvFormat = true;
-                    }
-
-
-                    return view($viewFile)->with([
-                        'courseData'             => $course,                        
-                        'courseContent'          => $courseContent,
-                        'courseContentInvFormat' => $courseContentInvFormat,
-                        'bgColor'                => $bannerColors['bgColor'],
-                        'txtColor'               => $bannerColors['txtColor'],
-                        'invColor'               => $bannerColors['invColor'],
-                        'enroll_status'          => ($enroll_status  ?? "")
-                    ]);
-
-                }else{
-                    throw new CustomException('Course is temporary disabled');
-                }
-            }else{
+            if($course == null){
                 throw new CustomException('Course does not exist');
             }
+
+            if($course->status != Course::PUBLISHED){
+                throw new CustomException('Course is temporary disabled');
+            }
+                       
+            $bannerColors = ColorUtil::generateBannerColors($course->image);
+                       
+            $pageResult     = (new CourseService())->loadCoursePage($currentUser, $course);
+            $viewFile       = $pageResult['view'];
+            $enroll_status  = $pageResult['status'];
+            
+            if($course->price == 0){  $viewFile = 'course-single-enrolled';  }
+
+
+            //validate course content format
+            if(is_array($course->content) && Arr::isAssoc($course->content)){
+                $courseContent          = $course->content;
+                $courseContentInvFormat = false;
+            }else{
+                $courseContent = [];
+                $courseContentInvFormat = true;
+            }
+
+            return view($viewFile)->with([
+                'courseData'             => $course,                        
+                'courseContent'          => $courseContent,
+                'courseContentInvFormat' => $courseContentInvFormat,
+                'bgColor'                => $bannerColors['bgColor'],
+                'txtColor'               => $bannerColors['txtColor'],
+                'invColor'               => $bannerColors['invColor'],
+                'enroll_status'          => ($enroll_status  ?? "")
+            ]);
+
+            
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
@@ -264,6 +138,7 @@ class CourseController extends Controller
             return view('course-single-before-enrolled');
 
         }catch(\Exception $e){
+
             //session()->flash('message', 'Failed to show course');
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
@@ -284,7 +159,7 @@ class CourseController extends Controller
         ]);
     }
 
-    public function enroll(Request $request){
+    public function addToCart(Request $request){
 
         //dd('ss');
         $courseId = $request->input('courseId');
@@ -306,13 +181,106 @@ class CourseController extends Controller
             $course = Course::find($courseId);
 
             if($course != null){
-
-                //fill enrollment table
-                $user->enrolled_courses()->attach($course,[
-                    'status'        => 'enrolled',
-                    'enroll_date'   =>  now()
+                
+                CourseSelection::create([
+                    'cart_added_date'   => Carbon::now(),
+                    'is_checkout'       => false,
+                    'course_id'         => $courseId,
+                    'student_id'        => $user->id
+                ]); 
+                
+                return redirect()->back()->with([
+                    'message'     => 'Successfully added course to your cart',
+                    'cls'         => 'flash-success',
+                    'msgTitle'    => 'Success !',
                 ]);
 
+            }else{
+                throw new ModelNotFoundException;
+            }
+        }catch(CustomException $e){
+
+            return redirect()->back()->with([
+                'message'     => $e->getMessage(),
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Error !',
+            ]);
+
+        }catch(\Exception $e){
+
+            return redirect()->back()->with([
+                'message'     => $e->getMessage(),
+                //'message'     => 'Course does not exist!',
+                'cls'         => 'flash-danger',
+                'msgTitle'    => 'Error !',
+            ]);
+        }
+    }
+
+
+    public function removeFromCart($id){
+        $user = Sentinel::getUser();
+
+        //dump($id);
+        //dump($user->id);
+
+        $isDelete = CourseSelection::Where('course_id',$id)
+        ->where('student_id',$user->id)
+        ->where('is_checkout',0)
+        ->first()
+        ->delete();
+
+
+       //dd($isDelete);  
+
+
+       if($isDelete){
+            return redirect(route('view-cart'));
+       }else{
+            return redirect(route('view-cart'))->with([
+                'message'   => 'Course remove from cart failed!',
+                'cls'       => 'flash-danger',
+                'msgTitle'  => 'Error!',
+            ]);
+       }       
+
+    }
+
+    public function freeEnroll(Request $request){
+
+        //dd('ss');
+        $courseId = $request->input('courseId');
+        $user     = Sentinel::getUser();
+
+        try{
+            if(!filter_var($courseId, FILTER_VALIDATE_INT)){
+                throw new CustomException('Invalid id');
+            }
+
+            if($user == null){
+                throw new CustomException('First login before enrolling');
+            }
+
+            if(Sentinel::getUser()->roles()->first()->slug != 'student'){
+                throw new CustomException('Invalid user');
+            }
+
+            $course = Course::find($courseId);
+
+            if($course != null){
+                     
+                $rec = CourseSelection::create([
+                    'cart_added_date'   => null,
+                    'is_checkout'       => false,
+                    'course_id'         => $courseId,
+                    'student_id'        => $user->id
+                ]);               
+
+                Enrollment::create([
+                    'is_complete'           => 0,
+                    'course_selection_id'   => $rec->id,
+                ]);
+                
                 return redirect()->back()->with([
                     'message'     => 'Successfully enrolled to the course',
                     'cls'         => 'flash-success',
@@ -333,6 +301,7 @@ class CourseController extends Controller
         }catch(\Exception $e){
 
             return redirect()->back()->with([
+                //'message'     => $e->getMessage(),
                 'message'     => 'Course does not exist!',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Error !',
@@ -363,19 +332,13 @@ class CourseController extends Controller
 
             if($course != null){
 
-                //update enrollment status
-                $update_rows = $user->enrolled_courses()->updateExistingPivot($course, [
-                    'complete_date'     => Carbon::now(),
-                    'status'            => 'completed',
-                ], true);
-
-                //if there is no rows to update then insert new row
-                if($update_rows == 0) {
-                    $user->enrolled_courses()->attach($course, [
-                        'complete_date'     => Carbon::now(),
-                        'status'            => 'completed',
-                    ]);
-                }
+                
+                $CourseSelectionRecord = CourseSelection::where('course_id',$course->id)->where('student_id',$user->id)->get()->first();
+                   
+                $enrollmentRecord   = Enrollment::where('course_selection_id', $CourseSelectionRecord->id)->get()->first();
+                $enrollmentRecord->is_complete      = True;
+                $enrollmentRecord->complete_date    = Carbon::now();
+                $enrollmentRecord->save();
 
                 return redirect()->back()->with([
                     'message'     => 'Successfully listed course as completed',
@@ -397,7 +360,8 @@ class CourseController extends Controller
         }catch(\Exception $e){
 
             return redirect()->back()->with([
-                'message'     => 'Course does not exist!',
+                'message'     => $e->getMessage(),
+                //'message'     => 'Course does not exist!',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Error !',
             ]);
@@ -431,13 +395,7 @@ class CourseController extends Controller
 
                 if($course->status){
 
-                    if($course->image){
-                        $img = URL('/').'/storage/'.$course->image;
-                    }else{
-                        $img = asset('images/default-images/course.png');
-                    }
-
-                    $bannerColors = ColorUtil::generateBannerColors($img);
+                    $bannerColors = ColorUtil::generateBannerColors($course->image);
                     //dd($bannerColors);
                     //dump($course->getlinkCount());
 
@@ -487,7 +445,7 @@ class CourseController extends Controller
 
     public function viewSearchPage(){
 
-        $subjects = \App\Models\Subject::Where('status', \App\Models\Subject::PUBLISHED)->get();
+        $subjects = \App\Models\Subject::all();        
         $arr = array();    
 
         $subjects->map(function ($item) use (&$arr){  
@@ -554,14 +512,14 @@ class CourseController extends Controller
                                 $query->where('courses.price', '>',0);
                             }
 
-                            $query->where('subjects.status', '=', \App\Models\Subject::PUBLISHED)
-                                ->where('courses.status', 'published');                          
+                            $query->where('subjects.status', '=', \App\Models\Subject::PUBLISHED);
+                            //->where('courses.status', 'published');                  
                     
                         })->where(function ($query) use($courseDuration) { 
 
                             if($courseDuration == 'short'){
                                // 0-1 Hour 
-                                $query->where('courses.duration', 'LIKE', '0 Hours :%')
+                                $query->where('courses.duration', 'LIKE', '~0 Hours :%')
                                 ->where('courses.duration', 'LIKE', '%minute%');                                  
                             
                             }elseif ($courseDuration == 'medium') {                                    
@@ -590,7 +548,9 @@ class CourseController extends Controller
 
                         })
                         //->toSql();                    
-                        ->get('courses.*');                          
+                        ->get('courses.*');    
+
+                        //dd($courses->toArray());                      
                         
                         //dump(DB::getQueryLog());
                         //dd($courses->pluck('name','id')->toArray());                        
@@ -606,5 +566,39 @@ class CourseController extends Controller
 
     }
 
-}
 
+    public function viewAllCourses(){    
+
+        try{
+
+            $user = Sentinel::getUser();
+            
+            if($user != null && ($user->roles()->first()->slug == Role::STUDENT)){
+                               
+                $courses = (new CourseService())->loadAllCourses($user->id);
+            }else{
+
+                $courses = Course::all();
+            }
+           
+            return view('all-courses')->with(['all_courses' => $courses]);
+
+        }catch(CustomException $e){
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('all-courses');
+
+        }catch(\Exception $e){
+            //dd($e->getMessage());
+            session()->flash('message', 'Failed to load your courses');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('all-courses');
+
+        }
+    }    
+    
+
+
+}

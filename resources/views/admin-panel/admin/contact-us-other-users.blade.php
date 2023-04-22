@@ -1,5 +1,5 @@
 @extends('admin-panel.layouts.master')
-@section('title','Guest feedback')
+@section('title','Other users feedback')
 
 @section('css-files')
 @stop
@@ -33,14 +33,16 @@
                             @php
                                 //var_dump($comment->user->id);
                                 //var_dump($comment->id);
-                                $userRole = $comment->user->roles[0]->name;                    
+                                                    
                             @endphp
                                                    
                             <div class="vertical-timeline-block other-user-block">
                                 <div class="vertical-timeline-icon p-1 grey-bg">
-                                    @if($userRole == 'editor')
+                                    
+
+                                    @if($comment->roleName == 'editor')
                                         <img src="{{asset('admin/img/default-images/editor.png')}}" class="rounded-full" alt="image">
-                                    @elseif($userRole == 'marketer')
+                                    @elseif($comment->roleName == 'marketer')
                                         <img src="{{asset('admin/img/default-images/marketer.png')}}" class="rounded-full" alt="image">
                                     @else
                                         <img src="{{asset('admin/img/default-images/user.png')}}" class="rounded-full" alt="image">
@@ -51,7 +53,10 @@
                                     <h2>{{$comment->subject}}</h2>
                                     <p>{{$comment->message}}</p>                                  
                                     
-                                    <div class="text-xs"><strong>Name : </strong>    {{$comment->full_name}}</div>
+                                    <div class="text-xs">
+                                        <strong>Name : </strong>    {{$comment->full_name}} 
+                                        @if(!$comment->userStat) <span class="text-red">[Disabled]</span> @endif
+                                    </div>
                                     <div class="text-xs"><strong>Email : </strong>   {{$comment->email}}</div>
                                     <div class="text-xs"><strong>Phone : </strong>   {{$comment->phone}}</div>
 
@@ -59,7 +64,7 @@
                                         <span class="vertical-date">
                                             <strong>{{$comment->created_at->diffForHumans()}}</strong><br/>
                                             <small>{{$comment->created_at}}</small><br/>
-                                            <span class="text-sm text-green-600 font-semibold">{{$userRole}}</span>
+                                            <span class="text-sm text-green-600 font-semibold">{{$comment->roleName}}</span>
                                         </span>
                                     @endif
 
@@ -95,90 +100,6 @@
 
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-            <div class="ibox-content feedback-container forum-post-container mb-5">
-
-
-
-                @if(Session::has('message'))
-                    <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                        <a href="#" class="close">×</a>
-                        <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                        <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                        <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                    </div>
-                @endif
-
-
-                @foreach($otherUserComments as $comment)
-                    @php
-                        //var_dump($comment->user->id);
-                        //var_dump($comment->id);
-                        //var_dump($comment->user->roles[0]->name);
-                        $userRole = $comment->user->roles[0]->name;
-                    @endphp
-                    <div class="media">
-
-                        <a class="forum-avatar" href="#">
-                            @if($userRole == 'editor')
-                                <img src="{{asset('admin/img/default-images/editor.png')}}" class="rounded-full" alt="image">
-                            @elseif($userRole == 'marketer')
-                                <img src="{{asset('admin/img/default-images/marketer.png')}}" class="rounded-full" alt="image">
-                            @else
-                                <img src="{{asset('admin/img/default-images/user.png')}}" class="rounded-full" alt="image">
-                            @endif
-                            <div class="author-info text-lg">
-                                <strong>{{$userRole}}</strong>
-                            </div>
-                        </a>
-
-                        <div class="media-body">
-                            <h4 class="media-heading">{{$comment->subject}}</h4>
-                            <div class="mb-2 text-sm">{{$comment->message}}</div>
-
-                            <div class="text-xs"><strong>Name : </strong>    {{$comment->full_name}}</div>
-                            <div class="text-xs"><strong>Email : </strong>   {{$comment->email}}</div>
-                            <div class="text-xs"><strong>Phone : </strong>   {{$comment->phone}}</div>
-                            <div class="text-xs"><strong>Posted : </strong>   {{$comment->created_at}} <b>({{$comment->created_at->diffForHumans()}})</b></div>
-
-                            <br/>
-                        </div>
-                        <a href="#" data-id="{{$comment->id}}" class="text-danger text-lg delete-feedback">
-                            <i class="fa fa-window-close"></i>
-                        </a>
-                        <form class="comment-destroy" action="{{ route('admin.feedback.delete_comment', $comment->id) }}" method="POST">
-                            @method('DELETE')
-                            <input name="commentId" type="hidden" value="{{$comment->id}}">
-                            <input name="userType" type="hidden" value="other">
-                            @csrf
-                        </form>
-                    </div>
-                @endforeach
-
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Previous</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-
-            </div>
-
 
         </div>
     </div>

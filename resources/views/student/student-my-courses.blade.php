@@ -66,11 +66,7 @@
                                                             @foreach ($student_courses as $course)
                                                                 <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
                                                                     <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
-                                                                        @if($course->image)
-                                                                            <img src="{{URL('/')}}/storage/{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                                                        @else
-                                                                            <img src="{{asset('images/default-images/course.png')}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                                                        @endif
+                                                                        <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                                                     </a>
                                                                     <div class="flex-1 md:space-y-2 space-y-1">
                                                                         <a href="{{route('course-single',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
@@ -111,7 +107,7 @@
                                                                         @if($course->pivot->status == 'completed')
                                                                             <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="completed"></ion-icon>
                                                                         @else
-                                                                            <ion-icon name="checkmark-circle-sharp" class="text-2xl text-green-300 course-status" title="enrolled"></ion-icon>
+                                                                            <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="enrolled"></ion-icon>
                                                                         @endif
                                                                     </div>
                                                                 </div>

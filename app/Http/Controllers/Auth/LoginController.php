@@ -52,13 +52,17 @@ class LoginController extends Controller
                 $credentials = ['login'    => $request->email];
                 $user = Sentinel::findByCredentials($credentials);
 
+
+                /*dd($user);
+
                 if($user->status == 0){
                     throw new CustomException('Account is disable by admin');
-                }
+                }*/
 
                 if($user == null){
-                    throw new CustomException('Invalid user');
-                }else{
+                    throw new CustomException('Invalid user or account diabled');
+                }else{                  
+
                     $role = $user->roles()->first()->slug;
                     if($role != 'teacher' && $role != 'student'){
                         //throw new WrongUserTypeException('You dont have permission to login here');

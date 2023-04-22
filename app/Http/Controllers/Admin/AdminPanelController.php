@@ -20,7 +20,7 @@ class AdminPanelController extends Controller
 
 		if(sentinel::check()){
             $userRole = Sentinel::getUser()->roles()->first()->slug;
-
+           
             if($userRole == 'student'){
                 
                 /*return redirect(route('no-permission'))->with([

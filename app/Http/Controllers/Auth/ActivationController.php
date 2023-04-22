@@ -13,7 +13,7 @@ class ActivationController extends Controller
 {
     public function activate($encryptedEmail, $activationCode){
         $email = Crypt::decrypt($encryptedEmail);
-        $user = User::whereEmail($email)->first();
+        $user = User::withoutGlobalScope('active')->whereEmail($email)->first();
 
 
         if(Activation::complete($user,$activationCode)){

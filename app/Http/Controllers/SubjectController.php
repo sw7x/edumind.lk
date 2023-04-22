@@ -13,7 +13,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 class SubjectController extends Controller
 {
     public function ViewAll(){
-        $this->authorize('viewAllInSiteFrontend',Subject::class);    
+        //$this->authorize('viewAllInSiteFrontend',Subject::class);    
         $subjects = Subject::orderBy('created_at', 'desc')->get();
         //dd($subjects);
         return view('subject-list')->with(['subjects' => $subjects]);
@@ -33,14 +33,9 @@ class SubjectController extends Controller
 
             //$this->authorize('viewSingleInSiteFrontend',$subjectData);
 
-            if($subjectData){
-                if($subjectData->image){
-                    $img = URL('/').'/storage/'.$subjectData->image;
-                }else{
-                    $img = asset('images/default-images/subject.png');
-                }
+            if($subjectData){                
 
-                $bannerColors = ColorUtil::generateBannerColors($img);
+                $bannerColors = ColorUtil::generateBannerColors($subjectData->image);
 
                 //dd($subjects);
                 return view('subject-single')->with([
@@ -50,7 +45,7 @@ class SubjectController extends Controller
                     'txtColor'          => $bannerColors['txtColor']
                 ]);
             }else{
-                throw new CustomException('Subject does not exist');
+                throw new CustomException('Subject does not exist or disabled');
             }
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
@@ -64,6 +59,7 @@ class SubjectController extends Controller
 
         }catch(\Exception $e){
             session()->flash('message', 'Failed to load the subject');
+            //session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
             return view('subject-single');

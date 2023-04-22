@@ -11,29 +11,36 @@ use Illuminate\Auth\Access\AuthorizationException;
 
 class ContactUsMessagesController extends Controller
 {
-    public function students(){      
-
+    public function students(){        
+        
         try{
             $this->authorize('viewAny',Contact_us::class);
-            $studentComments    = Contact_us::whereHas('user', function($query){
-                //$query->where('subject', 'ww');
-                $query->whereHas('roles', function ($query) {
+            
+            $studentComments = Contact_us::select('contact_us.*', 'users.status as userStat')
+            ->whereHas('user', function ($query){
+                $query->withoutGlobalScope('active')
+                ->whereHas('roles', function ($query){
                     $query->where('name', 'student');
                 });
-            })->orderBy('created_at', 'desc')->get();
+            })
+            ->join('users', 'contact_us.user_id', '=', 'users.id')
+            ->orderBy('contact_us.created_at', 'desc')
+            //->toSql();
+            ->get();
 
         }catch(AuthorizationException $e){          
+            
             session()->flash('message','You dont have Permissions to view student comments!');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Permission Denied!');
             unset($studentComments);
 
         }catch(\Exception $e){
+            //session()->flash('message',$e->getMessage());
             session()->flash('message','Failed to show all student comments!');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
             unset($studentComments);
-
         }      
         
         return view('admin-panel.admin.contact-us-students')->with([
@@ -44,28 +51,45 @@ class ContactUsMessagesController extends Controller
 
     public function teachers(){
         $this->authorize('viewAny',Contact_us::class);
-        $teacherComments    = Contact_us::whereHas('user', function($query){
-            //$query->where('subject', 'ww');
-            $query->whereHas('roles', function ($query) {
+        
+
+        $teacherComments = Contact_us::select('contact_us.*', 'users.status as userStat','users.profile_pic as profilePic')
+        ->whereHas('user', function ($query){
+            $query->withoutGlobalScope('active')
+            ->whereHas('roles', function ($query){
                 $query->where('name', 'teacher');
             });
-        })->orderBy('created_at', 'desc')->get();
-
+        })
+        ->join('users', 'contact_us.user_id', '=', 'users.id')
+        ->orderBy('contact_us.created_at', 'desc')
+        //->toSql();
+        ->get(); 
+        
+        //dd($teacherComments);
         return view('admin-panel.admin.contact-us-teachers')->with(['teacherComments' => $teacherComments]);
     }
 
 
     public function otherUsers(){
         $this->authorize('viewAny',Contact_us::class);
+        
         // comments belongs to marketers and editors
-        $otherUserComments    = Contact_us::whereHas('user', function($query){
-            //$query->where('subject', 'ww');
-            $query->whereHas('roles', function ($query) {
+        $otherUserComments = Contact_us::select('contact_us.*', 'users.status as userStat', 'roles.name as roleName')
+        ->whereHas('user', function ($query){
+            $query->withoutGlobalScope('active')
+            ->whereHas('roles', function ($query){
                 $query->where('name', 'marketer')
                     ->orWhere('name', 'editor');
             });
-        })->orderBy('created_at', 'desc')->get();
+        })
+        ->join('users', 'contact_us.user_id', '=', 'users.id')
+        ->join('role_users', 'users.id', '=', 'role_users.user_id')
+        ->join('roles', 'role_users.role_id', '=', 'roles.id')
+        ->orderBy('contact_us.created_at', 'desc')
+        //->toSql();
+        ->get();
 
+        //dd($otherUserComments);
         return view('admin-panel.admin.contact-us-other-users')->with(['otherUserComments' => $otherUserComments]);
     }
 
@@ -74,16 +98,11 @@ class ContactUsMessagesController extends Controller
 
     public function guests(){
         $this->authorize('viewAny',Contact_us::class);
-        $guestMessages = Contact_us::where('user_id', null)->get();
-
-        $guestMessages->each(function($item, $key) {
-           // var_dump ($item->id);
-        });
-
-        //dd();
-
-
-
+        
+        $guestMessages = Contact_us::where('user_id', null)
+        ->orderBy('contact_us.created_at', 'desc')
+        ->get();
+        
         return view('admin-panel.admin.contact-us-guests')->with(['guestMessages' => $guestMessages]);
     }
 
@@ -168,3 +187,6 @@ class ContactUsMessagesController extends Controller
 
 
 }
+
+
+

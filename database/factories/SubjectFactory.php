@@ -30,6 +30,9 @@ class SubjectFactory extends Factory
         $urlString  = UrlUtil::wordsToUrl($subjectName,15);
         $slug       = UrlUtil::generateSubjectUrl($urlString);
 
+        $imgSrc     = 'subjects/' . $this->faker->image('public/storage/subjects', 200, 200, 'subject', false, true);
+
+
         return [
             //'name' => substr($this->faker->name,0,24),
             'name'          => $subjectName,
@@ -37,7 +40,7 @@ class SubjectFactory extends Factory
             
             //'image'         => $this->faker->imageUrl($width = 200, $height = 200),
             //'image'         => '',
-            'image'         => 'subjects/' . $this->faker->image('public/storage/subjects', 200, 200, 'subject', false, true),
+            'image'         => $this->faker->randomElement([$imgSrc,$imgSrc,$imgSrc,null]),
             
             //'status'        => $this->faker->randomElement(['published','draft']),
             'status'        => $this->faker->randomElement([

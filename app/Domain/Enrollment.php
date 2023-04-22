@@ -15,7 +15,7 @@ class Enrollment{
 
 
 id 
-cart_add_date 
+cart_added_date 
 //is_checkout = true
 course_id ==> FK
 student_id ==> FK

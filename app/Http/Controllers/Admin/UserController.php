@@ -54,20 +54,20 @@ class UserController extends Controller
         try{
 
             $this->authorize('viewAny',User::class);            
-            $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
-            $students   =   Sentinel::findRoleBySlug('student')->users()->with('roles')->get();
-            $marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->get();
-            $editors    =   Sentinel::findRoleBySlug('editor')->users()->with('roles')->get();  
+            $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
+            $students   =   Sentinel::findRoleBySlug('student')->users()->withoutGlobalScope('active')->with('roles')->get();
+            $marketers  =   Sentinel::findRoleBySlug('marketer')->users()->withoutGlobalScope('active')->with('roles')->get();
+            $editors    =   Sentinel::findRoleBySlug('editor')->users()->withoutGlobalScope('active')->with('roles')->get();  
             
 
-            $teachers1   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
+            //$teachers1   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
             
             //dd($teachers->first());
 
             //dd($teachers);
             return view('admin-panel.user-list')->with([
                 'teachers'   => $teachers,
-                'teachers1'   => $teachers1,
+                //'teachers1'   => $teachers1,
                 'students'   => $students,
                 'marketers'  => $marketers,
                 'editors'    => $editors,
@@ -470,11 +470,14 @@ class UserController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $user = Sentinel::findById($id);
+            
+            //$user = Sentinel::findById($id);
+            $user = User::withoutGlobalScope('active')->find($id);
+
             $this->authorize('view',$user);
-            // dd($user);
+            
             if($user != null){
-                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
+                $role = $user->roles()->first()->slug;
                 return view('admin-panel.user-view')->with([
                     'userData'   => $user,
                     'userType'   => $role,
@@ -497,6 +500,7 @@ class UserController extends Controller
             
         }catch(\Exception $e){
             session()->flash('view_user_message','User does not exist');
+            //session()->flash('view_user_message',$e->getMessage());
             session()->flash('view_user_cls','flash-danger');
             session()->flash('view_user_msgTitle','Error!');
             return view('admin-panel.user-view');
@@ -518,7 +522,8 @@ class UserController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $user = User::find($id);
+            $user = User::withoutGlobalScope('active')->find($id);
+
             $this->authorize('update',$user);
             $userRole = null;
             if ($user) {
@@ -582,7 +587,8 @@ class UserController extends Controller
                 throw new CustomException('Form validation failed');
             }
 
-            $user = User::find($id);
+            $user = User::withoutGlobalScope('active')->find($id);
+
             $this->authorize('updateTeachers',$user);
             if ($user) {
 
@@ -629,8 +635,7 @@ class UserController extends Controller
                     'status'            => $status,
                     'profile_pic'       => $imgDest,//
                 ];
-                User::where('id',$id)->update($teacherUpdateInfo);
-
+                User::withoutGlobalScope('active')->where('id',$id)->update($teacherUpdateInfo);
 
                 //todo -future-send email
                 if($request->teacher_reset_pw_stat == 'on'){
@@ -687,8 +692,9 @@ class UserController extends Controller
             if (isset($request->validator) && $request->validator->fails()) {
                 throw new CustomException('Form validation failed');
             }
+            
+            $user = User::withoutGlobalScope('active')->find($id);
 
-            $user = User::find($id);
             $this->authorize('updateStudents',$user);
             if ($user) {
                 $status = ($request->get('stud_stat')=='enable')? True: False;
@@ -700,7 +706,8 @@ class UserController extends Controller
                     'dob_year'          => $request->get('stud_birth_year'),
                     'status'            => $status,
                 ];
-                User::where('id',$id)->update($studentUpdateInfo);
+                
+                User::withoutGlobalScope('active')->where('id',$id)->update($studentUpdateInfo);
 
                 //todo -future-send email
                 if($request->stud_reset_pw_stat == 'on'){
@@ -752,8 +759,9 @@ class UserController extends Controller
             if (isset($request->validator) && $request->validator->fails()) {
                 throw new CustomException('Form validation failed');
             }
+            
+            $user = User::withoutGlobalScope('active')->find($id);
 
-            $user = User::find($id);
             $this->authorize('updateMarketers',$user);
             if ($user) {
 
@@ -765,7 +773,7 @@ class UserController extends Controller
                     'gender'            => $request->get('marketer-gender'),
                     'status'            => $status,
                 ];
-                User::where('id',$id)->update($marketerUpdateInfo);
+                User::withoutGlobalScope('active')->where('id',$id)->update($marketerUpdateInfo);
 
 
                 //todo -future-send email
@@ -819,7 +827,8 @@ class UserController extends Controller
                 throw new CustomException('Form validation failed');
             }
 
-            $user = User::find($id);
+            $user = User::withoutGlobalScope('active')->find($id);
+
             $this->authorize('updateEditors',$user);
             if ($user) {
 
@@ -831,7 +840,8 @@ class UserController extends Controller
                     'gender'            => $request->get('editor-gender'),
                     'status'            => $status,
                 ];
-                User::where('id',$id)->update($editorUpdateInfo);
+                
+                User::withoutGlobalScope('active')->where('id',$id)->update($editorUpdateInfo);
 
                 //todo -future-send email
                 if($request->editor_reset_pw_stat == 'on'){
@@ -881,12 +891,14 @@ class UserController extends Controller
                 throw new CustomException('Invalid id - User status update failed');
             }
 
-            $user = User::find($request->userId);
+            $user = User::withoutGlobalScope('active')->find($request->userId);
+
             $this->authorize('changeUserStatus',$user);
             if ($user) {
                 $status = (int)$request->status;
                 $teacherUpdateInfo = ['status'=> $status];
-                User::where('id',$request->userId)->update($teacherUpdateInfo);
+                
+                User::withoutGlobalScope('active')->where('id',$request->userId)->update($teacherUpdateInfo);
 
                 return response()->json([
                     'message'  => 'User status update success',
@@ -936,7 +948,9 @@ class UserController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $user = User::find($id);
+            
+            $user = User::withoutGlobalScope('active')->find($id);
+            
             $this->authorize('delete',$user);
             if ($user) {
                 $user->delete();
@@ -1018,13 +1032,14 @@ class UserController extends Controller
     {      
         $unApprovedTeachers   =   Sentinel::findRoleBySlug('teacher')
                         ->users()
+                        ->withoutGlobalScope('active')
                         ->with('roles')
                         ->where('users.status','0')
                         //->where('users.email','carroll.cydney@example.com')
                         ->orderBy('id')
                         ->get();      
 
-        //dd($teachers);
+        //dd($unApprovedTeachers);
         
         return view('admin-panel.user-approve-teachers')->with([
             'teachers'   => $unApprovedTeachers,
@@ -1038,10 +1053,12 @@ class UserController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $user = Sentinel::findById($id);
-            // dd($user);
+            //$user = Sentinel::findById($id);
+            $user = User::withoutGlobalScope('active')->find($id);
+
+            //dd($user);
             if($user != null){
-                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
+                $role = $user->roles()->first()->slug;
                 
                 //dd($user->status);
                 if($role != 'teacher'){

@@ -65,11 +65,7 @@
 		                                    @forelse ($teacher_courses as $course)
 		                                        <div class="flex md:space-x-6 space-x-3 relative course-item py-2 pl-2 pr-3 mb-3 border {{ ($course->status == App\Models\Course::PUBLISHED) ? '' : 'disabled'}}">
 		                                            <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
-		                                                @if($course->image)
-		                                                    <img src="{{URL('/')}}/storage/{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-		                                                @else
-		                                                    <img src="{{asset('images/default-images/course.png')}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-		                                                @endif
+		                                                <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
 		                                            </a>
 		                                            <div class="flex-1 space-y-1">
 		                                                <a href="{{route('course-single',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>

@@ -11,7 +11,7 @@ use App\Models\CourseSelection;
 use App\Models\Coupon;
 use Illuminate\Database\Eloquent\Builder;
 
-
+use Illuminate\Support\Facades\Storage;
 
 class Course extends Model
 {
@@ -103,13 +103,22 @@ class Course extends Model
 
     protected static function booted(){
         static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('status', self::PUBLISHED);
+            $builder->where('courses.status', self::PUBLISHED);
         });
     }
 
 
+    
+    public function getImageAttribute($value){
+        
+        if($value){           
+            $imagePath = asset('storage/'.$value);
+        }else{
+            $imagePath = asset('images/default-images/course.png');           
+        }
 
-
+        return $imagePath;
+    }
 
 
 

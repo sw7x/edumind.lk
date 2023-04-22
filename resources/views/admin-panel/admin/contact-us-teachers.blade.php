@@ -32,15 +32,17 @@
                         @foreach($teacherComments as $comment)
                             @php
                                 //var_dump($comment->user->id);
-                                //var_dump($comment->id);
+                                //dump($comment->id);
+                                //dump($comment->user()->withoutGlobalScope('active')->get());
+                                //dump('===');
                             @endphp
                                                    
                             <div class="vertical-timeline-block teacher-block">
                                 <div class="vertical-timeline-icon p-1 {{ ($loop->index%2 == 0) ? 'blue-bg' : 'lazur-bg'}}">
-                                    @if($comment->user->profile_pic != null)
-                                        <img src="{{URL('/')}}/storage/{{$comment->user->profile_pic}}" class="rounded-full" alt="image">
+                                    @if($comment->profilePic != null)
+                                        <img src="{{URL('/')}}/storage/{{$comment->profilePic}}" class="w-full h-full rounded-full" alt="image">
                                     @else
-                                        <img src="{{asset('admin/img/default-images/teacher.png')}}" class="rounded-full" alt="image">
+                                        <img src="{{asset('admin/img/default-images/teacher.png')}}" class="w-full h-full rounded-full" alt="image">
                                     @endif
                                 </div>
 
@@ -48,7 +50,10 @@
                                     <h2>{{$comment->subject}}</h2>
                                     <p>{{$comment->message}}</p>                                  
                                     
-                                    <div class="text-xs"><strong>Name : </strong>    {{$comment->full_name}}</div>
+                                    <div class="text-xs">
+                                        <strong>Name : </strong>    {{$comment->full_name}} 
+                                        @if(!$comment->userStat) <span class="text-red">[Disabled]</span> @endif
+                                    </div>
                                     <div class="text-xs"><strong>Email : </strong>   {{$comment->email}}</div>
                                     <div class="text-xs"><strong>Phone : </strong>   {{$comment->phone}}</div>
 

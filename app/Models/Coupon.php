@@ -47,7 +47,7 @@ class Coupon extends Model
 	
 	protected static function booted(){
         static::addGlobalScope('enabled', function (Builder $builder) {
-            $builder->where('is_enabled', self::ENABLE);
+            $builder->where('coupons.is_enabled', self::ENABLE);
         });
     }
 

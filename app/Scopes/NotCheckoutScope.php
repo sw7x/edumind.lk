@@ -17,6 +17,6 @@ class NotCheckoutScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('is_checkout',false);
+        $builder->where('course_selections.is_checkout',false);
     }
 }

@@ -29,62 +29,10 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-
-        //var_dump($this->state(['susa']));
-
-
-//        $rr = $this->state(function (array $attributes) {
-//            return $attributes['zzz'];
-//
-////            return [
-////                'account_status' => 'suspended',
-////            ];
-//        });
-
-        //var_dump($rr);
-
-//        return [
-//            'full_name' => $this->faker->name(),
-//            'email' => $this->faker->unique()->safeEmail(),
-//            'email_verified_at' => now(),
-//
-//            //'remember_token' => Str::random(10),  //
-//
-//            'gender' => $this->faker->randomElement(['male', 'female', 'other']),
-//            'dob_year' => 1987,
-//            'status' => $this->faker->randomElement([1,0]),
-//            'password' => bcrypt('Pa$$w0rd!'),
-//            'phone' => $this->faker->phoneNumber,
-//
-//            'edu_qualifications'=> $this->faker->text(),
-//            'profile_text'=> $this->faker->text(),
-//            'username' => $this->faker->userName,
-//            'created_at'=> now(),
-//            'updated_at'=> now(),
-//        ];
-
-
-        $roleId = $this->faker->randomElement([2,3,4,5]);
-        if($roleId == 4){
-            $profilePic = 'users/' . $this->faker->image('public/storage/users', 630, 820, 'users', false, true);
-        }else{
-            $profilePic = null;
-        }
-
-        
-
-
-
-
-        //var_dump ($roleId);
         $user =  [
             'full_name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            //'email_verified_at' => now(),
-
-            //'remember_token' => Str::random(10),  //
-
-            //'gender' => $this->faker->randomElement(['male', 'female', 'other']),
+            'email'     => $this->faker->unique()->safeEmail(),
+            
             'gender' => $this->faker->randomElement([
                 $this->model::GENDER_MALE, 
                 $this->model::GENDER_FEMALE, 
@@ -92,50 +40,25 @@ class UserFactory extends Factory
                 $this->model::GENDER_MALE, 
                 $this->model::GENDER_FEMALE
             ]),
-            'profile_pic'   => $profilePic,
-
+            //'profile_pic'   => $profilePic,
 
             'dob_year' => 1987,
-            'status' => $this->faker->randomElement([1,0]),
+            'status' => $this->faker->randomElement([1,1,0]),
             'password' => bcrypt('Pa$$w0rd!'),
             'phone' => $this->faker->phoneNumber(),
-
-
 
             'username' => substr($this->faker->userName(), 0, 24),
             'created_at'=> now(),
             'updated_at'=> now(),
         ];
-
-
-
-        //array_merge($user,array('qq'=> '666'));
-        //return array('user'=>$user,'roleId' => $roleId);
-
-        //var_dump ($user);
-
+     
         return $user;
-
 
         //$user = User->registerAndActivate($user);
         //$user_admin->makeRoot();
         //$role = User::findRoleById($roleId);
         //$role->users()->attach($user);
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
 
 
 

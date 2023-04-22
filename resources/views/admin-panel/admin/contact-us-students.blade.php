@@ -48,7 +48,10 @@
                                     <h2>{{$comment->subject}}</h2>
                                     <p>{{$comment->message}}</p>                                  
                                     
-                                    <div class="text-xs"><strong>Name : </strong>    {{$comment->full_name}}</div>
+                                    <div class="text-xs">
+                                        <strong>Name : </strong>    {{$comment->full_name}} 
+                                        @if(!$comment->userStat) <span class="text-red">[Disabled]</span> @endif
+                                    </div>
                                     <div class="text-xs"><strong>Email : </strong>   {{$comment->email}}</div>
                                     <div class="text-xs"><strong>Phone : </strong>   {{$comment->phone}}</div>
 

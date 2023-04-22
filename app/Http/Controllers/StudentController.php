@@ -165,7 +165,10 @@ class StudentController extends Controller
 
     public function viewCart()
     {
+        return view('student.cart');
         
+
+        /*
         $user = Sentinel::getUser();
 
         $addedCourses =  Course::join('course_selections', function($join) use ($user){
@@ -189,39 +192,12 @@ class StudentController extends Controller
 
 
         //dd($addedCourses);            
-        return view('cart')->with([
+        return view('student.cart')->with([
             'addedCourses'  => $addedCourses,
             'totalPrice'    => $totPrice
         ]);
+        */
     }
 
-    public function removeFromCart($id){
-        $user = Sentinel::getUser();
-
-        //dump($id);
-        //dump($user->id);
-
-        $isDelete = CourseSelection::Where('course_id',$id)
-        ->where('student_id',$user->id)
-        ->where('is_checkout',0)
-        ->first()
-        ->delete();
-
-
-       //dd($isDelete);  
-
-
-       if($isDelete){
-            return redirect(route('view-cart'));
-       }else{
-            return redirect(route('view-cart'))->with([
-                'message'   => 'Course remove from cart failed!',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!',
-            ]);
-       }   
-
-        
-
-    }
+    
 }

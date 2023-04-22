@@ -234,9 +234,19 @@ Route::get('/empty',function(){ return view('empty');})->name('empty');
 Route::get('/help',function(){ return view('help-page');})->name('help');
 
 
+Route::get ('/all-courses', [User_CourseController::class,'viewAllCourses'])->name ('all-courses');
 
-Route::get ('/cart', [StudentController::class,'viewCart'])->name('view-cart');
-Route::post ('/cart/remove/{id}', [StudentController::class,'removeFromCart'])->name('remove-cart');
+
+
+
+
+Route::get ('/cart', [StudentController::class,'viewCart'])
+->middleware('checkStudent')
+->name('view-cart');
+
+
+
+
 
 
 Route::get('/terms-and-services',function(){ return view('terms-and-services');})->name('terms-and-services');
@@ -249,8 +259,19 @@ Route::get('/test',function(){ return view('test');})->name('test');
 
 //Route::get('/course-watch', function () {     return view('course-watch'); })->name('course-watch');
 Route::get ('/course/guest-enroll', [User_CourseController::class,'guestEnroll'])->name ('course-guest-enroll');
-Route::post ('/course/enroll', [User_CourseController::class,'enroll'])->name ('course.enroll');
+Route::post ('/course/free-enroll', [User_CourseController::class,'freeEnroll'])->name ('course.free-enroll');
+
+Route::post ('/course/add-to-cart', [User_CourseController::class,'addToCart'])->name ('course.addToCart');
+Route::post ('/cart/remove/{id}', [User_CourseController::class,'removeFromCart'])->middleware('checkStudent')->name('remove-cart');
+
+
 Route::post ('/course/complete', [User_CourseController::class,'complete'])->name ('course.complete');
+
+
+
+
+
+
 
 Route::get('/course/search', [User_CourseController::class,'viewSearchPage'])->name ('course-search');
 Route::post('/course/search', [User_CourseController::class,'SearchCourse'])->name ('course-search-submit');

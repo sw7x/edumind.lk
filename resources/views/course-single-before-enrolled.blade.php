@@ -28,8 +28,7 @@
         //var_dump($courseData->teacher->full_name);
     @endphp
    
-
-
+    
     @if(isset($courseData))
         <!-- course preview details -->
         <div class="bg-gray-600 text-white lg:-mt-20 lg:pt-20" style="background: {{$bgColor ?? 'grey'}}">
@@ -38,11 +37,7 @@
 
                     <div class="lg:w-4/12">
                         <div class="w-full lg:h-52 h-40 overflow-hidden rounded-lg relative lg:mb-0 mb-4" style="border:2px solid {{$txtColor ?? 'black'}}">
-                            @if($courseData->image)
-                                <img src="{{URL('/')}}/storage/{{$courseData->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                            @else
-                                <img src="{{asset('images/default-images/course.png')}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                            @endif
+                            <img src="{{$courseData->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                         </div>
                     </div>
                     <div class="lg:w-8/12 text-white" style="color:{{$txtColor ?? '#fff'}}">
@@ -529,90 +524,88 @@
 
                         
 
-                        <?php //var_dump ($enroll_status);?>
+                        <?php //dump ($enroll_status);?>
+                        <x-course-page-buttons :enrollStatus=$enroll_status :dataArr=$courseData page="before enrolled"/>
 
-
+                        {{--
 
                         @if(Sentinel::check())
                             @if(Sentinel::getUser()->roles()->first()->slug == 'student')
                                 
-                                @if($courseData->price == 0)
-                                    @if($enroll_status =='START')
+                                
 
+                                @if($courseData->price != 0)                                 
+                                    @if ($enroll_status == 'START')
                                         <form action="{{route('course.enroll')}}" method="post" class='course-enroll-form'>
                                             {{csrf_field ()}}
                                             <div class="mt-4">
-                                                <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Enroll Now</button>
+                                                <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">BE-2-Add to Cart</button>
                                             </div>
                                             <input name="courseId" type="hidden" value="{{$courseData->id}}">
                                         </form>
-
+                                    @elseif ($enroll_status =='ADDED_TO_CART')                                    
+                                        <div class="mt-4">
+                                            <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white"
+                                                    onclick='window.location=`{{ route("view-cart")}}`'>BE-View Cart</button>
+                                        </div>                                       
+                                    @else                                       
                                     @endif
-
                                 @else
-                                    
-                                    @if ($enroll_status =='ADDED_TO_CART')
-                                    <form action="{{route('course.enroll')}}" method="post" class='course-enroll-form'>
+                                    @if($enroll_status =='START')
+                                        <form action="{{route('course.enroll')}}" method="post" class='course-enroll-form'>
+                                            {{csrf_field ()}}
+                                            <div class="mt-4">
+                                                <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">E2-Enroll Now</button>
+                                            </div>
+                                            <input name="courseId" type="hidden" value="{{$courseData->id}}">
+                                        </form>
+                                    @endif
+                                @endif 
+
+
+                                
+                                @if($enroll_status =='ENROLLED')
+                                    <form action="{{route('course.complete')}}" method="post" class='course-complete-form'>
                                         {{csrf_field ()}}
                                         <div class="mt-4">
-                                            <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">View Cart</button>
+                                            <button type="submit" class="w-full h-9 px-6 rounded-md bg-green-600 hover:bg-green-400 hover:text-white text-white">E-Complete course</button>
                                         </div>
                                         <input name="courseId" type="hidden" value="{{$courseData->id}}">
                                     </form>
-                                    @elseif ($enroll_status == 'START')
-                                        <form action="{{route('course.enroll')}}" method="post" class='course-enroll-form'>
-                                            {{csrf_field ()}}
-                                            <div class="mt-4">
-                                                <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
-                                            </div>
-                                            <input name="courseId" type="hidden" value="{{$courseData->id}}">
-                                        </form>
-                                    @else
-                                       
-                                    @endif
-
                                 @endif
 
-                            @else  
-                                  
-                            @endif
-                        @else
-                            
-                            [{{$courseData->price}}]
+                                @if($enroll_status =='COMPLETED')
+                                    <div class="mt-2">
+                                        <div class="flex items-center justify-center h-24 px-6 rounded-md bg-green-100 text-green-600 border-2 border-green-600 font-semibold">E-This course has been completed by you</div>
+                                    </div>
+                                @endif
 
-                            @if($courseData->price == 0)                               
+                               
+                            @endif
+                        @else                                                       
+
+                            @if($courseData->price != 0)                               
                                 <form action="{{route('course-guest-enroll')}}" method="get" class='course-enroll-form'>
                                     {{csrf_field ()}}
                                     <div class="mt-4">
-                                        <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Enroll Now</button>
+                                        <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">BE-Add to Cart</button>
                                     </div>
                                 </form>
-                            @else
+                            @else                                
                                 <form action="{{route('course-guest-enroll')}}" method="get" class='course-enroll-form'>
                                     {{csrf_field ()}}
                                     <div class="mt-4">
-                                        <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
+                                        <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">BE- Enroll Now</button>
                                     </div>
-                                </form>
-                            @endif
-
-                            
+                                </form>                                                              
+                            @endif                            
                             
                         @endif
-
-
-
-                        {{--
-                        <div class="mt-2">
-                            <a href="#" class="flex items-center justify-center h-9 px-6 rounded-md bg-green-400 hover:bg-green-600 hover:text-white text-white border border-green-300">Complete course</a>
-                        </div>
-                        <div class="mt-2">
-                            <a href="#" class="flex items-center justify-center h-9 px-6 rounded-md hover:bg-red-600 hover:text-white bg-red-500 border border-red-600 text-white">Add to Cart</a>
-                        </div>
-                        <div class="mt-2">
-                            <a href="{{route('view-cart')}}" class="flex items-center justify-center h-9 px-6 rounded-md bg-red-50 border hover:text-red-500 border-red-600 text-red-600">View Cart</a>
-                        </div>
                         --}}
+
+
+
+                        
 
                     </div>
 

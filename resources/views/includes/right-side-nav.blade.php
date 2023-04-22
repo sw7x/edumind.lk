@@ -24,18 +24,38 @@
                         </form>
                     </div> -->
 
+
+            
                     @if(Sentinel::check())
 
-                        @if(Sentinel::getUser()->roles()->first()->slug == 'student')
                         <!-- cart -->
+                        @if(Sentinel::getUser()->roles()->first()->slug == 'student')
                         <a href="#" class="header_widgets">
                             <ion-icon name="cart-outline" class="is-icon"></ion-icon>
-                            <span>4</span>
+                            <span>{{$cartCourseCount}}</span>
                         </a>
 
                         <div uk-drop="mode: click" class="dropdown_cart">
                             <!-- <h4 class="cart-headline"> My Cart </h4> -->
-                            <ul class="dropdown_cart_scrollbar" data-simplebar>
+                            <ul class="dropdown_cart_scrollbar" data-simplebar>                                
+                                @foreach($cartCourses as $course)
+                                <li class="@if(!($loop->last)) border-b-2 border-gray-200 @endif">
+                                    <div class="cart_avatar">
+                                        <img src="{{$course['image']}}" alt="">                                        
+                                    </div>
+                                    <div class="cart_text">
+                                        <h4>{{$course['name']}}</h4>
+                                    </div>
+                                    <div class="cart_price">
+                                        <span class="text-base">{{$course['price']}}</span>
+                                        @if($loop->index ==2)
+                                            <span class="line-through text-gray-500 font-normal">{{$course['price']}}</span>
+                                        @endif
+                                        <button class="type"> Remove</button>
+                                    </div>
+                                </li>
+                                @endforeach
+                                <!-- 
                                 <li>
                                     <div class="cart_avatar">
                                         <img src="{{asset('images/courses/img-1.jpg')}}" alt="">
@@ -48,135 +68,14 @@
                                         <button class="type"> Remove</button>
                                     </div>
                                 </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-2.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> Angular Fundamentals for Beginner to advance </h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $12.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-3.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> Ultimate Web Developer Course for Beginners 2020</h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $14.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-4.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> The Complete JavaScript From beginning to advance </h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $16.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-5.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> Become a Web Developer from Scratch to Advanced</h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $12.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-4.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> The Complete JavaScript From beginning to advance </h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $16.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-5.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> Become a Web Developer from Scratch to Advanced</h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $12.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-4.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> The Complete JavaScript From beginning to advance </h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $16.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-5.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> Become a Web Developer from Scratch to Advanced</h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $12.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-4.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> The Complete JavaScript From beginning to advance </h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $16.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-5.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4> Become a Web Developer from Scratch to Advanced</h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $12.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
+                                -->
                             </ul>
-
                             <div class="cart_footer row">
-                                <div class="col-md-6 text-left"><a href="{{route('view-cart')}}" class="text-blue-500">View cart</a></div>
-                                <div class="col-md-6 text-right"><span>Subtotal : $ 320</span></div>
+                                <div class="col-md-4 text-left"><a href="{{route('view-cart')}}" class="text-blue-500">View cart</a></div>
+                                <div class="col-md-8 text-right"><span>Subtotal : Rs {{$cartTotal}}</span></div>
                                 <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
                             </div>
-                        </div>
-                        
+                        </div>                        
                         @endif
 
 

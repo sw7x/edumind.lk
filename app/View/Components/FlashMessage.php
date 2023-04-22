@@ -36,3 +36,4 @@ class FlashMessage extends Component
         return view('includes.components.flash-message');
     }
 }
+

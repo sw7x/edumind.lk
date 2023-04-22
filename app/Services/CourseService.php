@@ -8,7 +8,7 @@ namespace App\Services;
 
 use App\Models\Course;
 use Illuminate\Support\Str;
-
+use App\Models\Role;
 
 class CourseService
 {
@@ -130,5 +130,162 @@ class CourseService
 
     // enrolled courses by stud
 
+
+
+    public function loadCoursePage($currentUser, $course){
+
+        if(!$currentUser){
+            return array(
+                'view'      => 'course-single-before-enrolled',
+                'status'    =>  null
+            );            
+        }
+        
+        $userRole = ($currentUser != null)? $currentUser->roles()->first()->slug : null;
+        
+        /* ==== teacher ====*/
+        if($userRole == Role::TEACHER){
+            $isAuthor = $course->teacher()->where('id', $currentUser->id)->first();                            
+            $viewFile = ($isAuthor)? 'course-single-enrolled' : 'course-single-before-enrolled';            
+        }
+
+        
+
+
+        //dump($course->id);
+
+
+
+        /* ==== student ====*/
+        if($userRole == Role::STUDENT){
+            $courseSelection = $currentUser->course_selections()->where('course_id', $course->id)->first();                                
+            //dump($courseSelection);
+            if($courseSelection == null){ 
+                // not added to cart 
+                $enroll_status  = 'START';   //---> display [add to cart] button
+                $viewFile       = 'course-single-before-enrolled';
+            }else{
+
+                $enrollment = $courseSelection->enrollment()->first();                              
+                //dump($enrollment);
+                
+                if($course->price == 0){
+
+                    /* ========  free courses =========== */
+                    // is_checkout = 0 in free course
+                    // in free courses then there is always have relevant enrollment record in enrollments table
+                    $enroll_status = ($enrollment->is_complete) ? 'COMPLETED' : 'ENROLLED';
+                    $viewFile       = 'course-single-enrolled';
+
+                }else{
+                    
+                    /* ========  paid courses =========== */
+                    // is_checkout = 1 happens only in paid course
+                    // if is_checkout = 1 then in paid courses then there is always have relevant enrollment record in enrollments table
+                    if($courseSelection->is_checkout){                        
+                                                
+                        if($enrollment){
+
+                            $enroll_status = ($enrollment->is_complete) ? 'COMPLETED' : 'ENROLLED';                       
+                            $viewFile       = 'course-single-enrolled';
+                        }else{
+                                                                                      
+                            //if $courseSelection->is_checkout = 1, $enrollment = null then to fix Error
+                            //update courseSelection.is_checkout to 0                            
+                            $courseSelection->is_checkout = false;
+                            $courseSelection->save();
+
+                            $enroll_status  = 'ADDED_TO_CART'; //---> [view cart]
+                            $viewFile       = 'course-single-before-enrolled';
+                        }
+
+                    }else{ 
+
+                        $enroll_status  = 'ADDED_TO_CART'; //---> [view cart]
+                        $viewFile       = 'course-single-before-enrolled';
+                    }
+                }
+                
+            }
+        }
+
+
+
+        /* ==== editor ====*/
+        if($userRole == Role::EDITOR){  $viewFile = 'course-single-enrolled';  }
+
+        /* ==== admin ====*/
+        if($userRole == Role::ADMIN){  $viewFile = 'course-single-enrolled';  }
+
+        /* ==== marketer ====*/
+        if($userRole == Role::MARKETER){  $viewFile = 'course-single-before-enrolled';  }
+                
+        /* ==== if unknown user role ====*/
+        $viewFile = $viewFile ?? 'course-single-before-enrolled';                      
+           
+        
+        return array(
+            'view'      => $viewFile,
+            'status'    => $enroll_status ?? null
+        );
+
+    }
+
+
+    public function loadAllCourses($userId){
+
+        $allCourses = Course::all();
+        $courseArr = array();        
+        
+        $allCourses->map(function ($item) use (&$courseArr, $userId){ 
+            
+                   
+            $courseSelRec = $item->course_selections()->where('student_id',$userId)->first();
+            
+            if($courseSelRec){
+
+                $enrollment = $courseSelRec->enrollment;                
+                if($enrollment){
+
+                    if(!$enrollment->is_complete){
+                        //dump('Course [' . $item->id . '-' . $item->name . '] enrolled by user '. $userId);
+                        $enrollmentsStatus = 'Enrolled';
+                    }else{
+                        //dump('Course [' . $item->id . '-' . $item->name . '] completed by user '. $userId);
+                        $enrollmentsStatus = 'Completed';
+                    }
+                }else{
+                    //dump('Course [' . $item->id . '-' . $item->name . '] added to cart by user '. $userId); 
+                    $enrollmentsStatus = 'Added to cart';                   
+                }
+            }else{            
+                //dump('Course [' . $item->id . '-' . $item->name . '] not touched by user '. $userId);
+                $enrollmentsStatus = 'Fresh'; 
+            }
+            
+            $courseArr[] = (object)array(
+                'id'            => $item->id,
+                'name'          => $item->name,
+                'heading_text'  => $item->heading_text,
+                'image'         => $item->image,
+                'slug'          => $item->slug,
+                'price'         => $item->price,
+                'video_count'   => $item->video_count,
+                'duration'      => $item->duration,
+
+                'teacher_username'  => $item->teacher->username,
+                'teacher_fullname'  => $item->teacher->full_name,
+
+                'enrollments_status'    => $enrollmentsStatus
+            );            
+        }); 
+        
+        //dump(Course::all());
+        //dump($courseArr);
+        //dump(collect($courseArr));
+        //dd();
+
+        return collect($courseArr);
+    }  
 
 }

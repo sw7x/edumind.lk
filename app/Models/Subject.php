@@ -22,11 +22,21 @@ class Subject extends Model
 
     protected static function booted(){
         static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('status', self::PUBLISHED);
+            $builder->where('subjects.status', self::PUBLISHED);
         });
     }
 
 
+    public function getImageAttribute($value){
+        
+        if($value){           
+            $imagePath = asset('storage/'.$value);
+        }else{
+            $imagePath = asset('images/default-images/subject.png');           
+        }
+
+        return $imagePath;
+    }
 
 
 

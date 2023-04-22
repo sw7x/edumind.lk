@@ -37,7 +37,7 @@ class CreateEnrollmentsTable extends Migration
             //$table->decimal('author_amount',10,2)->nullable();//
             
             //invoices - fk
-            $table->integer('invoice_id')->unsigned();
+            $table->integer('invoice_id')->nullable()->unsigned();
             $table->foreign('invoice_id')->references('id')->on('invoices');
 
 

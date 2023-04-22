@@ -89,7 +89,7 @@
                                                 <li> <a href="{{route('teacher.instructions')}}">teacher-instruction</a></li>
                                             </ul>
                                         </li>
-
+                                        <li> <a href="{{route('all-courses')}}">All courses</a></li>
                                         <li> <a href="{{route('course-search')}}">Course search</a></li>                                        
                                         <li> <a href="{{route('courses-list')}}">courses-list</a></li>
                                         <li> <a href="{{route('course-watch')}}">course-watch</a></li>
@@ -209,7 +209,7 @@
                                                 </ul>
                                             </div>
                                         </li>
-
+                                        <li> <a href="{{route('all-courses')}}">All courses</a></li>
                                         <li> <a href="{{route('course-search')}}">search</a></li>                                        
                                         <li> <a href="{{route('courses-list')}}">courses-list</a></li>
                                         <li> <a href="{{route('course-watch')}}">course-watch</a></li>

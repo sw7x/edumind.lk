@@ -72,7 +72,7 @@ class RegistrationController extends Controller
                     $username = strstr($request->input('email'),'@',true);
                     
                     // username alredy used in DB
-                    if (User::where('username', '=', $username)->count() > 0) {                   
+                    if (User::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
                         throw new CustomException("username - {$username} not available to use");
                     }                
                 }
@@ -180,7 +180,7 @@ class RegistrationController extends Controller
                     $username = strstr($request->input('email'),'@',true);
                     
                     // username alredy used in DB
-                    if (User::where('username', '=', $username)->count() > 0) {                   
+                    if (User::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
                         throw new CustomException("username - {$username} not available to use");
                     }                
                 }

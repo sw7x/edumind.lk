@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\View\Composers\TopSubjectsComposer;
+use App\View\Composers\CartComposer;
+
+
 use Illuminate\Support\Facades\View;
 
 
@@ -45,5 +48,6 @@ class ViewServiceProvider extends ServiceProvider
 
 
         view::composer (['includes.header','includes.footer','home'],TopSubjectsComposer::class);
+        view::composer (['includes.header','student.cart'],CartComposer::class);
     }
 }

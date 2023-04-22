@@ -51,7 +51,11 @@ class TeacherController extends Controller
 
     public function viewAllTeachers()
     {
-        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+        //$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
+        
+
+
         //$teachers->getCourseCount();
         //todo
         foreach($teachers as $teacher){

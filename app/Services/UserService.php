@@ -115,7 +115,7 @@ class UserService
 
 
     public function checkUsernameExists($username){
-        return User::where('username',$username)->get()->count();
+        return User::withoutGlobalScope('active')->where('username',$username)->get()->count();
     }
 
     public function generateUniqueUsername($username){

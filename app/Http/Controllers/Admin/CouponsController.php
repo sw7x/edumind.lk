@@ -17,12 +17,15 @@ class CouponsController extends Controller
     public function create(){
     	
 
-    	$courses = Course::Where('status',Course::PUBLISHED)->where('price','!=','0.00');
+    	$courses = Course::Where('price','!=','0.00');
+    	
 
     	//dd($courses->pluck('name','id')->toArray());
 
-    	$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();         
-   		$marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+    	//$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();         
+   		//$marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+		$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();         
+   		$marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->orderBy('id')->get();
 
    		//dd($teachers->pluck('full_name','id')->toArray());
 
@@ -81,10 +84,12 @@ class CouponsController extends Controller
 
 
 
-			$marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+			$marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->orderBy('id')->get();
 			
 			if($courseId == 0){
-				$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+				//$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+				$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
+			
 			}else{
 				
 				$course = Course::find($courseId);
@@ -99,7 +104,7 @@ class CouponsController extends Controller
 				$teachers   =   Sentinel::findRoleBySlug('teacher')
 								->users()
 								->with('roles')
-								->where('status', 1)
+								//->where('status', 1)
 								->where('id', $authorId)
 								->orderBy('id')
 								->get();

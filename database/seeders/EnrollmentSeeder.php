@@ -34,7 +34,24 @@ class EnrollmentSeeder extends Seeder
         //$faker = Faker::create();
         $faker = \Faker\Factory::create();
         
- 		$checkoutCourseSelections   = CourseSelection::where('is_checkout',true)->get();       
+ 		//$checkoutCourseSelections   = CourseSelection::where('is_checkout',true)->get();
+
+        // to eliminate paid courses that are still not checkout (cart added courses)
+        $checkoutCourseSelections  = CourseSelection::join('courses','course_selections.course_id','=','courses.id')
+                                        ->where(function ($query){ 
+                                            $query->where('course_selections.is_checkout', 1)
+                                                ->where('courses.price', '!=' , 0);
+                                        })
+                                        ->orWhere(function ($query){
+                                            $query->where('course_selections.is_checkout', 0)
+                                                ->where('courses.price', '=' , 0);
+                                        })
+                                        //->toSql();
+                                        ->get('course_selections.*');     
+
+
+
+
         
         $invoicesIdArr              = Invoice::inRandomOrder()->get()->pluck('id')->toArray();
            
@@ -49,8 +66,10 @@ class EnrollmentSeeder extends Seeder
             
             //course
             //$course        = $checkoutCourseSelection->course;
-            $course        = Course::find($checkoutCourseSelection->course_id);                     
-			$isComplete    = $faker->randomElement([true,false,false]);
+            $course        = Course::find($checkoutCourseSelection->course_id);
+            $isFreecourse  = ($course->price == 0)?true:false;                   
+			
+            $isComplete    = $faker->randomElement([true,false,false]);
             $completeDate  = ($isComplete==false)?null:$faker->dateTimeBetween('-2 week', '-1 week');
             $rating        = ($isComplete==false)?null:$faker->randomElement([1,2,3,4,5,null]);
 
@@ -127,20 +146,25 @@ class EnrollmentSeeder extends Seeder
 
                 //for temporary use - later remove this 
                 'teacher'       => CourseSelection::find($courseSelectionId)->course->teacher_id,
-                'benificiary'   => Coupon::find($checkoutCourseSelection->used_coupon_code)->beneficiary_id ?? null                
+                'benificiary'   => Coupon::find($checkoutCourseSelection->used_coupon_code)->beneficiary_id ?? null
+                //'isFreecourse'  => $isFreecourse                             
             );            
             
         }   
         
         //dump2($enrollmentArr);
-        //print_array($salArr);
+        //dump2($salArr);
         //dump2($ccArr);
-                
+        //dd();        
 
 
         /////////////// START - salary records //////////////////////////       
         $salaryArr = array();        
         collect($salArr)->map(function ($item) use (&$salaryArr){          
+            
+
+
+
             $teacherId = $item['teacherId'];            
 
             $amount  = $salaryArr[$teacherId]['amount'] ?? 0;

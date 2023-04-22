@@ -16,7 +16,7 @@ class CreateCourseSelectionsTable extends Migration
         Schema::create('course_selections', function (Blueprint $table) {
             
             $table->id();
-            $table->timestamp("cart_add_date")->nullable();
+            $table->timestamp("cart_added_date")->nullable();
             $table->boolean('is_checkout')->default(False);
 
             
@@ -42,7 +42,7 @@ class CreateCourseSelectionsTable extends Migration
             //->onDelete('cascade');
             
             $table->decimal('discount_amount',10,2)->nullable();////
-            $table->decimal('price_afeter_discouunt',10,2)->nullable();  /////         
+            $table->decimal('price_afeter_discount',10,2)->nullable();  /////         
             
             $table->decimal('edumind_lose_amount',10,2)->nullable();   //       
             $table->decimal('benificiary_earn_amount',10,2)->nullable();////

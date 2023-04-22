@@ -26,16 +26,14 @@ class Enrollment extends Model
     
 
     protected $table    = 'enrollments';
-    protected $fillable = [
-        'cart_add_date',
-        'enroll_date',
+    protected $fillable = [        
+        'course_selection_id',
+        'is_complete',
         'complete_date',
-        'discount_amount',
         'rating',
-        'course_id',
-        'student_id',
-        'comment_id',
-        'status'
+        'invoice_id',
+        'salary_id',
+        'commission_id'
     ];
 
 

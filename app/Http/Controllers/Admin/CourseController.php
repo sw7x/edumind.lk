@@ -42,9 +42,9 @@ class CourseController extends Controller
      */
     public function index()
     {       
-        try{
+        try{            
             //$this->authorize('viewAny',Course::class);            
-            $data       = Course::orderBy('id')->get();
+            $data       = Course::withoutGlobalScope('published')->orderBy('id')->get();
             return view('admin-panel.course-list')->withData($data);            
 
         }catch(AuthorizationException $e){           
@@ -264,7 +264,7 @@ class CourseController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $course = Course::find($id);            
+            $course = Course::withoutGlobalScope('published')->find($id);            
             //$this->authorize('view',$course); //todo
 
             if($course == null){
@@ -321,7 +321,7 @@ class CourseController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $course = Course::find($id);
+            $course = Course::withoutGlobalScope('published')->find($id);
             //todo--------------$this->authorize('update',$course);     
                                
             if($course == null){
@@ -395,7 +395,7 @@ class CourseController extends Controller
                 throw new CustomException('Invalid id');
             }                        
             
-            $course = Course::find($id);   
+            $course = Course::withoutGlobalScope('published')->find($id);   
             //todo--------------$this->authorize('update',$course);
 
             if($course == null){
@@ -561,7 +561,7 @@ class CourseController extends Controller
                 throw new CustomException('Invalid id');
             }
             
-            $course = Course::find($id);
+            $course = Course::withoutGlobalScope('published')->find($id);
             // $this->authorize('delete',$course);
 
             if($course == null){
@@ -605,7 +605,7 @@ class CourseController extends Controller
                 throw new CustomException('Invalid Course id');
             }
 
-            $course = Course::find($request->courseId);
+            $course = Course::withoutGlobalScope('published')->find($request->courseId);
             $this->authorize('delete',$course);
             
             if ($course) {                
@@ -665,7 +665,7 @@ class CourseController extends Controller
                 throw new CustomException('Invalid id - User status update failed');
             }
             
-            $course = Course::find($request->courseId);
+            $course = Course::withoutGlobalScope('published')->find($request->courseId);
             $this->authorize('changeStatus',$course);
             
             if ($course) {

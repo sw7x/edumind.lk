@@ -24,7 +24,7 @@ class ContactUsFactory extends Factory
     public function definition()
     {
 
-        $randUser = User::all()->random();
+        $randUser = User::withoutGlobalScope('active')->get()->random();
 
         //var_dump($randUser->id);
         //var_dump($randUser->full_name);

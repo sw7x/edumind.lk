@@ -25,26 +25,28 @@ class CheckStudent
             if($role == 'student'){
                 return $next($request);
             }else{
+                
+                abort(403);
                 //return redirect('/');
-                return response()->view('form-submit-page',[
+                /*return response()->view('form-submit-page',[
                     'message' => 'You dont have permission to access this page',
                     'title'   => 'Permission denied',
                     'cls'     => 'flash-danger',
                     'msgTitle'=> 'Error!',
-                ],200);
+                ],200);*/
             }
 
         }else{
             //return redirect('/');
             //dd('')
 
-            return response()->view('form-submit-page',[
+            return redirect(route('auth.login'))->with([
+            //return response()->view('form-submit-page',[
                 'message' => 'You need login first to continue',
                 'title'   => 'Permission denied',
                 'cls'     => 'flash-danger',
                 'msgTitle'=> 'Error!',
-            ],200
-            );
+            ],200);
 
 
 

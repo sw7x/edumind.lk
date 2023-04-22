@@ -39,7 +39,6 @@
                                         <hr class="mb-5">--}}
                                         <div class="flex items-center gap-x-4 mb-5">
                                             <img src="{{asset('images/default-images/student.png')}}" alt="" class="rounded-full shadow w-20 h-20">
-
                                             <div>
                                                 <h4 class="-mb-1 text-base">{{$userData->full_name}}</h4>
                                                 <span class="text-sm">

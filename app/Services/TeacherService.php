@@ -32,12 +32,15 @@ class TeacherService
 
 
     public function getPublishedCoursesByTeacher(User $teacher){
-        return $teacher->getTeachingCourses()->where('status',Course::PUBLISHED)->get();
+        //return $teacher->getTeachingCourses()->where('status',Course::PUBLISHED)->get();
+        return $teacher->getTeachingCourses()->get();
     }
 
     public function getAllCoursesByTeacher(User $teacher){
         //dd($teacher->getTeachingCourses()->get());
-        return $teacher->getTeachingCourses()->get();
+        
+        //return $teacher->getTeachingCourses()->get();
+        return $teacher->getTeachingCourses()->withoutGlobalScope('published')->get();
 
     }
 
@@ -45,7 +48,8 @@ class TeacherService
 
     public function getAllTeachers(){
         //dd($teacher->getTeachingCourses()->get());
-        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+        //$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
+        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
         return $teachers;
     }
 

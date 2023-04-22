@@ -24,10 +24,8 @@ class StudentService
 
 
 		$enrolledCourses = 	Course::join('course_selections', function($join) use ($student){
-								$join->on('courses.id','=','course_selections.course_id')
-							    	->where('course_selections.is_checkout', '=', 1)
-									->where('course_selections.student_id', '=', $student->id)
-									->where('courses.status', '=', "published");
+								$join->on('courses.id','=','course_selections.course_id')							    	
+							    	->where('course_selections.student_id', '=', $student->id);									
 							})
 							->join('enrollments','course_selections.id','=','enrollments.course_selection_id')
 							->get([

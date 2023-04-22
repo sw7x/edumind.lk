@@ -17,6 +17,6 @@ class CheckoutScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('is_checkout',true);
+        $builder->where('course_selections.is_checkout',true);
     }
 }

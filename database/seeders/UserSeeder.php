@@ -21,19 +21,25 @@ class UserSeeder extends Seeder
     {
 
         $users = User::factory()->count(100)->make()->each(function ($userItem){
-
-            $user = $userItem->toArray();
-            $user['password'] = 'Pa$$w0rd!';
-
             $faker = \Faker\Factory::create();
             $roleId = $faker->randomElement([2,3,4,5]);
 
+            
+            $user = $userItem->toArray();
+            $user['password'] = 'Pa$$w0rd!';
+
+                        
             //TEACHERS
             if($roleId == 4){
-                $user = array_merge($user,array('edu_qualifications'=> $faker->text()));
-                
-                $user = array_merge($user,array('profile_pic'=> 'users/' .  $faker->image('public/storage/users', 630, 820, 'users', false, true)));
-                
+
+                $user = array_merge($user,array('edu_qualifications'=> $faker->text())); 
+
+                $profilePicSrc = ('users/' . $faker->image('public/storage/users', 630, 820, 'users', false, true));
+                $profilePic    = $faker->randomElement([$profilePicSrc, $profilePicSrc, null]);
+                $user = array_merge($user,array('profile_pic'=> $profilePic));            
+            }else{
+
+                $user = array_merge($user,array('profile_pic'=> null));
             }
 
 
@@ -42,22 +48,11 @@ class UserSeeder extends Seeder
                 $user = array_merge($user,array('profile_text'=> $faker->text()));
             }
 
-            $faker = \Faker\Factory::create();
-            $role_Id = $faker->randomElement([2,3,4,5]);
-
-
+            
             $user = Sentinel::registerAndActivate($user);
             $role = Sentinel::findRoleById($roleId);
             $role->users()->attach($user);
 
-            /*
-            factory(Question::class, 1)
-                ->create()
-                ->each(function ($question)
-                {
-                    factory(Option::class, rand(2,3))->create();
-                });
-            */
         });
 
     }

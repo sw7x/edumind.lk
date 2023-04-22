@@ -22,11 +22,7 @@
         <div class="flex bg-red-900 md:rounded-b-lg lg:-mt-5 relative overflow-hidden" style="background:{{$bgColor ?? '#7f1d1d'}}">
 
             <div class="lg:w-3/12 relative">
-                @if($subjectData->image)
-                    <img src="{{URL('/')}}/storage/{{$subjectData->image}}" class="_absolute bottom-0 right-0 hidden lg:block" alt="">
-                @else
-                    <img src="{{asset('images/default-images/subject.png')}}" class="_absolute bottom-0 right-0 hidden lg:block" alt="">
-                @endif
+                <img src="{{$subjectData->image}}" class="_absolute bottom-0 right-0 hidden lg:block" alt="">
             </div>
 
             <div class="lg:w-9/12 relative z-10 px-8 py-8">
@@ -152,14 +148,8 @@
 
                             <div class="md:w-5/12 md:h-60 h-40 overflow-hidden rounded-l-lg relative">
                                 <a href="{{route('course-single',$course->slug)}}" alt="" title="">
-                                @if($course->image)
-                                    <img src="{{URL('/')}}/storage/{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                @else
-                                    <img src="{{asset('images/default-images/course.png')}}" class="w-full h-full absolute inset-0 object-cover" alt="">
-                                @endif
+                                    <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                 </a>
-
-
                             </div>
 
                             <div class="flex-1 md:p-6 p-4">

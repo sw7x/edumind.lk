@@ -29,7 +29,7 @@ class SubjectController extends Controller
     {      
         try{
             $this->authorize('viewAny',Subject::class);
-            $data = Subject::orderBy('id')->get();
+            $data = Subject::withoutGlobalScope('published')->orderBy('id')->get();
             return view ('admin-panel.subject-list')->withData($data);
         }catch(AuthorizationException $e){
             return redirect(route('admin.dashboard'))->with([            
@@ -170,7 +170,7 @@ class SubjectController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $subject = Subject::find($id);
+            $subject = Subject::withoutGlobalScope('published')->find($id);
             $this->authorize('view',$subject);
             // dd($subject);
             if($subject != null){
@@ -211,7 +211,7 @@ class SubjectController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $subject = Subject::find($id);
+            $subject = Subject::withoutGlobalScope('published')->find($id);
             $this->authorize('update',$subject);
             If(!$subject){
                 throw new ModelNotFoundException;
@@ -257,7 +257,7 @@ class SubjectController extends Controller
                 throw new CustomException('Subject name cannot be empty');
             }
 
-            $subject = Subject::find($id);
+            $subject = Subject::withoutGlobalScope('published')->find($id);
             $this->authorize('update',$subject);
             if ($subject) {
 
@@ -358,7 +358,7 @@ class SubjectController extends Controller
                 throw new CustomException('Invalid id');
             }
 
-            $subject = Subject::find($id);
+            $subject = Subject::withoutGlobalScope('published')->find($id);
             $this->authorize('delete',$subject);
             if ($subject) {
                 $subject->delete();
