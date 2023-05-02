@@ -105,22 +105,19 @@
                                                         </div>
                                                     </div>
                                                     <div class="absolute top-4 -right-1 cursor-pointer">                                                      
-                                                        
-                                                        
-                                                        @if($course->enrollments_status      == 'Fresh')
-                                                            <ion-icon name="list-circle-sharp" class="text-2xl text-red-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
-                                                        @elseif ($course->enrollments_status == 'Added to cart')
-                                                            <ion-icon name="bag-add-sharp" class="text-2xl text-yellow-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
-                                                        @elseif ($course->enrollments_status == 'Enrolled')
-                                                            <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
-                                                        @elseif ($course->enrollments_status == 'Completed')
-                                                            <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="{{$course->enrollments_status}}"></ion-icon>
+                                                       
+                                                        @if($course->enrollments_status      == 'FRESH')
+                                                            <ion-icon name="list-circle-sharp" class="text-2xl text-red-500 course-status" title="Fresh"></ion-icon>
+                                                        @elseif ($course->enrollments_status == 'ADDED_TO_CART')
+                                                            <ion-icon name="bag-add-sharp" class="text-2xl text-yellow-500 course-status" title="Added to cart"></ion-icon>
+                                                        @elseif ($course->enrollments_status == 'ENROLLED')
+                                                            <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="Enrolled"></ion-icon>
+                                                        @elseif ($course->enrollments_status == 'COMPLETED')
+                                                            <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="Completed"></ion-icon>
                                                         @else
                                                             <!-- for users other than students,guests -->
-                                                        @endif                                                 
+                                                        @endif                                               
                                                         
-
-
                                                     </div>
                                                 </div>
                                             @endforeach

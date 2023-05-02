@@ -118,6 +118,9 @@
                         <li class="{{ Route::is('admin.coupon-code.create') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.create')}}">Add coupon code</a></li>
                         <li class="{{ Route::is('admin.coupon-code.marketers') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.marketers')}}">Coupon code list - (Marketer)</a></li>
                         <li class="{{ Route::is('admin.coupon-code.teachers') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.teachers')}}">Coupon code list - (Teacher)</a></li>
+                        <li class="{{ Route::is('admin.coupon-code.show','0NY27X') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.show','0NY27X')}}">Single coupon Code</a></li>
+                        <li class="{{ Route::is('admin.coupon-code.new') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.new')}}">New Coupon Codes</a></li>
+                        <li class="{{ Route::is('admin.coupon-code.usage') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.usage')}}">Used coupon Code</a></li>
                         {{--
                         <li class="{{ Route::is('admin.coupon-code.marketers') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.marketers')}}">Coupon code - marketers</a></li>
                         <li class="{{ Route::is('admin.coupon-code.courses') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.courses')}}">Coupon code - courses</a></li>
@@ -159,14 +162,14 @@
 						<span class="nav-label">Teacher</span> <span class="fa arrow"></span>
 					</a>
 					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.teacher.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-						<li class="{{ Route::is('admin.teacher.profile-edit') ? 'current' : '' }}"><a href="{{route('admin.teacher.profile-edit')}}">Edit Profile</a></li>
-						<li class="{{ Route::is('admin.teacher.earnings') ? 'current' : '' }}"><a href="{{route('admin.teacher.earnings')}}">My Earnings</a></li>
+						<li class="{{ Route::is('admin.teacher.my-profile-edit') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-profile-edit')}}">Edit My Profile</a></li>
+						<li class="{{ Route::is('admin.teacher.my-earnings') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-earnings')}}">My Earnings</a></li>
 						<li class="{{ Route::is('admin.teacher.my-courses') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-courses')}}">My Courses</a></li>
 						<li class="{{ Route::is('admin.teacher.enrollments') ? 'current' : '' }}"><a href="{{route('admin.teacher.enrollments')}}">My Courses enrollments</a></li>
                         <li class="{{ Route::is('admin.teacher.completions') ? 'current' : '' }}"><a href="{{route('admin.teacher.completions')}}">My Courses completions</a></li>
-						<li class="{{ Route::is('admin.coupon-code.teacher-view') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.teacher-view')}}">My coupon codes</a></li>
+						<li class="{{ Route::is('admin.coupon-code.my-coupons--t') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.my-coupons--t')}}">My coupon codes</a></li>
 
-                        <li class="{{ Route::is('admin.teacher.my-salary') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-salary')}}">My salary</a></li>
+                        <li class="{{ Route::is('admin.teacher.my-salaries') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-salaries')}}">My salaries</a></li>
 					</ul>
 				</li>
 
@@ -176,12 +179,10 @@
 						<span class="nav-label">Marketer</span> <span class="fa arrow"></span>
 					</a>
 					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.coupon-code.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-						<li class="{{ Route::is('admin.coupon-code.view') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.view')}}">My Coupon Codes</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.earnings') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.earnings')}}">My Earnings</a></li>
-						<li class="{{ Route::is('admin.coupon-code.new') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.new')}}">New Coupon Codes</a></li>
-						<li class="{{ Route::is('admin.coupon-code.usage') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.usage')}}">Used coupon Code</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.single') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.single')}}">Single coupon Code</a></li>
-					    <li class="{{ Route::is('admin.coupon-code.my-salary') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.my-salary')}}">My commission</a></li>   
+						<li class="{{ Route::is('admin.coupon-code.my-coupons--m') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.my-coupons--m')}}">My Coupon Codes</a></li>
+                        <li class="{{ Route::is('admin.marketer.my-earnings') ? 'current' : '' }}"><a href="{{route('admin.marketer.my-earnings')}}">My Earnings</a></li>
+						
+                        <li class="{{ Route::is('admin.marketer.my-commissions') ? 'current' : '' }}"><a href="{{route('admin.marketer.my-commissions')}}">My commissions</a></li>   
                     </ul>
 				</li>
 

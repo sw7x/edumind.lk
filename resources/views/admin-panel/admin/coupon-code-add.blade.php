@@ -23,25 +23,49 @@
         <div class="col-lg-12">
 
             @if(Session::has('message'))
-                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
-            @endif
+                <x-flash-message
+                    class="{{ Session::get('cls', 'flash-info')}}" 
+                    :title="Session::get('msgTitle')"
+                    :message="Session::get('message')">
+                    <x-slot name="insideContent">
+                        @if ($errors->couponCreateError->getMessages())
+                            <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
+                                @foreach ($errors->couponCreateError->getMessages() as $field => $errorMsgArr)
+                                    @foreach ($errorMsgArr as $errorMsg)
+                                        <li class="">{{ $errorMsg }}</li>
+                                    @endforeach
+                                @endforeach
+                            </ul>
+                        @endif
+                    </x-slot>
+                </x-flash-message>            
+            @endif 
+
+
+            <?php 
+            //dump($errors);
+            //dump($errors->couponCreate);
+            //dump($errors->couponCreate->getMessages());
+            //dump($errors->couponCreateError->getMessages());
+            ?>
+
+
+
 
             <div class="ibox ">
                 <div class="ibox-content">
                     <h3>Add coupon code</h3>
 
-                    <form class="edit-user-form" id="add-category" action="http://local.arcade.lk/categories/add-category" method="POST">
+                    <form class="cc-add-form" id="cc-add-form" action="{{route('admin.coupon-code.store')}}" method="POST">
                         @csrf
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Coupon code</label>
-                            <div class="col-sm-5"><input type="text" class="form-control" name="cc-code"></div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" name="cc-code" maxlength="6">
+                                <div class="error-msg"></div>
+                            </div>
                             <div class="col-sm-3">
-                                <button class="btn btn-blue btn-sm text-base hover:bg-blue-600" type="button" id="generate-code" style="width: 100%;height: 100%;">Generate</button>
+                                <button class="btn btn-blue btn-sm text-base hover:bg-blue-600" type="button" id="generate-code" style="width: 100%;height: 35px;">Generate</button>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>                    
@@ -53,29 +77,39 @@
                             </label>
                             <div class="col-sm-8">
                                 <div class="text-2xl text-center font-bold output"></div><br>
-                                <input type="range" name="discount_percentage" value="10" min="0" max="20" step="1">
+                                <input type="range" name="discount_percentage" value="25" min="0" max="50" step="1">    
+                                <div class="error-msg"></div>                            
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
 
 
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Select course</label>
+                            <label class="col-sm-4 col-form-label">Select course <br><span class="text-xs text-red font-semibold">(Paid courses)</span></label>
+
                             <div class="col-sm-8">
                                 <select class="form-control m-b" name="course">
-                                    <option></option>                            
-                                    @foreach ($courses as $courseId => $coursesName)
-                                        <option value="{{$courseId}}">{{$coursesName}}</option>
-                                    @endforeach                                   
+                                    <option></option> 
+
+                                    <optgroup class="select2-result-selectable" label="Select any">                                       
+                                        <option value="0">Paid course (any)</option> 
+                                    </optgroup>
+                                    
+                                    <optgroup class="select2-result-selectable" label="Select one">                    
+                                        @foreach ($courses as $courseId => $coursesName)
+                                            <option value="{{$courseId}}">{{$coursesName}}</option>
+                                        @endforeach
+                                    </optgroup>
+                                                                  
                                 </select>
+                                <div class="error-msg"></div>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
 
-                        <div>//when course select then load all marketers and course own teacher</div><br>
                         
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Select Marketer/Teacher <span class="text-xs text-red font-semibold">(course created teacher)</span></label>
+                            <label class="col-sm-4 col-form-label">Select - Marketer / Teacher <span class="text-xs text-red font-semibold">(course created teacher)</span></label>
                             <div class="col-sm-8">
                                 
                                 <select style="width:100%;" name="benificiary">                 
@@ -83,7 +117,7 @@
 
                                     {{--
                                     <option></option>
-                                    <optgroup class="select2-result-selectable" label="Teachers"   >        
+                                    <optgroup class="select2-result-selectable" label="Teachers">        
                                         @foreach ($teachers1 as $teacherId => $teachersName)
                                             <option value="{{$teacherId}}">{{$teachersName}}</option>
                                         @endforeach                                 
@@ -93,7 +127,8 @@
                                             <option value="{{$marketerId}}">{{$marketersName}}</option>
                                         @endforeach                               
                                     </optgroup>
-                                    --}}                                                    
+                                    --}} 
+                                <div class="error-msg"></div>                                                   
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -101,22 +136,27 @@
 
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Count</label>
-                            <div class="col-sm-8"><input type="text" class="form-control"></div>
-                        </div>
-                        <div class="hr-line-dashed"></div>
-
-
-                        <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Marketer/Teacher share <br>
-                                <span class="text-xs text-red font-semibold">( percentage from reduced price )</span>
-                            </label>
                             <div class="col-sm-8">
-                                <div class="text-2xl text-center font-bold output"></div><br>
-                                <input type="range" name="author_share_percentage" value="100" min="0" max="100" step="1">
+                                <input type="text" class="form-control" name="cc-count">
+                                <div class="error-msg"></div>
                             </div>
                         </div>
-                        //when not select Marketer/Teacher doable it
                         <div class="hr-line-dashed"></div>
+
+                        <div class="beneficiary_share_percentage_from_discount-wrapper">
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Marketer/Teacher share <br>
+                                    <span class="text-xs text-red font-semibold">( percentage from reduced price )</span>
+                                </label>
+                                <div class="col-sm-8">
+                                    <div class="text-2xl text-center font-bold output"></div><br>
+                                    <input type="range" name="beneficiary_share_percentage_from_discount" value="100" min="0" max="100" step="1">
+                                    <div class="error-msg"></div>
+                                </div>
+                            </div>
+                            //when not select Marketer/Teacher doable it
+                            <div class="hr-line-dashed"></div>
+                        </div>
 
                         
 
@@ -127,7 +167,7 @@
 
                             <div class="col-sm-8">
                                 <div class="i-checks">
-                                    <label> <input type="radio" checked value="enable" name="ccode_stat"> <i></i> Enable </label>
+                                    <label> <input type="radio" checked="checked" value="enable" name="ccode_stat"> <i></i> Enable </label>
                                 </div>
                                 <div class="i-checks">
                                     <label> <input type="radio" value="disable" name="ccode_stat"> <i></i> Disable </label>
@@ -137,13 +177,10 @@
                         <div class="hr-line-dashed"></div>
 
 
-                        // on the fly validate coupon code precentage<br>
-                        //for edumind total income from course is not less than 0<br>
-                        //for this calc use Marketer/Teacher share  value also
                         <div class="form-group row">
                             <div class="col-sm-4 offset-sm-4">
                                 <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
-                                <button class="btn btn-danger btn-sm" type="reset">Cancel</button>
+                                <button class="btn btn-danger btn-sm reset-btn" type="reset">Cancel</button>
                             </div>
                         </div>
 
@@ -169,13 +206,19 @@
 
      <!-- toastr js file-->
     <script src="{{asset('admin/js/plugins/toastr/toastr.min.js')}}"></script>
+
+    <!-- jQuery validate -->
+    <script src="{{asset('admin/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
+    <script src="{{asset('admin/js/plugins/validate/additional-methods.min.js')}}"></script>
+    
 @stop
 
 
 @section('javascript')
 <script>
     $(document).ready(function() {
-        var $inputAuthorShareRange          = $('input[name="author_share_percentage"]');
+        var $inputAuthorShareRange          = $('input[name="beneficiary_share_percentage_from_discount"]');
         var $inputDiscountPercentageRange   = $('input[name="discount_percentage"]');
 
 
@@ -208,13 +251,37 @@
         });
 
 
+        /*$('select[name="course"]').on('select2:unselect', function (e) {
+            console.log(e.params.data);
+            console.log(e.params);
+
+
+            // If the dropdown is cleared, select the first option
+            if (e.params.data == null) {
+                var firstOption = $select2.find('option').first();
+                $select2.val(firstOption.val());
+                $select2.trigger('change');
+            }
+        });*/
+
+
+
+
         $('select[name="benificiary"]').select2({
             placeholder: "Select a benificiary",
             allowClear: true,
             width: '100%'
         });
 
+        $('select[name="benificiary"]').on('change',function(event){
+            console.log($(this).val());
+            if($(this).val()){
+                $('.beneficiary_share_percentage_from_discount-wrapper').slideDown("slow");
 
+            }else{
+                $('.beneficiary_share_percentage_from_discount-wrapper').slideUp("slow");                
+            }
+        });
 
 
 
@@ -239,9 +306,171 @@
 
         populateBeneficiaries(0);
 
+        
+
+        $('.beneficiary_share_percentage_from_discount-wrapper').hide();
+
+
+
+        /*
+        jquery.validate ignores hidden fields by default, not validating them.
+        To turn it back on simply do the following:
+        */
+        $.validator.setDefaults({ ignore: '' });
+
+        var validator =  $("#cc-add-form").validate({                       
+            //ignore: [],
+            onkeyup: false,
+            errorClass: "validationErrorCls",
+            //focusInvalid: false,
+            rules:{
+                
+                "course": {
+                    required: true                        
+                },
+                "cc-code"                 : {required: true, exactlength :6, lettersAndNumbersOnly:true},
+                "cc-count"                : {required: true,number: true, min:1},
+                'discount_percentage'     : {required: true,number: true, min:1,max:50},
+                'beneficiary_share_percentage_from_discount' : {
+                    //required: true,
+                    required: function(element) {
+                        console.log('----------------');
+                        console.log($('select[name="benificiary"]').val() != '');
+                        console.log('----------------');
+                        return ($('select[name="benificiary"]').val() != '');
+                    },
+                    number: true, 
+                    min:0,
+                    max:100
+                },
+            },
+            messages:{
+                "course": {
+                    required:"Course is required",
+                },
+                "cc-code":          {
+                    required: "Coupon code is required",
+                    exactlength: "Coupon code length should be 6 characters",
+                    lettersAndNumbersOnly: "Coupon code should be in alpha numeric characters"
+                },
+                "cc-count"         : {
+                    required: "Coupon code count is required",
+                    number: "Coupon code count should be a number",
+                    min: "Coupon code count minimum value can be 1"
+                },
+                'discount_percentage': {
+                    required:'Discount percentage is required',
+                    number  :'Discount percentage should be a number', 
+                    min     :'Discount percentage minimum value can be 1',
+                    max     :'Discount percentage maximum value can be 99'
+                },
+                'beneficiary_share_percentage_from_discount': {
+                    required:'Author share percentage is required',
+                    number  :'Author share percentage should be a number', 
+                    min     :'Author share percentage minimum value can be 1',
+                    max     :'Author share percentage maximum value can be 99'
+                },
+            },
+            submitHandler: function(form){
+                console.log('submitHandler');
+                form.submit();
+            },
+            invalidHandler: function(form, validator) {
+                if (!validator.numberOfInvalids()){
+                    //return;
+                }
+            },
+            errorPlacement: function (error, element)
+            {
+                var elementName = $(element).attr("name");
+                console.log(element);
+                //console.log(error);
+                //console.log(error.text());
+                //element.before(error);
+                //element.after(error);
+                                  
+                if(elementName == 'course-duration-minutes'){
+                    //error.appendTo($(element).parent().parent().find('.error-msg-minutes'));
+                }else if(elementName == 'course-duration-hours'){
+                     //error.appendTo($(element).parent().parent().find('.error-msg-hours'));
+                }else{
+                    error.appendTo(element.parent().find('.error-msg'));
+                }
+               
+                //element.parent().find('.error-msg').html(error.text());
+                
+
+                element.parent().find('.error-msg').css('color','red');
+                element.parent().find('.error-msg').css('fontSize','12px');
+                //error.css('margin','0px');                 
+            }
+
+        });    
+        
+        
+        $(document).on('click', '#generate-code', function(e) {            
+            $.ajax({
+                url: "{{route('admin.coupon-code.generate-code')}}",
+                type: "post",
+                async:true,
+                dataType:'json',
+                data:{
+                   // _token : '{{ csrf_token() }}',                    
+                },
+                success: function (response) {
+
+                    if(response.status == 'success'){
+                        //toastr[response.status]('Successfully generate coupon code','Success');
+                        $('[name="cc-code"]').val(response.code); 
+                    }else{
+                        toastr["error"]("Coupon code generate failed!")
+                    }
+                    //$("#cc-add-form").valid();
+                    validator.element('input[name="cc-code"]');
+                },
+                error:function(request,errorType,errorMessage)
+                {
+                    //alert ('error - '+errorType+'with message - '+errorMessage);
+                    //toastr["success"]("User updated successfully! ", "Good Job!")
+                    toastr["error"]("Coupon code generate failed!")
+                }
+            });
+        });
+
+        // reset form
+        $("#cc-add-form").find("button.reset-btn").click(function(e) {
+
+            $(':input')
+                .not(':button, :submit, :reset, :hidden, .i-checks :radio')
+                .val('')
+                .removeAttr('checked')
+                .removeAttr('selected');
+
+            $('select[name="course"]').select2("val", "");
+            $('select[name="benificiary"]').select2("val", "");
+            
+            //var validator = $("#contact-form").validate();
+            validator.resetForm();
+
+            $('input[name="discount_percentage"]').val(10).change();
+            $('input[name="beneficiary_share_percentage_from_discount"]').val(100).change();
+            
+            $('input[name="ccode_stat"][value="enable"]').iCheck('check');
+            //$('input[name="ccode_stat"]:checked').val()
+            e.preventDefault();        
+        });
+
+
+        console.log(validator);
+        console.log('validator');
 
 
     });
+
+
+        
+
+
 
 
     function valueOutput(element) {
@@ -249,8 +478,8 @@
         $(element).parent().find('.output').html(value + '%');
     }
 
-
-    $(document).on('input', 'input[name="author_share_percentage"]', function(e) {
+    
+    $(document).on('input', 'input[name="beneficiary_share_percentage_from_discount"]', function(e) {
         valueOutput(e.target);
     });
 
@@ -259,35 +488,7 @@
     });
 
 
-    $(document).on('click', '#generate-code', function(e) {
-        
-        $.ajax({
-            url: "{{route('admin.coupon-code.generate-code')}}",
-            type: "post",
-            async:true,
-            dataType:'json',
-            data:{
-                _token : '{{ csrf_token() }}',                    
-            },
-            success: function (response) {
 
-                if(response.status == 'success'){
-                    //toastr[response.status]('Successfully generate coupon code','Success');
-                    $('[name="cc-code"]').val(response.code); 
-                }else{
-                    toastr["error"]("Coupon code generate failed!")
-                }
-
-            },
-            error:function(request,errorType,errorMessage)
-            {
-                //alert ('error - '+errorType+'with message - '+errorMessage);
-                //toastr["success"]("User updated successfully! ", "Good Job!")
-                toastr["error"]("Coupon code generate failed!")
-            }
-        });
-
-    })
 
 
    $(document).on('change', 'select[name="course"]', function(e) {
@@ -299,9 +500,14 @@
             valueSelected = 0;
         }
 
-        populateBeneficiaries(valueSelected)
-
+        populateBeneficiaries(valueSelected);
+        $("#cc-add-form").valid();
    });
+
+
+
+
+
         
 
 
@@ -313,7 +519,7 @@
             async:true,
             dataType:'json',
             data:{
-                _token      : '{{ csrf_token() }}', 
+                //_token      : '{{ csrf_token() }}', 
                 courseId   : valueSelected                  
             },
             success: function (response) {
@@ -361,6 +567,7 @@
                 toastr["error"]("Beneficiaries loading failed!")
             }
         });
+        
     }
 
     

@@ -42,9 +42,11 @@
                                             @foreach($cartCourses as $course)                                          
                                                 <tr>
                                                     <td class="w-3/12 course-img">
-                                                        <img src="{{$course['image']}}" class="img-fluid img-thumbnail" alt="{{$course['name']}}">
+                                                        <a href="{{route('course-single',$course['slug'])}}" title="{{$course['name']}}">
+                                                            <img src="{{$course['image']}}" class="img-fluid img-thumbnail" alt="{{$course['name']}}">
+                                                        </a>
                                                     </td>
-                                                    <td>{{$course['name']}}</td>
+                                                    <td><a href="{{route('course-single',$course['slug'])}}" title="{{$course['name']}}">{{$course['name']}}</a></td>
                                                     <td>                                                           
                                                         @if( $loop->index == 0)
                                                             <div class="line-through">{{$course['price']}}</div>

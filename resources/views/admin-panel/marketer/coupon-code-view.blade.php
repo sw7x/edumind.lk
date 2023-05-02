@@ -39,9 +39,8 @@
                     <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
                     <p>{{ Session::get('message') ?? 'Info!' }}</p>
                     <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
-            @endif
-
+                </div>            
+            @else    
             <!-- content -->
             <div class="ibox ">
                 <div class="ibox-content">
@@ -49,20 +48,20 @@
 
                         <div class="form-group row mt-1">
                             <label class="col-sm-4 col-form-label">Code</label>
-                            <div class="col-sm-8"><label class="col-form-label">ABC123</label></div>
+                            <div class="col-sm-8"><label class="col-form-label">{{$coupon->code}}</label></div>
                         </div>
                         <div class="hr-line-dashed my-0"></div>
 
 						<div class="form-group row mt-1">
 							<label class="col-sm-4 col-form-label">Discount <small>(percentage)</small></label>
-							<div class="col-sm-8"><label class="col-form-label">-10%</label></div>
+							<div class="col-sm-8"><label class="col-form-label">{{$coupon->discount_percentage}}</label></div>
 						</div>
 						<div class="hr-line-dashed my-0"></div>
 
 
 						<div class="form-group row mt-1">
 							<label class="col-sm-4 col-form-label">Claimed total discount</label>
-							<div class="col-sm-8"><label class="col-form-label">Rs 5000.00</label></div>
+							<div class="col-sm-8"><label class="col-form-label">Rs 5000.00- //todo</label></div>
 						</div>
 						<div class="hr-line-dashed my-0"></div>
 
@@ -71,13 +70,13 @@
 
 							<div class="col-sm-6">
 								<div>
-									<p class="float-right font-semibold text-red">Used 22 / Total 44</p>
+									<p class="float-right font-semibold text-red">Used {{$coupon->used_count }} / Total {{$coupon->total_count}}</p>
 								</div>
 								<br>
 								<div class="progress progress-small mb-3" style="height:30px">
-									<div style="width: 60%;height:30px" class="progress-bar"></div>
+									<div style="width: calc(({{$coupon->used_count}}/{{$coupon->total_count}})*100%);height:30px" class="progress-bar"></div>
 								</div>
-								<span>Available 21</span>
+								<span>Available : {{($coupon->total_count - $coupon->used_count)}}</span>
 							</div>
 						</div>
 						<div class="hr-line-dashed my-0"></div>
@@ -85,38 +84,46 @@
 
 						<div class="form-group row mt-1">
 							<label class="col-sm-4 col-form-label">Works for</label>
-							<div class="col-sm-8"><label class="col-form-label">Multiple courses (3)</label></div>
+							<div class="col-sm-8">
+								<label class="col-form-label">							
+								@if($coupon->course_id)
+									{{$coupon->course->name}}
+								@else
+									Any course
+								@endif
+								</label>
+							</div>
 						</div>
 						<div class="hr-line-dashed my-0"></div>
 
 						<div class="form-group row mt-1">
 							<label class="col-sm-4 col-form-label">Created date</label>
-							<div class="col-sm-8"><label class="col-form-label">2022/7/5 13:55 PM</label></div>
+							<div class="col-sm-8"><label class="col-form-label">{{$coupon->created_at}}</label></div>
 						</div>
 						<div class="hr-line-dashed my-0"></div>
-
 
 
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Submit status</label>
                             <div class="col-sm-8">
                                 <div class="i-checks mt-3">
-                                    <label> <input type="radio" value="draft" name="subject_stat" checked disabled> <i></i> Draft </label>
+                                    <label> <input type="radio" value="draft" name="subject_stat" disabled {{($coupon->is_enabled)?'':'checked'}}> <i></i> Draft </label>
                                 </div>
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="published" name="subject_stat" disabled> <i></i> Published </label>
+                                    <label> <input type="radio" value="published" name="subject_stat" disabled {{($coupon->is_enabled)?'checked':''}}> <i></i> Published </label>
                                 </div>
                             </div>
                         </div>
                         <div class="hr-line-dashed my-0"></div>
 
+						//todo
 						<div class="panel-group mt-3" id="accordion" role="tablist" aria-multiselectable="true">
 							<div class="panel panel-default">
 								<div class="panel-heading bg-blue-500" role="tab" id="" style="padding: 6px 15px;background: #179a7f;color: #fff;">
 									<h4 class="panel-title">
 										<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
 											<i class="more-less glyphicon glyphicon-plus"></i>
-											<span class="ml-5 text-base">View this coupon code usage</span>
+											<span class="ml-5 text-base">View this coupon code usage </span>
 										</a>
 									</h4>
 								</div>
@@ -181,6 +188,7 @@
                     </form>
                 </div>
             </div>
+            @endif
 
 
         </div>

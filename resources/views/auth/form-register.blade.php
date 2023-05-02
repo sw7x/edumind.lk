@@ -264,7 +264,7 @@
 
         $("form.student-reg").find("button.reset-btn").click(function() {            
             $(':input')
-                .not(':button, :submit, :reset, :hidden')
+                .not(':button, :submit, :reset, :hidden, .i-checks :radio')
                 .val('')
                 .removeAttr('checked')
                 .removeAttr('selected');

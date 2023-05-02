@@ -17,7 +17,7 @@
     @if(Sentinel::getUser()->roles()->first()->slug == 'student')
 
         @if($data_arr->price != 0)                                 
-            @if ($enroll_status == 'START')
+            @if ($enroll_status == 'FRESH')
                 <form action="{{route('course.addToCart')}}" method="post" class='course-enroll-form'>
                     {{csrf_field ()}}
                     <div class="mt-4">
@@ -33,7 +33,7 @@
             @else                                       
             @endif
         @else
-            @if($enroll_status =='START')
+            @if($enroll_status =='FRESH')
                 <form action="{{route('course.free-enroll')}}" method="post" class='course-enroll-form'>
                     {{csrf_field ()}}
                     <div class="mt-4">

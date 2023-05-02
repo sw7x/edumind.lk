@@ -88,7 +88,7 @@ class ForgotPasswordController extends Controller
             if($user == null){
 
                 $userRec     = User::withoutGlobalScope('active')->whereEmail($email)->first();    
-                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
+                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
                 
                 session()->flash('message',$err_message);
                 session()->flash('cls','flash-danger');
@@ -142,7 +142,7 @@ class ForgotPasswordController extends Controller
 
             if($user == null){
                 $userRec     = User::withoutGlobalScope('active')->whereEmail($email)->first();    
-                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
+                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
                 
                 session()->flash('message',$err_message);
                 //session()->flash('message', 'Invalid user');

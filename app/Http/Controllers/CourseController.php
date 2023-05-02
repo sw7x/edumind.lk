@@ -107,9 +107,8 @@ class CourseController extends Controller
             $pageResult     = (new CourseService())->loadCoursePage($currentUser, $course);
             $viewFile       = $pageResult['view'];
             $enroll_status  = $pageResult['status'];
-            
-            if($course->price == 0){  $viewFile = 'course-single-enrolled';  }
 
+            if($course->price == 0){  $viewFile = 'course-single-enrolled';  }
 
             //validate course content format
             if(is_array($course->content) && Arr::isAssoc($course->content)){

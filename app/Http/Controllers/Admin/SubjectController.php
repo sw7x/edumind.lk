@@ -81,7 +81,8 @@ class SubjectController extends Controller
     public function store(Request $request)
     {
         //todo-refactor
-
+        //dd($request->all());
+        
         try{
 
             $this->authorize('create',Subject::class);

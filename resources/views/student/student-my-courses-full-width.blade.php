@@ -106,9 +106,9 @@
                                                     </div>
                                                     <div class="absolute top-4 -right-1 cursor-pointer">                                                       
                                                         @if($course->is_complete)
-                                                            <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="completed"></ion-icon>
+                                                            <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="Completed"></ion-icon>
                                                         @else
-                                                            <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="enrolled"></ion-icon>
+                                                            <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="Enrolled"></ion-icon>
                                                         @endif
                                                     </div>
                                                 </div>

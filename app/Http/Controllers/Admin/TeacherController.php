@@ -58,7 +58,7 @@ class TeacherController extends Controller
     	return view('admin-panel.teacher.dashboard');
     }*/
 
-    public function profileEdit(){
+    public function myProfileEdit(){
     	return view('admin-panel.teacher.edit-profile');
 
     }        
@@ -77,7 +77,7 @@ class TeacherController extends Controller
         return view('admin-panel.teacher.course-completions');
     } 
 
-    public function viewMySalary(){
+    public function viewMySalaries(){
         return view('admin-panel.teacher.my-salary');
     }
 

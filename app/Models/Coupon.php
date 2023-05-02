@@ -19,6 +19,16 @@ class Coupon extends Model
     const ENABLE 	= 1;
     const DISABLE   = 0;
 
+    protected $fillable = [
+        'code',
+        'discount_percentage',
+        'beneficiary_commision_percentage_from_discount',
+        'total_count',
+        'used_count',
+        'is_enabled',
+        'course_id',
+        'beneficiary_id'
+    ];
 
 
 

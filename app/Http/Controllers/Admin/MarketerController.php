@@ -10,14 +10,14 @@ class MarketerController extends Controller
     
 
 
-    public function ViewEarnings(){
+    public function ViewMyEarnings(){
     	return view('admin-panel.marketer.my-earnings');
     }
 
 
     
-    public function viewMySalary(){
-        return view('admin-panel.marketer.my-salary');
+    public function viewMyCommissions(){
+        return view('admin-panel.marketer.my-commissions');
     } 
 
 

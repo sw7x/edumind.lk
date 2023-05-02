@@ -159,10 +159,10 @@ class CourseService
         /* ==== student ====*/
         if($userRole == Role::STUDENT){
             $courseSelection = $currentUser->course_selections()->where('course_id', $course->id)->first();                                
-            //dump($courseSelection);
+            //dd($courseSelection);
             if($courseSelection == null){ 
                 // not added to cart 
-                $enroll_status  = 'START';   //---> display [add to cart] button
+                $enroll_status  = 'FRESH';   //---> display [add to cart] button
                 $viewFile       = 'course-single-before-enrolled';
             }else{
 
@@ -249,18 +249,18 @@ class CourseService
 
                     if(!$enrollment->is_complete){
                         //dump('Course [' . $item->id . '-' . $item->name . '] enrolled by user '. $userId);
-                        $enrollmentsStatus = 'Enrolled';
+                        $enrollmentsStatus = 'ENROLLED';
                     }else{
                         //dump('Course [' . $item->id . '-' . $item->name . '] completed by user '. $userId);
-                        $enrollmentsStatus = 'Completed';
+                        $enrollmentsStatus = 'COMPLETED';
                     }
                 }else{
                     //dump('Course [' . $item->id . '-' . $item->name . '] added to cart by user '. $userId); 
-                    $enrollmentsStatus = 'Added to cart';                   
+                    $enrollmentsStatus = 'ADDED_TO_CART';                   
                 }
             }else{            
                 //dump('Course [' . $item->id . '-' . $item->name . '] not touched by user '. $userId);
-                $enrollmentsStatus = 'Fresh'; 
+                $enrollmentsStatus = 'FRESH'; 
             }
             
             $courseArr[] = (object)array(
