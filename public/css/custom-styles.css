@@ -65,6 +65,12 @@ input[readonly] {
     border: 0;
 }
 
+
+.clearfix {
+  float: none
+  clear: both;
+}
+
 /*---------------------------*/
 /*-- style for genio_tooltip */
 /*---------------------------*/
@@ -316,6 +322,8 @@ input[readonly] {
     width: 45%;
 }
 
+.w-2\/5{width: 40%;}
+
 /* additional font sizes font-sixe*/
 .text-7xl{font-size: 4.5rem;line-height: 1;}
 .text-8xl{font-size: 6rem;line-height: 1;}
@@ -328,6 +336,28 @@ input[readonly] {
 .py-14{padding-top: 3.5rem;padding-bottom: 3.5rem;}
 .py-16{padding-top: 4rem;padding-bottom: 4rem;}
 
+.w-10\/12 {width: 83.333333%;}
+
+
+.float-right{float: right;}
+.float-left{float: left;}
+.float-none{float: none;}
+
+
+.ml-6{margin-left: 1.5rem;}
+.ml-7{margin-left: 1.75rem;}
+.ml-8{margin-left: 2rem;}
+.ml-9{margin-left: 2.25rem;}
+.ml-10{margin-left: 2.5rem;}
+.ml-11{margin-left: 2.75rem;}
+.ml-12{margin-left: 3rem;}
+.ml-14{margin-left: 3.5rem;}
+.ml-16{margin-left: 4rem;}
+.ml-20{margin-left: 5rem;}
+
+
+.flex-grow-0{flex-grow: 0;}
+.flex-grow{flex-grow: 1;}
 /*------------------*/
 /*------------------*/
 
@@ -899,10 +929,22 @@ footer .widget-about .contact-details li a {
   padding-top: 0rem;
 }
 .cart .coupon_code{
-    width: 300px;
+    width: 57%;
 }
 .cart .checkout-btn{
-    flex-basis: 50%;
+    
+}
+
+.cart .coupon-wrapper input.coupon_code{
+    height: 42px;
+}
+
+.discount-details ul.list-disc li div:first-child::before {
+    /*content: "•"; */
+    content: "\2022"; /* Bullet point symbol */
+    margin-right: 0.2em; /* spacing between bullet and text */
+    color: #000; /* color of the bullet */
+    font-size: 24px;
 }
 /* ---------------------- */
 
@@ -1380,6 +1422,30 @@ table.smitty-table th {
 
 
 
+.dropdown_cart .cart-headline {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 7px 10px 7px;
+    border-bottom-width: 1px;
+    font-size: 16.5px;
+    font-weight: 600;
+}
+
+.dropdown_cart .cart-headline button.checkout {
+  padding: 0.25rem 0.5rem;
+  display: inline-block;
+  /*font-size: 12.5px;*/
+  /*border-radius: 9999px;*/
+  margin-right: -11px;
+}
+
 .dropdown_cart ul li .cart_avatar {
     width: 70px;
     height: 45px;
@@ -1388,7 +1454,6 @@ table.smitty-table th {
 .dropdown_cart ul li {
     padding: 6px 4px;
 }
-
 
 .dropdown_cart ul li .cart_text {
     margin: 0 12px;
@@ -1402,10 +1467,6 @@ table.smitty-table th {
 .dropdown_cart ul li .cart_price button{
     text-decoration: none;
 }
-
-
-
-
 
 .dropdown_cart .cart_footer {
     font-size: 16px;

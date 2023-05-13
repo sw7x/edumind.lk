@@ -18,3 +18,9 @@ jQuery.validator.addMethod("exactlength", function(value, element, param) {
 $.validator.addMethod("lettersAndNumbersOnly", function(value, element) {
 	return this.optional(element) || /^[a-zA-Z0-9]+$/.test(value);
 }, "Please enter letters and numbers only");
+
+
+$.validator.addMethod('phone', function(value, element) {
+    // Allow only digits, spaces, parentheses, hyphens, and plus sign
+    return this.optional(element) || /^[\d\s()+-]+$/.test(value);
+}, 'Please enter a valid phone number.');
