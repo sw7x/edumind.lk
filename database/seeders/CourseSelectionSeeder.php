@@ -118,8 +118,8 @@ class CourseSelectionSeeder extends Seeder
                             'edumind_amount'    =>  $edumindAmount,           
                             'author_amount'     =>  $authorAmount,
 
-                            'discount_amount'       => $discountAmount,             
-                            'price_afeter_discount' => $course->price - $discountAmount,
+                            'discount_amount'   => $discountAmount,             
+                            'revised_price'     => $course->price - $discountAmount,
 
 
                             'edumind_lose_amount'       => $edumindLoseAmount,

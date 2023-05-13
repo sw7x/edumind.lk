@@ -42,7 +42,7 @@ class CreateCourseSelectionsTable extends Migration
             //->onDelete('cascade');
             
             $table->decimal('discount_amount',10,2)->nullable();////
-            $table->decimal('price_afeter_discount',10,2)->nullable();  /////         
+            $table->decimal('revised_price',10,2)->nullable();  /////         
             
             $table->decimal('edumind_lose_amount',10,2)->nullable();   //       
             $table->decimal('benificiary_earn_amount',10,2)->nullable();////

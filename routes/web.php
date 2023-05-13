@@ -32,7 +32,7 @@ use App\Http\Controllers\Admin\EditorController as Admin_EditorController;
 use App\Http\Controllers\Admin\AdminPanelController;
 use App\Http\Controllers\SubjectController as User_SubjectController;
 use App\Http\Controllers\CourseController as User_CourseController;
-
+use App\Http\Controllers\CartController;
 
 
 
@@ -83,7 +83,7 @@ Route::get('/why-choose-us',function(){    return view('why-edumind');})->name('
 //Route::get('/page-privacy',function(){ return view('privacy-policy-page');})->name('privacy-policy');
 Route::get('/default-page',function(){ return view('default-page');})->name('default-page');
 Route::get('/faq',function(){ return view('faq-page');})->name('faq');
-Route::get('/bill-info',function(){ return view('bill-info');})->name('bill-info');
+
 Route::get('/empty',function(){ return view('empty');})->name('empty');
 Route::get('/help',function(){ return view('help-page');})->name('help');
 
@@ -92,11 +92,53 @@ Route::get ('/all-courses', [User_CourseController::class,'viewAllCourses'])->na
 
 
 
+/* =========== cart =================*/
 
-
-Route::get ('/cart', [StudentController::class,'viewCart'])
+Route::get ('/cart', [CartController::class,'viewCart'])
 ->middleware('checkStudent')
 ->name('view-cart');
+
+Route::post ('/checkout-cart', [CartController::class,'checkout1'])
+->middleware('checkStudent')
+->name('checkout1');
+
+
+Route::post ('/billing-info', [CartController::class,'checkout2'])
+->middleware('checkStudent')
+->name('checkout2');
+
+Route::post('/credit-card-pay', [CartController::class,'checkout3'])
+->middleware('checkStudent')
+->name('checkout3');
+
+
+Route::post('/apply-coupon', [CartController::class,'applyCoupon'])
+->middleware('checkStudent')
+->name('apply-coupon');
+
+
+Route::post('/remove-coupon', [CartController::class,'removeCoupon'])
+->middleware('checkStudent')
+->name('remove-coupon');
+
+
+
+Route::post ('/cart/remove/{id}', [CartController::class,'removeFromCart'])->middleware('checkStudent')->name('remove-cart');
+
+Route::post ('/course/add-to-cart', [CartController::class,'addToCart'])->name ('course.addToCart');
+
+
+Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})->name('checkout-complete');
+
+Route::get('/credit-pay',function(){ return view('student.cart.pay-with-credit-card');})->name('credit-pay');
+Route::get('/bill-info',function(){ return view('student.cart.bill-info');})->name('bill-info');
+
+
+/*======================================================*/
+
+
+
+
 
 
 
@@ -115,8 +157,7 @@ Route::get('/test',function(){ return view('test');})->name('test');
 Route::get ('/course/guest-enroll', [User_CourseController::class,'guestEnroll'])->name ('course-guest-enroll');
 Route::post ('/course/free-enroll', [User_CourseController::class,'freeEnroll'])->name ('course.free-enroll');
 
-Route::post ('/course/add-to-cart', [User_CourseController::class,'addToCart'])->name ('course.addToCart');
-Route::post ('/cart/remove/{id}', [User_CourseController::class,'removeFromCart'])->middleware('checkStudent')->name('remove-cart');
+
 
 
 Route::post ('/course/complete', [User_CourseController::class,'complete'])->name ('course.complete');

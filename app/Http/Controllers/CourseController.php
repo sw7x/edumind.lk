@@ -101,8 +101,9 @@ class CourseController extends Controller
             if($course->status != Course::PUBLISHED){
                 throw new CustomException('Course is temporary disabled');
             }
-                       
+            
             $bannerColors = ColorUtil::generateBannerColors($course->image);
+
                        
             $pageResult     = (new CourseService())->loadCoursePage($currentUser, $course);
             $viewFile       = $pageResult['view'];
@@ -158,92 +159,10 @@ class CourseController extends Controller
         ]);
     }
 
-    public function addToCart(Request $request){
-
-        //dd('ss');
-        $courseId = $request->input('courseId');
-        $user     = Sentinel::getUser();
-
-        try{
-            if(!filter_var($courseId, FILTER_VALIDATE_INT)){
-                throw new CustomException('Invalid id');
-            }
-
-            if($user == null){
-                throw new CustomException('First login before enrolling');
-            }
-
-            if(Sentinel::getUser()->roles()->first()->slug != 'student'){
-                throw new CustomException('Invalid user');
-            }
-
-            $course = Course::find($courseId);
-
-            if($course != null){
-                
-                CourseSelection::create([
-                    'cart_added_date'   => Carbon::now(),
-                    'is_checkout'       => false,
-                    'course_id'         => $courseId,
-                    'student_id'        => $user->id
-                ]); 
-                
-                return redirect()->back()->with([
-                    'message'     => 'Successfully added course to your cart',
-                    'cls'         => 'flash-success',
-                    'msgTitle'    => 'Success !',
-                ]);
-
-            }else{
-                throw new ModelNotFoundException;
-            }
-        }catch(CustomException $e){
-
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
-
-        }catch(\Exception $e){
-
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                //'message'     => 'Course does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
-        }
-    }
+    
 
 
-    public function removeFromCart($id){
-        $user = Sentinel::getUser();
-
-        //dump($id);
-        //dump($user->id);
-
-        $isDelete = CourseSelection::Where('course_id',$id)
-        ->where('student_id',$user->id)
-        ->where('is_checkout',0)
-        ->first()
-        ->delete();
-
-
-       //dd($isDelete);  
-
-
-       if($isDelete){
-            return redirect(route('view-cart'));
-       }else{
-            return redirect(route('view-cart'))->with([
-                'message'   => 'Course remove from cart failed!',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!',
-            ]);
-       }       
-
-    }
+    
 
     public function freeEnroll(Request $request){
 

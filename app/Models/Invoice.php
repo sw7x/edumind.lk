@@ -11,6 +11,11 @@ use App\Models\Enrollment;
 class Invoice extends Model
 {
     use HasFactory;
+    
+    protected $fillable = [        
+        'checkout_date',
+        'billing_info'
+    ];
 
 
     public function enrollments()

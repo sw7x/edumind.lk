@@ -48,6 +48,6 @@ class ViewServiceProvider extends ServiceProvider
 
 
         view::composer (['includes.header','includes.footer','home'],TopSubjectsComposer::class);
-        view::composer (['includes.header','student.cart'],CartComposer::class);
+        view::composer (['includes.header','student.cart.cart-page'],CartComposer::class);
     }
 }

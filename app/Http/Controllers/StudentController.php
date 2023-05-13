@@ -163,41 +163,11 @@ class StudentController extends Controller
         return view('student.student-profile-help');
     }
 
-    public function viewCart()
-    {
-        return view('student.cart');
-        
-
-        /*
-        $user = Sentinel::getUser();
-
-        $addedCourses =  Course::join('course_selections', function($join) use ($user){
-                        $join->on('courses.id','=','course_selections.course_id')
-                            ->where('course_selections.is_checkout', '=', 0)
-                            ->where('course_selections.student_id', '=', $user->id)
-                            ->where('courses.status', '=', "published");
-                    })
-                    
-                    ->get([
-                        'course_selections.is_checkout',
-                        //'enrollments.is_complete',
-                        'courses.*'
-                    ]);
-
-        $totPrice = 0;
-        foreach ($addedCourses as $key => $course) {
-             $totPrice +=  $course->price;
-        }        
+    
 
 
 
-        //dd($addedCourses);            
-        return view('student.cart')->with([
-            'addedCourses'  => $addedCourses,
-            'totalPrice'    => $totPrice
-        ]);
-        */
-    }
+    
 
     
 }

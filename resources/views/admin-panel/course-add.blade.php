@@ -565,13 +565,15 @@
                                 </div>
                             </fieldset>
 
-                            <!-- 
+
+                            {{--
                             <h1>Finish</h1>
                             <fieldset>
                                 <h2>Terms and Conditions</h2>
                                 <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
-                            </fieldset> 
-                            -->
+                            </fieldset>
+                            --}}
+
 
                             <input name="topicsJson" id="topicsJson" type="hidden" value=''>
                             <input name="contentJson" id="contentJson" type="hidden" value="">

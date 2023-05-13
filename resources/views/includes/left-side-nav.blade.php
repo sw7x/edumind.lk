@@ -93,7 +93,7 @@
                                         <li> <a href="{{route('course-search')}}">Course search</a></li>                                        
                                         <li> <a href="{{route('courses-list')}}">courses-list</a></li>
                                         <li> <a href="{{route('course-watch')}}">course-watch</a></li>
-                                        <li> <a href="{{route('view-cart')}}">cart</a></li>
+                                        <li> <a href="{{route('view-cart')}}">My Cart</a></li>
                                         <li> <a href="{{route('bill-info')}}">bill-info</a></li>
                                         <li> <a href="{{route('viewAllTopic')}}">subject list</a></li>
                                         <li> <a href="{{route('contact.index')}}">contact</a></li>
@@ -213,8 +213,21 @@
                                         <li> <a href="{{route('course-search')}}">search</a></li>                                        
                                         <li> <a href="{{route('courses-list')}}">courses-list</a></li>
                                         <li> <a href="{{route('course-watch')}}">course-watch</a></li>
-                                        <li> <a href="{{route('view-cart')}}">cart</a></li>
-                                        <li> <a href="{{route('bill-info')}}">bill-info</a></li>
+                                        
+                                        <li> <a href="#">Cart</a>
+                                            <div class="xdropdown" uk-drop="mode: hover;pos:right-top;animation: uk-animation-slide-right-small">
+                                                <ul>
+                                                    <li> <a href="{{route('view-cart')}}">Cart page</a></li>
+                                                    <li> <a href="{{route('bill-info')}}">billing info</a></li>
+                                                    <li> <a href="{{route('credit-pay')}}">credit card pay</a></li>
+                                                    <li> <a href="{{route('checkout-complete')}}">checkout complete</a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        
+
+
                                         <li> <a href="{{route('viewAllTopic')}}">subject list</a></li>
                                         <li> <a href="{{route('contact.index')}}">contact</a></li>
                                         <li> <a href="{{route('course-single')}}">course-intro-3</a></li>

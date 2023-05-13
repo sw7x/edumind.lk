@@ -48,7 +48,7 @@ class HomeController extends Controller
 
     //
     public function index()
-    {              
+    {             
         //load recent teachers
         $teacherService = new TeacherService();
         $teachers       = $teacherService->loadPopularTeachers();

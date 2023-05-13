@@ -36,6 +36,12 @@
                         </a>
 
                         <div uk-drop="mode: click" class="dropdown_cart">
+                            <div class="cart-headline"> My Cart 
+                                
+                                <a href="#" class="checkout inline-block bg-red-500 hover:bg-red-600 text-white hover:text-white py-1 px-2 rounded text-base">Checkout</a>
+
+                            </div>
+
                             <!-- <h4 class="cart-headline"> My Cart </h4> -->
                             <ul class="dropdown_cart_scrollbar" data-simplebar>                                
                                 @foreach($cartCourses as $course)
@@ -44,14 +50,23 @@
                                         <img src="{{$course['image']}}" alt="">                                        
                                     </div>
                                     <div class="cart_text">
-                                        <h4>{{$course['name']}}</h4>
+                                        <!-- <h4>{{$course['name']}}</h4> -->
+                                        <a href="{{route('course-single',$course['slug'])}}">{{$course['name']}}</a>
                                     </div>
                                     <div class="cart_price">
                                         <span class="text-base">{{$course['price']}}</span>
                                         @if($loop->index ==2)
                                             <span class="line-through text-gray-500 font-normal">{{$course['price']}}</span>
                                         @endif
-                                        <button class="type"> Remove</button>
+                                        
+                                        <!-- <button class="type"> Remove</button> -->
+                                        <form action="{{route('remove-cart',$course['id'])}}" method="post" class=''>
+                                            {{csrf_field ()}}
+                                            <div class="mt-4">
+                                                <button type="submit" class="">Remove</button>
+                                            </div>
+                                            <input type="hidden" name="page" value="">
+                                        </form>
                                     </div>
                                 </li>
                                 @endforeach
@@ -71,8 +86,8 @@
                                 -->
                             </ul>
                             <div class="cart_footer row">
-                                <div class="col-md-4 text-left"><a href="{{route('view-cart')}}" class="text-blue-500">View cart</a></div>
-                                <div class="col-md-8 text-right"><span>Subtotal : Rs {{$cartTotal}}</span></div>
+                                <div class="col-md-5 text-left"><a href="{{route('view-cart')}}" class="text-blue-500">View my cart</a></div>
+                                <div class="col-md-7 text-right"><span>Subtotal : Rs {{$cartTotal}}</span></div>
                                 <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
                             </div>
                         </div>                        

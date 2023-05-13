@@ -14,7 +14,7 @@ class CreateInvoicesTable extends Migration
     public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->startingValue(1200);
             $table->timestamp("checkout_date")->nullable();
             $table->text('billing_info')->nullable(); //todo - seperate table
             $table->timestamps();
