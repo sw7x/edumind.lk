@@ -10,6 +10,8 @@ class FlashMessage extends Component
     public $message;
     public $message2;
     public $canClose;
+    public $htmlMessage;
+
     /**
      * Create a new component instance.
      *

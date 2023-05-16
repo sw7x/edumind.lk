@@ -40,6 +40,25 @@
             <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
 
                 <div class="w-full">
+
+                    @if($cart_re_init_message)
+                    <x-flash-message
+                        class="{{$cart_re_init_cls}}"
+                        :title="$cart_re_init_msgTitle"
+                        :message="$cart_re_init_message">
+                        <x-slot name="insideContent">
+                            @if ($cart_re_init_msg_arr)
+                                <ul class="mt-1 mb-1 ml-8 list-disc text-sm text-yellow-500 font-semibold">
+                                    @foreach ($cart_re_init_msg_arr as $cartMsg)
+                                        <li class="">{{ $cartMsg }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </x-slot>
+                    </x-flash-message>
+                    @endif
+
+
                     <h2 class="font-semibold mb-3 text-xl lg:text-3xl">
                         @if($cartStatus == 'success')
                             My Cart ({{ $cartCourseCount }} {{ $cartCourseCount == 1 ? 'item' : 'items' }})
@@ -50,11 +69,22 @@
                     </h2>
                     <hr class="mb-5">
 
+                    <?php
+                    //dump($c1);
+                    //dump('view');
+                    ?>
 
                     <!--
                     <p>To start using the Flexbox model, you need to first define a flex container.</p>
                     <h4 class="font-semibold mb-2 text-base"> Description </h4>
                     -->
+
+
+
+
+
+
+
                     <div class="__space-y-2">                      
                             @if($cartStatus == 'success')
                                 @if(!empty($cartCourses))
@@ -68,7 +98,6 @@
                                                 :message="Session::get('message')">                            
                                             </x-flash-message>            
                                         @endif
-
 
 
                                         <div class="tbl-div mb-5" style="overflow-x:auto;">                                                                    

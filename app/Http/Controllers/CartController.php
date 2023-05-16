@@ -22,43 +22,255 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
-
+use App\Models\User;
 class CartController extends Controller
 {
 	public function viewCart()
     {
-        return view('student.cart.cart-page');
-        
 
-        /*
-        $user = Sentinel::getUser();
+        try {
 
-        $addedCourses =  Course::join('course_selections', function($join) use ($user){
-                        $join->on('courses.id','=','course_selections.course_id')
-                            ->where('course_selections.is_checkout', '=', 0)
-                            ->where('course_selections.student_id', '=', $user->id)
-                            ->where('courses.status', '=', "published");
-                    })
-                    
-                    ->get([
-                        'course_selections.is_checkout',
-                        //'enrollments.is_complete',
-                        'courses.*'
-                    ]);
+            $user = Sentinel::getUser();
+            //dump('kk');
 
-        $totPrice = 0;
-        foreach ($addedCourses as $key => $course) {
-             $totPrice +=  $course->price;
-        }        
+            //dd(Coupon::doesntHave('course')->get());
+            //dd(Course::doesntHave('coupons')->get());
 
 
 
-        //dd($addedCourses);            
-        return view('student.cart')->with([
-            'addedCourses'  => $addedCourses,
-            'totalPrice'    => $totPrice
-        ]);
-        */
+
+
+
+
+
+
+
+
+
+            /* remove all previous coupon code or coupon codes(if apply multiple codes)
+            $cartItems->map(function ($cartItem) {
+                $cartItem->used_coupon_code        = null;
+                $cartItem->discount_amount         = 0;
+                $cartItem->revised_price           = $cartItem->course->price;
+                $cartItem->edumind_lose_amount     = 0;
+                $cartItem->benificiary_earn_amount = 0;
+                $cartItem->updated_at              = now();
+                $cartItem->save(['timestamps' => false]);
+                //$cartItem->save();
+                //return $user;
+            });
+            */
+
+
+
+
+
+
+            $msgArr = [];
+
+            //before load cart page view, resetting and remove invalid cart items in user's cart
+            if($user && ($user->roles()->first()->slug == Role::STUDENT)){
+
+
+                /*=== 1. Courses that were once paid but have now been made free of charge ===*/
+                $cartFreeCourses    =   Course::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
+                                            ->where('course_selections.student_id', $user->id)
+                                            ->where('course_selections.is_checkout', 0)
+                                            ->where('course_selections.cart_added_date', '!=', null)
+                                            ->where('courses.price', 0)
+                                            //->toSql()
+                                            ->get('courses.*');
+
+
+                if($cartFreeCourses->isNotEmpty()){
+                    $msgArr['rlsCourses']['errTitle'] = 'The price of some course(s) in your cart has changed to free. They have been automatically removed from your cart.';
+                    $msgArr['rlsCourses']['errArr']   =  $cartFreeCourses->map(function ($freeCourse) use ($user){
+
+                        // delete free cuses from cart
+                        /*CourseSelection::where('course_selections.student_id', $user->id)
+                            ->where('course_selections.is_checkout', 0)
+                            ->where('course_selections.cart_added_date', '!=', null)
+                            ->where('course_selections.course_id',$freeCourse->id)
+                            ->delete();*/
+
+                        //dump($freeCourse->id);
+
+                        // generate message for the user to tell about deleted courses
+                        return '<a href="'.route('course-single',$freeCourse->slug).'">'.$freeCourse->name.'</a>';
+                    });
+                }
+                //dump($cartFreeCourses);
+                //dump($msgArr);
+                /*=== 1 END ======================================================== ===*/
+
+
+
+                /*=== 2. Coupon codes become invalid after apply - available count is over, disabled ===*/
+                $cartInvalidCc  =   CourseSelection::join('courses', 'course_selections.course_id', '=', 'courses.id')
+                                        ->where('course_selections.student_id', $user->id)
+                                        ->where('course_selections.is_checkout', 0)
+                                        ->where('course_selections.cart_added_date', '!=', null)
+
+                                        ->latest('course_selections.updated_at')
+                                        ->where('courses.price', '!=', 0)
+                                        //->where('courses.status', 'published');
+
+                                        ->join('coupons', 'course_selections.used_coupon_code', '=', 'coupons.code')
+                                        ->where(function ($query){
+                                            $query
+                                                ->orWhere('coupons.is_enabled', '!=', 1)
+                                                ->orWhereColumn('coupons.total_count', '<=', 'coupons.used_count')
+                                                ->orWhere(function ($subQuery){
+                                                    $subQuery->whereNotNull('coupons.cc_course_id')
+                                                        ->WhereColumn('course_selections.course_id', '!=', 'coupons.cc_course_id');
+                                                });
+                                        })
+                                        //->toSql();
+                                        /*->get();*/
+                                        ->get([
+                                            'course_selections.*',
+                                            'coupons.cc_course_id',
+                                            'coupons.is_enabled',
+                                            'coupons.total_count',
+                                            'coupons.used_count'
+                                        ]);
+
+                dump($cartInvalidCc);
+                //dd('cartInvalidCc');
+
+                if($cartInvalidCc->isNotEmpty()){
+                    $msgArr['invoiceCc']['errTitle'] = 'Invalid coupon code(s) detected. They have been automatically removed from your cart.';
+                    $msgArr['invoiceCc']['errArr']   =  $cartInvalidCc->map(function ($cartItem) use ($user){
+
+                        $ccMsg  = '';
+                        $coupon = Coupon::withoutGlobalScope('enabled')->find($cartItem->used_coupon_code);
+
+
+                        $cartItemCourseId   = $cartItem->course_id;
+                        $ccCourseId         = $coupon->cc_course_id;
+                        $ccAvalableCount    = $coupon->total_count - $coupon->used_count;
+                        //dump($coupon);
+                        //dump($cartItemCourseId .' === '.$ccCourseId);
+
+                        $ccMsg .= ($cartItemCourseId != $ccCourseId)?', not valid for the course(s) in your cart':'';
+                        $ccMsg .= ($ccAvalableCount <= 0)?', no longer available':'';
+                        $ccMsg .= (!$coupon->is_enabled)?', disabled':'';
+
+                        // format error messages
+                        $ccMsg = Str::replaceFirst(', ', '', $ccMsg);
+                        $ccMsg = Str::ucfirst($ccMsg);
+                        $ccMsg = $cartItem->used_coupon_code.' - '.$ccMsg;
+                        //dump($ccMsg);
+
+
+                        // remove invalid coupons from courseSelection records
+                        $cartItem->used_coupon_code        = null;
+                        $cartItem->discount_amount         = 0;
+                        $cartItem->revised_price           = $cartItem->course->price;
+                        $cartItem->edumind_lose_amount     = 0;
+                        $cartItem->benificiary_earn_amount = 0;
+                        $cartItem->updated_at              = now();
+                        $cartItem->save(['timestamps' => false]);
+
+                        return $ccMsg;
+                    });
+                }
+                /*=== 2 END ======================================================== ===*/
+                dump($msgArr);
+                dd();
+
+
+
+
+
+                // 3. If the foreign key relationship fails due to the nonexistence of the Coupon record
+                $csWithoutCC    =   CourseSelection::whereNotExists(function ($query) {
+                    $query->select('code')
+                        ->from('coupons')
+                        ->whereColumn('coupons.code', 'course_selections.used_coupon_code');
+                })
+                ->whereNotNull('course_selections.used_coupon_code')
+                //->toSql();
+                ->get();
+
+                //dump($csWithoutCC);
+                $msgArr[]       = '333';
+
+
+
+
+                // 4. check multiple (valid) cc usages
+                $cartValidCc    =   CourseSelection::join('courses', 'course_selections.course_id', '=', 'courses.id')
+                                        ->where('course_selections.student_id', $user->id)
+                                        ->where('course_selections.is_checkout', 0)
+                                        ->where('course_selections.cart_added_date', '!=', null)
+
+                                        ->latest('course_selections.updated_at')
+                                        ->where('courses.price', '!=', 0)
+                                        //->where('courses.status', 'published');
+
+                                        ->join('coupons', 'course_selections.used_coupon_code', '=', 'coupons.code')
+
+                                        ->where('coupons.is_enabled',1)
+                                        ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
+                                        ->where(function ($query){
+                                            $query->orWhereNull('coupons.cc_course_id')
+                                                ->orWhereColumn('course_selections.course_id', '=', 'coupons.cc_course_id');
+                                        })
+                                        //->toSql();
+                                        ->get('course_selections.*');
+
+                dd($cartValidCc);
+                $msgArr[]       = 'Only one coupon code can be applied at a time. The latest applied coupon has been kept, and the others have been automatically removed from your cart';
+
+
+
+
+
+
+
+
+
+
+
+                //todo
+                //paass messages
+
+
+            }
+
+            //dd($msgArr);
+
+
+
+
+
+
+            $cartReInitMsgCls   = empty($msgArr)? '' : 'flash-warning';
+            $cartReInitMsgTitle = empty($msgArr)? '' : 'Invalid Cart Items !';
+
+            //dump($msg,$cartReInitMsg,$cartReInitMsgCls,$cartReInitMsgTitle);
+
+
+
+            //dump('bbb');
+            return view('student.cart.cart-page')->with([
+                'cart_re_init_message'     => 'Some items in your cart are no longer available or have been modified. Please review and update your cart.',
+                'cart_re_init_cls'         => $cartReInitMsgCls,
+                'cart_re_init_msgTitle'    => $cartReInitMsgTitle,
+
+                'cart_re_init_msg_arr' => $msgArr
+            ]);;
+
+
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+
+        }catch (CustomException $e) {
+            dd($e->getMessage());
+        }
+
     }
 
 
@@ -73,10 +285,10 @@ class CartController extends Controller
         //dump($user->id);
 
         $isDelete = CourseSelection::Where('course_id',$id)
-        ->where('student_id',$user->id)
-        ->where('is_checkout',0)
-        ->first()
-        ->delete();
+                        ->where('student_id',$user->id)
+                        ->where('is_checkout',0)
+                        ->first()
+                        ->delete();
 
 
        //dd($isDelete);  
@@ -269,7 +481,12 @@ class CartController extends Controller
                     'student_id'        => $user->id,
                 	'edumind_amount' 	=> $course->price * ((100-$course->author_share_percentage)/100),
 					'author_amount' 	=> $course->price * ($course->author_share_percentage/100),
-					'revised_price'    	=> $course->price 	        	
+
+                    'used_coupon_code'          => null,
+                    'discount_amount'           => 0,
+					'revised_price'    	        => $course->price,
+                    'edumind_lose_amount'       => 0,
+                    'benificiary_earn_amount'   => 0
                 ]); 
                
                 return redirect()->back()->with([
@@ -327,8 +544,6 @@ class CartController extends Controller
 	    	if(!$csRec){
 	    		throw new CustomException('Invalid coupon code');
 	    	}
-
-
 
 	    	$csRec->used_coupon_code 		= null;
 			$csRec->discount_amount 		= 0;
@@ -430,19 +645,23 @@ class CartController extends Controller
 			
 			/*=== remove all previous coupon codes and apply new coupon ===*/
 			DB::transaction(function () use ($cartItemsOrigQuery, $ccRec){
-			   	$cartItems = $cartItemsOrigQuery->get('course_selections.*');
+			   	/* $cartItems = $cartItemsOrigQuery->get('course_selections.*');
+
+                dd($cartItems);
 			
-			   	/* remove all previous coupon code or coupon codes(if apply multiple codes) */
+			   	remove all previous coupon code or coupon codes(if apply multiple codes)
 			   	$cartItems->map(function ($cartItem) {					
-					$cartItem->used_coupon_code 	= null;
-					$cartItem->discount_amount 		= 0;
-					$cartItem->revised_price 		= $cartItem->course->price;
-					$cartItem->edumind_lose_amount 	= 0;
+					$cartItem->used_coupon_code 	   = null;
+					$cartItem->discount_amount 		   = 0;
+					$cartItem->revised_price 		   = $cartItem->course->price;
+					$cartItem->edumind_lose_amount 	   = 0;
 					$cartItem->benificiary_earn_amount = 0;
-					$cartItem->save();		
-					//return $user;
-				});
-			
+					$cartItem->updated_at              = now();
+                    $cartItem->save(['timestamps' => false]);
+                    //$cartItem->save();
+                    //return $user;
+				});*/
+
 			   	/* get coupon can apply cart items */
 				$ccCanCrtItems = $cartItemsOrigQuery->where(function ($query) use ($ccRec){									    
 		        	if($ccRec->course_id){
@@ -450,14 +669,14 @@ class CartController extends Controller
 		        	}
 				})->get('course_selections.*');
 				
-				if(!$ccCanCrtItems){
+				if($ccCanCrtItems->isEmpty()){
 					throw new CustomException('Coupon code not valid for courses in your cart.');		
 				}
 				
 				/* apply coupon to the course that has 2nd highest price */
 				$ccAppliedCrtItem = ($ccCanCrtItems->count() > 1) ? $ccCanCrtItems->get(1) : $ccCanCrtItems->first();
 				
-				$ccAppliedCourse     = $ccAppliedCrtItem->course;
+                $ccAppliedCourse     = $ccAppliedCrtItem->course;
 				$discountAmount 	 = $ccRec->course->price * ($ccRec->discount_percentage/100);
 				$commisionPercentage = $ccRec->beneficiary_commision_percentage_from_discount;
 
@@ -468,11 +687,8 @@ class CartController extends Controller
 				$ccAppliedCrtItem->benificiary_earn_amount 	= $discountAmount * ($commisionPercentage/100);
 				$ccAppliedCrtItem->save();
 			});
-	
-			//dd('END');
-			//dd();
 
-			return redirect()->route('view-cart')->with([
+            return redirect()->route('view-cart')->with([
                 'message'     => 'Successfully applied coupon code',
                 'cls'         => 'flash-success',
                 'msgTitle'    => 'Success !',
@@ -480,8 +696,7 @@ class CartController extends Controller
 
 
 		}catch(CustomException $e){
-			dump('CustomException');
-			dd($e->getMessage());
+
             return redirect()->route('view-cart')->with([
                 'message'     => $e->getMessage(),
                 'cls'         => 'flash-danger',
@@ -489,8 +704,7 @@ class CartController extends Controller
             ]);
 
         }catch(\Exception $e){
-        	dump('\Exception');
-			dd($e->getMessage());
+
             return redirect()->route('view-cart')->with([
                 //'message'     => $e->getMessage(),
                 'message'     => 'Coupon code was failed to apply',
@@ -508,34 +722,57 @@ class CartController extends Controller
 
 
 
+
+
+
+
+
 /*
-	
+
+select * from `course_selections`
+inner join `courses` on `course_selections`.`course_id` = `courses`.`id`
+inner join `coupons` on `course_selections`.`used_coupon_code` = `coupons`.`code`
+where
+`course_selections`.`is_checkout` = ?
+and `course_selections`.`student_id` = ?
+and `course_selections`.`cart_added_date` is not null
+and `courses`.`price` != ?
+and `courses`.`status` = ?
+and `course_selections`.`course_id` = `coupons`.`course_id`
+
+order by `course_selections`.`updated_at` desc
 
 
-	select * from `course_selections` 
-	inner join `courses` on `course_selections`.`course_id` = `courses`.`id` 
-	inner join `coupons` on `course_selections`.`used_coupon_code` = `coupons`.`code` 
-	where `course_selections`.`is_checkout` = 0 
-	and `course_selections`.`student_id` = 5 
-	and `course_selections`.`cart_added_date` is not null 
-	and `courses`.`price` != 0 
-	and `courses`.`status` = 'published' 
-	and `course_selections`.`used_coupon_code` = "I6TBZ9" 
-	and (`course_selections`.`course_id` = 3) 
-	order by `courses`.`price` desc
+
+select * from `course_selections` inner join `courses` on `course_selections`.`course_id` = `courses`.`id` inner join `coupons` on `course_selections`.`used_coupon_code` = `coupons`.`code` where `course_selections`.`is_checkout` = ? and `course_selections`.`student_id` = ? and `course_selections`.`cart_added_date` is not null and `courses`.`price` != ?
+and `courses`.`status` = ?
+or `course_selections`.`course_id` = `coupons`.`course_id`
+order by `course_selections`.`updated_at` desc
 
 
-	
 
 
-select * from `course_selections` 
-inner join `courses` on `course_selections`.`course_id` = `courses`.`id` 
-where `course_selections`.`is_checkout` = ? 
-and `course_selections`.`student_id` = ? 
-and `course_selections`.`cart_added_date` is not null 
-and `courses`.`price` != ? and `courses`.`status` = ? 
-and (`course_selections`.`course_id` = ?) 
 
-order by `courses`.`price` desc ◀"
 
-	*/				
+
+
+select * from `course_selections`
+
+inner join `courses` on `course_selections`.`course_id` = `courses`.`id`
+inner join `coupons` on `course_selections`.`used_coupon_code` = `coupons`.`code`
+where
+`course_selections`.`is_checkout` = ?
+and `course_selections`.`student_id` = ?
+and `course_selections`.`cart_added_date` is not null
+and `courses`.`price` != ?
+and `courses`.`status` = ?
+and `coupons`.`is_enabled` = ?
+and `coupons`.`total_count` > `coupons`.`used_count`
+and `course_selections`.`course_id` = `coupons`.`course_id`
+order by `course_selections`.`updated_at` desc
+
+*/
+
+
+
+

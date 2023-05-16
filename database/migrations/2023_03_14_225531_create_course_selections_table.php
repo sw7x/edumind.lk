@@ -47,21 +47,7 @@ class CreateCourseSelectionsTable extends Migration
             $table->decimal('edumind_lose_amount',10,2)->nullable();   //       
             $table->decimal('benificiary_earn_amount',10,2)->nullable();////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //$table->timestamps();
+            $table->timestamps();
             $table->softDeletes();
         });
     }

@@ -26,7 +26,7 @@ class Coupon extends Model
         'total_count',
         'used_count',
         'is_enabled',
-        'course_id',
+        'cc_course_id',
         'beneficiary_id'
     ];
 
@@ -42,7 +42,7 @@ class Coupon extends Model
 
     public function course()
 	{
-	    return $this->belongsTo(Course::class, 'course_id', 'id');
+	    return $this->belongsTo(Course::class, 'cc_course_id', 'id');
 	}
 
     public function benificiary()

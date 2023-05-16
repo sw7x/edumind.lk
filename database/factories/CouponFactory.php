@@ -38,7 +38,7 @@ class CouponFactory extends Factory
             'total_count'                                       => $totalCount,
             'used_count'                                        => $usedCount,
             'is_enabled'                                        => $this->faker->randomElement([true,false,true,true,true]),
-            'course_id'                                         => $this->faker->randomElement([
+            'cc_course_id'                                         => $this->faker->randomElement([
                                                                         Course::inRandomOrder()->first()->id,
                                                                         Course::inRandomOrder()->first()->id,
                                                                         null

@@ -29,8 +29,8 @@ class CreateCouponsTable extends Migration
             $table->boolean('is_enabled')->default(True);
 
             //course - fk
-            $table->integer('course_id')->nullable()->unsigned();
-            $table->foreign('course_id')->references('id')->on('courses');
+            $table->integer('cc_course_id')->nullable()->unsigned();
+            $table->foreign('cc_course_id')->references('id')->on('courses');
 
             //users (marketer,teacher) - fk
             $table->integer('beneficiary_id')->nullable()->unsigned();

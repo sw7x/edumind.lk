@@ -5,14 +5,14 @@
     @endif
     
     <div class="text-lg"><strong>{{ $title ?? 'Info!'}}</strong></div>
+
     <p>{{ $message ?? 'Info!' }}</p>
     
     @isset($message2)
     	<div class="text-base">{!! $message2 ?? '' !!}</div>
     @endif
 
-
-	@isset($insideContent)
+    @isset($insideContent)
     	{{$insideContent}}
     @endisset
 

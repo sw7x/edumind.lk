@@ -139,7 +139,14 @@ class Course extends Model
 
     public function coupons()
     {
-        return $this->hasMany(Coupon::class,'course_id','id');        
+        return $this->hasMany(Coupon::class,'cc_course_id','id');
+    }
+
+    public function activeCoupons()
+    {
+        return $this->hasMany(Coupon::class,'cc_course_id','id')
+                    ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
+                    ->where('coupons.discount_percentage','!=',0);
     }
 
 

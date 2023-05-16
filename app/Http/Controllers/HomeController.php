@@ -14,19 +14,25 @@ use App\Models\Contact_us;
 use App\Models\CourseSelection;
 
 
-
+use App\Models\Coupon;
 
 
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Gate;
 
-use App\Models\Coupon;
+
 use App\Models\Course;
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
+
+
+
+
+
+use Illuminate\Support\Collection;
 class HomeController extends Controller
 {
     
@@ -48,7 +54,15 @@ class HomeController extends Controller
 
     //
     public function index()
-    {             
+    {
+
+
+
+
+
+
+
+
         //load recent teachers
         $teacherService = new TeacherService();
         $teachers       = $teacherService->loadPopularTeachers();

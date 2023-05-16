@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\CourseSelection;
 use Faker\Generator as Faker;
+use Illuminate\Support\Collection;
+
 use Sentinel;
 use App\Models\Course;
-
-
+use App\Models\CourseSelection;
 
 
 
@@ -25,9 +25,10 @@ class CourseSelectionSeeder extends Seeder
 
         $data = array();
         
-        $studentsIdArr = Sentinel::findRoleBySlug('student')->users()->with('roles')->get()->pluck('id')->toArray();    
-        
-
+        $allStudIdArr  = Sentinel::findRoleBySlug('student')->users()->with('roles')->get()->pluck('id')->toArray();
+        $studentsIdArr = collect($allStudIdArr)->filter(function ($value) {
+            return $value <= 40;
+        })->toArray();
 
 
         // exclude courses, then student can add these courses to cart
@@ -38,10 +39,6 @@ class CourseSelectionSeeder extends Seeder
         $courseIdArr             = Course::inRandomOrder()->get()->pluck('id')->toArray();
         $courseCount             = count($courseIdArr);
 
-        //dump2($studentsIdArr);
-        //dump2($courseIdArr);
-        //dd();
-        //dump2($courseIdArr);
 
 
         $resultCount = 0;
@@ -50,7 +47,7 @@ class CourseSelectionSeeder extends Seeder
                 break;
             }else{
                 
-                $courseId       = $courseIdArr[$i];
+                $courseId       = $courseIdArr[$i];///////////////
                 $innerLoopCount = $faker->numberBetween(0, count($studentsIdArr)-1);            
                 //dump2($innerLoopCount);
                 
@@ -60,11 +57,22 @@ class CourseSelectionSeeder extends Seeder
                 
                 // to randomize the student selections for each course
                 shuffle($studentsIdArr);
-                
+
+
                 foreach (range(0, $innerLoopCount) as $j) {                
                     if ($resultCount >= 250 || $j > $limit) {
                         break;
                     }else{
+
+                        // to prevent course_id and student_id combine key make duplicate values
+                        $duplicates = Collection::make($data)->groupBy(function ($item) {
+                            return $item['course_id'] . '-' . $item['student_id'];
+                        })->filter(function ($group) {  return $group->count() > 1;})->flatten(1);
+
+                        if($duplicates->isNotEmpty()){
+                            continue;
+                        }
+
 
                         $course         = Course::find($courseId);
                         $isFreecourse   = ($course->price == 0)?true:false;
@@ -74,8 +82,9 @@ class CourseSelectionSeeder extends Seeder
                             $authorAmount   = $course->price * ($course->author_share_percentage/100);
 
                             //coupon code assign  
-                            $coupons            = $course->coupons;
-                            $assignedCouponCode = $coupons->shuffle()->first();          
+                            $coupons            = $course->activeCoupons;
+                            $assignedCouponCode = $coupons->shuffle()->first();
+                            $assignedCouponCode = $faker->randomElement([$assignedCouponCode,null,$assignedCouponCode]);
                             $code               = is_null($assignedCouponCode)?null: $assignedCouponCode->code;
 
 
@@ -121,10 +130,11 @@ class CourseSelectionSeeder extends Seeder
                             'discount_amount'   => $discountAmount,             
                             'revised_price'     => $course->price - $discountAmount,
 
-
                             'edumind_lose_amount'       => $edumindLoseAmount,
                             'benificiary_earn_amount'   => $benificiaryEarnAmount,
-                            'used_coupon_code'   => $code
+                            'used_coupon_code'          => $code,
+                            'created_at'                => date('Y-m-d H:i:s'),
+                            'updated_at'                => date('Y-m-d H:i:s')
 
                         );                    
                     }
@@ -136,3 +146,5 @@ class CourseSelectionSeeder extends Seeder
         CourseSelection::insert($data);
     }
 }
+
+
