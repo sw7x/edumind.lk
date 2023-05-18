@@ -3,10 +3,22 @@
 
 
 //create storage link
-Route::get('/storage-link', function () {
+//create storage link
+Route::get('/storage-link', function () {   
+    $folders = ['courses21','subjects21','users21'];
+    foreach ($folders as $folderName) {        
+        $folderPath = $storagePath = storage_path('app/public/'.$folderName);
+        
+        if (!is_dir($folderPath)) {
+            mkdir($folderPath, 0777, true);
+            dump($folderPath." folder created successfully.");
+        } else {
+            dump($folderPath." folder already exists.");
+        }
+    } 
     Artisan::call('storage:link');
+    return; 
 });
-
 
 
 
