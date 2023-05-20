@@ -38,7 +38,10 @@
                         <div uk-drop="mode: click" class="dropdown_cart">
                             <div class="cart-headline"> My Cart 
                                 
-                                <a href="#" class="checkout inline-block bg-red-500 hover:bg-red-600 text-white hover:text-white py-1 px-2 rounded text-base">Checkout</a>
+                                {{-- 
+                                <a href="#" class="checkout inline-block bg-red-500 hover:bg-red-600 text-white hover:text-white py-1 px-2 rounded text-base">Checkout</a> 
+                                --}}
+                                <a href="{{route('view-cart')}}" class="text-blue-500">View my cart</a>
 
                             </div>
 
@@ -86,8 +89,8 @@
                                 -->
                             </ul>
                             <div class="cart_footer row">
-                                <div class="col-md-5 text-left"><a href="{{route('view-cart')}}" class="text-blue-500">View my cart</a></div>
-                                <div class="col-md-7 text-right"><span>Subtotal : Rs {{$cartTotal}}</span></div>
+                                <div class="col-md-5 text-left">Subtotal :</div>
+                                <div class="col-md-7 text-right"><span>Rs {{$cartTotal}}</span></div>
                                 <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
                             </div>
                         </div>                        

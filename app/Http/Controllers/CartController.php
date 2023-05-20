@@ -29,45 +29,9 @@ class CartController extends Controller
     {
 
         try {
-
-            $user = Sentinel::getUser();
-            //dump('kk');
-
-            //dd(Coupon::doesntHave('course')->get());
-            //dd(Course::doesntHave('coupons')->get());
-
-
-
-
-
-
-
-
-
-
-
-
-            /* remove all previous coupon code or coupon codes(if apply multiple codes)
-            $cartItems->map(function ($cartItem) {
-                $cartItem->used_coupon_code        = null;
-                $cartItem->discount_amount         = 0;
-                $cartItem->revised_price           = $cartItem->course->price;
-                $cartItem->edumind_lose_amount     = 0;
-                $cartItem->benificiary_earn_amount = 0;
-                $cartItem->updated_at              = now();
-                $cartItem->save(['timestamps' => false]);
-                //$cartItem->save();
-                //return $user;
-            });
-            */
-
-
-
-
-
-
             $msgArr = [];
-
+            $user = Sentinel::getUser();
+            
             //before load cart page view, resetting and remove invalid cart items in user's cart
             if($user && ($user->roles()->first()->slug == Role::STUDENT)){
 
@@ -86,22 +50,22 @@ class CartController extends Controller
                     $msgArr['rlsCourses']['errTitle'] = 'The price of some course(s) in your cart has changed to free. They have been automatically removed from your cart.';
                     $msgArr['rlsCourses']['errArr']   =  $cartFreeCourses->map(function ($freeCourse) use ($user){
 
-                        // delete free cuses from cart
-                        /*CourseSelection::where('course_selections.student_id', $user->id)
+                        /* delete free cuses from cart
+                        CourseSelection::where('course_selections.student_id', $user->id)
                             ->where('course_selections.is_checkout', 0)
                             ->where('course_selections.cart_added_date', '!=', null)
                             ->where('course_selections.course_id',$freeCourse->id)
-                            ->delete();*/
-
+                            ->delete();
+                        */
                         //dump($freeCourse->id);
 
                         // generate message for the user to tell about deleted courses
                         return '<a href="'.route('course-single',$freeCourse->slug).'">'.$freeCourse->name.'</a>';
                     });
                 }
+                //dump('1.cartFreeCourses');
                 //dump($cartFreeCourses);
-                //dump($msgArr);
-                /*=== 1 END ======================================================== ===*/
+                /*=== 1 END =========================================================== ===*/
 
 
 
@@ -135,9 +99,7 @@ class CartController extends Controller
                                             'coupons.used_count'
                                         ]);
 
-                dump($cartInvalidCc);
-                //dd('cartInvalidCc');
-
+            
                 if($cartInvalidCc->isNotEmpty()){
                     $msgArr['invoiceCc']['errTitle'] = 'Invalid coupon code(s) detected. They have been automatically removed from your cart.';
                     $msgArr['invoiceCc']['errArr']   =  $cartInvalidCc->map(function ($cartItem) use ($user){
@@ -145,14 +107,13 @@ class CartController extends Controller
                         $ccMsg  = '';
                         $coupon = Coupon::withoutGlobalScope('enabled')->find($cartItem->used_coupon_code);
 
-
                         $cartItemCourseId   = $cartItem->course_id;
                         $ccCourseId         = $coupon->cc_course_id;
                         $ccAvalableCount    = $coupon->total_count - $coupon->used_count;
                         //dump($coupon);
                         //dump($cartItemCourseId .' === '.$ccCourseId);
-
-                        $ccMsg .= ($cartItemCourseId != $ccCourseId)?', not valid for the course(s) in your cart':'';
+            
+                        $ccMsg .= !is_null($ccCourseId) ? (($cartItemCourseId != $ccCourseId) ? ', not valid for the course(s) in your cart' : '') : '';
                         $ccMsg .= ($ccAvalableCount <= 0)?', no longer available':'';
                         $ccMsg .= (!$coupon->is_enabled)?', disabled':'';
 
@@ -162,8 +123,7 @@ class CartController extends Controller
                         $ccMsg = $cartItem->used_coupon_code.' - '.$ccMsg;
                         //dump($ccMsg);
 
-
-                        // remove invalid coupons from courseSelection records
+                        /* remove invalid coupons from courseSelection records
                         $cartItem->used_coupon_code        = null;
                         $cartItem->discount_amount         = 0;
                         $cartItem->revised_price           = $cartItem->course->price;
@@ -171,35 +131,64 @@ class CartController extends Controller
                         $cartItem->benificiary_earn_amount = 0;
                         $cartItem->updated_at              = now();
                         $cartItem->save(['timestamps' => false]);
+                        */
 
                         return $ccMsg;
                     });
                 }
-                /*=== 2 END ======================================================== ===*/
-                dump($msgArr);
-                dd();
+                //dump('2.cartInvalidCc');
+                //dump($cartInvalidCc);
+                /*=== 2 END ======================================================================= ===*/
+                
+                
 
 
 
 
-
-                // 3. If the foreign key relationship fails due to the nonexistence of the Coupon record
+                /*=== 3. If the foreign key relationship fails due to the nonexistence of the Coupon record ===*/
                 $csWithoutCC    =   CourseSelection::whereNotExists(function ($query) {
-                    $query->select('code')
-                        ->from('coupons')
-                        ->whereColumn('coupons.code', 'course_selections.used_coupon_code');
-                })
-                ->whereNotNull('course_selections.used_coupon_code')
-                //->toSql();
-                ->get();
+                                        $query->select('code')
+                                            ->from('coupons')
+                                            ->whereColumn('coupons.code', 'course_selections.used_coupon_code');
+                                    })
+                                    ->whereNotNull('course_selections.used_coupon_code')
+                                    //->toSql();
+                                    ->get();               
+                
+                if($csWithoutCC->isNotEmpty()){
+                    $msgArr['csWithoutCC']['errTitle'] = 'Nonexistence coupon code(s) have been automatically removed from your cart';
+                    $msgArr['csWithoutCC']['errArr']   =  $cartInvalidCc->map(function ($cartItem) use ($user){
 
+                        $msg   = '';                        
+                        $msg   = $cartItem->used_coupon_code;
+
+                        /* remove nonexistence coupons from user cart
+                        $cartItem->used_coupon_code        = null;
+                        $cartItem->discount_amount         = 0;
+                        $cartItem->revised_price           = $cartItem->course->price;
+                        $cartItem->edumind_lose_amount     = 0;
+                        $cartItem->benificiary_earn_amount = 0;
+                        $cartItem->updated_at              = now();
+                        $cartItem->save(['timestamps' => false]);
+                        */
+                        
+                        return $msg;       
+                    });
+                }
+                //dump('3.csWithoutCC');
                 //dump($csWithoutCC);
-                $msgArr[]       = '333';
+                /*=== 3 END ============================================================================== ===*/
 
 
 
 
-                // 4. check multiple (valid) cc usages
+
+
+
+
+
+
+                /*=== 4. check multiple (valid) coupon codes have used in user cart ===========================*/
                 $cartValidCc    =   CourseSelection::join('courses', 'course_selections.course_id', '=', 'courses.id')
                                         ->where('course_selections.student_id', $user->id)
                                         ->where('course_selections.is_checkout', 0)
@@ -219,23 +208,31 @@ class CartController extends Controller
                                         })
                                         //->toSql();
                                         ->get('course_selections.*');
+                        
+                if($cartValidCc->count() > 1){
+                    $msgArr['cartValidCc']['errTitle'] = 'Only one coupon code can be applied at a time. The latest applied coupon has been kept, and following coupon codes were removed from your cart';
+                    $msgArr['cartValidCc']['errArr']   =  $cartValidCc->skip(1)->map(function ($cartItem, $key) use ($user){
 
-                dd($cartValidCc);
-                $msgArr[]       = 'Only one coupon code can be applied at a time. The latest applied coupon has been kept, and the others have been automatically removed from your cart';
+                        $valCcMsg   = '';
+                        $valCcMsg   = $cartItem->used_coupon_code;
 
-
-
-
-
-
-
-
-
-
-
-                //todo
-                //paass messages
-
+                        /* latest applied coupon has been kept, and the others remove from user cart
+                        $cartItem->used_coupon_code        = null;
+                        $cartItem->discount_amount         = 0;
+                        $cartItem->revised_price           = $cartItem->course->price;
+                        $cartItem->edumind_lose_amount     = 0;
+                        $cartItem->benificiary_earn_amount = 0;
+                        $cartItem->updated_at              = now();
+                        $cartItem->save(['timestamps' => false]);
+                        */
+                        
+                        return $valCcMsg;                        
+                    });
+                }      
+                //dump('4.cartValidCc');
+                //dump($cartValidCc->count());
+                //dump($cartValidCc);
+                /*=== 4 END ============================================================================== ===*/
 
             }
 
@@ -244,31 +241,27 @@ class CartController extends Controller
 
 
 
-
-
             $cartReInitMsgCls   = empty($msgArr)? '' : 'flash-warning';
-            $cartReInitMsgTitle = empty($msgArr)? '' : 'Invalid Cart Items !';
+            $cartReInitMsgTitle = empty($msgArr)? '' : 'Invalid Cart Items !';           
 
-            //dump($msg,$cartReInitMsg,$cartReInitMsgCls,$cartReInitMsgTitle);
-
-
-
-            //dump('bbb');
             return view('student.cart.cart-page')->with([
-                'cart_re_init_message'     => 'Some items in your cart are no longer available or have been modified. Please review and update your cart.',
+                'cart_re_init_message'     => 'Cart reset. Some items unavailable or modified. Please review and update your cart.',
                 'cart_re_init_cls'         => $cartReInitMsgCls,
                 'cart_re_init_msgTitle'    => $cartReInitMsgTitle,
-
                 'cart_re_init_msg_arr' => $msgArr
             ]);;
 
 
 
         } catch (\Exception $e) {
-            dd($e->getMessage());
 
-        }catch (CustomException $e) {
-            dd($e->getMessage());
+            return view('student.cart.cart-page')->with([
+                'cart_re_init_message'     => 'Cart reinitialization failed',
+                'cart_re_init_cls'         => 'flash-danger',
+                'cart_re_init_msgTitle'    => 'Error',
+                'cart_re_init_msg_arr'     => []
+            ]);;
+
         }
 
     }

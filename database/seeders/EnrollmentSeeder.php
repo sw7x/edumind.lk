@@ -265,7 +265,7 @@ class EnrollmentSeeder extends Seeder
                 foreach ($ccArr['used_dates'] as $date) {
                     $used_dates_arr[] = $date;
                 }                 
-                $benificiary_total_amount +=$ccArr['benificiary_earn_amount'];
+                $benificiary_total_amount += $ccArr['benificiary_earn_amount'];
             }
 
             $oldestUsedDate  = min($used_dates_arr);

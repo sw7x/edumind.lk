@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Course;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 
 class CourseSeeder extends Seeder
 {
@@ -14,6 +15,16 @@ class CourseSeeder extends Seeder
      */
     public function run()
     {
-        Course::factory()->count(50)->create();
+        // create courses folder          
+        $folderPath = $storagePath = storage_path('app/public/courses');
+        
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
+            $this->command->info($folderPath.' - Folder created successfully.');
+        } else {
+            //$this->command->info($folderPath.' - Folder already exists.');
+        }
+        
+        Course::factory()->count(150)->create();
     }
 }

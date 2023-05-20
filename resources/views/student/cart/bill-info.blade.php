@@ -1,6 +1,9 @@
 @extends('layouts.master')
 @section('title','billing information')
 
+@section('css-files')
+    <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@stop
 
 @section('page-css')
 <style type="text/css">
@@ -15,6 +18,8 @@
 
 </style>
 @stop
+
+
 
 
 @section('content')
@@ -82,8 +87,8 @@
                     <div class="">
                         <label class="text-sm font-medium" for="country">Country <span class="text-red-500 text-lg">*</span></label>
                         <div>
-                            <x-country-dropdown 
-                                id="country" name="country" cls="selectpicker" req="required"/>
+                            <x-country-dropdown id="country" name="country" cls="__selectpicker" req="required">                                
+                            </x-country-dropdown>
                             <div class="error-msg"></div>
                         </div>
                     </div>
@@ -133,6 +138,8 @@
     <script src="{{asset('js/jquery-validation-1.19.3/jquery.validate.min.js')}}"></script>
     <script src="{{asset('js/jquery-validation-1.19.3/additional-methods.min.js')}}"></script>
     <script src="{{asset('js/jquery-validation-1.19.3/custom-additional-methods.js')}}"></script>
+    
+    <script src="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @stop
 
 
@@ -223,7 +230,33 @@
 
         });    
         
+        $('select[name="country"]').select2({
+            placeholder: "Please select a country",
+            allowClear: true,
+            width: '100%'
+        });
+
+
+
         
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         $('select[name="country"]').on('change',function(event){
             validator.element('select[name="country"]');
             //alert();

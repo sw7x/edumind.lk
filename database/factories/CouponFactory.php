@@ -20,7 +20,12 @@ class CouponFactory extends Factory
     {
         
         $totalCount   = $this->faker->numberBetween(10, 20);
-        $usedCount    = $totalCount - $this->faker->numberBetween(0, 9);
+        $usedCount    = $totalCount - $this->faker->numberBetween(0, 15);
+        
+        // to make some available count exceed coupon codes 
+        if ($usedCount < 0)
+            $usedCount = $totalCount;
+        
 
 
         $teachers       = Sentinel::findRoleBySlug('teacher')->users()->with('roles')->get();
@@ -36,8 +41,8 @@ class CouponFactory extends Factory
             'discount_percentage'                               => $this->faker->randomFloat(2, 5, 20),
             'beneficiary_commision_percentage_from_discount'    => $this->faker->randomFloat(2, 0, 100),
             'total_count'                                       => $totalCount,
-            'used_count'                                        => $usedCount,
-            'is_enabled'                                        => $this->faker->randomElement([true,false,true,true,true]),
+            'used_count'                                        => $usedCount, 
+            'is_enabled'                                        => $this->faker->randomElement([true,false,true]),
             'cc_course_id'                                         => $this->faker->randomElement([
                                                                         Course::inRandomOrder()->first()->id,
                                                                         Course::inRandomOrder()->first()->id,

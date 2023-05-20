@@ -23,6 +23,20 @@
         .tooltipster-sidetip.tooltipster-noir .tooltipster-arrow-border{border-width:11px}
         .tooltipster-sidetip.tooltipster-noir.tooltipster-bottom .tooltipster-arrow-uncropped{top:-11px}
         .tooltipster-sidetip.tooltipster-noir.tooltipster-right .tooltipster-arrow-uncropped{left:-11px}
+
+        .cart-re-init-msg-wrapper p{
+            font-size: 16px;
+        }
+        .cart-re-init-msg-wrapper .inside-content p{
+            font-size: 14px;
+        }
+        .cart-re-init-msg-wrapper .inside-content ul li a{
+            font-size: 14px;
+            color: #0f3b6a;
+        }
+        .cart-re-init-msg-wrapper .inside-content ul li a:hover{
+            color: #0056b3;
+        }
     </style>
 @stop
 
@@ -40,22 +54,41 @@
             <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
 
                 <div class="w-full">
+                
+                <?php //dd($cart_re_init_msg_arr); ?>    
+                
+
+
 
                     @if($cart_re_init_message)
-                    <x-flash-message
-                        class="{{$cart_re_init_cls}}"
-                        :title="$cart_re_init_msgTitle"
-                        :message="$cart_re_init_message">
-                        <x-slot name="insideContent">
-                            @if ($cart_re_init_msg_arr)
-                                <ul class="mt-1 mb-1 ml-8 list-disc text-sm text-yellow-500 font-semibold">
-                                    @foreach ($cart_re_init_msg_arr as $cartMsg)
-                                        <li class="">{{ $cartMsg }}</li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </x-slot>
-                    </x-flash-message>
+                        <div class="ml-5 cart-re-init-msg-wrapper">
+                            <x-flash-message
+                                class="{{$cart_re_init_cls}}"
+                                :title="$cart_re_init_msgTitle"
+                                :message="$cart_re_init_message">                                
+
+                                <x-slot name="insideContent">
+                                    <div class="inside-content ml-5">
+                                        @if (!empty($cart_re_init_msg_arr))                              
+                                            @foreach ($cart_re_init_msg_arr as $msgArr)
+                                                <div class="mb-2 py-2">
+                                                    <p class="text-sm mb-1 text-red-500">{{$msgArr['errTitle']}}</p>
+                                                    @if (!empty($msgArr['errArr']))                                                    
+                                                        <ul class="mt-1 mb-1 ml-8 list-disc text-sm __text-yellow-500 __font-semibold">                                        
+                                                            @foreach ($msgArr['errArr'] as $errMsg)
+                                                                <li class="text-sm">{!! $errMsg !!}</li>
+                                                            @endforeach                                      
+                                                        </ul>                                                    
+                                                    @endif
+                                                </div>                                                
+                                                @if(!$loop->last) <hr> @endif                                                                                       
+                                            @endforeach                               
+                                        @endif
+                                    </div>
+                                </x-slot>                            
+                                
+                            </x-flash-message>
+                        </div>
                     @endif
 
 
@@ -344,10 +377,7 @@
                                 </div>
                             @endif
 
-                            //when apply coupon code works for any course and multiple courses in cart<br>
-                            //then ask which course to apply coupon code
-                            <br><br><br>
-                            after checkout cc used_count ++
+                            //todo - after checkout cc used_count ++
                         
 
 

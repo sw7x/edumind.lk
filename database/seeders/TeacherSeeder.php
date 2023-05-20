@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Sentinel;
 use Faker\Generator as Faker;
+use Illuminate\Support\Facades\File;
 
 class TeacherSeeder extends Seeder
 {
@@ -16,6 +17,18 @@ class TeacherSeeder extends Seeder
      */
     public function run()
     {
+
+        // create users folder          
+        $folderPath = $storagePath = storage_path('app/public/users');
+        
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
+            $this->command->info($folderPath.' - Folder created successfully.');
+        } else {
+            //$this->command->info($folderPath.' - Folder already exists.');
+        }  
+
+
 
         $faker = \Faker\Factory::create();
 

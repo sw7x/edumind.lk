@@ -3,9 +3,9 @@
 
 
 //create storage link
-//create storage link
 Route::get('/storage-link', function () {   
-    $folders = ['courses21','subjects21','users21'];
+    /*
+    $folders = ['courses','subjects','users111'];
     foreach ($folders as $folderName) {        
         $folderPath = $storagePath = storage_path('app/public/'.$folderName);
         
@@ -16,6 +16,7 @@ Route::get('/storage-link', function () {
             dump($folderPath." folder already exists.");
         }
     } 
+    */
     Artisan::call('storage:link');
     return; 
 });

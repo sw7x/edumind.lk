@@ -43,11 +43,18 @@ class Coupon extends Model
     public function course()
 	{
 	    return $this->belongsTo(Course::class, 'cc_course_id', 'id');
-	}
+	}    
+
+    public function paidCourse()
+    {
+        return $this->belongsTo(Course::class, 'cc_course_id', 'id')
+                    ->where('courses.price', '!=', 0);
+    }
 
     public function benificiary()
 	{
 	    return $this->belongsTo(User::class, 'beneficiary_id', 'id');
+
 	}
 
 	/*public function enrollments()

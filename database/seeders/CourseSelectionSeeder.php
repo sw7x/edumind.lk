@@ -36,111 +36,110 @@ class CourseSelectionSeeder extends Seeder
         //  if free - then enroll 
         //$excludeCourseIdArr = Course::inRandomOrder()->take(10)->get()->pluck('id')->toArray();
         
-        $courseIdArr             = Course::inRandomOrder()->get()->pluck('id')->toArray();
-        $courseCount             = count($courseIdArr);
-
+        $courseIdArr    = Course::inRandomOrder()->get()->pluck('id')->toArray();
+        $courseCount    = count($courseIdArr);
+        $breakCount     = 100;
 
 
         $resultCount = 0;
         foreach (range(0, ($courseCount-1)) as $i) {
-            if ($resultCount >= 250 ) {
-                break;
-            }else{
+            if ($resultCount >= $breakCount ) break;
+            
                 
-                $courseId       = $courseIdArr[$i];///////////////
-                $innerLoopCount = $faker->numberBetween(0, count($studentsIdArr)-1);            
-                //dump2($innerLoopCount);
+            $courseId       = $courseIdArr[$i];///////////////
+            $innerLoopCount = $faker->numberBetween(0, count($studentsIdArr)-1);            
+            //dump2($innerLoopCount);
+            
+            // randomize how many enrollments have for one course
+            //$limit = $faker->randomElement([1,2,2,3,4,3,3,1,1]);
+            $limit = $faker->randomElement([1,2,3,4]);
+            
+            // to randomize the student selections for each course
+            shuffle($studentsIdArr);
+
+
+            foreach (range(0, $innerLoopCount) as $j) {                
+                if (($resultCount >= $breakCount) || ($j > $limit)) break;
                 
-                // randomize how many enrollments have for one course
-                //$limit = $faker->randomElement([1,2,2,3,4,3,3,1,1]);
-                $limit = $faker->randomElement([1,2,3,4]);
+
+                // to prevent course_id and student_id combine key make duplicate values
+                $duplicates = Collection::make($data)->groupBy(function ($item) {
+                    return $item['course_id'] . '-' . $item['student_id'];
+                })->filter(function ($group) {  return $group->count() > 1;})->flatten(1);
+
+                if($duplicates->isNotEmpty()) continue;
                 
-                // to randomize the student selections for each course
-                shuffle($studentsIdArr);
 
 
-                foreach (range(0, $innerLoopCount) as $j) {                
-                    if ($resultCount >= 250 || $j > $limit) {
-                        break;
-                    }else{
+                $course         = Course::find($courseId);
+                $isFreecourse   = ($course->price == 0)?true:false;
 
-                        // to prevent course_id and student_id combine key make duplicate values
-                        $duplicates = Collection::make($data)->groupBy(function ($item) {
-                            return $item['course_id'] . '-' . $item['student_id'];
-                        })->filter(function ($group) {  return $group->count() > 1;})->flatten(1);
+                if(!$isFreecourse){
+                    $edumindAmount  = $course->price * ((100 - $course->author_share_percentage)/100);              
+                    $authorAmount   = $course->price * ($course->author_share_percentage/100);
 
-                        if($duplicates->isNotEmpty()){
-                            continue;
-                        }
-
-
-                        $course         = Course::find($courseId);
-                        $isFreecourse   = ($course->price == 0)?true:false;
-
-                        if(!$isFreecourse){
-                            $edumindAmount  = $course->price * ((100 - $course->author_share_percentage)/100);              
-                            $authorAmount   = $course->price * ($course->author_share_percentage/100);
-
-                            //coupon code assign  
-                            $coupons            = $course->activeCoupons;
-                            $assignedCouponCode = $coupons->shuffle()->first();
-                            $assignedCouponCode = $faker->randomElement([$assignedCouponCode,null,$assignedCouponCode]);
-                            $code               = is_null($assignedCouponCode)?null: $assignedCouponCode->code;
+                    //coupon code assign  
+                    $coupons            = $course->activeCoupons;
+                    $assignedCouponCode = $coupons->shuffle()->first();
+                    $assignedCouponCode = $faker->randomElement([$assignedCouponCode,null,$assignedCouponCode]);
+                    $code               = is_null($assignedCouponCode)?null: $assignedCouponCode->code;
 
 
-                            //====== when coupon code use by customer(student) ==================/          
-                            $discountAmount         = is_null($assignedCouponCode)? 0 : ($course->price * ($assignedCouponCode->discount_percentage/100));
-                            $commisionPercentage    = is_null($assignedCouponCode)? 0 : ($assignedCouponCode->beneficiary_commision_percentage_from_discount);
+                    //====== when coupon code use by customer(student) ==================/          
+                    $discountAmount         = is_null($assignedCouponCode)? 0 : ($course->price * ($assignedCouponCode->discount_percentage/100));
+                    $commisionPercentage    = is_null($assignedCouponCode)? 0 : ($assignedCouponCode->beneficiary_commision_percentage_from_discount);
 
-                            $edumindLoseAmount       = ($discountAmount/100) * (100 + $commisionPercentage);
-                            $benificiaryEarnAmount   = $discountAmount * ($commisionPercentage/100);
+                    $edumindLoseAmount       = ($discountAmount/100) * (100 + $commisionPercentage);
+                    $benificiaryEarnAmount   = $discountAmount * ($commisionPercentage/100);
 
-                            $cartAddedDate  = $faker->dateTimeBetween('-6 week', '-5 week');
-                            $isCheckout     = $faker->randomElement([false,true,true,true]);
+                    $cartAddedDate  = $faker->dateTimeBetween('-6 week', '-5 week');
+                    $isCheckout     = $faker->randomElement([false,true,true,true]);
 
-                        }else{
-                            $edumindAmount  = 0;              
-                            $authorAmount   = 0;
+                }else{
+                    $edumindAmount  = 0;              
+                    $authorAmount   = 0;
 
-                            //coupon code assign
-                            $code               = null;
+                    //coupon code assign
+                    $code               = null;
 
-                            //====== when coupon code use by customer(student) ==================/          
-                            $discountAmount         = 0;
-                            $commisionPercentage    = 0;
+                    //====== when coupon code use by customer(student) ==================/          
+                    $discountAmount         = 0;
+                    $commisionPercentage    = 0;
 
-                            $edumindLoseAmount       = 0;
-                            $benificiaryEarnAmount   = 0;
+                    $edumindLoseAmount       = 0;
+                    $benificiaryEarnAmount   = 0;
 
-                            $cartAddedDate  = null;
-                            $isCheckout     = false;
-                        }
-                       
-                        //=================================================================/
-
-                        $data[]     =   array(                
-                            'cart_added_date'   => $cartAddedDate,
-                            'is_checkout'       => $isCheckout,                                
-                            'course_id'         => $courseId,          
-                            'student_id'        => $studentsIdArr[$j],
-
-                            'edumind_amount'    =>  $edumindAmount,           
-                            'author_amount'     =>  $authorAmount,
-
-                            'discount_amount'   => $discountAmount,             
-                            'revised_price'     => $course->price - $discountAmount,
-
-                            'edumind_lose_amount'       => $edumindLoseAmount,
-                            'benificiary_earn_amount'   => $benificiaryEarnAmount,
-                            'used_coupon_code'          => $code,
-                            'created_at'                => date('Y-m-d H:i:s'),
-                            'updated_at'                => date('Y-m-d H:i:s')
-
-                        );                    
-                    }
-                    $resultCount++;
+                    $cartAddedDate  = null;
+                    $isCheckout     = false;
                 }
-            }         
+               
+                //=================================================================/
+
+                $data[]     =   array(                
+                    'cart_added_date'   => $cartAddedDate,
+                    'is_checkout'       => $isCheckout,                                
+                    'course_id'         => $courseId,          
+                    'student_id'        => $studentsIdArr[$j],
+
+                    'edumind_amount'    =>  $edumindAmount,           
+                    'author_amount'     =>  $authorAmount,
+
+                    'discount_amount'   => $discountAmount,             
+                    'revised_price'     => $course->price - $discountAmount,
+
+                    'edumind_lose_amount'       => $edumindLoseAmount,
+                    'benificiary_earn_amount'   => $benificiaryEarnAmount,
+                    'used_coupon_code'          => $code,
+                    'created_at'                => date('Y-m-d H:i:s'),
+                    'updated_at'                => date('Y-m-d H:i:s')
+
+                );  
+
+                $resultCount++;
+                //dump($resultCount);
+                
+            }
+                     
         }
         //dd2($data);
         CourseSelection::insert($data);
