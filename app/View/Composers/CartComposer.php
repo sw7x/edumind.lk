@@ -28,15 +28,14 @@ class CartComposer
             if($user && ($user->roles()->first()->slug == Role::STUDENT)){
 
 
-                $aaOrigQuery =  Course::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
+                $courseQuery    =  Course::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
                                     ->where('course_selections.student_id', $user->id)
                                     ->where('course_selections.is_checkout', 0)
                                     ->where('course_selections.cart_added_date', '!=', null);
 
-                $cartAddedCoursesQuery  =   clone $aaOrigQuery;
-                $releasedCoursesQuery   =   clone $aaOrigQuery;
-                $invalidCcCoursesQuery  =   clone $aaOrigQuery;
-                $discountedCoursesQuery =   clone $aaOrigQuery;
+
+                $cartAddedCoursesQuery  =   clone $courseQuery;               
+                $discountedCoursesQuery =   clone $courseQuery;
 
 
                 $cartAddedCourses   =   $cartAddedCoursesQuery
@@ -52,41 +51,7 @@ class CartComposer
                                                 'courses.*'
                                             ]);
                 //dd($cartAddedCourses);
-
-
-
-
-
-
-                // paid course later become a free course
-                $releasedCourses    =   $releasedCoursesQuery
-                                            ->where('courses.price', 0)
-                                            //->toSql();
-                                            ->get();
-                //dd($releasedCourses);
-
-
-
-                // invalid coupon code
-                // cc used-count over
-                // cc later disabled
-                $invalidCcCourses   =   $invalidCcCoursesQuery
-                                            ->where('courses.price', '!=', 0)
-                                            ->join('coupons', 'course_selections.used_coupon_code', '=', 'coupons.code')
-                                            ->where(function ($query){
-                                                $query
-                                                    ->orWhere('coupons.is_enabled',0)
-                                                    ->orWhereColumn('coupons.total_count', '<=', 'coupons.used_count');
-                                            })
-                                            ->toSql();
-                                            //->get();
-                //dd($invalidCcCourses);
-
-
-
-
-
-
+    
                 $discountedCourses  =   $discountedCoursesQuery
                                             ->where('courses.price', '!=', 0)
 
@@ -98,6 +63,7 @@ class CartComposer
                                             //->toSql();
                                             ->get([
                                                 'courses.name as course_name',
+                                                'courses.id as course_id',
                                                 'courses.slug as course_slug',
                                                 'courses.price as course_price',
 
@@ -106,9 +72,10 @@ class CartComposer
                                                 'course_selections.*',
                                                 //'course_selections.discount_amount'
                                             ]);
-                                            //->pluck('id');
+                                            /*->first();*/
+                                            //->pluck('used_coupon_code');
 
-                //dd2($discountedCourses);
+                //dd($discountedCourses);
                 //dd($cartAddedCourses);
                 //dd($cartAddedCourses->toArray());
 

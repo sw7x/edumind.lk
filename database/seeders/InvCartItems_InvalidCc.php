@@ -202,7 +202,7 @@ class InvCartItems_InvalidCc extends Seeder
         $skipCoursesIdArr[] = $cc3->cc_course_id;
         
 
-        dump($tempArr);
+        //dump($tempArr);
         
         $arr = array();
         foreach ($tempArr as $tempArrRecord) {            
@@ -231,7 +231,9 @@ class InvCartItems_InvalidCc extends Seeder
                 'revised_price'             => $course->price - $discountAmount,
                 'edumind_lose_amount'       => ($discountAmount/100) * (100 + $commisionPercentage),
                 'benificiary_earn_amount'   => $discountAmount * ($commisionPercentage/100),
-
+                
+                'created_at'                => date('Y-m-d H:i:s'),
+                'updated_at'                => date('Y-m-d H:i:s')
                 //'cc-course-id'    => $cc->cc_course_id,
                 //'cc-en'           => $cc->is_enabled,
                 //'cc-count'        => ($cc->total_count - $cc->used_count)

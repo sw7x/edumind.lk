@@ -41,7 +41,7 @@ class HomeController extends Controller
         });
     }*/
 
-
+    // for testing
     public function cindex(){
         //load recent teachers
         $teacherService = new TeacherService();

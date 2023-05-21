@@ -32,10 +32,16 @@ class DatabaseSeeder extends Seeder
         $this->call(CouponSeeder::class);
         $this->call(CourseSelectionSeeder::class);
         
-        //$this->call(InvCartItems_FreeCourses::class);
-        //$this->call(InvCartItems_InvalidCc::class);
-        //$this->call(InvCartItems_ValidMultipleCc::class);
-        
         $this->call(EnrollmentSeeder::class);
+        
+        /*
+            fill invalid cart items for student1
+            run these seeders at last
+        */
+        $this->call(InvCartItems_FreeCourses::class);
+        $this->call(InvCartItems_InvalidCc::class);
+        $this->call(InvCartItems_ValidMultipleCc::class);
+        
+        
     }
 }

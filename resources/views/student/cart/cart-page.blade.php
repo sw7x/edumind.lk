@@ -205,17 +205,15 @@
                                                             
                                                             <div class="w-1/5 space-y-2 used-cc-container">
 
-                                                                
                                                                 @foreach($cartDiscountedCourses as $discountedCourse)                                                                    
                                                                     <div class="flex items-center justify-between border rounded p-1 border-gray-500">
-                                                                        <span class="inline-block px-5 py-2 font-semibold leading-none bg-gray-500 text-white rounded-sm mr-1 cc-code">{{$discountedCourse['used_coupon_code']}}</span>
+                                                                        <span class="inline-block px-5 py-2 font-semibold leading-none bg-gray-500 text-white rounded-sm mr-1 cc-code">{{$discountedCourse->used_coupon_code}}</span>
                                                                         
                                                                         <button class="text-gray-600 hover:text-gray-800 text-base pr-1 remove-cc" 
-                                                                                data-cc="{{$discountedCourse['used_coupon_code']}}" data-course-selection-id="{{$discountedCourse['id']}}">
+                                                                                data-cc="{{$discountedCourse->used_coupon_code}}" data-course-selection-id="{{$discountedCourse->id}}">
                                                                             <i class="fa fa-times"></i>                                                                            
                                                                         </button>                                                                        
-                                                                    </div>
-                                                                   
+                                                                    </div>                                                                   
                                                                 @endforeach
 
                                                                 {{--                                                               
@@ -290,7 +288,7 @@
                                                             Discount(Coupon)                                                
                                                         </h1>
                                                     </div>
-                                                    <h5 class="font-semibold text-black text-xl">- Rs {{$discountedCourse['discount_amount']}}</h5>
+                                                    <h5 class="font-semibold text-black text-xl">- Rs {{$discountedCourse->discount_amount}}</h5>
                                                 </div>
                                                     
                                                 <div class="w-11/12 mt-2 float-right text-sm discount-details">
@@ -303,21 +301,21 @@
                                                          -->
                                                          <li class="py-1 flex justify-between border-b">
                                                             <div>Coupon discount percentage</div>
-                                                            <div>{{$discountedCourse['coupon_discount_percentage']}}%</div>                                                            
+                                                            <div>{{$discountedCourse->coupon_discount_percentage}}%</div>                                                            
                                                         </li>
                                                         <li class="py-1 flex justify-between border-b">
                                                             <div>Coupon applied course</div>
-                                                            <a href="{{route('course-single',$discountedCourse['course_slug'])}}" class="text-blue-600">
-                                                                {{$discountedCourse['course_name']}}
+                                                            <a href="{{route('course-single',$discountedCourse->course_slug)}}" class="text-blue-600">
+                                                                {{$discountedCourse->course_name}}
                                                             </a>
                                                         </li>
                                                         <li class="py-1 flex justify-between border-b">
                                                             <div>Course price</div>
-                                                            <div>Rs {{$discountedCourse['course_price']}}</div>
+                                                            <div>Rs {{$discountedCourse->course_price}}</div>
                                                         </li>                                            
                                                         <li class="py-1 flex justify-between">
                                                             <div>New Course price</div>
-                                                            <div>Rs {{$discountedCourse['revised_price']}}</div>
+                                                            <div>Rs {{$discountedCourse->revised_price}}</div>
                                                         </li>
 
                                                     </ul>                                            

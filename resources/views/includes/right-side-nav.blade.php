@@ -36,17 +36,33 @@
                         </a>
 
                         <div uk-drop="mode: click" class="dropdown_cart">
-                            <div class="cart-headline"> My Cart 
-                                
+                            @if($cartDiscountedCourses->count() > 1)
+                                <div style="background: red;" class="font-semibold rounded border-b text-sm py-2 px-2 flex justify-between items-center">
+                                    <div class="text-white">
+                                        <i class="fa fa-exclamation-triangle text-base mr-1" aria-hidden="true"></i> 
+                                        <span>Your cart has invalid items !</span>  
+                                    </div>
+                                    <div>
+                                        {{-- <a href="" class="text-blue-500">Rest cart</a> --}}
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div class="cart-headline">
+                                <div>My Cart</div>
                                 {{-- 
                                 <a href="#" class="checkout inline-block bg-red-500 hover:bg-red-600 text-white hover:text-white py-1 px-2 rounded text-base">Checkout</a> 
                                 --}}
-                                <a href="{{route('view-cart')}}" class="text-blue-500">View my cart</a>
-
+                                <a href="{{route('view-cart')}}" class="font-medium text-sm text-blue-500">
+                                    {{($cartDiscountedCourses->count() > 1) ? 'Rest my cart' : 'View my cart'}}                                    
+                                </a>
                             </div>
-
-                            <!-- <h4 class="cart-headline"> My Cart </h4> -->
-                            <ul class="dropdown_cart_scrollbar" data-simplebar>                                
+                                                        
+                            <!--  <h4 class="cart-headline"> My Cart </h4>-->
+                            <ul class="dropdown_cart_scrollbar" data-simplebar 
+                                style="max-height:{{($cartDiscountedCourses->count() > 1) ? '380px':'420px'}}">
+                                <?php //dump($cartDiscountedCourses->pluck('course_id')) ?>
+                                
                                 @foreach($cartCourses as $course)
                                 <li class="@if(!($loop->last)) border-b-2 border-gray-200 @endif">
                                     <div class="cart_avatar">
@@ -57,8 +73,9 @@
                                         <a href="{{route('course-single',$course['slug'])}}">{{$course['name']}}</a>
                                     </div>
                                     <div class="cart_price">
-                                        <span class="text-base">{{$course['price']}}</span>
-                                        @if($loop->index ==2)
+                                        <span class="text-base">{{$course['revised_price']}}</span>
+                                        
+                                        @if($cartDiscountedCourses->pluck('course_id')->contains($course['id']))
                                             <span class="line-through text-gray-500 font-normal">{{$course['price']}}</span>
                                         @endif
                                         
@@ -92,8 +109,8 @@
                                 <div class="col-md-5 text-left">Subtotal :</div>
                                 <div class="col-md-7 text-right"><span>Rs {{$cartTotal}}</span></div>
                                 <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
-                            </div>
-                        </div>                        
+                            </div>                          
+                        </div>                      
                         @endif
 
 

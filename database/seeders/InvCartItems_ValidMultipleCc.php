@@ -118,6 +118,8 @@ class InvCartItems_ValidMultipleCc extends Seeder
                 'edumind_lose_amount'       => ($discountAmount/100) * (100 + $commisionPercentage),
                 'benificiary_earn_amount'   => $discountAmount * ($commisionPercentage/100),
 
+                'created_at'                => date('Y-m-d H:i:s'),
+                'updated_at'                => date('Y-m-d H:i:s')
                 //'cc-course-id'    => $cc->cc_course_id,
                 //'cc-en'           => $cc->is_enabled,
                 //'cc-count'        => ($cc->total_count - $cc->used_count)

@@ -53,7 +53,7 @@ class EnrollmentSeeder extends Seeder
 
 
         
-        $invoicesIdArr              = Invoice::inRandomOrder()->get()->pluck('id')->toArray();
+        $invoicesIdArr  = Invoice::inRandomOrder()->get()->pluck('id')->toArray();
            
         $ccArr          = array();
         $salArr         = array();

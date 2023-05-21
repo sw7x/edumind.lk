@@ -56,7 +56,10 @@ class InvCartItems_FreeCourses extends Seeder
                 'discount_amount'           => 0,
                 'revised_price'             => 0,
                 'edumind_lose_amount'       => 0,
-                'benificiary_earn_amount'   => 0                
+                'benificiary_earn_amount'   => 0,
+                
+                'created_at'                => date('Y-m-d H:i:s'),
+                'updated_at'                => date('Y-m-d H:i:s')                
             );
         }
 

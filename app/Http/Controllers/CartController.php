@@ -50,13 +50,13 @@ class CartController extends Controller
                     $msgArr['rlsCourses']['errTitle'] = 'The price of some course(s) in your cart has changed to free. They have been automatically removed from your cart.';
                     $msgArr['rlsCourses']['errArr']   =  $cartFreeCourses->map(function ($freeCourse) use ($user){
 
-                        /* delete free cuses from cart
+                        /* delete free cuses from cart */
                         CourseSelection::where('course_selections.student_id', $user->id)
                             ->where('course_selections.is_checkout', 0)
                             ->where('course_selections.cart_added_date', '!=', null)
                             ->where('course_selections.course_id',$freeCourse->id)
                             ->delete();
-                        */
+                        
                         //dump($freeCourse->id);
 
                         // generate message for the user to tell about deleted courses
@@ -123,7 +123,7 @@ class CartController extends Controller
                         $ccMsg = $cartItem->used_coupon_code.' - '.$ccMsg;
                         //dump($ccMsg);
 
-                        /* remove invalid coupons from courseSelection records
+                        /* remove invalid coupons from courseSelection records */
                         $cartItem->used_coupon_code        = null;
                         $cartItem->discount_amount         = 0;
                         $cartItem->revised_price           = $cartItem->course->price;
@@ -131,7 +131,7 @@ class CartController extends Controller
                         $cartItem->benificiary_earn_amount = 0;
                         $cartItem->updated_at              = now();
                         $cartItem->save(['timestamps' => false]);
-                        */
+                        
 
                         return $ccMsg;
                     });
@@ -162,7 +162,7 @@ class CartController extends Controller
                         $msg   = '';                        
                         $msg   = $cartItem->used_coupon_code;
 
-                        /* remove nonexistence coupons from user cart
+                        /* remove nonexistence coupons from user cart */
                         $cartItem->used_coupon_code        = null;
                         $cartItem->discount_amount         = 0;
                         $cartItem->revised_price           = $cartItem->course->price;
@@ -170,7 +170,7 @@ class CartController extends Controller
                         $cartItem->benificiary_earn_amount = 0;
                         $cartItem->updated_at              = now();
                         $cartItem->save(['timestamps' => false]);
-                        */
+                        
                         
                         return $msg;       
                     });
@@ -216,7 +216,7 @@ class CartController extends Controller
                         $valCcMsg   = '';
                         $valCcMsg   = $cartItem->used_coupon_code;
 
-                        /* latest applied coupon has been kept, and the others remove from user cart
+                        /* latest applied coupon has been kept, and the others remove from user cart */
                         $cartItem->used_coupon_code        = null;
                         $cartItem->discount_amount         = 0;
                         $cartItem->revised_price           = $cartItem->course->price;
@@ -224,7 +224,7 @@ class CartController extends Controller
                         $cartItem->benificiary_earn_amount = 0;
                         $cartItem->updated_at              = now();
                         $cartItem->save(['timestamps' => false]);
-                        */
+                        
                         
                         return $valCcMsg;                        
                     });
@@ -233,34 +233,29 @@ class CartController extends Controller
                 //dump($cartValidCc->count());
                 //dump($cartValidCc);
                 /*=== 4 END ============================================================================== ===*/
-
             }
-
             //dd($msgArr);
 
-
-
-
+            $cartReInitMsg      = empty($msgArr)? '' : 'Cart reset. Some items unavailable or modified. Please review and update your cart.';
             $cartReInitMsgCls   = empty($msgArr)? '' : 'flash-warning';
             $cartReInitMsgTitle = empty($msgArr)? '' : 'Invalid Cart Items !';           
 
             return view('student.cart.cart-page')->with([
-                'cart_re_init_message'     => 'Cart reset. Some items unavailable or modified. Please review and update your cart.',
-                'cart_re_init_cls'         => $cartReInitMsgCls,
-                'cart_re_init_msgTitle'    => $cartReInitMsgTitle,
-                'cart_re_init_msg_arr' => $msgArr
+                'cart_re_init_message'  => $cartReInitMsg,
+                'cart_re_init_cls'      => $cartReInitMsgCls,
+                'cart_re_init_msgTitle' => $cartReInitMsgTitle,
+                'cart_re_init_msg_arr'  => $msgArr
             ]);;
-
-
 
         } catch (\Exception $e) {
 
             return view('student.cart.cart-page')->with([
-                'cart_re_init_message'     => 'Cart reinitialization failed',
-                'cart_re_init_cls'         => 'flash-danger',
-                'cart_re_init_msgTitle'    => 'Error',
-                'cart_re_init_msg_arr'     => []
-            ]);;
+                'cart_re_init_message'  => 'Cart reinitialization failed',
+                //'cart_re_init_message'  => $e->getMessage(),
+                'cart_re_init_cls'      => 'flash-danger',
+                'cart_re_init_msgTitle' => 'Error',
+                'cart_re_init_msg_arr'  => []
+            ]);
 
         }
 
