@@ -44,13 +44,29 @@
                     </x-slot>
                 </x-flash-message>            
             @endif 
+            
+            <x-flash-message
+                class="flash-info"
+                title='Cart'
+                message="Summary of your cart"
+                :canClose="false"
+                >
+                <x-slot name="insideContent">                    
+                    <ul class="mt-3 mb-4 ml-4 list-disc text-sm __text-red-600">
+                        <li class="">12 courses</li>
+                        <li class=""><span class="inline-block w-1/10">Subtotal</span> <span class="text-red-500">: + Rs 578298</span></li>
+                        <li class=""><span class="inline-block w-1/10">Discount</span> <span class="text-red-500">: - Rs 6523.60</span></li>
+                        <li class="mt-2"><span class="inline-block w-1/10">Total</span>    <span class="text-red-500">: + Rs 571774.4</span></li>
+                    </ul>
+                </x-slot>                    
+            </x-flash-message>
+            
 
 
 
 
-
-
-            <form class="bill-info" id="bill-info" action="{{route('checkout2')}}" method="POST">
+            <form class="bill-info" id="bill-info" action="{{route('submit-billing-info')}}" 
+                    method="POST" autocomplete="off">
                 <div class="shadow bg-white grid grid-cols-2 gap-3 lg:p-6 p-4 wrapper">
                     <div class="col-span-2">
                         <h2 class="font-semibold mb-3 text-xl lg:text-3xl">Billing details Page</h2>
@@ -127,6 +143,8 @@
                         <i class="text-white icon-feather-chevron-right ml-1"></i>
                     </button>
                 </div>
+
+                <input type="hidden" name="from" value="{{route('billing-info')}}">
             </form>
 
         </div>
@@ -155,7 +173,7 @@
         */
         $.validator.setDefaults({ ignore: '' });
 
-        var validator =  $("#bill-info11").validate({                       
+        var validator =  $("#bill-info").validate({                       
             //ignore: [],
             onkeyup: false,
             errorClass: "validationErrorCls",

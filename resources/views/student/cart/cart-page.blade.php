@@ -203,7 +203,7 @@
 
                                                         <div class="flex w-full mt-3 __items-center">
                                                             
-                                                            <div class="w-1/5 space-y-2 used-cc-container">
+                                                            <div class="space-y-2 used-cc-container">
 
                                                                 @foreach($cartDiscountedCourses as $discountedCourse)                                                                    
                                                                     <div class="flex items-center justify-between border rounded p-1 border-gray-500">
@@ -341,13 +341,12 @@
 
                                             <div class="__px-6 pb-5 mb-5">                                       
                                                 <!-- checkout-cart -->
-                                                <form action="{{route('checkout1')}}" method="post" class=''>
-                                                    {{csrf_field ()}}                                            
-                                                        <button type="submit" class="w-full block py-2 text-center text-base hover:text-white checkout-btn 
-                                                            bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
-                                                            Checkout
-                                                        </button>                                            
-                                                    <!-- <input type="hidden" name="page" value="cart"> -->
+                                                <form action="{{route('billing-info')}}" method="get" class=''>                                                                                               
+                                                    <button type="submit" class="w-full block py-2 text-center text-base hover:text-white checkout-btn 
+                                                        bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                                                        Continue to checkout
+                                                    </button>                                            
+                                                    <input type="hidden" name="key" value="{{csrf_token()}}">
                                                 </form>    
 
                                                 <div class="flex items-center justify-center mt-4 space-x-1.5">
@@ -355,7 +354,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>                                    
+                                    </div>
+                                                                        
                                 @else
                                     <div class="flash-msg flash-info">
                                         <p>Your cart is currently empty.</p>
@@ -408,6 +408,9 @@
     <script>
 
         $(document).ready(function() {
+
+            
+
 
             $('.used-cc').tooltipster({
                 animation: 'grow',
@@ -501,6 +504,7 @@
 
 
 
+            /**/
             $('.remove-cc').on('click',function(event){
                 alert();
                 var form                = $('form#remove-cc');

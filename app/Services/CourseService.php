@@ -288,4 +288,22 @@ class CourseService
         return collect($courseArr);
     }  
 
+
+    /* this is dummy method */
+    public function dummyMethod(CourseDto $courseDto){
+        $course         = Course::find($courseDto->id);
+        $courseEntity   = (new CourseRepository())->hydrateCourseData($course);
+
+        $subject         = Subject::find($courseDto->subjectId);
+        $subjectEntity   = (new SubjectRepository())->hydrateSubjectData($subject);
+
+        $teacher        = User::find($courseDto->teacherId);
+        $teacherEntity  = (new UserRepository())->hydrateUserData($teacher);
+
+        $courseEntity->setSubject($subjectEntity);        
+        $courseEntity->setAuthor($teacherEntity);
+
+        return $courseEntity->courseRatings();
+    }
+
 }

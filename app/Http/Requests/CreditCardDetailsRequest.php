@@ -131,7 +131,7 @@ class CreditCardDetailsRequest extends FormRequest
         
         //todo
         return redirect()
-            ->route('checkout3')
+            ->route('checkout')
             //->withErrors($this->isValidContentJson)
             ->withErrors($validator,'creditCardPay')
             ->withInput();

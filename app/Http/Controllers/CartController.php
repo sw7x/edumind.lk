@@ -22,6 +22,11 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
+
+use Illuminate\Support\Facades\Crypt;
+//use Illuminate\Http\Response;
+use Cookie;
+
 use App\Models\User;
 class CartController extends Controller
 {
@@ -390,18 +395,43 @@ class CartController extends Controller
     }
 
 
-	public function checkout1(){
-		return view('student.cart.bill-info');
+	public function loadBillingInfoPage(Request $request){
+
+        dump('loadBillingInfoPage');      
+        $csrfToken      = $request->session()->token();
+        $tokenFromUrl   = $request->get('key');
+
+        dump($csrfToken);
+        dump($tokenFromUrl);
+        
+        if($csrfToken == $tokenFromUrl){
+            return view('student.cart.bill-info');
+        }else{
+            abort(403);
+        } 
 	}
+    
+    //public function submitBillingInfo(Request $request){
+	public function submitBillingInfo(BillingInfoRequest $request){        
+        
+        dump('submitBillingInfo');
+        dump($request->all());
+        dump('request->from - '.$request->get('from'));
 
+        
+        $saveFormData = json_encode($request->except(['from','_token']));
+        dump($saveFormData);
 
-	public function checkout2(BillingInfoRequest $request){
+        dump($request->header('referer'));
 
-		dump($request->header('referer'));
-		dump(URL::previous());
-		dump(route('bill-info'));
-		dump($request->method());
-		dd($request->get('country'));
+        if(!$request->get('from')){
+            return redirect()->route('home');
+        }
+		
+		//dump(URL::previous());
+		//dump(route('bill-info'));
+		//dump($request->method());
+		//dd($request->get('country'));
 
 		
 
@@ -410,25 +440,72 @@ class CartController extends Controller
         }
 
         dump(Session::get('errors'));
-        dd(Session::get('errors')->billingInfo->getMessages());
-
-
-		return view('student.cart.pay-with-credit-card');
+        //dd(Session::get('errors')->billingInfo->getMessages());
+		
+        return view('student.cart.pay-with-credit-card');
+        
 	}
 
 
-	public function checkout3(CreditCardDetailsRequest $request){
+	public function checkout(CreditCardDetailsRequest $request){
 
-		//dd($request->header('referer'));
+        dump('checkout');
+        dump($request->all());
+		dump($request->header('referer'));
+        dump($request->method());
+        $request->merge(['from' => '']);
 
-		if(null != Session::get('errors') && null != Session::get('errors')->creditCardPay->getMessages()){
-            //$couponCreateValErrors = Session::get('errors')->couponCreate->getMessages();            
+        try{
+            $cardNumber = $request->get('card_number');
+            $cvc        = $request->get('cvc');  
+
+            //dump($request->all());
+            //dump(env('DUMMY_CREDIT_CARD_NUMBERUC'));
+            //dump(env('DUMMY_CVC'));  
+
+            if($cardNumber == env('DUMMY_CREDIT_CARD_NUMBERUC') && $cvc == env('DUMMY_CVC')){
+                
+                dump($request->all());
+                
+                dump($request->all());
+
+
+
+                //TODO-checkout
+                //TODO-populate order info
+                return view('student.cart.checkout-complete')->with([
+                    'submit_status'     => true,
+                ]);
+
+            }else{
+                return view('student.cart.payment-failed')->with([
+                    'submit_status'     => true,
+                ]);
+
+                //throw new CustomException('the provided credit card information is invalid.');
+            }
+
+        }catch(CustomException $e){
+            dump('CustomException');
+            return view('student.cart.payment-failed')->with([
+                'message'     => $e->getMessage(),
+            ]);
+
+        }catch(\Exception $e){
+            dump('Exception');
+            return view('student.cart.payment-failed')->with([
+                //'message'   => $e->getMessage(),
+                'message'   => 'there was an issue processing your payment',
+            ]);
         }
 
+        
+        dd();   
+ 		if(null != Session::get('errors') && null != Session::get('errors')->creditCardPay->getMessages()){
+            //$couponCreateValErrors = Session::get('errors')->couponCreate->getMessages();            
+        }
         dump(Session::get('errors'));
         dd(Session::get('errors')->creditCardPay->getMessages());
-
-
 		//return view('student.cart.pay-with-credit-card');
 	}
 

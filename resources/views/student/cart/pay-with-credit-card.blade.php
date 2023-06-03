@@ -24,100 +24,113 @@
 @section('content')
     <div class="main-container container">
         <div class="max-w-5xl md:p-5 mx-auto">
+            
+            <x-flash-message
+                class="flash-info"
+                title='Cart'
+                message="Summary of your cart"
+                :canClose="false">
+                <x-slot name="insideContent">                    
+                    <ul class="mt-3 mb-4 ml-4 list-disc text-sm __text-red-600">
+                        <li class="">12 courses</li>
+                        <li class=""><span class="inline-block w-1/10">Subtotal</span> <span class="text-red-500">: + Rs 578298</span></li>
+                        <li class=""><span class="inline-block w-1/10">Discount</span> <span class="text-red-500">: - Rs 6523.60</span></li>
+                        <li class="mt-2"><span class="inline-block w-1/10">Total</span>    <span class="text-red-500">: + Rs 571774.4</span></li>
+                    </ul>
+                </x-slot>                    
+            </x-flash-message>
 
-                <form method="POST" action="{{route('checkout3')}}" id="credit-card-details">
-                    <div class="shadow bg-white lg:p-6 p-4 wrapper">
-                        <div class="col-span-2">
-                            <h2 class="font-semibold mb-3 text-xl lg:text-3xl">Pay with credit card</h2>
-                            <hr class="">
-                        </div>
-                        @csrf
 
-                        <!-- 
-                        <div>
+            <form method="POST" action="{{route('checkout')}}" id="credit-card-details" autocomplete="off">
+                <div class="shadow bg-white lg:p-6 p-4 wrapper">
+                    <div class="col-span-2">
+                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">Pay with credit card</h2>
+                        <hr class="">
+                    </div>
+                    @csrf
+
+                    <!-- 
+                    <div>
+                        <p class="text-base py-5 font-medium">
+                            We accept following credit cards:&nbsp;&nbsp;
+                            <img class="inline-block" src="{{asset('images/cards.png')}}" style="width: 250px;" alt="Cerdit Cards">
+                        </p>                            
+                    </div>
+                    
+                    <div class="text-base pb-5">
+                        <span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
+                     -->
+
+                    <div class="flex justify-center">
+                        <div class="w-8/12">
                             <p class="text-base py-5 font-medium">
                                 We accept following credit cards:&nbsp;&nbsp;
                                 <img class="inline-block" src="{{asset('images/cards.png')}}" style="width: 250px;" alt="Cerdit Cards">
-                            </p>                            
+                            </p>
                         </div>
-                        
-                        <div class="text-base pb-5">
-                            <span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
-                         -->
+                        <div class="w-4/12">
+                            <div class="text-base text-right py-5">
+                                <span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
+                        </div>                                
+                    </div>
+                    
 
-                        <div class="flex justify-center">
-                            <div class="w-8/12">
-                                <p class="text-base py-5 font-medium">
-                                    We accept following credit cards:&nbsp;&nbsp;
-                                    <img class="inline-block" src="{{asset('images/cards.png')}}" style="width: 250px;" alt="Cerdit Cards">
-                                </p>
-                            </div>
-                            <div class="w-4/12">
-                                <div class="text-base text-right py-5">
-                                    <span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
-                            </div>                                
+
+
+
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="">
+                            <input type="text" name="card_number" placeholder="Card Number *" 
+                                class="with-border"  id="creditCardNumber">
+                                <div class="error-msg"></div>
                         </div>
-                        
 
+                        <div class="">
+                            <input type="text" name="full_name" placeholder="Full Name *" class="with-border">
+                            <div class="error-msg"></div>
+                        </div>
+                    
+                        <div> 
+                            <input type="text" name="expiry" id="expiry" placeholder="MM/YY *" class="with-border">
+                            <div class="error-msg"></div>
+                        </div>
 
-
-
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="">
-                                <input type="text" name="card_number" placeholder="Card Number *" 
-                                    class="with-border"  id="creditCardNumber">
-                                    <div class="error-msg"></div>
-                            </div>
-
-                            <div class="">
-                                <input type="text" name="full_name" placeholder="Full Name *" class="with-border">
-                                <div class="error-msg"></div>
-                            </div>
-                        
-                            <div> 
-                                <input type="text" name="expiry" id="expiry" placeholder="MM/YY *" class="with-border">
-                                <div class="error-msg"></div>
-                            </div>
-
-                            <div>    
-                                <input type="text" name="cvc" placeholder="CVC *" class="with-border" 
-                                       maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                                <div class="error-msg"></div>
-                            </div>
+                        <div>    
+                            <input type="text" name="cvc" placeholder="CVC *" class="with-border" 
+                                   maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <div class="error-msg"></div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-2 md:gap-6 gap-3 md:mt-10 mt-5">
-                        <a class="bg-gray-200 flex font-medium items-center justify-center py-3 rounded-md" href="pages-cart.html">
+                <div class="grid grid-cols-2 md:gap-6 gap-3 md:mt-10 mt-5">
+                    {{-- <a class="bg-gray-200 flex font-medium items-center justify-center py-3 rounded-md" href="">
+                        <i class="icon-feather-chevron-left mr-1"></i>
+                        <span class="">Back to billing info</span>
+                    </a> --}}
+
+                    <div class="flex font-medium items-center justify-center">
+                        <button class="bg-gray-500 w-full py-3 rounded-md hover:bg-gray-700 text-white text-base block" type="button" id="goBack">
                             <i class="icon-feather-chevron-left mr-1"></i>
                             <span class="">Back to billing info</span>
-                        </a>
-                        <!-- <a class="bg-blue-600 text-white flex font-medium items-center justify-center py-3 rounded-md hover:text-white" href="pages-account-info.html">
-                            <span class="md:block hidden">Billing address </span><span class="md:hidden block">Review</span>
-                            <i class="icon-feather-chevron-right ml-1"></i>
-                        </a> -->
-
-                        <div class="border rounded-md border-blue-500 font-medium">
-                            <button class="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-base block" type="submit">Submit</button>
-                        </div>
+                        </button>
                     </div>
-                </form>
+                    <!-- <a class="bg-blue-600 text-white flex font-medium items-center justify-center py-3 rounded-md hover:text-white" href="pages-account-info.html">
+                        <span class="md:block hidden">Billing address </span><span class="md:hidden block">Review</span>
+                        <i class="icon-feather-chevron-right ml-1"></i>
+                    </a> -->
 
+                    <div class="border rounded-md border-blue-500 font-medium">
+                        <button class="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-base block" type="submit">Checkout</button>
+                    </div>
+                </div>
+            </form>
+
+            <form method="get" action="{{route('billing-info')}}" id="back-to-bill-info">
+                <input type="hidden" name="key" value="{{csrf_token()}}">            
+            </form>
             
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         </div>
     </div>
@@ -145,7 +158,7 @@
 <script>
 
     $(document).ready(function(){
-
+        
         /**/
         var cleaveCreditCard = new Cleave('#creditCardNumber', {
             creditCard: true,
@@ -233,7 +246,14 @@
     });
 
 
+    $('#goBack').on('click',function(event){
+        var form = $('form#back-to-bill-info');
+        form.submit();
+        //alert();
 
+        event.preventDefault();
+
+    });
 
 
     /*    

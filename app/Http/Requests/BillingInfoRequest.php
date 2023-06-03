@@ -131,7 +131,7 @@ class BillingInfoRequest extends FormRequest
         
         //todo
         return redirect()
-            ->route('checkout2')
+            ->route('submit-billing-info')
             //->withErrors($this->isValidContentJson)
             ->withErrors($validator,'billingInfo')
             ->withInput();

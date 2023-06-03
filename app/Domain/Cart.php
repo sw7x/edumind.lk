@@ -1,15 +1,19 @@
 <?php
-
-
 namespace App\Domain;
 
+use App\Domain\CartItem;
 
 
 class Cart{
-	public $name;
-	public function __construct($name) {
-		$this->name = $name;
-	}
+	private $items;
+
+    public function __construct(array $cartItems) {
+        $this->items = $cartItems;
+    }
+
+    public function getItems() {
+        return $this->items;
+    }
 }
 
 

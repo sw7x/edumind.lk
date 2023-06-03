@@ -98,18 +98,33 @@ Route::get ('/cart', [CartController::class,'viewCart'])
 ->middleware('checkStudent')
 ->name('view-cart');
 
-Route::post ('/checkout-cart', [CartController::class,'checkout1'])
-->middleware('checkStudent')
-->name('checkout1');
 
 
-Route::post ('/billing-info', [CartController::class,'checkout2'])
-->middleware('checkStudent')
-->name('checkout2');
 
-Route::post('/credit-card-pay', [CartController::class,'checkout3'])
+Route::get ('/billing-info', [CartController::class,'loadBillingInfoPage'])
 ->middleware('checkStudent')
-->name('checkout3');
+->name('billing-info');
+
+Route::post ('/submit-billing-info', [CartController::class,'submitBillingInfo'])
+->middleware('checkStudent')
+->name('submit-billing-info');
+
+
+
+
+Route::post('/checkout', [CartController::class,'checkout'])
+->middleware('checkStudent')
+->name('checkout');
+
+Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})->name('checkout-complete');
+
+Route::get('/payment-failed',function(){ return view('student.cart.payment-failed');})->name('payment-failed');
+
+
+
+
+
+
 
 
 Route::post('/apply-coupon', [CartController::class,'applyCoupon'])
@@ -128,10 +143,9 @@ Route::post ('/cart/remove/{id}', [CartController::class,'removeFromCart'])->mid
 Route::post ('/course/add-to-cart', [CartController::class,'addToCart'])->name ('course.addToCart');
 
 
-Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})->name('checkout-complete');
 
-Route::get('/credit-pay',function(){ return view('student.cart.pay-with-credit-card');})->name('credit-pay');
-Route::get('/bill-info',function(){ return view('student.cart.bill-info');})->name('bill-info');
+//Route::get('/credit-pay',function(){ return view('student.cart.pay-with-credit-card');})->name('credit-pay');
+//Route::get('/bill-info',function(){ return view('student.cart.bill-info');})->name('bill-info');
 
 
 /*======================================================*/

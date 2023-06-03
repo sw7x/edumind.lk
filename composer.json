@@ -14,7 +14,8 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "league/color-extractor": "0.3.*"
+        "league/color-extractor": "0.3.*",
+        "ramsey/uuid": "^4.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
