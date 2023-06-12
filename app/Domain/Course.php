@@ -29,7 +29,8 @@ class Course
 
     /* associations */
     protected Subject $subject;
-    protected Teacher $techer;
+    protected Teacher $author;
+    protected CourseThread $courseThread;
 
     public function setSubject(Subject $subject){
         $this->subject = $subject;
@@ -39,12 +40,20 @@ class Course
         return $this->subject;
     }   
 
-    public function setTeacher(Teacher $techer){
-        $this->teacher = $teacher;
+    public function setAuthor(Teacher $techer){
+        $this->author = $techer;
     }    
 
-    public function getTeacher(){
-        return $this->teacher;
+    public function getAuthor(){
+        return $this->author;
+    }    
+
+    public function setCourseThread(CourseThread $courseThread){
+        $this->courseThread = $courseThread;
+    }    
+
+    public function getCourseThread(){
+        return $this->courseThread;
     }
 
 
@@ -177,7 +186,10 @@ class Course
             'video_count'           => $this->videoCount,
             'duration'              => $this->duration,
             'status'                => $this->status,
+            
             'subject'               => $this->subject->toArray(),
+            'author'                => $this->author->toArray(),
+            'courseThread'          => $this->courseThread->toArray()
         ];
     }
 
@@ -225,18 +237,10 @@ class Course
     }
 
 
-    /* todo ???
-
-    public function getLastUpdatedTime(){
-        return Carbon::parse($this->updated_at)->diffForHumans();
-    }
-
-    public function getCreatedTime(){
-        return Carbon::parse($this->created_at)->diffForHumans();
-    }*/
+    
 
 
-
+    
     public function dummyMethod(){
         //dd($this->content);
         $sectionId = -1;
@@ -262,6 +266,52 @@ class Course
         return $result;
         //dump("vid - {$vid} === section- {$result}");
     }
+
+
+
+
+
+
+    /* 
+
+    public function getLastUpdatedTime(){
+        return Carbon::parse($this->updated_at)->diffForHumans();
+    }
+
+    public function getCreatedTime(){
+        return Carbon::parse($this->created_at)->diffForHumans();
+    }
+    
+    */
+
+    public function makePublish(){
+        $this->status = true;  
+    }
+    public function makeDraft(){
+        $this->status = false;         
+    }
+
+    /*
+    public function approve(){
+
+    }
+    public function unapprove(){
+
+    }
+    */
+
+    public function calculateEdumindEarnAmount(int $discountPrecentage, int $commissionPrecentage){
+        $coursePrice        = $this->price;        
+        $edumindAmount      = $coursePrice * ((100 - $this->author_share_percentage)/100);
+        $discountAmount     = ($coursePrice * ($discountPrecentage/100));
+        $edumindLoseAmount  = ($discountAmount/100) * (100 + $commissionPrecentage);
+        return ($edumindAmount - $edumindLoseAmount);
+    }
+
+
+
+
+
 
 }
 

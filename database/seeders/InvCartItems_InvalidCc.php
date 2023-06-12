@@ -170,8 +170,12 @@ class InvCartItems_InvalidCc extends Seeder
                                 ->where('courses.price', '!=', 0)
                                 ->first();
         
-        $tempArr[]          = array('cc' => $cc1, 'insert_course_id' => $cc1->cc_course_id, 'v' => 'v5');
-        $skipCoursesIdArr[] = $cc1->cc_course_id;
+        if(!is_null($cc1)){
+            $tempArr[]          = array('cc' => $cc1, 'insert_course_id' => $cc1->cc_course_id, 'v' => 'v5');
+            $skipCoursesIdArr[] = $cc1->cc_course_id;            
+        }
+
+
 
 
         // (2.3) available count over coupon codes, use to intended course
@@ -183,8 +187,10 @@ class InvCartItems_InvalidCc extends Seeder
                         ->where('courses.price', '!=', 0)
                         ->first();
 
-        $tempArr[]          = array('cc' => $cc2, 'insert_course_id' => $cc2->cc_course_id, 'v' => 'v6');
-        $skipCoursesIdArr[] = $cc2->cc_course_id;
+        if(!is_null($cc2)){
+            $tempArr[]          = array('cc' => $cc2, 'insert_course_id' => $cc2->cc_course_id, 'v' => 'v6');
+            $skipCoursesIdArr[] = $cc2->cc_course_id;
+        }
 
         
         // (2.4) coupon codes that disabled and available count is over, use to intended course
@@ -198,8 +204,10 @@ class InvCartItems_InvalidCc extends Seeder
                         ->where('courses.price', '!=', 0)
                         ->first();
 
-        $tempArr[]          = array('cc' => $cc3, 'insert_course_id' => $cc3->cc_course_id, 'v' => 'v7');
-        $skipCoursesIdArr[] = $cc3->cc_course_id;
+        if(!is_null($cc3)){
+            $tempArr[]          = array('cc' => $cc3, 'insert_course_id' => $cc3->cc_course_id, 'v' => 'v7');
+            $skipCoursesIdArr[] = $cc3->cc_course_id;
+        }
         
 
         //dump($tempArr);

@@ -5,9 +5,8 @@ namespace App\Domain;
 
 
 
-user_id ==> FK
-created_at 
-updated_at
+//created_at 
+//updated_at
 //deleted_at
 
 
@@ -21,6 +20,24 @@ class ContactUsMessage
     private $phone;
     private $subject;
     private $message;
+
+
+    /* associations */
+    protected User $creator;
+    public function getCreator(){
+        return $this->creator;
+    }
+
+    public function setCreator(User $creator){
+        $this->creator = $creator;
+    }
+
+
+
+
+
+
+
 
     // Setters
     public function setId($id)
@@ -94,6 +111,8 @@ class ContactUsMessage
         return $this->message;
     }
 
+
+
     // toArray method
     public function toArray()
     {
@@ -105,6 +124,8 @@ class ContactUsMessage
             'phone' 	=> $this->phone,
             'subject' 	=> $this->subject,
             'message' 	=> $this->message,
+            
+            'creator'   => $this->creator->toArray(),
         ];
     }
 }

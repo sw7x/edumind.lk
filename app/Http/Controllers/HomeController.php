@@ -24,9 +24,11 @@ use Illuminate\Support\Arr;
 
 
 use Illuminate\Http\Response;
-
-
 use Illuminate\Support\Collection;
+
+
+
+
 class HomeController extends Controller
 {
     
@@ -66,7 +68,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         
-        //$seeder = new \Database\Seeders\InvalidItemsInCart();
+        //$seeder = \Database\Seeders\InvalidItemsInCart();
         //$seeder->run();
 
 
@@ -83,9 +85,7 @@ class HomeController extends Controller
         $new_courses        = $courseService->loadNewCourse();
 
         $popular_courses        = $courseService->loadPopularCourse();
-
-
-       
+   
 
         //dd($popular_courses->toArray());
         /*return response(view('home')->with([

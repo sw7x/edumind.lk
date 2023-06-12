@@ -116,7 +116,6 @@ class Course extends Model
         }else{
             $imagePath = asset('images/default-images/course.png');           
         }
-
         return $imagePath;
     }
 

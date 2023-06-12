@@ -17,6 +17,7 @@ class CreateInvoicesTable extends Migration
             $table->increments('id')->startingValue(1200);
             $table->timestamp("checkout_date")->nullable();
             $table->text('billing_info')->nullable(); //todo - seperate table
+            $table->decimal('paid_amount',10,2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

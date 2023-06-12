@@ -28,25 +28,19 @@ class ContactUsService
 
    
 
-    //sumit msg
 
-
-    // view contact us messages - guest
-    // view contact us messages - stud
-    // view contact us messages - teacher
-    // view contact us messages - other
 }
 
 
 
 
+//service only methods - not in entity    
+    //sumit msg
+    // view contact us messages - guest
+    // view contact us messages - stud
+    // view contact us messages - teacher
+    // view contact us messages - other
 
 
 
-
-
-
-
-
-
-
+//methods - also in entity    

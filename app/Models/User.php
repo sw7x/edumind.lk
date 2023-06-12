@@ -105,6 +105,40 @@ class User extends CartalystUser
                 
                 switch ($userRole) {
                     case "admin":
+                        $imagePath = asset('images/default-images/admin.png');
+                        break;
+                    case "editor":
+                        $imagePath = asset('images/default-images/editor.png');
+                        break;
+                    case "marketer":
+                        $imagePath  = asset('images/default-images/marketer.png');
+                        break;
+                    case "teacher":
+                        $imagePath = asset('images/default-images/teacher.png');
+                        break;
+                    case "student":
+                        $imagePath = asset('images/default-images/student.png');
+                        break;
+                    default:
+                        $imagePath = asset('images/default-images/user.png');
+                }                    
+            }
+        }        
+        //dd($this->getUserRoles());    
+        return $imagePath;
+    }*/
+
+    public function getProfilePicAttribute($value){
+        
+        if($this->roles->isEmpty()){
+            $imagePath = asset('images/default-images/user.png');
+        }else{
+            if($value){           
+                $imagePath = asset('storage/'.$value);
+            }else{            
+                $userRole = $this->getUserRoles()->first()->slug;                
+                switch ($userRole) {
+                    case "admin":
                     $imagePath = asset('images/default-images/admin.png');
                     break;
                     case "editor":
@@ -126,7 +160,7 @@ class User extends CartalystUser
         }        
         //dd($this->getUserRoles());    
         return $imagePath;
-    }*/
+    }
 
 
 
@@ -276,5 +310,5 @@ class User extends CartalystUser
     } 
     
 
-
+    
 }

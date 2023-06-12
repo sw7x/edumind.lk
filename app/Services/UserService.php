@@ -1,10 +1,6 @@
 <?php
 
-
 namespace App\Services;
-
-
-
 
 use App\Models\User;
 
@@ -141,22 +137,23 @@ class UserService
         return $uname;
     }
 
+}
 
+
+
+
+//service only methods - not in entity    
     //view all teachers
     //view all stu
     //view all marketers
     //view all editors
-
-
-
-
     //add 
     //edit
     //delete
     //view use Single(teachers,stu,marketers,editors)
+    
+
+
+//service methods - also in entity   
     //change user status
 
-
-
-
-}

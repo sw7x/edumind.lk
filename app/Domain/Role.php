@@ -58,7 +58,7 @@ class Role{
             'id' 		=> $this->id,
             'uuid' 		=> $this->uuid,
             'name' 		=> $this->name,
- 			'slug' 		=> $this->slug,         
+ 			'slug' 		=> $this->slug
         ];
     }
 }
@@ -67,5 +67,5 @@ class Role{
 
 
 
-created_at
-updated_at 
+//created_at
+//updated_at 

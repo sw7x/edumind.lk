@@ -9,6 +9,7 @@ class Invoice
     private $uuid;
     private $checkoutDate;
     private $billingInfo;
+    private $paidAmount;
 
     // Setters
     public function setId($id){
@@ -26,6 +27,11 @@ class Invoice
     public function setBillingInfo($billingInfo){
         $this->billingInfo = $billingInfo;
     }
+
+    public function setPaidAmount($paidAmount){
+        $this->paidAmount = $paidAmount;
+    }
+
     
     // Getters
     public function getId(){
@@ -42,7 +48,13 @@ class Invoice
 
     public function getBillingInfo(){
         return $this->billingInfo;
+    }    
+
+    public function getPaidAmount(){
+        return $this->paidAmount;
     }
+
+
 
     // toArray method
     public function toArray()
@@ -52,10 +64,11 @@ class Invoice
             'uuid' 			=> $this->uuid;
             'checkoutDate' 	=> $this->checkoutDate,
             'billingInfo' 	=> $this->billingInfo,
+            'paidAmount'    => $this->paidAmount,
         ];
     }
 }
 
-created_at 
-updated_at 
+//created_at 
+//updated_at 
 //deleted_at

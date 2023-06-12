@@ -47,19 +47,16 @@ class EnrollmentSeeder extends Seeder
                                                 ->where('courses.price', '=' , 0);
                                         })
                                         //->toSql();
-                                        ->get('course_selections.*');     
-
-
-
+                                        ->get(['course_selections.*','courses.price as courses_price']);     
 
         
-        $invoicesIdArr  = Invoice::inRandomOrder()->get()->pluck('id')->toArray();
-           
+        $invoicesIdArr  = Invoice::inRandomOrder()->get()->pluck('id')->toArray();           
         $ccArr          = array();
         $salArr         = array();
         $enrollmentArr  = array();
+        $invoicdArr     = array();
 
-
+        //dump2($checkoutCourseSelections);
         foreach ($checkoutCourseSelections as $key => $checkoutCourseSelection) {
             //foreign key for course_selections table
             $courseSelectionId  = $checkoutCourseSelection->id; 
@@ -146,11 +143,11 @@ class EnrollmentSeeder extends Seeder
 
                 //for temporary use - later remove this 
                 'teacher'       => CourseSelection::find($courseSelectionId)->course->teacher_id,
-                'benificiary'   => Coupon::find($checkoutCourseSelection->used_coupon_code)->beneficiary_id ?? null
-                //'isFreecourse'  => $isFreecourse                             
+                'benificiary'   => Coupon::find($checkoutCourseSelection->used_coupon_code)->beneficiary_id ?? null,
+                'isFreecourse'  => $isFreecourse
             );            
             
-        }   
+        }
         
         //dump2($enrollmentArr);
         //dump2($salArr);
@@ -161,10 +158,6 @@ class EnrollmentSeeder extends Seeder
         /////////////// START - salary records //////////////////////////       
         $salaryArr = array();        
         collect($salArr)->map(function ($item) use (&$salaryArr){          
-            
-
-
-
             $teacherId = $item['teacherId'];            
 
             $amount  = $salaryArr[$teacherId]['amount'] ?? 0;
@@ -292,9 +285,12 @@ class EnrollmentSeeder extends Seeder
         
 
 
+        
 
         // filling values for commission_id, salary_id keys in enrollments array
-        $enrollmentRecords = array();
+        // fill paid_amount column in invoice table records
+        $enrollmentRecords      = array();
+        $invoiceTblRecordsArr   = array();
         foreach ($enrollmentArr as $value) {       
             $teacherId = $value['teacher'];
             $benificiaryId = $value['benificiary'];          
@@ -315,16 +311,29 @@ class EnrollmentSeeder extends Seeder
             $value['updated_at'] = date('Y-m-d H:i:s');
 
             $enrollmentRecords[] =  $value;
-        }
-        //dump2($enrollmentRecords);
 
-        
+
+            // for update invoice table records
+            if(!$value['isFreecourse']){
+                $invoiceId  = $value['invoice_id'];
+                $csRec      = CourseSelection::find($value['course_selection_id']);                
+                $amount  = $invoiceTblRecordsArr[$invoiceId] ?? 0;
+                $amount += $csRec->revised_price;
+                $invoiceTblRecordsArr[$invoiceId] = $amount;
+                //dump('invoice_id-'.$value['invoice_id'].'  revisedPrice-'.$csRec->revised_price);
+            }
+
+        }
+        //dump2($enrollmentRecords);       
+        //dump($invoiceTblRecordsArr);
+        //dd();
 
 
         // remove unnecessary fields from enrollmentRecords array
         foreach ($enrollmentRecords as $key => $value) {
             unset($enrollmentRecords[$key]['teacher']);
-            unset($enrollmentRecords[$key]['benificiary']);         
+            unset($enrollmentRecords[$key]['benificiary']);  
+            unset($enrollmentRecords[$key]['isFreecourse']);         
         }       
 
         // remove unnecessary fields from commissionTblRecords array
@@ -336,16 +345,18 @@ class EnrollmentSeeder extends Seeder
         foreach ($salTblRecords as $key => $value) {
             unset($salTblRecords[$key]['teacher']);
                     
-        }
+        }     
         
-        //dd();
-
         //batch insert records to DB
         Salary::insert($salTblRecords);
         Commission::insert($commissionTblRecords);
         Enrollment::insert($enrollmentRecords);
 
+        foreach ($invoiceTblRecordsArr as $key => $paidAmount) {
+           Invoice::find($key)->update(['paid_amount' => $paidAmount]);
+        }
+        
+
 
     }
 }
-

@@ -196,3 +196,29 @@ class TeacherController extends Controller
 
     
 }
+    
+
+    /*
+    public function viewMyProfile()
+
+    public function viewAllTeachers()
+
+    public function viewInstruction()
+
+    public function viewTeacherProfileHelp()
+
+    public function viewTeacher($username = null)
+
+    public function viewMyCourses()
+
+    public function profileEdit()
+
+    public function createCourse()
+
+    public function courseAddContent()
+
+    public function ViewEarnings()
+
+    public function viewDashboard()
+
+    */

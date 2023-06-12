@@ -133,7 +133,24 @@
                                         @endif
 
 
-                                        <div class="tbl-div mb-5" style="overflow-x:auto;">                                                                    
+                                        <div class="tbl-div mb-5" style="overflow-x:auto;"> 
+
+                                            {{--  --}}
+
+                                            <div class="border-top-0 d-flex justify-content-end btn-div mb-8">
+                                                <div class="coupon-wrapper w-3/5">                                                    
+                                                    <form action="" method="post" id="update-cart">
+                                                        @csrf
+                                                        <div class="w-full flex justify-end">
+                                                            <button type="submit" class="w-2/5 bg-green-400 hover:bg-green-600 text-sm text-white font-bold px-2 py-2 rounded">Update cart</button>
+                                                            //todo-update cart <br>                                              
+                                                        </div>                                                  
+                                                    </form>                                            
+                                                </div>
+                                            </div>
+                                            {{--  --}}
+
+
                                             <table class="table cart-table w-full">
                                                 <thead>
                                                     <tr>

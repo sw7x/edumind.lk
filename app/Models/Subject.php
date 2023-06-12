@@ -34,7 +34,6 @@ class Subject extends Model
         }else{
             $imagePath = asset('images/default-images/subject.png');           
         }
-
         return $imagePath;
     }
 

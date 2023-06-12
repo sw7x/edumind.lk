@@ -8,16 +8,45 @@ namespace App\Domain;
 class Commission{
 	
 	private $id;
-	private $uuid;
-	private $image;
-	private $paidAmount;
-	private $paidDate;
-	private $remarks;
-	private $fromDate;
-	private $toDate;
+    private $uuid;
+    private $image;
+    private $paidAmount;
+    private $paidDate;
+    private $remarks;
+    private $fromDate;
+    private $toDate;
+    private $subTotal;
 
 
-	// Setters
+
+
+    /* associations */
+    protected User $benificiary;
+    protected $fees = array();
+
+    public function getAllFees(){
+        return $this->fees;
+    }
+
+    public function setComments(array $feeArr){
+        $this->fees[] = $feeArr;
+    }
+
+
+    public function getBenificiary(){
+        return $this->benificiary;
+    }
+
+    public function setBenificiary(User $benificiary){
+        $this->benificiary = $benificiary;
+    }
+
+
+
+
+
+
+    // Setters
     public function setId($id)
     {
         $this->id = $id;
@@ -56,7 +85,14 @@ class Commission{
     public function setToDate($toDate)
     {
         $this->toDate = $toDate;
-    }
+    }    
+
+    /*public function setSubTotal($subTotal)
+    {
+        $this->subTotal = $subTotal;
+    }*/
+
+
 
     // Getters
     public function getId()
@@ -97,21 +133,47 @@ class Commission{
     public function getToDate()
     {
         return $this->toDate;
+    }    
+
+    public function calculateSubTotal()
+    {
+        return $this->subTotal;
     }
+
+
+
 
     // toArray method
     public function toArray()
     {
-        return [
-            'id' 		=> $this->id,
-            'uuid' 		=> $this->uuid,
-            'image' 	=> $this->image,
-            'paidAmount'=> $this->paidAmount,
-            'paidDate' 	=> $this->paidDate,
-            'remarks' 	=> $this->remarks,
-            'fromDate' 	=> $this->fromDate,
-            'toDate' 	=> $this->toDate,
+        return [            
+            'id'            => $this->id,
+            'uuid'          => $this->uuid,
+            'image'         => $this->image,
+            'paidAmount'    => $this->paidAmount,
+            'paidDate'      => $this->paidDate,
+            'remarks'       => $this->remarks,
+            'fromDate'      => $this->fromDate,
+            'toDate'        => $this->toDate,
+            'subTotal'      => $this->subTotal
+            'fees'          => $this->fees,
+            
+            'benificiary'   => $this->benificiary->toArray()
         ];
+    }
+
+
+
+    public function paySalary($paidAmount, $image, $paidDate, $remarks, $fromDate, $toDate)
+    {
+        $this->image        = $image;
+        $this->paidAmount   = $paidAmount;
+        $this->paidDate     = $paidDate;
+        $this->remarks      = $remarks;
+        $this->fromDate     = $fromDate;
+        $this->toDate       = $toDate;
+
+        //return $this
     }
 
 	
@@ -120,6 +182,6 @@ class Commission{
 
 
 
-created_at
-updated_at 
+//created_at
+//updated_at 
 //deleted_at 

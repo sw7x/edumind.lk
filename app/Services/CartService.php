@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class viewCheckout
+class CartService
 {
 	
 	function __construct(argument){
@@ -13,11 +13,21 @@ class viewCheckout
 
 	}
 
-	//addToCart()
-	//removeFromCart()
-	//checkout()
-	//applyCoupon()
+
 
 
 }
 
+
+
+//service only methods - not in entity    
+
+
+
+
+
+//methods - also in entity 		
+	//addToCart()
+	//removeFromCart()
+	//checkout()
+	//applyCoupon()   

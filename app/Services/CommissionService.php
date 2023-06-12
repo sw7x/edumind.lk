@@ -16,12 +16,24 @@ class CommissionService
 
 	}
 
-	//pay markerer commission
-	//view commission slip - with enroll
-
-
-
-	//view teacher Commission
-	//view markere Commission
 	
 
+
+
+
+
+	
+}
+
+
+
+
+//service only methods - not in entity    
+	//view commission slip - with enroll
+	//view teacher Commissions
+	//view markere Commissions
+
+
+
+//methods - also in entity
+	//pay markerer commission    

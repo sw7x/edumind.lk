@@ -15,7 +15,8 @@ class InvoiceFactory extends Factory
     {
         return [
             'checkout_date'     =>  $this->faker->dateTimeBetween('-4 week', '-3 week'),            
-            'billing_info'      =>  $this->faker->address()            
+            'billing_info'      =>  $this->faker->address(),
+            'paid_amount'       =>  0,           
         ];
     }
 }

@@ -379,15 +379,16 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         
 
         Route::group(['prefix'=>'feedback','as'=>'feedback.'], function(){
-            Route::get ('/students', [ContactUsMessagesController::class,'students'])
+            Route::get ('/students', [ContactUsMessagesController::class,'viewStudentMessages'])
             ->name ('students');
             //->middleware('can:viewAny,App\Models\Contact_us');
             //->can('viewAny', Contact_us::class);
 
-            Route::get ('/teachers', [ContactUsMessagesController::class,'teachers'])->name ('teachers');
-            Route::get ('/other-users', [ContactUsMessagesController::class,'otherUsers'])->name ('other-users');
-            Route::get ('/guests', [ContactUsMessagesController::class,'guests'])->name ('guests');
-            Route::delete ('/{id}', [ContactUsMessagesController::class,'delete_comment'])->name ('delete_comment');
+ 
+            Route::get ('/teachers', [ContactUsMessagesController::class,'viewTeacherMessages'])->name ('teachers');
+            Route::get ('/other-users', [ContactUsMessagesController::class,'viewOtherUserMessages'])->name ('other-users');
+            Route::get ('/guests', [ContactUsMessagesController::class,'viewGuestMessages'])->name ('guests');
+            Route::delete ('/{id}', [ContactUsMessagesController::class,'deleteComment'])->name ('delete-comment');
         });
 
 

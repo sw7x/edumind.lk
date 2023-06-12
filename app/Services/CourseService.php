@@ -104,31 +104,7 @@ class CourseService
 
 
 
-    //enrollToFreeCourse(Course)
-   
-    //search
 
-
-    //view all courses
-    //add 
-    //edit
-    //delete
-    //view Single
-    //change course status
-
-
-    
-
-
-
-    //view courses  by teacher               ==>view my courses (t)
-    
-
-
-    //view all the courses by subject
-
-
-    // enrolled courses by stud
 
 
 
@@ -291,14 +267,53 @@ class CourseService
 
     /* this is dummy method */
     public function dummyMethod(CourseDto $courseDto){
-        $course         = Course::find($courseDto->id);
-        $courseEntity   = (new CourseRepository())->hydrateCourseData($course);
+        
+        //DB ===> entity
+        $courseModel = Course::findById(7);
+        $courseEntityDataArr = (new CourseRepository())->getEntityStructuredDbData($courseModel);
+        $courseEntity = $this->hydrateCourseData($courseEntityDataArr);
 
-        $subject         = Subject::find($courseDto->subjectId);
-        $subjectEntity   = (new SubjectRepository())->hydrateSubjectData($subject);
 
-        $teacher        = User::find($courseDto->teacherId);
-        $teacherEntity  = (new UserRepository())->hydrateUserData($teacher);
+
+
+        //entity     ===> DB
+        $dbStructuredDataSet = (new CourseRepository())->getDbStructuredEntityData($courseEntity);
+        //eloquent inser.delete,select,update
+
+
+        //dto
+            //$courseDto
+                //(new CourseRepository())->findById($courseDto->id)                
+                //(new CourseRepository())->create($courseDto)
+                //(new CourseRepository())->update($courseDto->id,$courseDto)
+                //(new CourseRepository())->deleteById($courseDto->id)
+
+            //$courseDtoArr
+                /*
+                $ids = array_map(function ($obj) {
+                    return $obj->id;
+                }, $courseDtoArr);
+                //$ids = Arr::pluck($courseDataArr, 'id');            
+
+                (new CourseRepository())->findManyByIds($ids)
+                */
+
+
+        //return new UserDTO($user->id, $user->name, $user->email, $user->password);
+        
+        
+
+        $courseModel         = Course::find($courseDto->id);
+        $courseEntityDataArr = (new CourseRepository())->getEntityStructuredDbData($courseModel);
+        $courseEntity        = (new CourseRepository())->hydrateCourseData($courseEntityDataArr);
+
+        $subjectModel          = Subject::find($courseDto->subjectId);
+        $subjectEntityDataArr  = (new SubjectRepository())->getEntityStructuredDbData($subjectModel);
+        $subjectEntity         = (new SubjectRepository())->hydrateSubjectData($subjectEntityDataArr);
+
+        $teacherModel           = User::find($courseDto->teacherId);
+        $teacherEntityDataArr   = (new UserRepository())->getEntityStructuredDbData($teacherModel);
+        $teacherEntity          = (new UserRepository())->hydrateUserData($teacherEntityDataArr);
 
         $courseEntity->setSubject($subjectEntity);        
         $courseEntity->setAuthor($teacherEntity);
@@ -307,3 +322,31 @@ class CourseService
     }
 
 }
+
+
+
+//service only methods - not in entity
+    //search
+    //view all courses
+    //add 
+    //edit
+    //delete
+    //view Single
+    //view courses  by teacher               ==>view my courses (t)
+    //view all the courses by subject
+    // enrolled courses by stud
+
+    // getCourseEnrollments()
+    // getCourseCompletions()
+
+    // getEnrollStudents
+    // getCompleteStudents
+
+    //viewCourseRating(Course $c)
+
+
+
+//methods - also in entity
+    //change course status
+
+

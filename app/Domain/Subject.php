@@ -100,6 +100,7 @@ class Subject{
             'image' 		=> $this->image,           
             'slug' 			=> $this->slug,           
             'status' 		=> $this->status,
+            
             'author' 		=> $this->author->toArray(),
         ];
     }

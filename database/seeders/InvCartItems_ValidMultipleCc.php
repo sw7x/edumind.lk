@@ -98,6 +98,14 @@ class InvCartItems_ValidMultipleCc extends Seeder
             
             $ccRec          = $tempArrRecord['cc'];
             $insertCourseId = $tempArrRecord['insert_course_id'];
+
+            $studCourseSelectedCount    =   CourseSelection::where('course_id',$insertCourseId)
+                                                ->where('student_id',$stud1User->id)
+                                                ->count();
+            
+            // if the student has already enrolled or added the course to their cart, skip it.
+            if($studCourseSelectedCount > 0)continue;
+
             
             $course = Course::find($insertCourseId);
             

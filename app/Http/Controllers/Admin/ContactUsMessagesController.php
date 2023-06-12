@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 
 class ContactUsMessagesController extends Controller
 {
-    public function students(){        
+    public function viewStudentMessages(){        
         
         try{
             $this->authorize('viewAny',Contact_us::class);
@@ -49,7 +49,7 @@ class ContactUsMessagesController extends Controller
     }
 
 
-    public function teachers(){
+    public function viewTeacherMessages(){
         $this->authorize('viewAny',Contact_us::class);
         
 
@@ -70,7 +70,7 @@ class ContactUsMessagesController extends Controller
     }
 
 
-    public function otherUsers(){
+    public function viewOtherUserMessages(){
         $this->authorize('viewAny',Contact_us::class);
         
         // comments belongs to marketers and editors
@@ -96,7 +96,7 @@ class ContactUsMessagesController extends Controller
 
 
 
-    public function guests(){
+    public function viewGuestMessages(){
         $this->authorize('viewAny',Contact_us::class);
         
         $guestMessages = Contact_us::where('user_id', null)
@@ -107,7 +107,7 @@ class ContactUsMessagesController extends Controller
     }
 
 
-    public function delete_comment(Request $request, $id){
+    public function deleteComment(Request $request, $id){
 
         //dd($id);
         try{

@@ -1,10 +1,6 @@
 <?php
 
-
 namespace App\Services;
-
-
-
 
 use App\Models\User;
 use Sentinel;
@@ -56,12 +52,24 @@ class TeacherService
 
 
 
+
+
+
+
+}
+
+
+
+//service only methods - not in entity    
     //viewprofile()  - site frontend
     //edit profile   - (teacher can edit his own profile in admin panel)
 
     //view teacher courses   
     //view earnings by teacher
+    
 
 
+//service methods - also in entity   
+    //change user status
 
-}
+
