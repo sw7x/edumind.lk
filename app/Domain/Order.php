@@ -48,7 +48,7 @@ class Order{
 
     /* associations */
     protected Invoice $invoice;
-    protected User $cartOwner;
+    //protected User $owner;
     protected $orderItems = array();
     
 
@@ -56,9 +56,9 @@ class Order{
         return $this->invoice;
     }    
 
-    public function getCartOwner(){
-        return $this->cartOwner;
-    }    
+    /*public function getOwner(){
+        return $this->owner;
+    }*/
 
     public function getAllOrderItems(){
         return $this->orderItems;
@@ -69,9 +69,9 @@ class Order{
         $this->invoice = $invoice;
     }
 
-    public function setCartOwner(User $cartOwner){
-        $this->cartOwner = $cartOwner;
-    }
+    /*public function setOwner(User $owner){
+        $this->owner = $owner;
+    }*/
     
     // toArray method
     public function toArray()
@@ -82,7 +82,7 @@ class Order{
             'checkOutDate'  => $this->checkOutDate,
 
             'invoice'       => $this->invoice->toArray(),
-            'cartOwner'     => $this->cartOwner->toArray(),
+            //'owner'     => $this->owner->toArray(),
             'orderItems'    => $this->orderItems
         ];
     }

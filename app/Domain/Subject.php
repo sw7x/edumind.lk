@@ -101,7 +101,7 @@ class Subject{
             'slug' 			=> $this->slug,           
             'status' 		=> $this->status,
             
-            'author' 		=> $this->author->toArray(),
+            'author' 		=> $this->author->toArray()
         ];
     }
 }

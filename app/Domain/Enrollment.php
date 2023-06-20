@@ -14,19 +14,24 @@ class Enrollment
     private $rating;
 
 
-    public function __construct(CourseItem $courseItem, Order $order) {
+    public function __construct(CourseItem $courseItem) {
         $this->courseItem   = $courseItem;
-        $this->order        = $order;
+        // $this->order        = $order;
     }
 
 
     /* compositions */
     protected CourseItem $courseItem;
     protected Order $order;
+    protected Student $student;
+
+
+
 
     /* associations */
     protected AuthorFee $authorFee = null; 
     protected CommissionFee $commissionFee = null; 
+    protected EdumindFee $edumindFee = null;
     protected ContactUsMessage $contactUsMessages = array();
     
     
@@ -46,7 +51,15 @@ class Enrollment
 
     public function getCommissionFee(){
         return $this->commissionFee;
-    } 
+    }
+
+    public function setEdumindFee(EdumindFee $edumindFee){
+        $this->edumindFee = $edumindFee;
+    }
+
+    public function getEdumindFee(){
+        return $this->edumindFee;
+    }
 
 
     public function setContactUsMessages(ContactUsMessage $contactUsMessages){
@@ -107,6 +120,16 @@ class Enrollment
         $this->rating = $rating;
     }
 
+    public function setOrder(Order $order)
+    {
+        $this->order = $order;
+    }
+
+    public function setStudent(Student $student)
+    {
+        $this->student = $student;
+    }
+
 
 
     // Getters
@@ -150,6 +173,11 @@ class Enrollment
         return $this->order;
     }
 
+    public function setStudent(){
+        return $this->student;
+    }
+
+
 
 
     // toArray method
@@ -167,6 +195,7 @@ class Enrollment
 
             'authorFee'         => $this->authorFee->toArray(); 
             'commissionFee'     => $this->commissionFee->toArray(); 
+            'edumindFee'        => $this->edumindFee->toArray();
             'contactUsMessages' => $this->contactUsMessages;
         ];
     }

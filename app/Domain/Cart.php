@@ -12,9 +12,11 @@ class Cart{
     
 
 
+    /*
     public function __construct(array $cartItems) {
        
     }
+    */
 
     /* associations */
     protected User $cartOwner;
@@ -173,7 +175,29 @@ class Cart{
 
 
     public function checkout() {
-        
+        //remove cart items from cart
+        //get all cart items
+        //update cartItems.isCheckout = true
+
+
+        //create order
+        // CREATE INVOICE
+        //SET INVOICE TO Order.invoice
+
+
+
+        //add cartItems 2 order
+
+
+
+        //create enrollments
+        //set this.cartOwner   to all Enrollment.Student
+        //set order   to all Enrollment.order
+        //set cartItems   to each Enrollment.courseItemS
+
+        //return enrollments
+
+
     }
 
 

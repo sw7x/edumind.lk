@@ -116,9 +116,13 @@ Route::post('/checkout', [CartController::class,'checkout'])
 ->middleware('checkStudent')
 ->name('checkout');
 
-Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})->name('checkout-complete');
+Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})
+->middleware('checkStudent')
+->name('checkout-complete');
 
-Route::get('/payment-failed',function(){ return view('student.cart.payment-failed');})->name('payment-failed');
+Route::get('/payment-failed',function(){ return view('student.cart.payment-failed');})
+->middleware('checkStudent')
+->name('payment-failed');
 
 
 

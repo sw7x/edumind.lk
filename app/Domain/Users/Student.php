@@ -69,4 +69,34 @@ class Student extends AbstractUser {
         ];
     }
 
+
+    /*
+    public function addToCart(CourseItem $courseItem) {
+        $this->courseItems[] = $courseItem
+    }
+    */
+
+
+    /* associations */
+    protected Cart $cart;
+
+    public function addToCart(CourseItem $courseItem) {
+        $this->cart->addToCart($courseItem);
+    }
+
+    public function getCartItems(){
+        return $this->cart;
+    }
+
+
+    public function freeEnrollToCourse(CourseItem $courseItem){
+
+        $enrollment = new Enrollment($courseItem);
+        $enrollment->setStudent($this);
+        return $enrollment;
+    }
+
+
+
+
 }
