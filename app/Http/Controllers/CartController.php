@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Invoice;
 use App\Models\Enrollment;
 use App\Models\Coupon;
+use App\Models\TempBillingInfo;
 
 use App\Http\Requests\BillingInfoRequest;
 use App\Http\Requests\CreditCardDetailsRequest;
@@ -414,35 +415,74 @@ class CartController extends Controller
     //public function submitBillingInfo(Request $request){
 	public function submitBillingInfo(BillingInfoRequest $request){        
         
-        dump('submitBillingInfo');
-        dump($request->all());
-        dump('request->from - '.$request->get('from'));
+        try{
 
-        
-        $saveFormData = json_encode($request->except(['from','_token']));
-        dump($saveFormData);
+            //TODO -GET VALIDATED DATA FROM REQ
 
-        dump($request->header('referer'));
+            //dump('submitBillingInfo');
+            //dump($request->all());
+            //dump('request->from - '.$request->get('from'));
 
-        if(!$request->get('from')){
-            return redirect()->route('home');
+            $saveFormData = json_encode($request->except(['from','_token']));
+            //dump($saveFormData);
+
+            //dump($request->header('referer'));
+            $user = Sentinel::getUser();
+
+
+
+            /////////////////////
+            // Get the latest car record based on a condition
+            $latestRec      = TempBillingInfo::where('user_id', $user->id)->latest('id')->first();
+            $saveFormData   = 'ttf';
+
+            dump($latestRec->id);
+            dump($user->id);
+            dump($saveFormData);
+
+            $TempBillingInfo = TempBillingInfo::updateOrCreate(
+                ['id' => $latestRec->id, 'user_id' => $user->id, 'billing_info' => $saveFormData],
+                ['is_checkout' => false]
+            );
+            dd();
+            /////////////////////
+
+
+            $encryptedSaveFormDataVal = Crypt::encryptString($saveFormData);
+            $encryptedSaveFormDataKey = Crypt::encryptString('userBillingInfo');
+
+
+            if(null != Session::get('errors') && null != Session::get('errors')->couponCreate->getMessages()){
+                //$couponCreateValErrors = Session::get('errors')->couponCreate->getMessages();
+            }
+
+            //dump(Session::get('errors'));
+            //dd(Session::get('errors')->billingInfo->getMessages());
+
+
+            /*
+            return view('student.cart.pay-with-credit-card')
+                ->cookie($encryptedSaveFormDataVal, $encryptedSaveFormDataKey);
+            */
+            return response(view('student.cart.pay-with-credit-card'))
+                        ->cookie('x-nameppp','value');
+
+        }catch(CustomException $e){
+
+            //redirect baCK WITH ERRORS
+            return response(view('student.cart.pay-with-credit-card'))
+                        ->cookie('x-nameppp','value');
+
+        }catch(\Exception $e){
+            //redirect baCK WITH ERRORS
+            return response(view('student.cart.pay-with-credit-card'))
+                        ->cookie('x-nameppp','value');
         }
-		
-		//dump(URL::previous());
-		//dump(route('bill-info'));
-		//dump($request->method());
-		//dd($request->get('country'));
 
-		
 
-		if(null != Session::get('errors') && null != Session::get('errors')->couponCreate->getMessages()){
-            //$couponCreateValErrors = Session::get('errors')->couponCreate->getMessages();            
-        }
 
-        dump(Session::get('errors'));
-        //dd(Session::get('errors')->billingInfo->getMessages());
-		
-        return view('student.cart.pay-with-credit-card');
+
+
         
 	}
 
@@ -450,6 +490,8 @@ class CartController extends Controller
 	public function checkout(CreditCardDetailsRequest $request){
 
         dump('checkout');
+        dump($request->cookie('nameppp'));
+
         dump($request->all());
 		dump($request->header('referer'));
         dump($request->method());

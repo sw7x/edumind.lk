@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInvoicesTable extends Migration
+class CreateTempBillingInfoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,18 @@ class CreateInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('invoices', function (Blueprint $table) {
-            $table->increments('id')->startingValue(1200);
-            $table->timestamp("checkout_date")->nullable();
+        Schema::create('temp_billing_info', function (Blueprint $table) {
+            $table->id();
+
+            $table->integer('user_id')->nullable()->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+
             $table->text('billing_info')->nullable();
-            $table->decimal('paid_amount',10,2)->nullable();
+
+            $table->boolean('is_checkout')->default(False);
+
             $table->timestamps();
-            $table->softDeletes();
+
         });
     }
 
@@ -30,6 +35,6 @@ class CreateInvoicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('temp_billing_info');
     }
 }

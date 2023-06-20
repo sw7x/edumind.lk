@@ -94,11 +94,25 @@ class HomeController extends Controller
             'popular_courses'   => $popular_courses,
         ]))->cookie('ggg','bb');*/
 
-        return view('home')->with([
+       /*
+       return view('home')->with([
             'teachers'          => $teachers,
             'new_courses'       => $new_courses,
             'popular_courses'   => $popular_courses,
-        ]);
+        ])->cookie('nameppp','value');
+
+        */
+
+
+        return response(view('home')->with([
+            'teachers'          => $teachers,
+            'new_courses'       => $new_courses,
+            'popular_courses'   => $popular_courses,
+        ]))->cookie('nameppp','value');
+
+
+
+
     }
 
 }
