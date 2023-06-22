@@ -51,8 +51,8 @@
 
                                     <td>
                                         @if($item->image != '')
-                                            <a class="no-clickable popup-img effect" href="{{URL('/')}}/storage/{{$item->image}}" data-effect="mfp-zoom-in">
-                                                <img src="{{URL('/')}}/storage/{{$item->image}}" width="100px" alt="">
+                                            <a class="no-clickable popup-img effect" href="{{$item->image}}" data-effect="mfp-zoom-in">
+                                                <img src="{{$item->image}}" width="100px" alt="">
                                             </a>
                                         @endif
                                     </td>

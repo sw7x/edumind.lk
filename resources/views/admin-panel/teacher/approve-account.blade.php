@@ -98,8 +98,8 @@
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Profile image</label>
                                 <label class="col-sm-9 col-form-label">
-                                    <a class="no-clickable popup-img effect" href="{{URL('/')}}/storage/{{$userData->profile_pic}}" data-effect="mfp-zoom-in">
-                                        <img src="{{URL('/')}}/storage/{{$userData->profile_pic}}" width="200px" alt="">
+                                    <a class="no-clickable popup-img effect" href="{{$userData->profile_pic}}" data-effect="mfp-zoom-in">
+                                        <img src="{{$userData->profile_pic}}" width="200px" alt="">
                                     </a>
                                 </label>
                             </div>

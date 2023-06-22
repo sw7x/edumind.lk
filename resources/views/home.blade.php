@@ -382,13 +382,7 @@
                             <li>
                                 <div class="relative overflow-hidden bg-white shadow-sm md:rounded-lg rounded-md">
                                     <a href="{{route('teacher.view-profile',$teacher->username)}}">
-                                        @if($teacher->profile_pic)
-                                            <img src="{{URL('/')}}/storage/{{$teacher->profile_pic}}"    class="w-full h-52 object-cover" alt="">
-                                        @else
-                                            <img src="{{asset('images/default-images/teacher.png')}}" class="w-full h-52 object-cover" alt="">
-                                        @endif
-                                        {{--<img src="{{asset('images/book/book4.jpg')}}" alt="" class="w-full h-52 object-cover">--}}
-
+                                        <img src="{{$teacher->profile_pic}}" class="w-full h-52 object-cover" alt="">                                        
                                         <div class="p-3 truncate">{{$teacher->full_name}}</div>
                                     </a>
                                 </div>

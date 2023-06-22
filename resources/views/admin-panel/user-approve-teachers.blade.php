@@ -72,8 +72,8 @@
 
                                     <td>
                                         @if($item->profile_pic != '')
-                                            <a class="no-clickable popup-img effect" href="{{URL('/')}}/storage/{{$item->profile_pic}}" data-effect="mfp-zoom-in">
-                                                <img src="{{URL('/')}}/storage/{{$item->profile_pic}}" width="100px" alt="">
+                                            <a class="no-clickable popup-img effect" href="{{$item->profile_pic}}" data-effect="mfp-zoom-in">
+                                                <img src="{{$item->profile_pic}}" width="100px" alt="">
                                             </a>
                                         @endif
                                     </td>

@@ -41,12 +41,8 @@
                                                 <div class="lg:flex lg:space-x-10 bg-white tube-card p-3 lg:p-6 tube-card">
                                                     <div class="lg:w-1/3 w-full">
                                                         <div class="md:block flex space-x-4" uk-sticky="offset: 91;bottom: true">
-                                                            <div>
-                                                                @if($userData->profile_pic)
-                                                                    <img src="{{URL('/')}}/storage/{{$userData->profile_pic}}" class="shadow-lg rounded-md w-32 md:w-full" alt="">
-                                                                @else
-                                                                    <img src="{{asset('images/default-images/teacher-profile-pic.png')}}" class="shadow-lg rounded-md w-32 md:w-full" alt="">
-                                                                @endif
+                                                            <div>                                                                
+                                                                <img src="{{$userData->profile_pic}}" class="shadow-lg rounded-md w-32 md:w-full" alt="">
                                                             </div>
                                                             <div class="flex-1">
                                                                 <ul class="my-5 text-sm space-y-2">

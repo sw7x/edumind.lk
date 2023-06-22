@@ -22,11 +22,7 @@
                         @foreach($teachers as $teacher)
                             <div class="relative p-3 bg-white shadow rounded-md flex items-center space-x-3 mb-10 teacher-card">
                                 <a href="{{route('teacher.view-profile',$teacher->username)}}" class="profile-image rounded-lg shadow-md">
-                                    @if($teacher->profile_pic)
-                                        <img src="{{URL('/')}}/storage/{{$teacher->profile_pic}}" class="w-40 h-48  __-mt-7" alt="">
-                                    @else
-                                        <img src="{{asset('images/default-images/teacher-profile-pic.png')}}" class="w-40 h-48  __-mt-7" alt="">
-                                    @endif
+                                    <img src="{{$teacher->profile_pic}}" class="w-40 h-48  __-mt-7" alt="">
                                 </a>
 
                                 <div class="flex-1">

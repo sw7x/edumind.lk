@@ -254,11 +254,7 @@
                             <div class="bg-gray-50 border flex gap-x-4 p-4 relative rounded-md my-5">
 
                                 <div class="lg:w-1/4">
-                                    @if($courseData->teacher->profile_pic)
-                                        <img src="{{URL('/')}}/storage/{{$courseData->teacher->profile_pic}}" class="rounded shadow w-full" alt="">
-                                    @else
-                                        <img src="{{asset('images/default-images/teacher-profile-pic.png')}}" class="rounded shadow w-full" alt="">
-                                    @endif
+                                    <img src="{{$courseData->teacher->profile_pic}}" class="rounded shadow w-full" alt="">
                                 </div>
 
                                 <div class="w-3/4 md:text-justify">

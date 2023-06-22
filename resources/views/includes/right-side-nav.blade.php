@@ -125,7 +125,7 @@
                                     <a href="#" class="user">
                                         <div class="user_avatar">
                                             @if(Sentinel::getUser()->profile_pic)
-                                                <img src="{{URL('/')}}/storage/{{Sentinel::getUser()->profile_pic}}" class="" alt="">
+                                                <img src="{{Sentinel::getUser()->profile_pic}}" class="" alt="">
                                             @else
                                                 @if(Sentinel::getUser()->roles()->first()->slug == 'student')
                                                     <img src="{{asset('images/default-images/student.png')}}" class="" alt="">

@@ -522,7 +522,7 @@ class CourseController extends Controller
 
 
 
-    public function dummyMethod(Request $request)){    
+    public function dummyMethod(Request $request){    
 
         try{
 
@@ -530,7 +530,7 @@ class CourseController extends Controller
             
             if($user != null && ($user->roles()->first()->slug == Role::STUDENT)){
 
-                $courseDto  = new CourseDto(
+                /*$courseDto  = new CourseDto(
                     id : null,
                     name : null,
                     description : null,
@@ -544,7 +544,7 @@ class CourseController extends Controller
                     videoCount : null,
                     duration : null,
                     status : null
-                );
+                );*/
 
                 //$courseDto  = new CourseDto($request);
                 $courseDto  = CourseDto::fromAppRequest($request);
