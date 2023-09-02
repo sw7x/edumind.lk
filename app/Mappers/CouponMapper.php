@@ -14,7 +14,8 @@ class CouponMapper extends Mapper
 	
 	public const mapper = [
 
-        /*  DB Record  <===_convet_to_===>  ENTITY  */
+        /*  DB Record  <--- convet_to ---  ENTITY toArray Output
+            DB Record  --- convet_to --->  ENTITY Factory Input  */        
         self::DATABSE_MAP => [
             ['code',                                              '<=>',        'code'],
             ['uuid',                                              '<=>',        'uuid'],
@@ -39,7 +40,8 @@ class CouponMapper extends Mapper
         ],
 
 
-        /*  DTO  <===_convet_to_===>  Array(from frontend)  */
+        /*  DTO Factory Input   <--- convet_to ---  Array(from frontend)
+            DTO toArray Output  --- convet_to --->  Array(from frontend)  */ 
         self::POST_MAP => [
             ['code',                            '<=>',  'code'],
             ['discountPercentage',              '<=>',  'discount_percentage'],

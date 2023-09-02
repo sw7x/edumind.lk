@@ -10,7 +10,8 @@ class AuthorSalaryMapper  extends Mapper
     
     public const mapper = [
 
-        /*  DB Record (source array to create entity) <===_convet_to_===>  ENTITY (Entity convert to Array) */
+        /*  DB Record  <--- convet_to ---  ENTITY toArray Output
+            DB Record  --- convet_to --->  ENTITY Factory Input  */
         self::DATABSE_MAP => [
             ['id',            '<=>',  'id'],
             ['uuid',          '<=>',  'uuid'],
@@ -33,7 +34,9 @@ class AuthorSalaryMapper  extends Mapper
         ],
         
 
-        /*  DTO (source array to create dto) <===_convet_to_===>  Array(from frontend)  */
+
+        /*  DTO Factory Input   <--- convet_to ---  Array(from frontend)
+            DTO toArray Output  --- convet_to --->  Array(from frontend)  */        
         self::POST_MAP => [
             ['id',                  '<=>',      'id'],
             ['uuid',                '<=>',      'uuid'],
@@ -64,5 +67,8 @@ class AuthorSalaryMapper  extends Mapper
 
 
 
-
+/*  DB Record  <--- convet_to ---  ENTITY toArray Output
+            DB Record  --- convet_to --->  ENTITY Factory Input  */
+/*  DTO Factory Input   <--- convet_to ---  Array(from frontend)
+            DTO toArray Output  --- convet_to --->  Array(from frontend)  */
     

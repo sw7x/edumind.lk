@@ -9,10 +9,10 @@ use App\Mappers\UserMapper;
 class CourseMapper extends Mapper
 {
     
-    public const  mapper = [
-    //public $mapper = [
+    public const  mapper = [    
 
-        /*  DB Record  <===_convet_to_===>  ENTITY  */
+        /*  DB Record  <--- convet_to ---  ENTITY toArray Output
+            DB Record  --- convet_to --->  ENTITY Factory Input  */
         self::DATABSE_MAP => [           
         //self::DATABSE_ENTITY_MAP => [
             ["id",                        '<=>',     'id'],
@@ -45,7 +45,8 @@ class CourseMapper extends Mapper
         ],
         
 
-        /*  DTO  <===_convet_to_===  Array(from frontend)  */        
+        /*  DTO Factory Input   <--- convet_to ---  Array(from frontend)
+            DTO toArray Output  --- convet_to --->  Array(from frontend)  */         
         self::POST_MAP => [
         //self::DTO_ARRAY_MAP => [
             ["id",                        '<=>',        'id'],

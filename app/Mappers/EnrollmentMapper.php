@@ -25,7 +25,8 @@ class EnrollmentMapper extends Mapper{
 
 	public const mapper = [
 
-        /*  DB Record  <===_convet_to_===>  ENTITY  */
+        /*  DB Record  <--- convet_to ---  ENTITY toArray Output
+            DB Record  --- convet_to --->  ENTITY Factory Input  */
         self::DATABSE_MAP => [
             ['id', 			        '<=>',      'id'],
             ['uuid', 			    '<=>',      'uuid'],
@@ -58,7 +59,8 @@ class EnrollmentMapper extends Mapper{
         ],
         
 
-        /*  DTO  <===_convet_to_===>  Array(from frontend)  */
+        /*  DTO Factory Input   <--- convet_to ---  Array(from frontend)
+            DTO toArray Output  --- convet_to --->  Array(from frontend)  */ 
         self::POST_MAP => [
             ['id', 			        '<=>',      'id'],
             ['uuid', 			    '<=>',      'uuid'],

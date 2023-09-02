@@ -2,79 +2,68 @@
 
 namespace App\Mappers;
 
-use App\Domain\Course as CourseEntity;
-use App\Models\Course as CourseModel;
-
-
+/*
 use App\DataTransferObjects\AbstractDto;
 use Illuminate\Database\Eloquent\Model;
 use App\Domain\IEntity;
+*/
 use App\Mappers\Exceptions\MapperException;
 
-/* Array(from frontend) <===> DTO <===> ENTITY <===> DB Record */
-class Mapper
-{
+class Mapper{
+
     const DATABSE_MAP   = 'DATABSE_MAP';
-    //const ENTITY_MAP    = 'ENTITY_MAP';
+    //const ENTITY_MAP  = 'ENTITY_MAP';
     const POST_MAP      = 'POST_MAP';
     
 
 
-   
-    /*  DB Record  <===_convet_to_===>  ENTITY  */
-    //public static function entityConvertToDbArr(IEntity $entity) : array {        
-    public static function entityConvertToDbArr(array $entityDataArr, bool $noStrict = true) : array {        
-        $dbMapper   = static::mapper[self::DATABSE_MAP];
-        //$entityDataArr = $entity->toArray();
-        return static::mapToMapperKeys($dbMapper, $entityDataArr, $noStrict);
-    }
-    
-    public static function dbRecConvertToEntityArr(array $modelDataArr, bool $noStrict = true) : array {        
-    //public static function DbRecConvertToEntityArr(Model $model) : array {   
-		//dd(static::mapper['DATABSE_MAP']);
+    /*  DB Record  ===_convet_to_===>  ENTITY  */
+    public static function dbRecConvertToEntityArr(array $modelDataArr, bool $noStrict = true) : array {       
         $dbMapper     = static::mapper[self::DATABSE_MAP];              
-        //$modelDataArr = $model->toArray();
         return static::mapToMapperValues($dbMapper, $modelDataArr, $noStrict);
     }    
-    /*================================= */
+    
+    /*  ENTITY  ===_convet_to_===> DB Record   */
+    public static function entityConvertToDbArr(array $entityDataArr, bool $noStrict = true) : array {        
+        $dbMapper   = static::mapper[self::DATABSE_MAP];
+        return static::mapToMapperKeys($dbMapper, $entityDataArr, $noStrict);
+    }
 
 
 
-    /*  ENTITY  <===_convet_to_===>  DTO  
+
+    /*  DTO  ===_convet_to_===>    ENTITY
     public static function dtoConvertToEntityArr(array $dtoDataArr, bool $noStrict = true) : array {
-    //public static function dtoConvertToEntityArr(AbstractDto $dto) : array {
         $entityMapper   = static::mapper[self::ENTITY_MAP];          
-        //$dtoDataArr = $dto->toArray();
-        //$dtoDataArr = $dto;
         return static::mapToMapperKeys($entityMapper, $dtoDataArr, $noStrict);
     }
-        
+    
+    /*  ENTITY  ===_convet_to_===>  DTO  
     public static function entityConvertToDtoArr(array $entityDataArr, bool $noStrict = true) : array {        
-    //public static function entityConvertToDtoArr(IEntity $entity) : array {        
         $entityMapper  = static::mapper[self::ENTITY_MAP];
-        //$entityDataArr = $entity->toArray();
         return static::mapToMapperValues($entityMapper, $entityDataArr, $noStrict);
     }
     */
-    /*================================= */
+    
 
 
     
+    /*  DTO  ===_convet_to_===>  Array(from frontend)  */
+    public function dtoConvertToArr(array $dtoDataArr, bool $noStrict = true) : array {
+        $postMapper   = static::mapper[self::POST_MAP];               
+        return static::mapToMapperValues($postMapper, $dtoDataArr, $noStrict);
+    }
 
-    /*  DTO  <===_convet_to_===>  Array(from frontend)  */
+    /*  Array(from frontend)  ===_convet_to_===> DTO   */
     public static function arrConvertToDtoArr(array $arr, bool $noStrict = true) : array {
         $postMapper   = static::mapper[self::POST_MAP];             
         return static::mapToMapperKeys($postMapper, $arr, $noStrict);
     }
-
-    public function dtoConvertToArr(array $dtoDataArr, bool $noStrict = true) : array {
-    //public static function dtoConvertToArr(AbstractDataTransferObject $dto) : array {
-        $postMapper   = static::mapper[self::POST_MAP];               
-        //$dtoDataArr = $dto->toArray();
-        return static::mapToMapperValues($postMapper, $dtoDataArr, $noStrict);
-    }
     
 
+    
+
+    
     // change single array key
     final public static function changeArrKey(array $mapperArr, array $dataArr) : array {
         if(count($mapperArr) != 3)
@@ -114,15 +103,8 @@ class Mapper
     }
 
 
-
-
-
-
-
-    /*================================= */
-
+    
     private static function mapToMapperValues(array $mapperArr, array $dataArr, bool $noStrict = true) : array {        
-        
         $data = [];
 
         $mapperKeyValueItemsArr = array_filter($mapperArr, function ($item, $key) {
