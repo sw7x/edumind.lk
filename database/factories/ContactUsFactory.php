@@ -3,7 +3,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Contact_us;
+use App\Models\ContactUs;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -14,7 +14,7 @@ class ContactUsFactory extends Factory
      *
      * @var string
      */
-    protected $model = Contact_us::class;
+    protected $model = ContactUs::class;
 
     /**
      * Define the model's default state.

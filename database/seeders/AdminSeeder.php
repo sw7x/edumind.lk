@@ -21,7 +21,7 @@ class AdminSeeder extends Seeder
             'full_name' => 'admin',
             'email'     => 'admin@edumind.lk',
             'password'  =>  env('ADMIN_PASS', 'abc123'),
-            'phone'     => '',
+            'phone'     => '-',
             'username'  => 'admin',
             'gender'    => 'male',
             'created_at' => date('Y-m-d H:i:s'),

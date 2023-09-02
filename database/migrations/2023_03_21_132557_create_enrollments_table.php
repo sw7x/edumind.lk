@@ -17,7 +17,8 @@ class CreateEnrollmentsTable extends Migration
     {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
-
+            $table->string('uuid')->unique();
+            
             //course_selections - fk
             $table->unsignedBigInteger('course_selection_id');
             $table->foreign('course_selection_id')->references('id')->on('course_selections');
@@ -43,7 +44,7 @@ class CreateEnrollmentsTable extends Migration
 
             //salaries - fk
             $table->integer('salary_id')->nullable()->unsigned();
-            $table->foreign('salary_id')->references('id')->on('salaries');
+            $table->foreign('salary_id')->references('id')->on('author_salaries');
 
 
 
@@ -55,7 +56,7 @@ class CreateEnrollmentsTable extends Migration
            // $table->decimal('price_afeter_discouunt',10,2)->nullable();  /////         
             
            // $table->decimal('edumind_lose_amount',10,2)->nullable();   //       
-           // $table->decimal('benificiary_earn_amount',10,2)->nullable();////
+           // $table->decimal('beneficiary_earn_amount',10,2)->nullable();////
 
             //commissions - fk
             $table->integer('commission_id')->nullable()->unsigned();

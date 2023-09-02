@@ -37,7 +37,7 @@
                             <h1 class="font-semibold mb-2 text-xl text-center">What do you want to do next?</h1>                            
                             <div class="flex mt-5 justify-center">
                                 <div class="mr-5">
-                                    <a href="{{route('billing-info').'?key='.csrf_token()}}" title="" class="btn bg-red-500 hover:bg-red-600 font-semibold px-5 py-2 hover:text-white rounded-md text-center text-white w-full">Try again</a>
+                                    <a href="{{ $returnUrl ?? route('billing-info')}}" title="" class="btn bg-red-500 hover:bg-red-600 font-semibold px-5 py-2 hover:text-white rounded-md text-center text-white w-full">Try again</a>
                                 </div>
                                 <div class="mr-5">
                                     <a href="{{route('home')}}" title="" 

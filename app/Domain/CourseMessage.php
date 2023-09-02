@@ -1,74 +1,80 @@
 <?php
 namespace App\Domain;
 
+use App\Domain\Interfaces\IEntity;
+use App\Domain\Entity;
+use App\Domain\ValueObjects\DateTimeVO;
 
+use App\Domain\Exceptions\AttributeAlreadySetDomainException;
 
 
 //subject_id ==>FK
 //teacher_id ==>FK
 
 
-
-class CourseMessage
+class CourseMessage extends Entity
 {
-    private $id;
-    private $uuid;
-    private $postedDateTime;
-    private $message;
+    private ?int        $id     = null;
+    private ?string     $uuid   = null;
+    private DateTimeVO  $postedDateTime;
+    private string      $message;
+
+    public function __construct(
+        string      $message, 
+        DateTimeVO  $postedDateTime
+    ){
+        $this->message          = $message;
+        $this->postedDateTime   = $postedDateTime;
+    }
 
 
 
     // Getters
-    public function getId() {
+    public function getId() : ?int {
         return $this->id;
     }
 
-    public function getUuid() {
+    public function getUuid() : ?string {
         return $this->uuid;
     }
 
-    public function getPostedDateTime() {
+    public function getPostedDateTime() : DateTimeVO {
         return $this->postedDateTime;
     }
 
-    public function getMessage() {
+    public function getMessage() : string {
         return $this->message;
     }
 
 
 
     // Setters
-    public function setId($id) {
-        $this->id = $id;
+    final public function setId(int $id) : void {
+        if ($this->id !== null) {
+            throw new AttributeAlreadySetDomainException('id attribute already been set and cannot be changed.');
+        }
+        $this->id  = $id;
     }
-
-    public function setUuid($uuid) {
+        
+    final public function setUuid(string $uuid) : void {
+        if ($this->uuid !== null) {
+            throw new AttributeAlreadySetDomainException('uuid attribute has already been set and cannot be changed.');
+        }
         $this->uuid = $uuid;
     }
 
-    public function setPostedDateTime($postedDateTime) {
-        $this->postedDateTime = $postedDateTime;
-    }
-
-    public function setMessage($message) {
-        $this->message = $message;
-    }
-
-
+    
 
 
     // toArray method
-    public function toArray(){
+    public function toArray() : array {
         return [
-            'id'            => $this->id,
-            'uuid'          => $this->uuid,
-            'postedDateTime'=> $this->postedDateTime,
-            'message'       => $this->completeDate            
+            'id'             => $this->id,
+            'uuid'           => $this->uuid,
+            'postedDateTime' => $this->postedDateTime ? $this->postedDateTime->format() : null,
+            'message'        => $this->message            
         ];
     }
 
 
 }
-
-
-

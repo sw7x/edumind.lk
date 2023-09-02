@@ -8,7 +8,7 @@ use Sentinel;
 use App\Models\Course;
 use App\Models\Coupon;
 use App\Models\CourseSelection;
-
+use Ramsey\Uuid\Uuid;
 
 class InvCartItems_InvalidCc extends Seeder
 {
@@ -52,21 +52,24 @@ class InvCartItems_InvalidCc extends Seeder
                             ->inRandomOrder()
                             ->first();      
 
-        // get courses except course belongs to $RandCc1
-        $courses1   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
-                            ->where('coupons.cc_course_id', '!=', $RandCc1->cc_course_id)
-                            ->where('coupons.is_enabled', 1)
-                            ->where('courses.price', '!=', 0)
-                            //->where('courses.id', 1000)
-                            ->whereNotIn('courses.id', $skipCoursesIdArr)
-                            ->get();
-                          
-        if($courses1->isNotEmpty()){
-            $courseId1          =  $courses1->first()->id;
-            $skipCoursesIdArr[] =  $courseId1;
-            $skipCc[]           =  $RandCc1->code;     
-            $tempArr[]          =  array('cc' => $RandCc1, 'insert_course_id' => $courseId1, 'v' => 'v1');
-        }        
+        if(!is_null($RandCc1)){
+            
+            // get courses except course belongs to $RandCc1
+            $courses1   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                                ->where('coupons.cc_course_id', '!=', $RandCc1->cc_course_id)
+                                ->where('coupons.is_enabled', 1)
+                                ->where('courses.price', '!=', 0)
+                                //->where('courses.id', 1000)
+                                ->whereNotIn('courses.id', $skipCoursesIdArr)
+                                ->get();
+                              
+            if($courses1->isNotEmpty()){
+                $courseId1          =  $courses1->first()->id;
+                $skipCoursesIdArr[] =  $courseId1;
+                $skipCc[]           =  $RandCc1->code;     
+                $tempArr[]          =  array('cc' => $RandCc1, 'insert_course_id' => $courseId1, 'v' => 'v1');
+            }      
+        }                    
         /* (2.1--1) === End ======================== */
            
         
@@ -81,20 +84,23 @@ class InvCartItems_InvalidCc extends Seeder
                             ->inRandomOrder()
                             ->first();
 
-        // get courses except $courseId1, and course belongs to $RandCc2  
-        $courses2   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
-                            ->where('coupons.is_enabled', '=', 1)
-                            ->where('coupons.cc_course_id', '!=', $RandCc2->cc_course_id)
-                            ->whereNotIn('courses.id', $skipCoursesIdArr)
-                            ->where('courses.price', '!=', 0)
-                            ->get();
-                            
-        if($courses2->isNotEmpty()){                    
-            $courseId2          =  $courses2->first()->id;
-            $skipCoursesIdArr[] =  $courseId2;
-            $skipCc[]           =  $RandCc2->code;                  
-            $tempArr[]          =   array('cc' => $RandCc2, 'insert_course_id' => $courseId2, 'v' => 'v2');
-        }                    
+        if(!is_null($RandCc2)){                    
+            
+            // get courses except $courseId1, and course belongs to $RandCc2  
+            $courses2   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                                ->where('coupons.is_enabled', '=', 1)
+                                ->where('coupons.cc_course_id', '!=', $RandCc2->cc_course_id)
+                                ->whereNotIn('courses.id', $skipCoursesIdArr)
+                                ->where('courses.price', '!=', 0)
+                                ->get();
+                                
+            if($courses2->isNotEmpty()){                    
+                $courseId2          =  $courses2->first()->id;
+                $skipCoursesIdArr[] =  $courseId2;
+                $skipCc[]           =  $RandCc2->code;                  
+                $tempArr[]          =   array('cc' => $RandCc2, 'insert_course_id' => $courseId2, 'v' => 'v2');
+            }
+        }                 
         /* (2.1--2) === End ============================================================== */
          
 
@@ -109,19 +115,22 @@ class InvCartItems_InvalidCc extends Seeder
                             ->inRandomOrder()
                             ->first();
 
-        // get courses except $courseId1, $courseId2 and course belongs to $RandCc3  
-        $courses3   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
-                            ->where('coupons.is_enabled', '!=', 1)
-                            ->where('coupons.cc_course_id', '!=', $RandCc3->cc_course_id)
-                            ->whereNotIn('courses.id', $skipCoursesIdArr)
-                            ->where('courses.price', '!=', 0)
-                            ->get();
-                            
-        if($courses3->isNotEmpty()){                    
-            $courseId3          =  $courses3->first()->id;
-            $skipCoursesIdArr[] =  $courseId3;
-            $skipCc[]           =  $RandCc3->code;                 
-            $tempArr[]          =   array('cc' => $RandCc3, 'insert_course_id' => $courseId3, 'v' => 'v3');
+        if(!is_null($RandCc3)){                    
+            
+            // get courses except $courseId1, $courseId2 and course belongs to $RandCc3  
+            $courses3   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                                ->where('coupons.is_enabled', '!=', 1)
+                                ->where('coupons.cc_course_id', '!=', $RandCc3->cc_course_id)
+                                ->whereNotIn('courses.id', $skipCoursesIdArr)
+                                ->where('courses.price', '!=', 0)
+                                ->get();
+                                
+            if($courses3->isNotEmpty()){                    
+                $courseId3          =  $courses3->first()->id;
+                $skipCoursesIdArr[] =  $courseId3;
+                $skipCc[]           =  $RandCc3->code;                 
+                $tempArr[]          =   array('cc' => $RandCc3, 'insert_course_id' => $courseId3, 'v' => 'v3');
+            }
         }
         /* (2.1--3) === End ================================================== */
         
@@ -137,19 +146,26 @@ class InvCartItems_InvalidCc extends Seeder
                             ->inRandomOrder()
                             ->first();
         
-        // courses except $courseId1, $courseId2, $courseId3 and course belongs to $RandCc4 are skip 
-        $courses4   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
-                            ->where('coupons.is_enabled', '!=', 1)
-                            ->where('coupons.cc_course_id', '!=', $RandCc4->cc_course_id)
-                            ->whereNotIn('courses.id', $skipCoursesIdArr)
-                            ->where('courses.price', '!=', 0)                            
-                            ->get();
-                            
-        if($courses4->isNotEmpty()){
-            $courseId4          =  $courses4->first()->id;
-            $skipCoursesIdArr[] =  $courseId4;
-            $skipCc[]           =  $RandCc4->code;                  
-            $tempArr[]          =   array('cc' => $RandCc4, 'insert_course_id' => $courseId4, 'v' => 'v4');
+        if(!is_null($RandCc4)){
+            
+            // courses except $courseId1, $courseId2, $courseId3 and course belongs to $RandCc4 are skip 
+            $courses4   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                                ->where('coupons.is_enabled', '!=', 1)
+                                ->where('coupons.cc_course_id', '!=', $RandCc4->cc_course_id)
+                                ->whereNotIn('courses.id', $skipCoursesIdArr)
+                                ->where('courses.price', '!=', 0)                            
+                                ->get();
+                                
+            if($courses4->isNotEmpty()){
+                $courseId4          =  $courses4->first()->id;
+                $skipCoursesIdArr[] =  $courseId4;
+                $skipCc[]           =  $RandCc4->code;                  
+                $tempArr[]          =   array(
+                    'cc' => $RandCc4, 
+                    'insert_course_id' => $courseId4, 
+                    'v' => 'v4'
+                );
+            }
         }
         /* (2.1--4) === End ============================================================================ */
         
@@ -227,6 +243,7 @@ class InvCartItems_InvalidCc extends Seeder
             $commisionPercentage = $ccRec->beneficiary_commision_percentage_from_discount;
 
             $arr[]  =   array(
+                'uuid'              => str_replace('-', '', Uuid::uuid4()->toString()),
                 'cart_added_date'   => now(),
                 'is_checkout'       => false,
                 'course_id'         => $insertCourseId,
@@ -238,7 +255,7 @@ class InvCartItems_InvalidCc extends Seeder
                 'discount_amount'           => $discountAmount,
                 'revised_price'             => $course->price - $discountAmount,
                 'edumind_lose_amount'       => ($discountAmount/100) * (100 + $commisionPercentage),
-                'benificiary_earn_amount'   => $discountAmount * ($commisionPercentage/100),
+                'beneficiary_earn_amount'   => $discountAmount * ($commisionPercentage/100),
                 
                 'created_at'                => date('Y-m-d H:i:s'),
                 'updated_at'                => date('Y-m-d H:i:s')

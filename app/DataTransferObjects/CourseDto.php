@@ -1,176 +1,182 @@
 <?php
 
-namespace App\DataTransferObjects\CourseDto;
+namespace App\DataTransferObjects;
 
 
-use App\DataTransferObjects\AbstractDataTransferObject;
-use Illuminate\Http\Request;
+use App\DataTransferObjects\AbstractDto;
 
-class CourseDto extends AbstractDataTransferObject
-{
-    public $id;
-    public $name;
-    public $description;
-    public $image;
-    public $headingText;
-    public $topics;
-    public $content;
-    public $slug;
-    public $authorSharePercentage;
-    public $price;
-    public $videoCount;
-    public $duration;
-    public $status;
+use App\DataTransferObjects\SubjectDTO;
+use App\DataTransferObjects\UserDTO;
+
+//dto have no id
+
+class CourseDto extends AbstractDto{
+    
+
+    //public read only 
+    private string      $name;
+    private float       $price;
+    
+    private ?int        $id;
+    //private ?string   $uuid;
+    private ?string     $description;
+    private ?string     $image;
+    private ?string     $headingText;
+    private ?array      $topics;
+    private ?array      $content;
+    private ?string     $slug;
+    private ?float      $authorSharePercentage;
+    private ?int        $videoCount;
+    private ?string     $duration;
+    private ?string     $status;
+
+    private ?SubjectDTO $subjectDTO;
+    private ?UserDTO    $authorDTO;
+
 
     public function __construct(
-        $id,
-        $name,
-        $description,
-        $image,
-        $headingText,
-        $topics,
-        $content,
-        $slug,
-        $authorSharePercentage,
-        $price,
-        $videoCount,
-        $duration,
-        $status
+        string      $name,
+        float       $price,
+        
+        ?int        $id                      = null,
+        //?string   $uuid                    = null,
+        ?string     $description             = null,
+        ?string     $image                   = null,
+        ?string     $headingText             = null,
+        ?array      $topics                  = null,
+        ?array      $content                 = null,
+        ?string     $slug                    = null,
+        ?float      $author_share_percentage = null,
+        ?int        $video_count             = null,
+        ?string     $duration                = null,
+        ?string     $status                  = null,
+
+        ?SubjectDTO $subjectDTO              = null,
+        ?UserDTO    $authorDTO               = null
     ) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->image = $image;
-        $this->headingText = $headingText;
-        $this->topics = $topics;
-        $this->content = $content;
-        $this->slug = $slug;
-        $this->authorSharePercentage = $authorSharePercentage;
-        $this->price = $price;
-        $this->videoCount = $videoCount;
-        $this->duration = $duration;
-        $this->status = $status;
+        $this->name                          = $name;
+        $this->price                         = $price;
+        
+        $this->id                            = $id;
+        //$this->uuid                        = $uuid,
+        $this->description                   = $description;
+        $this->image                         = $image;
+        $this->headingText                   = $headingText;
+        $this->topics                        = $topics;
+        $this->content                       = $content;
+        $this->slug                          = $slug;
+        $this->authorSharePercentage         = $author_share_percentage;
+        $this->videoCount                    = $video_count;
+        $this->duration                      = $duration;
+        $this->status                        = $status;  
+
+        $this->subjectDTO                    = $subjectDTO;
+        $this->authorDTO                     = $authorDTO;
     }
 
-    /*public function getId()
-    {
+
+
+    //GETTERS
+    public function getId() : ?int {
         return $this->id;
     }
 
-    public function getName()
-    {
+    public function getName() : string {
         return $this->name;
     }
 
-    public function getDescription()
-    {
+    public function getDescription() : ?string {
         return $this->description;
     }
 
-    public function getImage()
-    {
+    public function getImage() : ?string {
         return $this->image;
     }
 
-    public function getHeadingText()
-    {
+    public function getHeadingText() : ?string {
         return $this->headingText;
     }
 
-    public function getTopics()
-    {
+    public function getTopics() : ?array {
         return $this->topics;
     }
 
-    public function getContent()
-    {
+    public function getContent() : ?array {
         return $this->content;
     }
 
-    public function getSlug()
-    {
+    public function getSlug() : ?string {
         return $this->slug;
     }
 
-    public function getAuthorSharePercentage()
-    {
+    public function getAuthorSharePercentage() : ?float {
         return $this->authorSharePercentage;
     }
 
-    public function getPrice()
-    {
+    public function getPrice() : float {
         return $this->price;
     }
 
-    public function getVideoCount()
-    {
+    public function getVideoCount() : ?int {
         return $this->videoCount;
     }
 
-    public function getDuration()
-    {
+    public function getDuration() : ?string {
         return $this->duration;
     }
 
-    public function getStatus()
-    {
+    public function getStatus() : ?string {
         return $this->status;
-    }*/
+    }
 
+
+    public function getSubject() : ?SubjectDTO {
+        return $this->subjectDTO;
+    }    
+
+    public function getAuthor() : ?UserDTO {
+        return $this->authorDTO;
+    }
 
 
     // Transformation method
-    public function toArray()
-    {
+    public function toArray() : array {
+        
         return [
-			'id' 					=> $this->id,
-			'name' 					=> $this->name,
-			'description' 			=> $this->description,
-			'image' 				=> $this->image,
-			'headingText' 			=> $this->headingText,
-			'topics' 				=> $this->topics,
-			'content' 				=> $this->content,
-			'slug' 					=> $this->slug,
-			'authorSharePercentage' => $this->authorSharePercentage,
-			'price' 				=> $this->price,
-			'videoCount' 			=> $this->videoCount,
-			'duration' 				=> $this->duration,
-			'status' 				=> $this->status,
-            // ... convert other attributes to array
+			'id' 					  => $this->id,
+			'name' 					  => $this->name,
+			'description' 			  => $this->description,
+			'image' 				  => $this->image,
+			'headingText' 			  => $this->headingText,
+			'topics' 				  => $this->topics,
+			'content' 				  => $this->content,
+			'slug' 					  => $this->slug,
+			'authorSharePercentage'   => $this->authorSharePercentage,
+			'price' 				  => $this->price,
+			'videoCount' 			  => $this->videoCount,
+			'duration' 				  => $this->duration,
+			'status' 				  => $this->status,
+            
+            'subjectArr'              => $this->subjectDTO ? $this->subjectDTO->toArray() : null,
+            'subjectId'               => $this->subjectDTO ? $this->subjectDTO->getId() : null,
+
+            'creatorArr'              => $this->authorDTO ? $this->authorDTO->toArray() : null,
+            'creatorId'               => $this->authorDTO ? $this->authorDTO->getId() : null,
         ];
     }
 
-    
-    // Serialization method (JSON example)
-    public function toJson()
-    {
-        return json_encode($this->toArray());
-    }
+    /*
+    public static function fromAppRequest(Request $request){}
+    public static function fromApiRequest(Request $request){}
+    */
 
-
-
-
-    public static function fromAppRequest(Request $request)
-    {
-    	return new self(
-	    	'id' 					: $request->validated($this->id),
-			'name' 					: $request->validated($this->name),
-			'description' 			: $request->validated($this->description),
-			'image' 				: $request->validated($this->image),
-			'headingText' 			: $request->validated($this->headingText),
-			'topics' 				: $request->validated($this->topics),
-			'content' 				: $request->validated($this->content),
-			'slug' 					: $request->validated($this->slug),
-			'authorSharePercentage' : $request->validated($this->authorSharePercentage),
-			'price' 				: $request->validated($this->price),
-			'videoCount' 			: $request->validated($this->videoCount),
-			'duration' 				: $request->validated($this->duration),
-			'status' 				: $request->validated($this->status),
-	    );
-    }    
-
-    public static function fromApiRequest(Request $request)
-    {
-    	// code...
-    }
 }
+
+
+
+
+
+
+
+
+

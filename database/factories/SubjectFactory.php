@@ -35,12 +35,13 @@ class SubjectFactory extends Factory
 
         return [
             //'name' => substr($this->faker->name,0,24),
+
             'name'          => $subjectName,
             'description'   => $this->faker->text(),
             
             //'image'         => $this->faker->imageUrl($width = 200, $height = 200),
             //'image'         => '',
-            'image'         => $this->faker->randomElement([$imgSrc,$imgSrc,$imgSrc,null]),
+            'image'           => $this->faker->randomElement([$imgSrc,$imgSrc,$imgSrc,null]),
             
             //'status'        => $this->faker->randomElement(['published','draft']),
             'status'        => $this->faker->randomElement([

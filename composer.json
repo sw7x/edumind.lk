@@ -15,7 +15,10 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "league/color-extractor": "0.3.*",
-        "ramsey/uuid": "^4.2"
+        "moneyphp/money": "^3.3",
+        "ramsey/uuid": "^4.2",
+        "staudenmeir/belongs-to-through": "^2.5",
+        "staudenmeir/eloquent-has-many-deep": "^1.7"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
@@ -36,7 +39,8 @@
             "app/Helpers/string.php",
             "app/Helpers/color.php",
             "app/Helpers/url.php",
-            "app/Helpers/debug.php"
+            "app/Helpers/debug.php",
+            "app/Helpers/array.php"
         ]
     },
     "autoload-dev": {

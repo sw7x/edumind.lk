@@ -16,6 +16,7 @@ class CreateCourseSelectionsTable extends Migration
         Schema::create('course_selections', function (Blueprint $table) {
             
             $table->id();
+            $table->string('uuid')->unique();
             $table->timestamp("cart_added_date")->nullable();
             $table->boolean('is_checkout')->default(False);
 
@@ -45,7 +46,7 @@ class CreateCourseSelectionsTable extends Migration
             $table->decimal('revised_price',10,2)->nullable();  /////         
             
             $table->decimal('edumind_lose_amount',10,2)->nullable();   //       
-            $table->decimal('benificiary_earn_amount',10,2)->nullable();////
+            $table->decimal('beneficiary_earn_amount',10,2)->nullable();////
 
             $table->timestamps();
             $table->softDeletes();

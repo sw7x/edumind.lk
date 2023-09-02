@@ -21,7 +21,7 @@ class EditorSeeder extends Seeder
             'full_name' => 'editor1',
             'email'     => 'editor1@edumind.lk',
             'password'  =>  env('EDITOR_PASS', 'Pa$$w0rd!'),
-            'phone'     => '',
+            'phone'     => '-',
             'username'  => 'editor1',
             'gender'    => 'male',
             'created_at' => date('Y-m-d H:i:s'),

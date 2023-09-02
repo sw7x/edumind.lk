@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\Repositories\SubjectRepository;
 
 
 use App\Models\Course;
@@ -11,21 +12,18 @@ use Illuminate\Support\Str;
 use App\Models\Role;
 
 class CourseService
-{
-
-    public function loadNewCourse(){
-
-        return Course::latest()->take(8)->get();
-        //return Course::latest('id')->take(8)->get();
-
+{    
+    public function ddd(SubjectRepository $subjectRepository){
+        dump($subjectRepository);
+        dd('g');
     }
 
+    public function loadNewCourse(){
+        return Course::latest()->take(8)->get();
+        //return Course::latest('id')->take(8)->get();
+    }
 
     public function loadPopularCourse(){
-
-
-
-
         /*
         // todo filter when rows have (course_id,student_id) duplicate values
         return Course::whereHas('students', function ($q) {
@@ -37,24 +35,12 @@ class CourseService
         }])->orderBy('students_count', 'desc')->skip(0)->take(8)->get();
         //dd($rr);
         */
-
-
-
         return Course::orderBy('id', 'desc')->skip(0)->take(5)->get();
-
-
-
-
-
-
-
-
-
     }
 
 
 
- /*
+    /*
     public function checkUsernameExists($username){
         return User::where('username',$username)->get()->count();
     }
@@ -313,7 +299,7 @@ class CourseService
 
         $teacherModel           = User::find($courseDto->teacherId);
         $teacherEntityDataArr   = (new UserRepository())->getEntityStructuredDbData($teacherModel);
-        $teacherEntity          = (new UserRepository())->hydrateUserData($teacherEntityDataArr);
+        $teacherEntity          = (new UserRepository())->createObjTree($teacherEntityDataArr);
 
         $courseEntity->setSubject($subjectEntity);        
         $courseEntity->setAuthor($teacherEntity);

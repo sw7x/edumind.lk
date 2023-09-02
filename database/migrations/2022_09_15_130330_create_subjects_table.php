@@ -18,6 +18,7 @@ class CreateSubjectsTable extends Migration
 
 
             $table->increments('id');
+            $table->string('uuid')->unique();
             $table->string('name',25);
             $table->text('description')->nullable();
             $table->text('image')->nullable();

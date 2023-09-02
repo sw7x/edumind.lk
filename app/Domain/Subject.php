@@ -2,115 +2,127 @@
 
 
 namespace App\Domain;
+//use App\Domain\TeacherUser;
+use App\Domain\Users\User as UserEntity;
+use App\Domain\Subject;
+use App\Domain\Entity;
 
+use App\Domain\Exceptions\AttributeAlreadySetDomainException;
 
+class Subject extends Entity{
 
-class Subject{
-
-	private $id;
-	private $uuid;
-	private $name;
-	private $description
-	private $image
-	private $slug
-	private $status
-
+	private ?int    $id          = null;
+	private ?string $uuid        = null;
+	private string  $name;
+	private ?string $description = null;
+	private ?string $image       = null;
+	private ?string $slug        = null;
+	private ?string $status      = null;
+    
     /* associations */
-    protected Teacher $author;
-	
-	public function getAuthor(){
-        return $this->author;
-    }
-
-    public function setAuthor(Teacher $author){
-        $this->author = $author;
-    }
+    private ?UserEntity $author = null;  
+    
 
 
-	/*
-	public function __construct($name) {
-		$this->name = $name;
-	}
-	*/
-
-
-	public function getId(){
-        return $this->id;
-    }
-
-    public function setId($id){
-        $this->id = $id;
-    }
-
-	public function getUuid(){
-        return $this->uuid;
-    }
-
-    public function setUuid($uuid){
-        $this->uuid = $uuid;
-    }
-
-	public function getName(){
-        return $this->name;
-    }
-
-    public function setName($name){
+    public function __construct(string $name){
         $this->name = $name;
     }
 
-    public function getDescription(){
+
+
+	
+
+    // GETTERS
+	public function getId() : ?int {
+        return $this->id;
+    }
+    
+    public function getUuid() : ?string {
+        return $this->uuid;
+    }
+
+    public function getName() : string {
+        return $this->name;
+    }
+
+    public function getDescription() : ?string {
         return $this->description;
     }
 
-    public function setDescription($description){
-        $this->description = $description;
-    }
-
-    public function getImage(){
+    public function getImage() : ?string {
         return $this->image;
     }
 
-    public function setImage($image){
-        $this->image = $image;
-    }
-
-    public function getSlug(){
+    public function getSlug() : ?string {
         return $this->slug;
     }
 
-    public function setSlug($slug){
-        $this->slug = $slug;
-    }
-
-    public function getStatus(){
+    public function getStatus() : ?string {
         return $this->status;
     }
 
-    public function setStatus($status){
+    public function getAuthor() : ?UserEntity {
+        return $this->author;
+    }
+
+    
+
+
+
+    // SETTERS
+    final public function setId(int $id) : void {
+        if ($this->id !== null) {
+            throw new AttributeAlreadySetDomainException('id attribute already been set and cannot be changed.');
+        }
+        $this->id  = $id;        
+    }
+
+    final public function setUuid(string $uuid) : void {
+        if ($this->uuid !== null) {
+            throw new AttributeAlreadySetDomainException('uuid attribute has already been set and cannot be changed.');
+        }
+        $this->uuid = $uuid;
+    }
+
+    public function setDescription(string $description) : void {
+        $this->description = $description;
+    }
+
+    public function setImage(string $image) : void {
+        $this->image = $image;
+    }
+
+    public function setSlug(string $slug) : void {
+        $this->slug = $slug;
+    }
+
+    public function setStatus(string $status) : void {
         $this->status = $status;
     }
+    
+    public function setAuthor(UserEntity $author) : void {
+        $this->author = $author;
+    }
+    
 
-    public function toArray()
-    {
+
+
+    public function toArray() : array {
+        
         return [
             'id' 			=> $this->id,
-            'uuid' 			=> $this->uuid;
+            'uuid' 			=> $this->uuid,
             'name' 			=> $this->name,
             'description' 	=> $this->description,
-            'image' 		=> $this->image,           
-            'slug' 			=> $this->slug,           
+            'image' 		=> $this->image,
+            'slug' 			=> $this->slug,
             'status' 		=> $this->status,
             
-            'author' 		=> $this->author->toArray()
+            'creatorArr'    => $this->author ? $this->author->toArray() : null,
+            'creatorId'     => $this->author ? $this->author->getId()   : null,
         ];
     }
+
+
 }
-
-
-
-
-
-
-
-
 

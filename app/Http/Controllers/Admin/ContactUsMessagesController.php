@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
-use App\Models\Contact_us;
+use App\Models\ContactUs;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -14,9 +14,9 @@ class ContactUsMessagesController extends Controller
     public function viewStudentMessages(){        
         
         try{
-            $this->authorize('viewAny',Contact_us::class);
+            $this->authorize('viewAny',ContactUs::class);
             
-            $studentComments = Contact_us::select('contact_us.*', 'users.status as userStat')
+            $studentComments = ContactUs::select('contact_us.*', 'users.status as userStat')
             ->whereHas('user', function ($query){
                 $query->withoutGlobalScope('active')
                 ->whereHas('roles', function ($query){
@@ -50,10 +50,10 @@ class ContactUsMessagesController extends Controller
 
 
     public function viewTeacherMessages(){
-        $this->authorize('viewAny',Contact_us::class);
+        $this->authorize('viewAny',ContactUs::class);
         
 
-        $teacherComments = Contact_us::select('contact_us.*', 'users.status as userStat','users.profile_pic as profilePic')
+        $teacherComments = ContactUs::select('contact_us.*', 'users.status as userStat','users.profile_pic as profilePic')
         ->whereHas('user', function ($query){
             $query->withoutGlobalScope('active')
             ->whereHas('roles', function ($query){
@@ -71,10 +71,10 @@ class ContactUsMessagesController extends Controller
 
 
     public function viewOtherUserMessages(){
-        $this->authorize('viewAny',Contact_us::class);
+        $this->authorize('viewAny',ContactUs::class);
         
         // comments belongs to marketers and editors
-        $otherUserComments = Contact_us::select('contact_us.*', 'users.status as userStat', 'roles.name as roleName')
+        $otherUserComments = ContactUs::select('contact_us.*', 'users.status as userStat', 'roles.name as roleName')
         ->whereHas('user', function ($query){
             $query->withoutGlobalScope('active')
             ->whereHas('roles', function ($query){
@@ -97,9 +97,9 @@ class ContactUsMessagesController extends Controller
 
 
     public function viewGuestMessages(){
-        $this->authorize('viewAny',Contact_us::class);
+        $this->authorize('viewAny',ContactUs::class);
         
-        $guestMessages = Contact_us::where('user_id', null)
+        $guestMessages = ContactUs::where('user_id', null)
         ->orderBy('contact_us.created_at', 'desc')
         ->get();
         
@@ -115,7 +115,7 @@ class ContactUsMessagesController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT)){
                 throw new CustomException('Invalid id');
             }
-            $comment = Contact_us::find($id);
+            $comment = ContactUs::find($id);
             
             if ($comment) {
 

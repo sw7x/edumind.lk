@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Sentinel;
 use App\Models\Course;
 use App\Models\CourseSelection;
+use Ramsey\Uuid\Uuid;
 
 
 
@@ -90,7 +91,7 @@ class CourseSelectionSeeder extends Seeder
                     $commisionPercentage    = is_null($assignedCouponCode)? 0 : ($assignedCouponCode->beneficiary_commision_percentage_from_discount);
 
                     $edumindLoseAmount       = ($discountAmount/100) * (100 + $commisionPercentage);
-                    $benificiaryEarnAmount   = $discountAmount * ($commisionPercentage/100);
+                    $beneficiaryEarnAmount   = $discountAmount * ($commisionPercentage/100);
 
                     $cartAddedDate  = $faker->dateTimeBetween('-6 week', '-5 week');
                     $isCheckout     = $faker->randomElement([false,true,true,true]);
@@ -107,7 +108,7 @@ class CourseSelectionSeeder extends Seeder
                     $commisionPercentage    = 0;
 
                     $edumindLoseAmount       = 0;
-                    $benificiaryEarnAmount   = 0;
+                    $beneficiaryEarnAmount   = 0;
 
                     $cartAddedDate  = null;
                     $isCheckout     = false;
@@ -116,6 +117,7 @@ class CourseSelectionSeeder extends Seeder
                 //=================================================================/
 
                 $data[]     =   array(                
+                    'uuid'              => str_replace('-', '', Uuid::uuid4()->toString()),
                     'cart_added_date'   => $cartAddedDate,
                     'is_checkout'       => $isCheckout,                                
                     'course_id'         => $courseId,          
@@ -128,18 +130,15 @@ class CourseSelectionSeeder extends Seeder
                     'revised_price'     => $course->price - $discountAmount,
 
                     'edumind_lose_amount'       => $edumindLoseAmount,
-                    'benificiary_earn_amount'   => $benificiaryEarnAmount,
+                    'beneficiary_earn_amount'   => $beneficiaryEarnAmount,
                     'used_coupon_code'          => $code,
                     'created_at'                => date('Y-m-d H:i:s'),
                     'updated_at'                => date('Y-m-d H:i:s')
-
                 );  
 
                 $resultCount++;
-                //dump($resultCount);
-                
-            }
-                     
+                //dump($resultCount);                
+            }                     
         }
         //dd2($data);
         CourseSelection::insert($data);

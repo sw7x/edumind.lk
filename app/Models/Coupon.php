@@ -9,6 +9,9 @@ use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
+use App\Casts\Percentage;
+use Ramsey\Uuid\Uuid;
+
 
 
 class Coupon extends Model
@@ -21,6 +24,7 @@ class Coupon extends Model
 
     protected $fillable = [
         'code',
+        'uuid',
         'discount_percentage',
         'beneficiary_commision_percentage_from_discount',
         'total_count',
@@ -30,7 +34,16 @@ class Coupon extends Model
         'beneficiary_id'
     ];
 
+    protected $casts = [
+        //'discount_percentage'                             => Percentage::class,
+        //'beneficiary_commision_percentage_from_discount'  => Percentage::class,
+        //'is_enabled'                                      => 'boolean',
+        'discount_percentage'                               => 'float',
+        'beneficiary_commision_percentage_from_discount'    => 'float',
+        'is_enabled'                                        => 'boolean'
 
+    ];
+    
 
     
     protected $primaryKey 	= 'code';
@@ -38,6 +51,25 @@ class Coupon extends Model
 
     // In Laravel 6.0+ make sure to also set $keyType
     protected $keyType 		= 'string';
+
+
+
+
+    public static function boot(){
+        parent::boot();        
+        static::creating(function ($model) {
+            $model->uuid = str_replace('-', '', Uuid::uuid4()->toString());
+        });
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('enabled', function (Builder $builder) {
+            $builder->where('coupons.is_enabled', self::ENABLE);
+        });
+    }
+
+
+
 
 
     public function course()
@@ -51,7 +83,7 @@ class Coupon extends Model
                     ->where('courses.price', '!=', 0);
     }
 
-    public function benificiary()
+    public function beneficiary()
 	{
 	    return $this->belongsTo(User::class, 'beneficiary_id', 'id');
 
@@ -62,17 +94,45 @@ class Coupon extends Model
         return $this->hasMany(Enrollment::class,'used_coupon_code','code');
     }*/
 	
-	protected static function booted(){
-        static::addGlobalScope('enabled', function (Builder $builder) {
-            $builder->where('coupons.is_enabled', self::ENABLE);
-        });
-    }
-
-
     public function course_selections()
     {
         return $this->hasMany(CourseSelection::class,'used_coupon_code','code');        
     }
+
+
+    public function enrollments()
+    {
+        return $this->hasManyThrough(
+            Enrollment::class,
+            CourseSelection::class,
+            'used_coupon_code', // Foreign key on the course_selections table...
+            'course_selection_id', // Foreign key on the enrollments table...
+            'code', // Local key on the coupons table...
+            'id' // Local key on the course_selections table...
+        );
+    }
+
+
+
+
+
+
+
+
+
+
+    /*    
+    public function getFirstNameAttribute($value)
+    {
+        return ucfirst($value);
+    }
+
+    public function setFirstNameAttribute($value)
+    {
+        $this->attributes['first_name'] = strtolower($value);
+    }
+    */
+
 
 
 }

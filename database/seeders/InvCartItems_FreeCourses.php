@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Sentinel;
 use App\Models\Course;
 use App\Models\CourseSelection;
-
+use Ramsey\Uuid\Uuid;
 
 class InvCartItems_FreeCourses extends Seeder
 {
@@ -45,6 +45,7 @@ class InvCartItems_FreeCourses extends Seeder
         
         foreach ($tempArr as $courseRec) {           
             $arr[]  =   array(
+                'uuid'              => str_replace('-', '', Uuid::uuid4()->toString()),
                 'cart_added_date'   => now(), //important to be not null in this secnario
                 'is_checkout'       => false,
                 'course_id'         => $courseRec->id,////
@@ -56,7 +57,7 @@ class InvCartItems_FreeCourses extends Seeder
                 'discount_amount'           => 0,
                 'revised_price'             => 0,
                 'edumind_lose_amount'       => 0,
-                'benificiary_earn_amount'   => 0,
+                'beneficiary_earn_amount'   => 0,
                 
                 'created_at'                => date('Y-m-d H:i:s'),
                 'updated_at'                => date('Y-m-d H:i:s')                

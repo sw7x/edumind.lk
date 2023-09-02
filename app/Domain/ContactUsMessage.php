@@ -3,7 +3,9 @@
 
 namespace App\Domain;
 
-
+use App\Domain\Users\User as UserEntity;
+use App\Domain\Entity;
+use App\Domain\Exceptions\AttributeAlreadySetDomainException;
 
 //created_at 
 //updated_at
@@ -11,127 +13,129 @@ namespace App\Domain;
 
 
 
-class ContactUsMessage
+class ContactUsMessage extends Entity
 {
-    private $id;
-    private $uuid;
-    private $fullName;
-    private $email;
-    private $phone;
-    private $subject;
-    private $message;
-
-
+    private ?int     $id       = null;
+    private ?string  $uuid     = null;
+    private ?string  $fullName = null;
+    private ?string  $email    = null;
+    private ?string  $phone    = null;
+    
+    private string   $subject;
+    private string   $message;
+    
+    
     /* associations */
-    protected User $creator;
-    public function getCreator(){
+    private ?UserEntity $creator = null;
+
+
+    public function __construct(string $message, string $subject){
+        $this->message = $message;
+        $this->subject = $subject;
+    }
+
+
+
+
+
+    // Getters
+    public function getId() : ?int {
+        return $this->id;
+    }
+
+    public function getUuid() : ?string {
+        return $this->uuid;
+    }
+
+    public function getFullName() : ?string {
+        return $this->fullName;
+    }
+
+    public function getEmail() : ?string {
+        return $this->email;
+    }
+
+    public function getPhone() : ?string {
+        return $this->phone;
+    }
+
+    public function getSubject() : string {
+        return $this->subject;
+    }
+
+    public function getMessage() : string {
+        return $this->message;
+    }
+
+    public function getCreator() : ?UserEntity {
         return $this->creator;
     }
 
-    public function setCreator(User $creator){
+
+
+
+    // Setters
+    final public function setId(int $id) : void {
+        if ($this->id !== null) {
+            throw new AttributeAlreadySetDomainException('id attribute already been set and cannot be changed.');
+        }
+        $this->id  = $id;
+    }
+        
+    final public function setUuid(string $uuid) : void {
+        if ($this->uuid !== null) {
+            throw new AttributeAlreadySetDomainException('uuid attribute has already been set and cannot be changed.');
+        }
+        $this->uuid = $uuid;
+    }
+
+    final public function setFullName(string $fullName) : void {
+        if ($this->fullName !== null) {
+            throw new AttributeAlreadySetDomainException('fullName attribute already been set and cannot be changed.');
+        }
+        $this->fullName = $fullName;
+    }
+
+    final public function setEmail(string $email) : void {
+        if ($this->email !== null) {
+            throw new AttributeAlreadySetDomainException('email attribute already been set and cannot be changed.');
+        }
+        $this->email = $email;
+    }
+
+    final public function setPhone(string $phone) : void {        
+        if ($this->phone !== null) {
+            throw new AttributeAlreadySetDomainException('phone attribute already been set and cannot be changed.');
+        }
+        $this->phone = $phone;
+    }
+    
+    final public function setCreator(UserEntity $creator) : void {
+        if ($this->creator !== null) {
+            throw new AttributeAlreadySetDomainException('creator attribute has already been set and cannot be changed.');
+        }
         $this->creator = $creator;
     }
 
 
 
 
-
-
-
-
-    // Setters
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
-    public function setFullName($fullName)
-    {
-        $this->fullName = $fullName;
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-
-    public function setSubject($subject)
-    {
-        $this->subject = $subject;
-    }
-
-    public function setMessage($message)
-    {
-        $this->message = $message;
-    }
-
-    // Getters
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getUuid()
-    {
-        return $this->uuid;
-    }
-
-    public function getFullName()
-    {
-        return $this->fullName;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    public function getSubject()
-    {
-        return $this->subject;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-
-
     // toArray method
-    public function toArray()
-    {
+    public function toArray() : array {
         return [
-            'id' 		=> $this->id,
-            'uuid' 		=> $this->uuid,
-            'fullName' 	=> $this->fullName,
-            'email' 	=> $this->email,
-            'phone' 	=> $this->phone,
-            'subject' 	=> $this->subject,
-            'message' 	=> $this->message,
+            'id' 		        => $this->id,
+            'uuid' 		        => $this->uuid,
+            'fullName' 	        => $this->fullName,
+            'email' 	        => $this->email,
+            'phone' 	        => $this->phone,
+            'subject' 	        => $this->subject,
+            'message' 	        => $this->message,
             
-            'creator'   => $this->creator->toArray(),
+            'userArr'           => $this->creator ? $this->creator->toArray() : null,
+            'userId'            => $this->creator ? $this->creator->getId()   : null,
         ];
     }
 }
-
-
-
 
 
 

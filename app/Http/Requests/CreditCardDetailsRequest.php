@@ -37,7 +37,7 @@ class CreditCardDetailsRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        //dump($this->get('benificiary'));
+        //dump($this->get('beneficiary'));
         //dd($this->get('beneficiary_share_percentage_from_discount'));
         
         //dump($this->get('card_number'));

@@ -2,7 +2,9 @@
 @extends('admin-panel.layouts.master',['title' => 'Earnings(ADMIN)'])
 @section('title','View Earnings')
 
+
 @section('css-files')
+    <meta name="csrf-token" content="{{csrf_token()}}">
     <!-- select2 -->
     <link href="{{asset('admin/css/plugins/select2/select2.min.css')}}" rel="stylesheet">
 
@@ -55,38 +57,35 @@
                             </div>
                         </div>
                     </div>
-                   
+                   @php //dump($data); @endphp
+                    
                     <div class="table-responsive">
-                        <table id="coupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                        <table id="edumind-earnings-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                             <thead>
                                 <tr>
                                     <th></th>
                                     <th>Total <br>claimed Amount Rs</th>
-                                    <th>Order ID <br><small>(Enrollement)</small></th>                                    
+                                    <th>Invoice ID <br><small>(Enrollement)</small></th>                                    
                                     <th>Enrolled <br>Date/time</th>
                                     <th>Used <br>coupon code</th>
                                     <th>Coupon code <br>discount %</th>
+                                    <th>id</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                <?php                           
-                                for ($x = 0; $x <= 100; $x+=1): ?>
-                                <tr>
-                                    <td></td>
-                                    <td><?php echo $x.'000.00'; ?></td>  
-                                    <td>ABC<?php echo $x; ?></td>
-                                    <td>2022/7/16 06:45 PM</td>
-                                    <td>
-                                        @if($x%2 ==0)
-                                            CCC123
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td>10%</td>
-                                </tr>
-                                <?php endfor;  ?>
+                                @foreach($data as $record)
+                                    @php  $rec = $record->toArray(); @endphp
+                                    <tr>
+                                        <td></td>
+                                        <td>{{$rec['edumindEarnAmount']}}</td>  
+                                        <td>{{$rec['invoiceId']}}</td>
+                                        <td>{{$rec['enrolledDateTime']}}</td>
+                                        <td>{{$rec['couponCode'] ?? '-'}}</td>
+                                        <td>{{$rec['discountPercentage'] ? $rec['discountPercentage'].'%' : '-'}}</td>
+                                        <td>{{$rec['id']}}</td>
+                                    </tr>
+                                @endforeach                               
                             </tbody>
 
                             <tfoot>
@@ -94,6 +93,7 @@
                                     <th></th>
                                     <th></th>                                                                       
                                     <th></th>                                    
+                                    <th></th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -134,6 +134,15 @@
 @section('javascript')
 <script>
 
+    
+    var earningsData = {!! json_encode($data ?? []) !!};
+    console.log(earningsData);
+    console.log(Array.isArray(earningsData));    
+    if(!Array.isArray(earningsData)){ earningsData = []; }
+
+
+
+
 
 
     $(document).ready(function() {
@@ -163,7 +172,14 @@
                 '</tr>' +
                 '</table>');*/
 
+            console.log(d);
+            //console.log('earningsData');
+            //console.log(earningsData);
+            
 
+            var position = earningsData.findIndex(item => item.id == d.id); 
+            //console.log(position);
+            console.log(position);
             return (`
 
             <div class="table-detail-content ml-3">                    
@@ -184,10 +200,10 @@
                                         </thead>
                                         <tbody>
                                             <tr class="">
-                                                <td>Course one</td>
-                                                <td>A.B.C Saman Fernando</td>
-                                                <td>RS 6000.00</td>
-                                                <td>A.B.C Vikum Amaraweera</td>
+                                                <td>${earningsData[position]['course']}</td>
+                                                <td>${earningsData[position]['teacher']}</td>
+                                                <td>Rs ${earningsData[position]['coursePrice']}</td>
+                                                <td>${earningsData[position]['student']}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -196,52 +212,93 @@
                         </div>
                     </li>
                 </ul>                
-                <div class="mb-4 w-3/4 ml-3 border">                    
+                <div class="mb-4 w-4/5 ml-3 border">                    
                     <table class="w-full">
                         <tr>
                             <td>Course original price</td>
-                            <td>RS 6000.00</td>
+                            <td>Rs 
+                                ${earningsData[position]['coursePrice']}
+                            </td>
                         </tr>                       
                         
                         <tr>
                             <td>Edumind share from course fee</td>
-                            <td>60%</td>
+                            <td>${earningsData[position]['edumindShareFromCoursePrice'] ?? 0}%</td>
                         </tr>
                         <tr class="text-red-600 font-bold text-lg">
                             <td>Edumind earn amount from course fee</td>
-                            <td>RS 3240.00 = (6000*60%)</td>
+                            <td>
+                                Rs  ${earningsData[position]['edumindEarnAmountFromCoursePrice']} = (
+                                    ${earningsData[position]['coursePrice']} * 
+                                    ${earningsData[position]['edumindShareFromCoursePrice'] ?? 0}%
+                                )
+                            </td>
                         </tr>
                     </table>                    
                 </div>
-                <div class="mb-4 w-3/4  ml-3 border">
+                <div class="mb-4 w-4/5  ml-3 border">
                     <table class="w-full">
                         <tr>
                             <td>Course original price</td>
-                            <td>RS 6000.00</td>
+                            <td>
+                                Rs ${earningsData[position]['coursePrice']}
+                            </td>
                         </tr>
                         <tr>
                             <td>Coupon code discount %</td>
-                            <td>10%</td>
+                            <td>
+                                ${
+                                    earningsData[position]['discountPercentage']? 
+                                    earningsData[position]['discountPercentage']+'%' :
+                                    '0% <span class="text-red text-xs">(Not available)</span>'
+                                }
+                            </td>
                         </tr>
                         <tr>
                             <td>Coupon code discount amount</td>
-                            <td>RS 600.00 = (6000*10%)</td>
+                            <td>
+                                Rs  ${earningsData[position]['discountAmount'] ?? 0} = (
+                                    ${earningsData[position]['coursePrice']} * 
+                                    ${earningsData[position]['discountPercentage'] ?? 0}%
+                                )
+                            </td>
                         </tr>                       
                         <tr>
                             <td>Marketer/Teacher share from discount</td>
-                            <td>80%</td>
+                            <td>
+                                ${
+                                    earningsData[position]['beneficiaryShareFromDiscount']? 
+                                    earningsData[position]['beneficiaryShareFromDiscount']+'%' :
+                                    '0% <span class="text-red text-xs">(Not available)</span>'
+                                }
+                            </td>
                         </tr>
                         <tr>
                             <td>Edumind share from discount</td>
-                            <td>20%</td>
+                            <td>
+                                ${
+                                    earningsData[position]['edumindShareFromDiscount']? 
+                                    earningsData[position]['edumindShareFromDiscount']+'%' :
+                                    '0% <span class="text-red text-xs">(Not available)</span>'
+                                }
+                            </td>
                         </tr>                       
                         <tr class="">
                             <td>Marketer/Teacher commission from coupon code discount</td>
-                            <td>RS 600.00 = (600*80%)</td>
+                            <td>Rs  
+                                ${earningsData[position]['beneficiaryEarnAmount'] ?? 0} = (
+                                    ${earningsData[position]['discountAmount']} * 
+                                    ${earningsData[position]['beneficiaryShareFromDiscount'] ?? 0}%
+                                )
+                            </td>
                         </tr>
                         <tr class="text-red-600 font-bold text-lg">
                             <td>Edumind lose Amount due to coupon code use</td>
-                            <td>RS 600.00 = 600*(200% - 20%)</td>
+                            <td>
+                                Rs  ${earningsData[position]['edumindLoseAmount'] ?? 0} = 
+                                    ${earningsData[position]['discountAmount']} * 
+                                    ( 100% + ${earningsData[position]['beneficiaryShareFromDiscount'] ?? 0}% )
+                            </td>
                         </tr>                                       
                     </table>
                 </div>                    
@@ -250,24 +307,65 @@
             `);
         }
 
+        
 
 
 
 
-        var table = $('#coupon-code-list-tbl').DataTable({
+
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }); 
+        
+
+
+        var table = $('#edumind-earnings-tbl').DataTable({
             //ajax: './ajax.txt',
+
+            /* 
+            "ajax": {
+                "url": '{{route('admin.revenue.all-earnings-records')}}',
+                
+                //"type": "POST",
+                "data": {
+                    //_token : '{{ csrf_token() }}',
+                    //'csrf_token' : '{{ csrf_token() }}',
+                    //csrf_token
+                }
+                //data: function(data) {
+                    // Add CSRF token to the data object
+                   //data._token = '{{ csrf_token() }}';
+                //}
+            },
+           
+
+
+
+            
+
+            processing: true,
+            serverSide: true,
+            serverMethod: 'POST',
+            */
+
+
             columns: [
                 {
                     className: 'dt-control',
                     orderable: false,
                     data: null,
                     defaultContent: '',
-                },
-                { data: 'claimed Amount' },                
-                { data: 'order' },
-                { data: 'enrollment date' },
-                { data: 'coupon code' },
-                { data: 'coupon code discount precentage',visible: true },
+                    "searchable": false
+                },/**/
+                { data: 'claimed Amount',"searchable": false },                
+                { data: 'order',"searchable": true },
+                { data: 'enrollment date',"searchable": false },
+                { data: 'coupon code',"searchable": true },
+                { data: 'coupon code discount precentage',visible: true,"searchable": false },
+                { data: 'id',visible: false,"searchable": false },
             ],
             footerCallback: function (row, data, start, end, display) {
                 var api = this.api();
@@ -293,6 +391,10 @@
                         return intVal(a) + intVal(b);
                     }, 0);
 
+                //rounding to two decimal places
+                total       = parseFloat(total).toFixed(2);
+                pageTotal   = parseFloat(pageTotal).toFixed(2);
+
                 // Update footer
                 //$(api.column(0).footer()).html('Total : ');
                 $(api.column(1).footer()).html('Total : Rs ' + pageTotal + '<br>( Rs ' + total + ' total )');
@@ -309,9 +411,13 @@
         });
 
         // Add event listener for opening and closing details
-        $('#coupon-code-list-tbl tbody').on('click', 'td.dt-control', function () {
+        $('#edumind-earnings-tbl tbody').on('click', 'td.dt-control', function () {
             var tr = $(this).closest('tr');
             var row = table.row(tr);
+            console.log('table');
+            console.log(table);
+            console.log(row.data());
+            console.log('_________');
 
 
             if (row.child.isShown()) {
@@ -326,7 +432,7 @@
             }
         });
 
-        $("#coupon-code-list-tbl thead tr").css("border-bottom","5px solid #000");
+        $("#edumind-earnings-tbl thead tr").css("border-bottom","5px solid #000");
 
 
 

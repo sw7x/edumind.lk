@@ -1,153 +1,130 @@
 <?php
+namespace App\Domain;
+use App\Domain\Entity;
+use App\Domain\Role as RoleEntity;
 
-abstract class AbstractUser
-{
-    private $id;
-    private $uuid;
-    private $fullName;
-    private $email;
-    private $phone;
-    private $username;////
-    private $profilePic;
-    private $gender;  
-    private $status;
+abstract class AbstractUser extends Entity{
+    
+    protected ?int      $id   = null;
+    protected ?string   $uuid = null;
+    
+    protected string    $fullName;
+    protected string    $email;
+    protected string    $phone;
+    protected string    $username;
+    protected bool      $status;
+    
+    protected ?string   $profilePic = null;
+    protected ?string   $gender     = null;
 
+    
+
+    /* associations */
+    protected ?RoleEntity $role = null;
 
 
     public function __construct(        
-        $fullName,
-        $email,
-        $phone,
-        $username,
-        $status
-    ) {        
+        string $fullName,
+        string $email,
+        string $phone,
+        string $username,
+        bool   $status
+    ){        
         $this->fullName = $fullName;
-        $this->email = $email;
-        $this->phone = $phone;
+        $this->email    = $email;
+        $this->phone    = $phone;
         $this->username = $username;     
-        $this->status = $status;
+        $this->status   = $status;
     }
-
-
-
-    /* associations */
-    protected Role $role;
 	
-	public function getRole(){
-        return $this->role;
-    }
 
-    public function setRole(Role $role){
-        $this->role = $role;
-    }
-   
-    public function getId()
-    {
+    //GETTERS
+    public function getId() : ?int {
         return $this->id;
     }
 
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function getUuid()
-    {
+    public function getUuid() : ?string {
         return $this->uuid;
     }
-
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
     
-
-
-    public function getFullName()
-    {
+    public function getFullName() : string {
         return $this->fullName;
     }
 
-    public function setFullName($fullName)
-    {
-        $this->fullName = $fullName;
-    }
-
-    public function getEmail()
-    {
+    public function getEmail() : string {
         return $this->email;
     }
-
-	/*    
-	public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-    */
-
-    public function getPhone()
-    {
+    
+    public function getPhone() : string {
         return $this->phone;
     }
-
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-
-	public function getUsername()
-    {
+    
+    public function getUsername() : string {
         return $this->username;
     }
-	/*
-	public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-    */
 
-    public function getProfilePic()
-    {
+    public function getProfilePic() : ?string {
         return $this->profilePic;
     }
 
-    public function setProfilePic($profilePic)
-    {
-        $this->profilePic = $profilePic;
-    }
-
-    public function getGender()
-    {
+    public function getGender() : ?string{
         return $this->gender;
     }
 
-    public function setGender($gender)
-    {
-        $this->gender = $gender;
-    }
-    
-    public function getStatus()
-    {
+    public function getStatus() : bool {
         return $this->status;
     }
 
-    public function setStatus($status)
-    {
-        $this->status = $status;
+
+    public function getRole() : ?RoleEntity {
+        return $this->role;
     }
 
+    
 
 
-    public function approve(){
-        $this->status = TRUE;
+    
+    //SETTERS
+    public function setId(int $id) : void {
+        $this->id = $id;
+    }
+    public function setUuid(string $uuid) : void {
+        $this->uuid = $uuid;
+    }
+
+    public function setProfilePic(string $profilePic) : void {
+        $this->profilePic = $profilePic;
+    }
+
+    public function setGender(string $gender) : void {
+        $this->gender = $gender;
+    }
+
+    public function setRole(RoleEntity $role) : void {
+        $this->role = $role;
+    }
+
+    
+
+    // toArray method
+    abstract public function toArray() : array;
+
+
+
+    
+
+    public function approve() : void {
+        $this->status = true;
     }    
 
-    public function unApprove(){
-        $this->status = FALSE;
+    public function unApprove() : void {
+        $this->status = false;
     }
 
 
 
-    abstract public function toArray();
+    
 }
+
+
+

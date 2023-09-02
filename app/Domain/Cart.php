@@ -1,83 +1,66 @@
 <?php
 namespace App\Domain;
 
-use App\Domain\CartItem;
+use App\Domain\CourseItem as CourseItemEntity;
+use App\Domain\CouponCode as CouponCodeEntity;
+use App\Domain\StudentUser as StudentUserEntity;
+use App\Domain\Course as CourseEntity;
+
 use App\Domain\Exceptions\DomainException;
- 
+use App\Domain\Entity;
+use App\Domain\Exceptions\AttributeAlreadySetDomainException;
+use App\Domain\ValueObjects\AmountVO;
 
-class Cart{
-	
-    private $id;
-    private $uuid;
+
+
+class Cart extends Entity{
+
     
-
-
-    /*
-    public function __construct(array $cartItems) {
-       
-    }
-    */
-
     /* associations */
-    protected User $cartOwner;
-    protected $courseItems = array();
+    /* @var CourseItemEntity[] */
+    private array $courseItems;
+
+
+
+    public function __construct() {
+        $this->courseItems = [];
+    }
     
 
-    public function getAllCourseItems(){
+
+
+
+    //GETTERS
+    public function getAllCourseItems() : array {
         return $this->courseItems;
     }
 
-    public function setCourseItems(array $courseItems){
-        $this->courseItems[] = $courseItems;
-    }
-
-
-
-    public function getCartOwner(){
-        return $this->cartOwner;
-    }
-
-    public function setCartOwner(User $cartOwner){
-        $this->cartOwner = $cartOwner;
-    }    
-
     
-
-    // Setters
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-    
-
-
-    // Getters
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getUuid()
-    {
-        return $this->uuid;
+    //SETTERS
+    public function setCourseItems(array $courseItems) : void {
+        if ($this->courseItems !== []) {
+            throw new AttributeAlreadySetDomainException('courseItems attribute already been set and cannot be changed.');
+        }
+        $this->courseItems = $courseItems;
     }
 
 
 
     // toArray method
-    public function toArray()
-    {
-        return [            
-            'id'            => $this->id,
-            'uuid'          => $this->uuid,
-            
-            'cartOwner'     => $cartOwner->toArray(),
-            'courseItems'   => $this->courseItems
+    public function toArray() : array {
+        
+        /*$courseItemArr = [];
+        foreach ($this->courseItems as $courseItem) {
+            $courseItemArr[] = $courseItem->toArray();
+        }*/
+
+        return [
+            //'id'            => $this->id,
+            //'uuid'          => $this->uuid,
+
+            //'cartOwner'     => $this->cartOwner ? $this->cartOwner->toArray() : [],
+            //'courseItems'   => $this->courseItems ? $this->courseItems->toArray() : [],
+            'courseItems'     => parent::ObjArrConvertToData($this->courseItems),
         ];
     }
 
@@ -85,28 +68,27 @@ class Cart{
 
 
 
-
-    public function applyCouponCode(CouponCode $cc) {
+    public function applyCouponCode(CouponCodeEntity $cc) : void {
         $arr = array();
         $ccCourse             = $cc->getCourse();
         $ccDiscountPercentage = $cc->getDiscountPercentage();
-        
+
         foreach ($this->courseItems as $key => $courseItem) {
-            $couse = $courseItem->getCourse();
-            
+            $course = $courseItem->getCourse();
+
             if(!$ccCourse){
                 $arr[] = array(
                     'courseItemId'=> $key,
                     'coursePrice' => $couse->getPrice()
-                )
+                );
             }else{
-                if($couse->getId() == $ccCourse->getId()){
+                if($course->getId() == $ccCourse->getId()){
                     $arr[] = array(
                         'courseItemId'=> $key,
                         'coursePrice' => $couse->getPrice()
-                    )
+                    );
                 }
-            }           
+            }
 
         }
 
@@ -118,17 +100,16 @@ class Cart{
         /* for apply coupon to the course that has 2nd highest price */
         $selCourseItemId = (count($arr) > 1) ? $arr[1]['courseItemId'] : $arr[0]['courseItemId'];
         $selCourseItem = $this->courseItems[$selCourseItemId];
-        $selCourseItem->setCouponCode($cc);                
+        $selCourseItem->applyCouponCode($cc);
     }
 
-    
-    public function removeCouponCode(CouponCode $givenCc) {
-        if(!$givenCc) 
+    public function removeCouponCode(CouponCodeEntity $givenCc) : void {
+        if(!$givenCc)
             throw new DomainException('CouponCode was not given');
-        
+
         foreach ($this->courseItems as $key => $courseItem) {
             $courseItemAssignedCc = $courseItem->getCouponCode();
-            
+
             if(!$courseItemAssignedCc) continue;
 
             if($givenCc->getId() == $courseItemAssignedCc->getId()){
@@ -136,16 +117,12 @@ class Cart{
             }
         }
     }
-    
 
-
-
-
-    public function addToCart(CourseItem $courseItem) {
-        $this->courseItems[] = $courseItem 
+    public function addToCart(CourseItemEntity $courseItem) : void {
+        $this->courseItems[] = $courseItem;
     }
-    
-    public function removeFromCart(CourseItem $removeCourseItem) {
+
+    public function removeFromCart(CourseItemEntity $removeCourseItem)  : void {
         foreach ($this->courseItems as $key => $courseItem) {
             if ($courseItem->getId() == $removeCourseItem->getId()) {
                 unset($this->courseItems[$key]);
@@ -154,58 +131,39 @@ class Cart{
         }
     }
 
-
-    public function calcSubTotal() {
-        $subTot = 0;
+    public function calcSubTotal() : AmountVO {
+        $subTot = new AmountVO(0);
         foreach ($this->courseItems as $courseItem) {
             $course = $courseItem->getCourse();
-            $subTot += $course->getPrice();
+            $subTot->add($course->getPrice());
         }
         return $subTot;
     }
 
-
-    public function calcTotal() {
-        $total = 0;
+    public function calcTotal() : AmountVO {
+        $total = new AmountVO(0);
         foreach ($this->courseItems as $courseItem) {
-            $subTot += $courseItem->getRevisedPrice();
+            $total->add($courseItem->getRevisedPrice());
         }
         return $total;
     }
 
-
-    public function checkout() {
+    public function checkout(StudentUserEntity $cartOwner) {
+        //get all cart items to variable
         //remove cart items from cart
-        //get all cart items
         //update cartItems.isCheckout = true
 
+        //create order => $order = new Order(cartItems[], $cartOwner)
+        // order.createInvoice
 
-        //create order
-        // CREATE INVOICE
-        //SET INVOICE TO Order.invoice
-
-
-
-        //add cartItems 2 order
-
-
-
-        //create enrollments
-        //set this.cartOwner   to all Enrollment.Student
-        //set order   to all Enrollment.order
-        //set cartItems   to each Enrollment.courseItemS
-
-        //return enrollments
-
-
+        //return order
     }
 
-
-    public function courseCount() {
+    public function courseCount() : int {
         return count($this->courseItems);
     }
 
-    public function isCourseExists(Course $course) {
+    public function isCourseExists(CourseEntity $course) : bool {
         foreach ($this->courseItems as $courseItem) {
             $course = $courseItem->getCourse();
             if($course->getId == $courseEntity->getId) return true;
@@ -214,11 +172,4 @@ class Cart{
         return false;
     }
 
-
-
-
-
 }
-
-
-

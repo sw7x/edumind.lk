@@ -65,6 +65,7 @@ class MigrationCartalystSentinel extends Migration
 
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('uuid')->unique();
             $table->string('slug');
             $table->string('name');
             $table->text('permissions')->nullable();
@@ -96,6 +97,7 @@ class MigrationCartalystSentinel extends Migration
 
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('uuid')->unique();
             $table->string('full_name',50);
             $table->string('email')->unique();
             $table->string('password');

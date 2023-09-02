@@ -8,7 +8,7 @@ use Sentinel;
 use App\Models\Course;
 use App\Models\Coupon;
 use App\Models\CourseSelection;
-
+use Ramsey\Uuid\Uuid;
 
 class InvCartItems_ValidMultipleCc extends Seeder
 {
@@ -104,8 +104,7 @@ class InvCartItems_ValidMultipleCc extends Seeder
                                                 ->count();
             
             // if the student has already enrolled or added the course to their cart, skip it.
-            if($studCourseSelectedCount > 0)continue;
-
+            if($studCourseSelectedCount > 0) continue;       
             
             $course = Course::find($insertCourseId);
             
@@ -113,6 +112,7 @@ class InvCartItems_ValidMultipleCc extends Seeder
             $commisionPercentage = $ccRec->beneficiary_commision_percentage_from_discount;
 
             $arr[]  =   array(
+                'uuid'              => str_replace('-', '', Uuid::uuid4()->toString()),
                 'cart_added_date'   => now(),
                 'is_checkout'       => false,
                 'course_id'         => $insertCourseId,
@@ -124,7 +124,7 @@ class InvCartItems_ValidMultipleCc extends Seeder
                 'discount_amount'           => $discountAmount,
                 'revised_price'             => $course->price - $discountAmount,
                 'edumind_lose_amount'       => ($discountAmount/100) * (100 + $commisionPercentage),
-                'benificiary_earn_amount'   => $discountAmount * ($commisionPercentage/100),
+                'beneficiary_earn_amount'   => $discountAmount * ($commisionPercentage/100),
 
                 'created_at'                => date('Y-m-d H:i:s'),
                 'updated_at'                => date('Y-m-d H:i:s')
@@ -133,10 +133,8 @@ class InvCartItems_ValidMultipleCc extends Seeder
                 //'cc-count'        => ($cc->total_count - $cc->used_count)
             );
         }
-
         
-        //dd($arr);
+        //dump($arr);
         CourseSelection::insert($arr);
-
     }
 }

@@ -14,7 +14,8 @@ class CreateCommissionsTable extends Migration
     public function up()
     {
         Schema::create('commissions', function (Blueprint $table) {
-            $table->increments('id');            
+            $table->increments('id');   
+            $table->string('uuid')->unique();
             $table->text('image')->nullable();
             $table->decimal('paid_amount',10,2)->nullable();
             $table->timestamp("paid_date")->nullable();

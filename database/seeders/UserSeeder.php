@@ -44,11 +44,11 @@ class UserSeeder extends Seeder
 
                 $profilePicSrc = ('users/' . $faker->image('public/storage/users', 630, 820, 'users', false, true));
                 $profilePic    = $faker->randomElement([$profilePicSrc, $profilePicSrc, null]);
-                $user = array_merge($user,array('profile_pic'=> $profilePic));            
+                $user = array_merge($user,array('profile_pic'=> $profilePic));                
+           
             }else{
                 $user = array_merge($user,array('profile_pic'=> null));
             }
-
 
             //STUDENTS
             if($roleId == 5){

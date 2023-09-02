@@ -10,21 +10,20 @@ class CountryDropdown extends Component
     public $name;
     public $cls;
     public $req;
+    public $selectedVal;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($id = null, $name = null, $cls = null, $req='')
+    public function __construct($id = '', $name = '', $cls = '', $req='',$selectedVal='')
     {
-        $this->id   = $id;
-        $this->name = $name;   
-        $this->cls  = $cls;
-        $this->req  = ($req == 'required')?true:false;
-
-
-        
+        $this->id           = $id;
+        $this->name         = $name;   
+        $this->cls          = $cls;
+        $this->req          = ($req == 'required')?true:false;
+        $this->selectedVal  = $selectedVal;        
     }
 
     /**

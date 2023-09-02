@@ -14,8 +14,7 @@ class CreateTempBillingInfoTable extends Migration
     public function up()
     {
         Schema::create('temp_billing_info', function (Blueprint $table) {
-            $table->id();
-
+            $table->increments('id')->startingValue(2200);
             $table->integer('user_id')->nullable()->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
 

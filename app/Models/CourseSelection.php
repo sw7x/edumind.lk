@@ -11,6 +11,11 @@ use App\Models\Course;
 use App\Models\User;
 use App\Models\Coupon;
 use App\Models\Enrollment;
+use Ramsey\Uuid\Uuid;
+
+
+
+
 
 class CourseSelection extends Model
 {
@@ -19,6 +24,7 @@ class CourseSelection extends Model
     //use SoftDeletes;
 
     protected $fillable = [  
+        'uuid',
         'cart_added_date',
         'is_checkout',
         'course_id',
@@ -30,8 +36,29 @@ class CourseSelection extends Model
         'discount_amount',
         'revised_price',
         'edumind_lose_amount',
-        'benificiary_earn_amount'
+        'beneficiary_earn_amount'
     ];
+
+    protected $casts = [
+        'is_checkout'    => 'boolean',
+    ];
+
+
+
+       
+    public static function boot(){
+        parent::boot();        
+        static::creating(function ($model) {
+            $uuid = str_replace('-', '', Uuid::uuid4()->toString());
+            $model->uuid = $uuid;
+        });
+    }
+
+
+
+
+
+
 
 
     public function course()
@@ -52,7 +79,7 @@ class CourseSelection extends Model
 
     public function coupon()
     {
-        return $this->hasOne(Coupon::class,'used_coupon_code','code');
+        return $this->belongsTo(Coupon::class,'used_coupon_code','code');
     }
 
 

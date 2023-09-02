@@ -13,8 +13,9 @@ class CreateSalariesTable extends Migration
      */
     public function up()
     {
-        Schema::create('salaries', function (Blueprint $table) {
-            $table->increments('id');            
+        Schema::create('author_salaries', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('uuid')->unique();
             $table->text('image')->nullable();
             $table->decimal('paid_amount',10,2)->nullable();
             $table->timestamp("paid_date")->nullable();
@@ -33,6 +34,9 @@ class CreateSalariesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('salaries');
+        Schema::dropIfExists('author_salaries');
     }
 }
+
+
+

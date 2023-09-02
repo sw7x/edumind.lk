@@ -21,7 +21,7 @@ class MarketerSeeder extends Seeder
             'full_name' => 'marketer1',
             'email'     => 'marketer1@edumind.lk',
             'password'  =>  env('MARKETER_PASS', 'Pa$$w0rd!'),
-            'phone'     => '',
+            'phone'     => '-',
             'username'  => 'marketer1',
             'gender'    => 'male',
             'created_at' => date('Y-m-d H:i:s'),

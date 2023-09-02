@@ -2,83 +2,108 @@
 namespace App\Domain;
 
 use App\Domain\CourseMessage;
+use App\Domain\Interfaces\IEntity;
+use App\Domain\Entity;
 
+use App\Domain\Exceptions\AttributeAlreadySetDomainException;
 
-class CourseThread
+use App\Domain\Course as CourseEntity;
+use App\Domain\CourseMessage as CourseMessageEntity;
+
+class CourseThread extends Entity
 {
-    private $id;
-    private $uuid;
+    private ?int     $id    = null;
+    private ?string  $uuid  = null;
     
-    // Setters
-    public function setId($id)
-    {
-        $this->id = $id;
+
+    /* associations */
+    private CourseEntity  $course;
+
+    /* @var CourseMessageEntity[] */
+    private array         $comments;    
+    
+
+
+
+    public function __construct(Course $course){
+        $this->course   = $course;
+        $this->comments = [];
     }
 
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-    
+        
+
+
+
 
     // Getters
-    public function getId()
-    {
+    public function getId() : ?int {
         return $this->id;
     }
 
-    public function getUuid()
-    {
+    public function getUuid() : ?string {
         return $this->uuid;
     }
 
-
-
-
-    /* associations */
-    protected Course $course;
-    protected $comments = array();    
-    
-    public function setCourse(Course $course){
-        $this->course = $course;
-    }    
-
-    public function getCourse(){
+    public function getCourse() : Course {
         return $this->course;
-    } 
-
-
-
-    public function getAllComments(){
+    }
+    
+    public function getAllComments() : array {
         return $this->comments;
     }
+    
+    
 
-    public function setComments(array $comments){
-        $this->comments[] = $comments;
+    // Setters
+    final public function setId(int $id) : void {
+        if ($this->id !== null) {
+            throw new AttributeAlreadySetDomainException('id attribute already been set and cannot be changed.');
+        }
+        $this->id  = $id;
     }
-
-
-
-    public function addComment(CourseMessage $comments){
-
-    }
-
-    public function removeComment(CourseMessage $comments){
         
+    final public function setUuid(string $uuid) : void {
+        if ($this->uuid !== null) {
+            throw new AttributeAlreadySetDomainException('uuid attribute has already been set and cannot be changed.');
+        }
+        $this->uuid = $uuid;
     }
+    
+    public function setComments(array $comments) : void {
+        if ($this->comments !== []) {
+            throw new AttributeAlreadySetDomainException('comments attribute already been set and cannot be changed.');
+        }
+        $this->comments = $comments;
+    }
+
+
+
 
     // toArray method
-    public function toArray()
-    {
+    public function toArray() : array{
+        
+        /*$commentArr = [];
+        foreach ($this->comments as $comment) {
+            $commentArr[] = $comment->toArray();
+        }*/
+
         return [
-            'id'            => $this->id,
-            'uuid'          => $this->uuid,
-            
-            'course'        => $this->course->toArray(),
-            'comments'      => $this->comments
+            'id'             => $this->id,
+            'uuid'           => $this->uuid,            
+            'course'         => $this->course ? $this->course->toArray() : null,
+            'courseComments' => parent::ObjArrConvertToData($this->comments),
         ];
     }
 
+
+
+    public function addComment(CourseMessageEntity $comments) : void {
+        $this->comments[] = $comments;
+    }
+
+    public function removeComment(CourseMessageEntity $comments) : void  {
+        
+    }
 
 }
 

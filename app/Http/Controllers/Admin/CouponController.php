@@ -110,7 +110,7 @@ class CouponController extends Controller
                 'used_count'                                        => 0,
                 'is_enabled'                                        => $status,
                 'cc_course_id'                                      => $courseId,
-                'beneficiary_id'                                    => $request->get('benificiary')       
+                'beneficiary_id'                                    => $request->get('beneficiary')       
             ]);            
 
             return redirect()->route('admin.coupon-code.create')->with([

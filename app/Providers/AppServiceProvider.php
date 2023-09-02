@@ -11,8 +11,6 @@ use Symfony\Component\VarDumper\Dumper\CliDumper;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 */
 
-
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        
     }
 
     /**

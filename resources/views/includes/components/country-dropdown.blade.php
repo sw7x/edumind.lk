@@ -1,4 +1,7 @@
 <?php //dump($req); ?>
+<?php //dump($selectedVal); ?>    
+
+
     <select id="{{$id}}" name="{{$name}}" class="{{$cls}}" @if($req) required="required" @endif>
         <option></option>
         {{-- <option value="" selected disabled>Please select a country</option> --}}
@@ -232,7 +235,7 @@
         <option value="Uzbekistan">Uzbekistan</option>
         <option value="Vanuatu">Vanuatu</option>
         <option value="Venezuela">Venezuela</option>
-        <option value="Vietnam">Viet Nam</option>
+        <option value="Vietnam">VietNam</option>
         <option value="Virgin Islands (British)">Virgin Islands (British)</option>
         <option value="Virgin Islands (U.S)">Virgin Islands (U.S.)</option>
         <option value="Wallis and Futana Islands">Wallis and Futuna Islands</option>
@@ -242,3 +245,21 @@
         <option value="Zambia">Zambia</option>
         <option value="Zimbabwe">Zimbabwe</option>
     </select>
+
+
+    <script type="text/javascript">
+        var selectVal = {!! json_encode($selectedVal) !!};
+        if(selectVal){
+           const selectElement = document.getElementById({!! json_encode($id) !!}); 
+
+            for (var i = 0; i < selectElement.options.length; i++) {
+                var option = selectElement.options[i];
+                if (option.value === selectVal) {
+                    option.setAttribute('selected', 'selected');
+                } else {
+                    option.removeAttribute('selected');
+                }
+            }
+        }
+    </script>
+    

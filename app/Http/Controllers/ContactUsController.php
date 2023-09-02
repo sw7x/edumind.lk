@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact_us;
+use App\Models\ContactUs;
 use Illuminate\Http\Request;
 //use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;

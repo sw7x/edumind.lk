@@ -33,10 +33,10 @@ class CouponStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        //dump($this->get('benificiary'));
+        //dump($this->get('beneficiary'));
         //dd($this->get('beneficiary_share_percentage_from_discount'));
         
-        if(!$this->get('benificiary')){
+        if(!$this->get('beneficiary')){
             $this->merge(['beneficiary_share_percentage_from_discount' => null]);
         }       
 
@@ -56,7 +56,7 @@ class CouponStoreRequest extends FormRequest
             'discount_percentage'     => 'required|numeric|min:1|max:50',
             'course'                  => 'required',
             'cc-count'                => 'required|numeric|min:1',
-            'benificiary'             => 'nullable',            
+            'beneficiary'             => 'nullable',            
             'beneficiary_share_percentage_from_discount' => 'nullable|numeric|min:0|max:100'
 
         ];
@@ -105,7 +105,7 @@ class CouponStoreRequest extends FormRequest
             'discount_percentage'       => 'Discount percentage',
             'course'                    => 'Course',
             'cc-count'                  => 'Coupon code count',
-            'benificiary'               => 'Benificiary',
+            'beneficiary'               => 'Beneficiary',
             'beneficiary_share_percentage_from_discount'   => 'Author share percentage',        
         ];
     }

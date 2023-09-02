@@ -274,11 +274,11 @@
                             <li>eeeeeeeeeeeee</li>
                             @endcan
                              
-                            @can('viewAny','App\Models\Contact_us')                            
+                            @can('viewAny','App\Models\ContactUs')                            
                             <li>ffff</li>
                             @endcan
 
-                            @can('viewAny',App\Models\Contact_us::class)                            
+                            @can('viewAny',App\Models\ContactUs::class)                            
                             <li>gggg</li>
                             @endcan 
                         --}}

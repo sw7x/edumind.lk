@@ -18,7 +18,7 @@
 
 @section('page-css')
     <style>
-       
+
 
     </style>
 @stop
@@ -42,13 +42,13 @@
             <!-- content -->
             <div class="ibox ">
                 <div class="ibox-content px-3">
-                 
+
                     <form class="edit-user-form" id="add-subject" action="{{route('admin.subject.store')}}" method="POST">
-                        
+
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Select Teacher</label>
+                            <label class="col-sm-4 col-form-label">Select Teacher <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8">
-                                <select class="form-control m-b" name="account">
+                                <select class="form-control m-b" name="beneficiary">
                                     <option>option 1</option>
                                     <option>option 2</option>
                                     <option>option 3</option>
@@ -61,13 +61,13 @@
 
 
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Time period</label>
+                            <label class="col-sm-4 col-form-label">Time period <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8">
                                 <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        
+
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Enrollments</label>
                             <div class="col-sm-8">
@@ -95,7 +95,7 @@
                                                 </td>
                                                 <td class="font-bold text-base"><a href="hhh" target="_blank">CCC123 <i class="ml-1 fa fa-external-link" aria-hidden="true"></i></a></td>
                                                 <td class="font-bold text-base text-red-500">RS 2000</td>
-                                            </tr> 
+                                            </tr>
 
                                             <tr>
                                                 <td>
@@ -107,13 +107,13 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-base text-red">Amount for selected enrollemens : RS 200</div>                          
+                                <div class="text-base text-red">Amount for selected enrollemens : RS 200</div>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
 
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Amount (Rs)</label>
+                            <label class="col-sm-4 col-form-label">Amount (Rs) <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8"><input type="text" name="amount" class="form-control" required="required"></div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -127,9 +127,10 @@
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        
 
-                        <div class="form-group row"><label class="col-sm-4 col-form-label">Salary slip image</label>
+
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Salary slip image <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8">
                                 {{--                                        <input type="file" class="form-control" name="subject_image">--}}
                                 <input type="file"

@@ -35,11 +35,7 @@ use App\Http\Controllers\CourseController as User_CourseController;
 use App\Http\Controllers\CartController;
 
 
-
-
-
-
-
+use App\Http\Controllers\Admin\EdumindRevenueController;
 
 
 
@@ -66,7 +62,7 @@ Route::get('/coming-soon', function () {    return view('coming-soon');})->name(
 
 Route::get ('/', [HomeController::class,'index'])
 ->name ('home');
-//->middleware('can:view-any,App\Models\Contact_us');
+//->middleware('can:view-any,App\Models\ContactUs');
 //->middleware('can:viewAny');
 
 
@@ -110,7 +106,9 @@ Route::post ('/submit-billing-info', [CartController::class,'submitBillingInfo']
 ->name('submit-billing-info');
 
 
-
+Route::get('/checkout', [CartController::class,'loadCheckout'])
+->middleware('checkStudent')
+->name('load-checkout');
 
 Route::post('/checkout', [CartController::class,'checkout'])
 ->middleware('checkStudent')
@@ -346,11 +344,21 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
         Route::group(['prefix'=>'revenue','as'=>'revenue.'], function(){
             Route::get('/view-checkouts',function(){return view('admin-panel.admin.view-checkouts');})->name('checkouts');
-            Route::get('/earnings',function(){return view('admin-panel.admin.earnings');})->name('all-earnings');
             
+            //Route::get('/earnings',function(){return view('admin-panel.admin.earnings');})->name('all-earnings');
+            Route::get('/earnings',[EdumindRevenueController::class,'loadEarnings'])->name('all-earnings');
+            Route::post('/123earnings',[EdumindRevenueController::class,'loadEarningsRecords'])->name('all-earnings-records');
+
+
+
+
             Route::get('/course-earnings',function(){return view('admin-panel.admin.earnings-course');})->name('course-earnings');
             Route::get('/teacher-earnings',function(){return view('admin-panel.admin.earnings-teacher');})->name('teacher-earnings');
             Route::get('/teacher-salary',function(){return view('admin-panel.admin.teacher-salary');})->name('teacher-salary');
+        
+            //Route::get('/xxx',[EdumindRevenueController::class,'loadEarnings'])->name('xxx');
+
+
         });
 
         Route::group(['prefix'=>'salary','as'=>'salary.'], function(){
@@ -385,8 +393,8 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         Route::group(['prefix'=>'feedback','as'=>'feedback.'], function(){
             Route::get ('/students', [ContactUsMessagesController::class,'viewStudentMessages'])
             ->name ('students');
-            //->middleware('can:viewAny,App\Models\Contact_us');
-            //->can('viewAny', Contact_us::class);
+            //->middleware('can:viewAny,App\Models\ContactUs');
+            //->can('viewAny', ContactUs::class);
 
  
             Route::get ('/teachers', [ContactUsMessagesController::class,'viewTeacherMessages'])->name ('teachers');

@@ -54,12 +54,12 @@
 
                     <form class="edit-user-form" id="add-subject" action="{{route('admin.subject.store')}}" method="POST">
 
-                        
+
 
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Select Teacher</label>
+                            <label class="col-sm-4 col-form-label">Select Teacher <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8">
-                                <select class="form-control m-b" name="account">
+                                <select class="form-control m-b" name="teacher">
                                     <option>option 1</option>
                                     <option>option 2</option>
                                     <option>option 3</option>
@@ -71,13 +71,13 @@
 
 
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Time period</label>
+                            <label class="col-sm-4 col-form-label">Time period <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8">
                                 <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        
+
 
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Enrollments</label>
@@ -112,7 +112,7 @@
                                                 <td>RS 2000</td>
                                                 <td>RS 0</td>
                                                 <td class="font-bold text-base text-red-500">RS 2000</td>
-                                            </tr> 
+                                            </tr>
 
                                             <tr>
                                                 <td>
@@ -126,14 +126,14 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-base text-red">Amount for selected enrollemens : RS 200</div>                           
+                                <div class="text-base text-red">Amount for selected enrollemens : RS 200</div>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
 
 
                         <div class="form-group  row">
-                            <label class="col-sm-4 col-form-label">Amount (Rs)</label>
+                            <label class="col-sm-4 col-form-label">Amount (Rs) <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8"><input type="text" name="amount" class="form-control" required="required"></div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -149,7 +149,8 @@
                         <div class="hr-line-dashed"></div>
 
 
-                        <div class="form-group row"><label class="col-sm-4 col-form-label">Salary slip image</label>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Salary slip image <span class="text-red-500 text-sm font-bold">*</span></label>
                             <div class="col-sm-8">
                                 {{--                                        <input type="file" class="form-control" name="subject_image">--}}
                                 <input type="file"
@@ -207,7 +208,7 @@
 <script>
 
 
-    
+
 
     (function () {
         /* We want to preview images, so we need to register the Image Preview plugin  */
@@ -227,7 +228,7 @@
 
             FilePondPluginFileValidateType
         );
-        
+
 
         $('input.iCheck').iCheck({
             checkboxClass: 'icheckbox_square-green',

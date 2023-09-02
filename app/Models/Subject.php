@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
+use Ramsey\Uuid\Uuid;
+
 
 class Subject extends Model
 {
@@ -17,7 +19,21 @@ class Subject extends Model
 
     
     protected $table = 'subjects';
-    protected $fillable = ['name','description','image','status','slug','author_id'];
+    protected $fillable = ['name','uuid','description','image','status','slug','author_id'];
+
+
+
+    public static function boot(){
+        parent::boot();        
+        static::creating(function ($model) {
+            $model->uuid = str_replace('-', '', Uuid::uuid4()->toString());
+        });
+    }
+
+
+
+
+
 
 
     protected static function booted(){

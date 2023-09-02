@@ -34,16 +34,18 @@ class TeacherSeeder extends Seeder
 
         $teacher = [
 
-            'full_name'     => 'teacher1',
-            'email'         => 'teacher1@edumind.lk',
-            'password'      =>  env('TEACHER_PASS', 'Pa$$w0rd!'),
-            'phone'         => '',
-            'username'      => 'teacher1',
-            'gender'        => 'male',
-            'created_at'    => date('Y-m-d H:i:s'),
-            'updated_at'    => date('Y-m-d H:i:s'),
-            'status'        =>  1,
-            'profile_pic'   => 'users/' .  $faker->image('public/storage/users', 630, 820, 'users', false, true),
+            'full_name'          => 'teacher1',
+            'email'              => 'teacher1@edumind.lk',
+            'password'           =>  env('TEACHER_PASS', 'Pa$$w0rd!'),
+            'phone'              => '-',
+            'username'           => 'teacher1',
+            'gender'             => 'male',
+            'created_at'         => date('Y-m-d H:i:s'),
+            'updated_at'         => date('Y-m-d H:i:s'),
+            'status'             =>  1,
+            'profile_pic'        => 'users/' .  $faker->image('public/storage/users', 630, 820, 'users', false, true),
+            'dob_year'           => 1970,
+            'edu_qualifications' => 'Phd in maths'
         ];
 
         $user_teacher = Sentinel::registerAndActivate($teacher);

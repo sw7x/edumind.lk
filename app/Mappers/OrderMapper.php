@@ -1,0 +1,65 @@
+<?php
+
+
+namespace App\Mappers;
+
+use App\Mappers\Mapper;
+//use App\Mappers\InvoiceMapper;
+//use App\Mappers\UserMapper;
+
+
+
+
+
+class OrderMapper extends Mapper{
+    
+	public const  mapper = [	    
+	
+        self::DATABSE_MAP => [
+            ['id',              '<=>',     	'id'],
+            ['uuid',            '<=>',     	'uuid'],
+            ['checkout_date',   '<=>',     	'checkoutDate'],            
+			['student_id', 		'<=>', 		'studentId'],
+			['invoice_id', 		'<=>', 		'invoiceId'],
+            ['enrollments_arr', '<=>',     	'enrollmentsArr'],
+                                            
+            '__ARRAY__' => [
+                [
+                    "invoice_arr",     	'<=>',   "invoiceArr",    	InvoiceMapper::mapper['DATABSE_MAP']
+                ],
+                [
+                    "student_arr",    	'<=>',   "studentArr",   	UserMapper::mapper['DATABSE_MAP']
+                ]
+            ]
+        ],
+		
+		self::POST_MAP => [
+            ['id',              '=>',     	'id'],
+            ['uuid',            '=>',     	'uuid'],
+            ['checkoutDate',    '=>',     	'checkout_date'],            
+			['studentId', 		'=>', 		'student_id'],
+			['invoiceId', 		'=>', 		'invoice_id'],
+            ['enrollmentsArr',  '=>',     	'enrollments_arr'],
+                   
+            '__ARRAY__' => [
+                [
+                    "invoiceArr",     	'=>',   "invoice_arr",    	InvoiceMapper::mapper['POST_MAP']
+                ],
+                [
+                    "studentArr",    	'=>',   "student_arr",   	UserMapper::mapper['POST_MAP']
+                ]
+            ]
+        ],
+		
+		
+		
+		
+		
+		
+
+    ];         
+
+
+}
+
+

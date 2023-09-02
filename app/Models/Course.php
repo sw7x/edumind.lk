@@ -12,6 +12,9 @@ use App\Models\Coupon;
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
+
+    
 
 class Course extends Model
 {
@@ -23,14 +26,17 @@ class Course extends Model
     
     protected $casts = [
         //'topics'  => 'array',
-        'topics'  => Json::class,
+        'topics'    => Json::class,
         //'content' => 'array',
-        'content' => Json::class,
+        'content'   => Json::class,
+        'price'     => 'float',
 
     ];
 
+
     protected $fillable = [
         'name',
+        'uuid',
         'subject_id',
         'teacher_id',
         'heading_text',
@@ -100,6 +106,12 @@ class Course extends Model
         }        
     }*/
 
+    public static function boot(){
+        parent::boot();        
+        static::creating(function ($model) {
+            $model->uuid = str_replace('-', '', Uuid::uuid4()->toString());
+        });
+    }
 
     protected static function booted(){
         static::addGlobalScope('published', function (Builder $builder) {
@@ -109,8 +121,10 @@ class Course extends Model
 
 
     
-    public function getImageAttribute($value){
-        
+
+
+
+    public function getImageAttribute($value){        
         if($value){           
             $imagePath = asset('storage/'.$value);
         }else{
@@ -149,6 +163,32 @@ class Course extends Model
     }
 
 
+    public function enrollments()
+    {
+        return $this->hasManyThrough(
+            Enrollment::class,
+            CourseSelection::class,
+            'course_id', // Foreign key on the course_selections table...
+            'course_selection_id', // Foreign key on the enrollments table...
+            'id', // Local key on the courses table...
+            'id' // Local key on the course_selections table...
+        );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function getLastUpdatedTime(){
         return Carbon::parse($this->updated_at)->diffForHumans();
     }
@@ -164,9 +204,7 @@ class Course extends Model
             return true;
         }else{
             return empty($this->content);
-        }
-
-        
+        }        
     }
 
     public function getLinkCount(){

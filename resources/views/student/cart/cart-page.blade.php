@@ -357,15 +357,11 @@
                                             <br>
 
                                             <div class="__px-6 pb-5 mb-5">                                       
-                                                <!-- checkout-cart -->
-                                                <form action="{{route('billing-info')}}" method="get" class=''>                                                                                               
-                                                    <button type="submit" class="w-full block py-2 text-center text-base hover:text-white checkout-btn 
-                                                        bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
-                                                        Continue to checkout
-                                                    </button>                                            
-                                                    <input type="hidden" name="key" value="{{csrf_token()}}">
-                                                </form>    
-
+                                                <!-- checkout-cart -->                                                                                                                                           
+                                                <a href="{{route('billing-info')}}" type="button" class="w-full block py-2 text-center text-base hover:text-white checkout-btn 
+                                                    bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                                                    Continue to checkout
+                                                </a>
                                                 <div class="flex items-center justify-center mt-4 space-x-1.5">
                                                     <p class="font-medium"> or </p> <a href="{{route('all-courses')}}" class="text-blue-600 font-semibold text-center">Continue Shopping</a>
                                                 </div>

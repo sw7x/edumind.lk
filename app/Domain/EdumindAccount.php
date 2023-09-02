@@ -2,90 +2,83 @@
 
 
 namespace App\Domain;
+use App\Domain\Interfaces\IEntity;
+use App\Domain\Entity;
+
+use App\Domain\EdumindFee as EdumindFeeEntity;
+use App\Domain\ValueObjects\AmountVO;
+use App\Domain\Exceptions\InvalidTypeDomainException;
 
 
-
-class EdumindAccount{
+class EdumindAccount extends Entity{
 	
-	
-    private $id;
-    private $uuid;
-    //private $amount;
+	/* associations */
+    /* @var EdumindFeeEntity[] */
+    private array $edumindFees;
 
+    
 
-    /* associations */
-    protected $edumindFees = array();
-
-
-    // Setters
-    public function setId($id)
-    {
-        $this->id = $id;
+    public function __construct(){
+        $this->edumindFees = [];
     }
+    
+    
 
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
+    // Getters 
+    public function getAllEdumindFees() : array {
+        return $this->edumindFees;
     }
-
-    /*
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-    }
-    */
-
-
-    public function setEdumindFees(array $edumindFees)
-    {
+    
+    
+    
+    // Setters  
+    public function setEdumindFees(array $edumindFees) : void {
+        if ($this->edumindFees !== []) {
+            throw new AttributeAlreadySetDomainException('edumindFees attribute already been set and cannot be changed.');
+        }
         $this->edumindFees = $edumindFees;
     }
 
 
-    // Getters
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getUuid()
-    {
-        return $this->uuid;
-    }
-
-    /*public function getAmount()
-    {
-        return $this->amount;
-    }*/
-
-    public function getAllEdumindFees(){
-        return $this->edumindFees;
-    }
 
 
     // toArray method
-    public function toArray()
-    {
+    public function toArray() : array {
+        
+        /*
+        $edumindFeeArr = [];
+        foreach ($this->edumindFees as $edumindFee) {
+            $edumindFeeArr[] = $edumindFee->toArray();
+        }
+        */
+
         return [
-            'id'            => $this->id,
-            'uuid'          => $this->uuid,
-            'edumindFees'   => $this->edumindFees
+            'edumindFees'   => parent::ObjArrConvertToData($this->edumindFees),
         ];
     }
 
 
 
 
-    public function getEdumindFeesByTime($fromDate, $toDate){
-
+    public function calcSubTotal() : AmountVO {
+        $subTotal = new AmountVO(0);        
+        foreach ($this->edumindFees as $edumindFee) {
+            if (!($edumindFee instanceof EdumindFeeEntity)) {
+                throw new InvalidTypeDomainException('Array contains objects that are not EdumindFee Entities.');
+            }
+            $subTotal->add($edumindFee->getAmount());
+        }
+        return $subTotal;
     }
 
-    public function addEdumindFee(EdumindFee $edumindFee){
+    public function getEdumindFeesByTime($fromDate, $toDate) : AmountVO {
+    
+    }
+
+    public function addEdumindFee(EdumindFeeEntity $edumindFee) : void {
         $this->edumindFees[] = $edumindFee;
     }
 
-
-	
 }
 
 

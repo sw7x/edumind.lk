@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Contact_us;
+use App\Models\ContactUs;
 use App\Models\User;
 use Sentinel;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -26,10 +26,10 @@ class ContactUsPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Contact_us  $contactUs
+     * @param  \App\Models\ContactUs  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Contact_us $contactUs)
+    public function view(User $user, ContactUs $contactUs)
     {
         
         //dd($user);
@@ -64,10 +64,10 @@ class ContactUsPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Contact_us  $contactUs
+     * @param  \App\Models\ContactUs  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Contact_us $contactUs)
+    public function update(User $user, ContactUs $contactUs)
     {
         //
     }
@@ -76,10 +76,10 @@ class ContactUsPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Contact_us  $contactUs
+     * @param  \App\Models\ContactUs  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Contact_us $contactUs)
+    public function delete(User $user, ContactUs $contactUs)
     {
         return $user->isAdmin();
     }
@@ -88,10 +88,10 @@ class ContactUsPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Contact_us  $contactUs
+     * @param  \App\Models\ContactUs  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Contact_us $contactUs)
+    public function restore(User $user, ContactUs $contactUs)
     {
         //
     }
@@ -100,10 +100,10 @@ class ContactUsPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Contact_us  $contactUs
+     * @param  \App\Models\ContactUs  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Contact_us $contactUs)
+    public function forceDelete(User $user, ContactUs $contactUs)
     {
         //
     }

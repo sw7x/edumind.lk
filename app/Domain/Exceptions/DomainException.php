@@ -7,7 +7,7 @@ use Exception;
 
 class DomainException extends Exception
 {
-    private $_data = [];
+    protected $_data = [];
 
     public function __construct($message, $data=[])
     {

@@ -47,6 +47,16 @@ if(! function_exists('replaceMultipleperiods')){
 
 if(! function_exists('replaceMultipleUnderscores')){
     function replaceMultipleUnderscores($string){
-        return preg_replace('/_+/', '_', $string);;
+        return preg_replace('/_+/', '_', $string);
     }
 }
+
+
+if(! function_exists('snakeToCamelCase')){
+    function snakeToCamelCase($string){
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+    }
+}
+
+
+

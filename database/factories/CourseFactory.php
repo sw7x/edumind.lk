@@ -68,21 +68,19 @@ class CourseFactory extends Factory
             
             //'image'         => $this->faker->imageUrl($width = 200, $height = 200),
             //'image'         =>  $this->faker->image('public/storage/courses',640,480, null, false),
-            'image'         => $this->faker->randomElement([$imgSrc,$imgSrc,null]),
-
+            'image'           => $this->faker->randomElement([$imgSrc,$imgSrc,null]),
             //'image'         => '',
-
-
+    
             'topics'    =>  $topics,
             'content'   =>  $content,
 
-
-            'heading_text'  => $this->faker->paragraph(),
-            'price'         => $this->faker->randomElement([
-                0,
-                $this->faker->numberBetween($min = 1000, $max = 5000),
-                $this->faker->numberBetween($min = 5000, $max = 100000),
-            ]),
+            'heading_text'  =>  $this->faker->paragraph(),
+            'price'         =>  $this->faker->randomElement([
+                                    0,
+                                    $this->faker->numberBetween($min = 1000, $max = 5000),
+                                    $this->faker->numberBetween($min = 5000, $max = 100000),
+                                ]),
+            
             'video_count'	=> $this->faker->numberBetween(1, 120),
             'duration'      => $duration,
 

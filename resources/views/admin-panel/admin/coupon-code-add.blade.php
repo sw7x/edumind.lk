@@ -112,7 +112,7 @@
                             <label class="col-sm-4 col-form-label">Select - Marketer / Teacher <span class="text-xs text-red font-semibold">(course created teacher)</span></label>
                             <div class="col-sm-8">
                                 
-                                <select style="width:100%;" name="benificiary">                 
+                                <select style="width:100%;" name="beneficiary">                 
                                 </select>
 
                                     {{--
@@ -267,13 +267,13 @@
 
 
 
-        $('select[name="benificiary"]').select2({
-            placeholder: "Select a benificiary",
+        $('select[name="beneficiary"]').select2({
+            placeholder: "Select a beneficiary",
             allowClear: true,
             width: '100%'
         });
 
-        $('select[name="benificiary"]').on('change',function(event){
+        $('select[name="beneficiary"]').on('change',function(event){
             console.log($(this).val());
             if($(this).val()){
                 $('.beneficiary_share_percentage_from_discount-wrapper').slideDown("slow");
@@ -335,9 +335,9 @@
                     //required: true,
                     required: function(element) {
                         console.log('----------------');
-                        console.log($('select[name="benificiary"]').val() != '');
+                        console.log($('select[name="beneficiary"]').val() != '');
                         console.log('----------------');
-                        return ($('select[name="benificiary"]').val() != '');
+                        return ($('select[name="beneficiary"]').val() != '');
                     },
                     number: true, 
                     min:0,
@@ -447,7 +447,7 @@
                 .removeAttr('selected');
 
             $('select[name="course"]').select2("val", "");
-            $('select[name="benificiary"]').select2("val", "");
+            $('select[name="beneficiary"]').select2("val", "");
             
             //var validator = $("#contact-form").validate();
             validator.resetForm();
@@ -553,7 +553,7 @@
                         dropDown   +=    '</optgroup>';                    
                     }
 
-                    $('select[name="benificiary"]').html(dropDown);
+                    $('select[name="beneficiary"]').html(dropDown);
 
                 }else{
                     toastr["error"](response.message);

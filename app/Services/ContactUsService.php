@@ -4,17 +4,15 @@
 namespace App\Services;
 
 
-use App\Repositories\ContactUsRepository;
+use App\Repositories\Eloquent_impl\ContactUsRepository;
 
 class ContactUsService
 {
     private $contactUsRepository;
     
-    public function __construct(ContactUsRepository $contactUsRepository) {
+    /*public function __construct(ContactUsRepository $contactUsRepository) {
         $this->contactUsRepository = $contactUsRepository;
-    }
-
-    
+    }*/
 
     public function add($contactInfoArr){       
         $insertedResult = $this->contactUsRepository->add($contactInfoArr);

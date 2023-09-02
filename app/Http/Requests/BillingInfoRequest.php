@@ -53,17 +53,22 @@ class BillingInfoRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
-                'fname'             =>  'required|between:3,15|alpha',
-                'lname'             =>  'required|between:3,15|alpha',
+                'fname'             =>  'required',
+                //'fname'             =>  'required|between:5,15',
+
+                'lname'             =>  'required',
+                //'lname'             =>  'required|between:5,15',
+
                 'email'             =>  'required|email',
                 
                 //Allow only digits, spaces, parentheses, hyphens, and plus sign
                 'phone'             =>  'required|regex:/^[\d\s()+-]+$/',
                 
-                'country'           =>  'required|alpha',    
-                'city'              =>  'required|alpha|max:25',
-                'street_address'    =>  'required|alpha'   
+                'country'           =>  'required',    
+                'city'              =>  'required',
+                'street_address'    =>  'required'   
         ];
 
 
@@ -81,12 +86,10 @@ class BillingInfoRequest extends FormRequest
                 
         return [
             'fname.required'            => ':attribute is required',
-            'fname.between'             => ':attribute must be between :min and :max characters',
-            'fname.string'              => ':attribute must be a string',
+            //'fname.between'            => ':attribute is required',
             
             'lname.required'            => ':attribute is required',
-            'lname.between'             => ':attribute must be between :min and :max characters',
-            'lname.string'              => ':attribute must be a string',
+            
             
             'email.required'            => ':attribute is required',
             'email.email'               => ':attribute must be a valid email address',
@@ -95,14 +98,13 @@ class BillingInfoRequest extends FormRequest
             'phone.regex'               => ':attribute must contain only digits, spaces, parentheses, hyphens, and plus sign',
             
             'country.required'          => ':attribute is required',
-            'country.string'            => ':attribute must be a string',
+            
             
             'city.required'             => ':attribute is required',
-            'city.string'               => ':attribute must be a string',
-            'city.max'                  => ':attribute cannot be longer than :max characters',
+           
             
             'street_address.required'   => ':attribute is required',
-            'street_address.string'     => ':attribute must be a string'
+            
         ];
         
     }

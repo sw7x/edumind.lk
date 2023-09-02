@@ -129,7 +129,7 @@
                 </li>
 
                 
-                @can('viewAny',App\Models\Contact_us::class)
+                @can('viewAny',App\Models\ContactUs::class)
                 <li class="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="#" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>

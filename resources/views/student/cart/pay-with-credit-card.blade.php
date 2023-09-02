@@ -25,6 +25,17 @@
     <div class="main-container container">
         <div class="max-w-5xl md:p-5 mx-auto">
             
+            @if(Session::has('message'))
+                <x-flash-message
+                    class="{{ Session::get('cls', 'flash-info')}}" 
+                    :title="Session::get('msgTitle')"
+                    :message="Session::get('message')">                    
+                </x-flash-message>           
+            @endif
+
+
+
+
             <x-flash-message
                 class="flash-info"
                 title='Cart'
@@ -103,6 +114,9 @@
                         </div>
                     </div>
                 </div>
+
+                <input type="hidden" name="ord" value="{{$orderId}}">
+                <input type="hidden" name="rnd" value="{{$random}}">
 
                 <div class="grid grid-cols-2 md:gap-6 gap-3 md:mt-10 mt-5">
                     {{-- <a class="bg-gray-200 flex font-medium items-center justify-center py-3 rounded-md" href="">

@@ -18,6 +18,7 @@ use App\Models\Course;
 use App\Models\CourseSelection;
 use App\Models\Coupon;
 use Illuminate\Database\Eloquent\Builder;
+use Ramsey\Uuid\Uuid;
 
 
 use Cartalyst\Sentinel\Users\EloquentUser as CartalystUser;
@@ -25,7 +26,7 @@ class User extends CartalystUser
 //class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, Authorizable ;
-    
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
     const GENDER_MALE   = 'male';
     const GENDER_FEMALE = 'female';
@@ -41,7 +42,7 @@ class User extends CartalystUser
      * @var array<int, string>
      */
     protected $fillable = [
-        
+        'uuid',
         'full_name',
         'email',
         'password',
@@ -68,6 +69,7 @@ class User extends CartalystUser
     protected $hidden = [
         'password',
         'remember_token',
+        'permissions'
     ];
 
     /**
@@ -77,7 +79,19 @@ class User extends CartalystUser
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'status' => 'boolean',
     ];
+    
+
+
+
+    public static function boot(){
+        parent::boot();        
+        static::creating(function ($model) {
+            $model->uuid = str_replace('-', '', Uuid::uuid4()->toString());
+        });
+    }
+
 
     protected static function booted(){
         static::addGlobalScope('active', function (Builder $builder) {
@@ -179,7 +193,7 @@ class User extends CartalystUser
     }
 
     public function getContactMessages(){
-        return $this->hasMany(Contact_us::class,'user_id','id');
+        return $this->hasMany(ContactUs::class,'user_id','id');
     }
 
 
@@ -194,14 +208,92 @@ class User extends CartalystUser
         return $this->hasMany(Coupon::class,'beneficiary_id','id');
     }
 
+    public function enrollments()
+    {
+        return $this->hasManyThrough(
+            Enrollment::class,
+            CourseSelection::class,
+            'student_id', // Foreign key on the course_selections table...
+            'course_selection_id', // Foreign key on the enrollments table...
+            'id', // Local key on the users table...
+            'id' // Local key on the course_selections table...
+        );
+    }
 
-    public function getLastLoginTime(){
-        return Carbon::parse($this->last_login)->diffForHumans();
+
+    public function enrollmentsToUserCreatedCourses()
+    {
+        return $this->hasManyDeep(
+            Enrollment::class,
+            [Course::class, CourseSelection::class], // Intermediate models, beginning at the far parent (User).
+            [
+               'teacher_id', // Foreign key on the "courses" table.
+               'course_id',    // Foreign key on the "course_selections" table.
+               'course_selection_id'     // Foreign key on the "enrollments" table.
+            ],
+            [
+              'id', // Local key on the "users" table.
+              'id', // Local key on the "courses" table.
+              'id'  // Local key on the "course_selections" table.
+            ]
+        )
+        ->where('courses.status', 'published')       
+        ->where(function ($query) {
+            $query->where(function ($query) {
+                $query->where('course_selections.is_checkout', 1)
+                    ->where('courses.price', '!=', 0);
+            })->orWhere(function ($query) {
+                $query->where('course_selections.is_checkout', 0)
+                    ->where('courses.price', '=', 0)
+                    ->whereNull('course_selections.cart_added_date');
+            });
+        });
+
+    }
+
+    public function commissionedEnrollments()
+    {
+        /* todo - filter free courses */
+        return $this->hasManyDeep(
+            Enrollment::class,
+            [Coupon::class, CourseSelection::class], // Intermediate models, beginning at the far parent (User).
+            [
+               'beneficiary_id', // Foreign key on the "coupons" table.
+               'used_coupon_code',    // Foreign key on the "course_selections" table.
+               'course_selection_id'     // Foreign key on the "enrollments" table.
+            ],
+            [
+              'id', // Local key on the "users" table.
+              'code', // Local key on the "coupons" table.
+              'id'  // Local key on the "course_selections" table.
+            ]
+        )
+        ->where('coupons.is_enabled', 1)
+        ->whereColumn('coupons.total_count', '>', 'coupons.used_count');      
+        /*
+        ->where(function ($query) {
+            $query->where(function ($query) {
+                $query->where('course_selections.is_checkout', 1)
+                    ->where('courses.price', '!=', 0);
+            })->orWhere(function ($query) {
+                $query->where('course_selections.is_checkout', 0)
+                    ->where('courses.price', '=', 0)
+                    ->whereNull('course_selections.cart_added_date');
+            });
+        });
+        */
+
     }
 
 
 
 
+
+
+
+    public function getLastLoginTime(){
+        return Carbon::parse($this->last_login)->diffForHumans();
+    }
 
     public function aaa(){
         //dd($this->exists);
