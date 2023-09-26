@@ -2,7 +2,7 @@
 namespace App\Domain;
 
 use App\Domain\CourseItem as CourseItemEntity;
-use App\Domain\Order;
+use App\Domain\Order as OrderEntity;
 
 use App\Domain\AuthorFee as AuthorFeeEntity;
 use App\Domain\CommissionFee as CommissionFeeEntity;

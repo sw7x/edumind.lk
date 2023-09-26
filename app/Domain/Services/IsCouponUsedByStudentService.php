@@ -1,8 +1,7 @@
 <?php
 namespace App\Domain\Services;
 
-//use App\Domain\Enrollment;
-use App\Domain\CouponCode;
+use App\Domain\CouponCode as CouponCodeEntity;
 
 use App\Domain\Exceptions\DomainException;
 use App\Domain\Services\IDomainService;
@@ -17,7 +16,7 @@ class IsCouponUsedByStudentService implements IDomainService{
     * @param Enrollment[] $enrollmentArr
     * @return bool
     */
-	public function execute(CouponCode $cc, array $enrollmentArr) : bool {
+	public function execute(CouponCodeEntity $cc, array $enrollmentArr) : bool {
         $isUsed = false;
         foreach ($enrollmentArr as $enrollment) {
         	if($enrollment->checkGivenCouponUsed($cc)){

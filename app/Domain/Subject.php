@@ -4,7 +4,6 @@
 namespace App\Domain;
 //use App\Domain\TeacherUser;
 use App\Domain\Users\User as UserEntity;
-use App\Domain\Subject;
 use App\Domain\Entity;
 
 use App\Domain\Exceptions\AttributeAlreadySetDomainException;

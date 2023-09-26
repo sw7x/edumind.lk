@@ -5,12 +5,12 @@ namespace App\Domain\Users;
 
 
 
-use App\Domain\AbstractUser;
-use App\Domain\Users\User;
+use App\Domain\AbstractUser as AbstractUserEntity;
+use App\Domain\Users\User as UserEntity;
 
 
 
-class TeacherUser extends User {
+class TeacherUser extends UserEntity {
     
     private int     $dobYear;
     private ?string $eduQualifications;

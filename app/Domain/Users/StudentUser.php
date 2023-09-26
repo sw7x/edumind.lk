@@ -3,21 +3,25 @@
 
 namespace App\Domain\Users;
 
+use App\Domain\AbstractUser as AbstractUserEntity;
+use App\Domain\Users\User as UserEntity;
+use App\Domain\Cart as CartEntity;
 
-use App\Domain\AbstractUser;
+
+
 use App\Domain\Exceptions\DomainException;
 
-use App\Domain\Cart;
-use App\Domain\Users\User;
 
 
-class StudentUser extends User {
+
+
+class StudentUser extends UserEntity {
 	
 	private int     $dobYear;
 	private ?string $profileText;
     
     /* composition */
-    private Cart $cart;
+    private CartEntity $cart;
 
 
     public function __construct(        
@@ -39,7 +43,7 @@ class StudentUser extends User {
         );
         $this->dobYear      = $dobYear;
         $this->profileText  = $profileText;
-        $this->cart         = new Cart();
+        $this->cart         = new CartEntity();
     }
     
     //GETTERS
@@ -51,7 +55,7 @@ class StudentUser extends User {
         return $this->profileText;
     }
 
-    public function getCart() : Cart {
+    public function getCart() : CartEntity {
         return $this->cart;
     }
 

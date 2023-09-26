@@ -1,7 +1,7 @@
 <?php
 namespace App\Domain;
 
-use App\Domain\CourseMessage;
+use App\Domain\CourseMessage as CourseMessageEntity;
 use App\Domain\Interfaces\IEntity;
 use App\Domain\Entity;
 

@@ -4,10 +4,9 @@
 namespace App\Domain\Users;
 
 
-use App\Domain\AbstractUser;
+use App\Domain\AbstractUser as AbstractUserEntity;
 
-
-class User extends AbstractUser{
+class User extends AbstractUserEntity{
         
     public function toArray() : array {
 
