@@ -7,7 +7,7 @@ Route::get('/storage-link', function () {
     /*
     $folders = ['courses','subjects','users111'];
     foreach ($folders as $folderName) {        
-        $folderPath = $storagePath = storage_path('app/public/'.$folderName);
+        $folderPath = storage_path('app/public/'.$folderName);
         
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);

@@ -117,8 +117,8 @@
                 <div class="pull-right">
                     <form action="{{route('auth.logout')}}" method="post" class='admin-logout-form'>
                         {{csrf_field ()}}
-                        <a href="" class="bg-red-600 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Yes</a>
-                        <a href="#" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-control-close">No</a>
+                        <a href="" class="logout bg-red-600 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Yes</a>
+                        <a href="#" class="closeBtn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-control-close">No</a>
                     </form>
                 </div>
             </div>

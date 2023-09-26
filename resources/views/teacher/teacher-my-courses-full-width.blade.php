@@ -55,23 +55,23 @@
 
                                     @forelse ($teacher_courses as $course)
                                         <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
-                                            <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
-                                                <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
+                                            <a href="{{route('course-single',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
+                                                <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                             </a>
                                             <div class="flex-1 md:space-y-2 space-y-1">
-                                                <a href="{{route('course-single',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
-                                                <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course->heading_text}}</p>
-                                                <a href="{{route('teacher.view-profile',$course->teacher->username)}}" class="md:font-semibold block text-sm">{{$course->teacher->full_name}}</a>
+                                                <a href="{{route('course-single',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
+                                                <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course['headingText']}}</p>
+                                                <a href="{{route('viewTopic', $course['subjectSlug'])}}" class="md:font-semibold block text-sm">{{$course['subjectName']}}</a>
                                                 <div class="flex items-center justify-between">
                                                     <div class="flex __space-x-2 items-center text-sm">
                                                         <div class="font-semibold">
                                                             <span class="">
-                                                                <i class="align-middle icon-feather-youtube" style="font-size: 1.20rem;"></i> {{$course->video_count}} lectures
+                                                                <i class="align-middle icon-feather-youtube" style="font-size: 1.20rem;"></i> {{$course['videoCount']}} lectures
                                                             </span>
                                                         </div>
                                                         <div class="font-semibold ml-3">
                                                             <span class="">
-                                                                <i class="align-middle icon icon-feather-clock" style="font-size: 1.20rem;"></i>{{$course->duration}}
+                                                                <i class="align-middle icon icon-feather-clock" style="font-size: 1.20rem;"></i>{{$course['duration']}}
                                                             </span>
                                                         </div>
 
@@ -87,13 +87,13 @@
                                                         --}}
                                                         <div></div>
                                                     </div>
-                                                    @if($course->price)
-                                                        <div class="text-lg font-semibold">{{ $course->price == 0 ? "Free" : 'Rs '.$course->price }}</div>
+                                                    @if(isset($course['price']))
+                                                        <div class="text-lg font-semibold">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                                     @endif
                                                 </div>
                                             </div>
                                             <div class="absolute top-4 -right-1 cursor-pointer">
-                                                @if($course->status == App\Models\Course::PUBLISHED)
+                                                @if($course['status'] == App\Models\Course::PUBLISHED)
                                                     <ion-icon name="bag-check-sharp" class="text-2xl text-green-500 course-status" title="published"></ion-icon>
                                                 @else
                                                     <ion-icon name="trash-bin-sharp" class="text-2xl text-red-500 course-status" title="Draft"></ion-icon>

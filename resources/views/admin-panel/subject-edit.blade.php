@@ -27,17 +27,17 @@
             <div class="ibox ">
                 <div class="ibox-content">
                     <h3>Update Subject</h3>
-                    <form class="edit-subject-form" id="edit-subject" action="{{route('admin.subject.update',$subject->id)}}" method="POST">
+                    <form class="edit-subject-form" id="edit-subject" action="{{route('admin.subject.update',$subject['id'])}}" method="POST">
 
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Name</label>
-                            <div class="col-sm-8"><input type="text" name="subject_name" class="form-control" required="required" value="{{$subject->name}}"></div>
+                            <div class="col-sm-8"><input type="text" name="name" class="form-control" required="required" value="{{$subject['name']}}"></div>
                         </div>
                         <div class="hr-line-dashed"></div>
 
                         <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
                             <div class="col-sm-8">
-                                <textarea rows="8" class="form-control" placeholder="Enter Description"  name="subject_description" cols="50">{{$subject->description}}</textarea>
+                                <textarea rows="8" class="form-control" placeholder="Enter Description"  name="description" cols="50">{{$subject['description']}}</textarea>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -45,11 +45,11 @@
                         <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
                             <div class="col-sm-8">
                                 {{--
-                                <input type="file" class="form-control" name="subject_image">
+                                <input type="file" class="form-control" name="image">
                                 --}}
                                 <input type="file"
                                        class="filepond-img"
-                                       name="subject_img"
+                                       name="image"
                                        accept="image/webp, image/png, image/jpeg, image/gif"
                                        data-max-file-size="1MB"/>
                                 <p>Image Size 300X350</p>
@@ -58,9 +58,9 @@
                         <div class="hr-line-dashed"></div>
 
 
-                        <input type="hidden" value="{{URL('/')}}/storage/{{$subject->image}}"
-                               name="hidden_subject_img" data-url="{{$subject->image}}"/>
-                        <input type="hidden" value="{{$subject->image}}"
+                        <input type="hidden" value="{{$subject['image']}}"
+                               name="hidden_subject_img" data-url="{{$subject['image']}}"/>
+                        <input type="hidden" value="{{$subject['image']}}"
                                name="hidden_subject_img_url"/>
                         <input type="hidden" value="1"
                                name="hidden_file_add_count"/>
@@ -70,10 +70,10 @@
                             <label class="col-sm-4 col-form-label">Submit status</label>
                             <div class="col-sm-8">
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="draft" name="subject_stat" {{$subject->status == App\Models\Subject::DRAFT ? 'checked':''}}> <i></i> Draft </label>
+                                    <label> <input type="radio" value="draft" name="status" {{$subject['status'] == App\Models\Subject::DRAFT ? 'checked':''}}> <i></i> Draft </label>
                                 </div>
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="published" name="subject_stat" {{$subject->status == App\Models\Subject::PUBLISHED ? 'checked':''}}> <i></i> Published </label>
+                                    <label> <input type="radio" value="published" name="status" {{$subject['status'] == App\Models\Subject::PUBLISHED ? 'checked':''}}> <i></i> Published </label>
                                 </div>
                             </div>
                         </div>
@@ -136,17 +136,30 @@
 
 			FilePondPluginFileValidateType
 		);
+
+
+
+        
+        // Select the file input and use create() to turn it into a pond
+        const pond = FilePond.create(document.querySelector('.filepond-img'));
+
+        let subjImg = $('form.edit-subject-form input[name="hidden_subject_img"]').val();
+        let subjUrl = $('form.edit-subject-form input[name="hidden_subject_img_url"]').val();
+        if(subjUrl){
+            pond.addFile(subjImg);
+        }
+
+
+
+
+
+
+
+
 	})();
 
 
-	// Select the file input and use create() to turn it into a pond
-	const pond = FilePond.create(document.querySelector('.filepond-img'));
 
-	let subjImg = $('form.edit-subject-form input[name="hidden_subject_img"]').val();
-	let subjUrl = $('form.edit-subject-form input[name="hidden_subject_img_url"]').val();
-	if(subjUrl){
-		//pond.addFile(subjImg);
-	}
 
 
 	/*

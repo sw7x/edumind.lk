@@ -24,6 +24,7 @@ class ContactUsMapper extends Mapper
             ['phone',       '<=>',        'phone'],
             ['subject',     '<=>',        'subject'],
             ['message',     '<=>',        'message'],
+            ['created_at',  '<=>',        'createdAt'],
 
             ['user_id',     '<=>',        'userId'],
             
@@ -48,7 +49,8 @@ class ContactUsMapper extends Mapper
             
             ['userId',     '<=>',     	'user'],
             ['userId',     '<=',        'user_id'],
-            
+            ['createdAt',   '=>',       'created_at'],
+
             '__ARRAY__' => [
                 [
                     "userArr",     '<=>',   "user_arr",    UserMapper::mapper['POST_MAP']

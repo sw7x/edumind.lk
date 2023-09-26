@@ -12,7 +12,11 @@ class CouponSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-        Coupon::factory()->count(100)->create();
+    {        
+        try {                        
+            Coupon::factory()->count(100)->create();
+        } catch (\Exception $e) {
+            $this->command->error('Failed to seed coupon to database !');
+        }
     }
 }

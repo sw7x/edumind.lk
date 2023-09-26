@@ -6,6 +6,8 @@ namespace App\Domain;
 use App\Domain\Users\User as UserEntity;
 use App\Domain\Entity;
 use App\Domain\Exceptions\AttributeAlreadySetDomainException;
+use App\Domain\ValueObjects\DateTimeVO;
+
 
 //created_at 
 //updated_at
@@ -15,15 +17,17 @@ use App\Domain\Exceptions\AttributeAlreadySetDomainException;
 
 class ContactUsMessage extends Entity
 {
-    private ?int     $id       = null;
-    private ?string  $uuid     = null;
-    private ?string  $fullName = null;
-    private ?string  $email    = null;
-    private ?string  $phone    = null;
-    
-    private string   $subject;
-    private string   $message;
-    
+    private ?int        $id        = null;
+    private ?string     $uuid      = null;
+    private ?string     $fullName  = null;
+    private ?string     $email     = null;
+    private ?string     $phone     = null;
+    private ?DateTimeVO $createdAt = null;
+
+    private string      $subject;
+    private string      $message;
+  
+
     
     /* associations */
     private ?UserEntity $creator = null;
@@ -69,7 +73,8 @@ class ContactUsMessage extends Entity
 
     public function getCreator() : ?UserEntity {
         return $this->creator;
-    }
+    }    
+
 
 
 
@@ -117,7 +122,12 @@ class ContactUsMessage extends Entity
         $this->creator = $creator;
     }
 
-
+    final public function setCreatedAt(DateTimeVO $createdAt) : void {
+        if ($this->createdAt !== null) {
+            throw new AttributeAlreadySetDomainException('createdAt attribute has already been set and cannot be changed.');
+        }
+        $this->createdAt = $createdAt;
+    }
 
 
     // toArray method
@@ -130,6 +140,8 @@ class ContactUsMessage extends Entity
             'phone' 	        => $this->phone,
             'subject' 	        => $this->subject,
             'message' 	        => $this->message,
+            'createdAt'         => $this->createdAt ? $this->createdAt->getValue()->format('Y-m-d H:i:s') : null,
+
             
             'userArr'           => $this->creator ? $this->creator->toArray() : null,
             'userId'            => $this->creator ? $this->creator->getId()   : null,

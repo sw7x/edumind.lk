@@ -113,7 +113,7 @@ class UserFactory implements IFactory {
         if(!is_bool($userData['status']))    
             throw new InvalidArgumentDomainException("Invalid status parameter for create Standard User entity");
 
-        $UserEntity = new UserEntity(
+        $userEntity = new UserEntity(
             $userData['fullName'],
             $userData['email'],
             $userData['phone'],
@@ -126,25 +126,32 @@ class UserFactory implements IFactory {
         }
 
         if (isset($userData['uuid'])) {
-            $UserEntity->setUuid($userData['uuid']);
+            $userEntity->setUuid($userData['uuid']);
         }        
 
         if (isset($userData['id'])) {
-            $UserEntity->setId($userData['id']);
+            $userEntity->setId($userData['id']);
         }
 
         if (isset($userData['profilePic'])) {
-            $UserEntity->setProfilePic($userData['profilePic']);
+            $userEntity->setProfilePic($userData['profilePic']);
         }        
 
         if (isset($userData['gender'])) {              
             if (!in_array( $userData['gender'], [GenderTypesEnum::MALE, GenderTypesEnum::FEMALE, GenderTypesEnum::OTHER])) {
-                throw new InvalidArgumentDomainException('Invalid gender parameter for Admin User entity');
+                throw new InvalidArgumentDomainException('Invalid gender parameter for Standard User entity');
             }
-            $UserEntity->setGender($userData['gender']);      
+            $userEntity->setGender($userData['gender']);      
+        }        
+
+        if (isset($userData['isActivated'])) {              
+            if (!is_bool($userData['isActivated']))
+                throw new InvalidArgumentDomainException('Invalid isActivated parameter for Standard User entity');
+            
+            $userEntity->setIsActivated($userData['isActivated']);      
         }
 
-        return $UserEntity;
+        return $userEntity;
     }
 
     
@@ -204,6 +211,13 @@ class UserFactory implements IFactory {
                 throw new InvalidArgumentDomainException('Invalid gender parameter for Admin User entity');
             }
             $adminUser->setGender($userData['gender']);      
+        }        
+
+        if (isset($userData['isActivated'])) {              
+            if (!is_bool($userData['isActivated']))
+                throw new InvalidArgumentDomainException('Invalid isActivated parameter for Admin User entity');
+            
+            $adminUser->setIsActivated($userData['isActivated']);      
         }
         
         if(!empty($userData['roleArr']) && $userData['roleArr']['name'] == UserTypesEnum::ADMIN){        
@@ -276,6 +290,13 @@ class UserFactory implements IFactory {
             $editorUser->setGender($userData['gender']);      
         }
         
+        if (isset($userData['isActivated'])) {              
+            if (!is_bool($userData['isActivated']))
+                throw new InvalidArgumentDomainException('Invalid isActivated parameter for Editor User entity');
+            
+            $editorUser->setIsActivated($userData['isActivated']);      
+        }
+
         if(!empty($userData['roleArr']) && $userData['roleArr']['name'] == UserTypesEnum::EDITOR){        
             $role = new RoleEntity($userData['roleArr']['name']);            
             if(isset($userData['roleArr']['id'])) $role->setId($userData['roleArr']['id']);
@@ -346,6 +367,13 @@ class UserFactory implements IFactory {
             $marketerUser->setGender($userData['gender']);      
         }
         
+        if (isset($userData['isActivated'])){            
+            if (!is_bool($userData['isActivated']))
+                throw new InvalidArgumentDomainException('Invalid isActivated parameter for Marketer User entity');
+            
+            $marketerUser->setIsActivated($userData['isActivated']);      
+        }
+
         if(!empty($userData['roleArr']) && $userData['roleArr']['name'] == UserTypesEnum::MARKETER){        
             $role = new RoleEntity($userData['roleArr']['name']);            
             if(isset($userData['roleArr']['id'])) $role->setId($userData['roleArr']['id']);
@@ -417,8 +445,8 @@ class UserFactory implements IFactory {
         }
 
         /*        
-        if (isset($UserData['dobYear'])) {
-            $studentUser->setDobYear($UserData['dobYear']);
+        if (isset($userData['dobYear'])) {
+            $studentUser->setDobYear($userData['dobYear']);
         }
         */        
 
@@ -426,6 +454,13 @@ class UserFactory implements IFactory {
             $studentUser->setProfileText($userData['profileText']);
         }
         
+        if (isset($userData['isActivated'])){              
+            if (!is_bool($userData['isActivated']))
+                throw new InvalidArgumentDomainException('Invalid isActivated parameter for Student User entity');
+            
+            $studentUser->setIsActivated($userData['isActivated']);      
+        }
+
         if(!empty($userData['roleArr']) && $userData['roleArr']['name'] == UserTypesEnum::STUDENT){        
             $role = new RoleEntity($userData['roleArr']['name']);            
             if(isset($userData['roleArr']['id'])) $role->setId($userData['roleArr']['id']);
@@ -497,23 +532,32 @@ class UserFactory implements IFactory {
             $teacherUser->setGender($userData['gender']);      
         }
 
-        if (isset($UserData['dobYear'])) {
-            $dobYear = $UserData['dobYear'];
+        if (isset($userData['dobYear'])) {
+            $dobYear = $userData['dobYear'];
             if (is_int($dobYear) && ($dobYear >= 1900) && ($dobYear < date('Y'))) {
                 $teacherUser->setDobYear($dobYear);
             }else{
                 throw new InvalidArgumentDomainException('Invalid dobYear parameter for Teacher User entity');
             }            
         }        
+        
+        /*
+        if (isset($userData['profileText'])) {
+            $teacherUser->setProfileText($userData['profileText']);
+        }
+        */
+        
+        if (isset($userData['eduQualifications'])) {
+            $teacherUser->setEduQualifications($userData['eduQualifications']);
+        }
 
-        if (isset($UserData['profileText'])) {
-            $teacherUser->setProfileText($UserData['profileText']);
+        if (isset($userData['isActivated'])){             
+            if (!is_bool($userData['isActivated']))
+                throw new InvalidArgumentDomainException('Invalid isActivated parameter for Teacher User entity');
+            
+            $teacherUser->setIsActivated($userData['isActivated']);      
         }
         
-        if (isset($UserData['eduQualifications'])) {
-            $teacherUser->setEduQualifications($UserData['eduQualifications']);
-        }
-
         if(!empty($userData['roleArr']) && $userData['roleArr']['name'] == UserTypesEnum::TEACHER){        
             $role = new RoleEntity($userData['roleArr']['name']);            
             if(isset($userData['roleArr']['id'])) $role->setId($userData['roleArr']['id']);

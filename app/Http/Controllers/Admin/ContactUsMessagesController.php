@@ -5,178 +5,230 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
 use App\Models\ContactUs;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Services\Admin\ContactUsService as AdminContactUsService;
+use App\View\DataTransformers\Admin\ContactUsDataTransformer as AdminContactUsDataTransformer;
+
+//use App\Models\User;
+//use App\Repositories\ContactUsRepository;
 
 class ContactUsMessagesController extends Controller
 {
-    public function viewStudentMessages(){        
-        
+    /*private $subjectService;
+
+    function __construct(SubjectService $subjectService){
+        $this->subjectService = $subjectService;
+    }*/
+
+    private AdminContactUsService $adminContactUsService;
+
+    function __construct(AdminContactUsService $adminContactUsService){
+        $this->adminContactUsService = $adminContactUsService;
+    }
+
+    public function viewStudentMessages(){
+
         try{
             $this->authorize('viewAny',ContactUs::class);
-            
-            $studentComments = ContactUs::select('contact_us.*', 'users.status as userStat')
-            ->whereHas('user', function ($query){
-                $query->withoutGlobalScope('active')
-                ->whereHas('roles', function ($query){
-                    $query->where('name', 'student');
-                });
-            })
-            ->join('users', 'contact_us.user_id', '=', 'users.id')
-            ->orderBy('contact_us.created_at', 'desc')
-            //->toSql();
-            ->get();
 
-        }catch(AuthorizationException $e){          
-            
+            $studentCommentsDtoArr  = $this->adminContactUsService->loadStudentMessages();
+            $studentCommentsArr     = AdminContactUsDataTransformer::prepareData($studentCommentsDtoArr);
+
+        }catch(AuthorizationException $e){
             session()->flash('message','You dont have Permissions to view student comments!');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Permission Denied!');
-            unset($studentComments);
+            unset($studentCommentsArr);
 
-        }catch(\Exception $e){
-            //session()->flash('message',$e->getMessage());
-            session()->flash('message','Failed to show all student comments!');
+        }catch(CustomException $e){
+            session()->flash('message',$e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            unset($studentComments);
-        }      
-        
+            unset($studentCommentsArr);
+
+        }catch(\Exception $e){
+            session()->flash('message',$e->getMessage());
+            //session()->flash('message','Failed to show all student comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($studentCommentsArr);
+        }
+
         return view('admin-panel.admin.contact-us-students')->with([
-            'studentComments' => $studentComments??null
+            'studentComments' => $studentCommentsArr ?? null
         ]);
     }
 
 
     public function viewTeacherMessages(){
-        $this->authorize('viewAny',ContactUs::class);
-        
 
-        $teacherComments = ContactUs::select('contact_us.*', 'users.status as userStat','users.profile_pic as profilePic')
-        ->whereHas('user', function ($query){
-            $query->withoutGlobalScope('active')
-            ->whereHas('roles', function ($query){
-                $query->where('name', 'teacher');
-            });
-        })
-        ->join('users', 'contact_us.user_id', '=', 'users.id')
-        ->orderBy('contact_us.created_at', 'desc')
-        //->toSql();
-        ->get(); 
-        
-        //dd($teacherComments);
-        return view('admin-panel.admin.contact-us-teachers')->with(['teacherComments' => $teacherComments]);
+        try{
+            $this->authorize('viewAny',ContactUs::class);
+
+            $teacherCommentsDtoArr  = $this->adminContactUsService->loadTeacherMessages();
+            $teacherCommentsArr     = AdminContactUsDataTransformer::prepareData($teacherCommentsDtoArr);
+
+        }catch(AuthorizationException $e){
+            session()->flash('message','You dont have Permissions to view teacher comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Permission Denied!');
+            unset($teacherCommentsArr);
+
+        }catch(CustomException $e){
+            session()->flash('message',$e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($teacherCommentsArr);
+
+        }catch(\Exception $e){
+            session()->flash('message',$e->getMessage());
+            //session()->flash('message','Failed to show all teacher comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($teacherCommentsArr);
+        }
+
+        return view('admin-panel.admin.contact-us-teachers')->with([
+            'teacherComments' => $teacherCommentsArr ?? null
+        ]);
     }
 
 
     public function viewOtherUserMessages(){
-        $this->authorize('viewAny',ContactUs::class);
-        
-        // comments belongs to marketers and editors
-        $otherUserComments = ContactUs::select('contact_us.*', 'users.status as userStat', 'roles.name as roleName')
-        ->whereHas('user', function ($query){
-            $query->withoutGlobalScope('active')
-            ->whereHas('roles', function ($query){
-                $query->where('name', 'marketer')
-                    ->orWhere('name', 'editor');
-            });
-        })
-        ->join('users', 'contact_us.user_id', '=', 'users.id')
-        ->join('role_users', 'users.id', '=', 'role_users.user_id')
-        ->join('roles', 'role_users.role_id', '=', 'roles.id')
-        ->orderBy('contact_us.created_at', 'desc')
-        //->toSql();
-        ->get();
+        try{
+            $this->authorize('viewAny',ContactUs::class);
 
-        //dd($otherUserComments);
-        return view('admin-panel.admin.contact-us-other-users')->with(['otherUserComments' => $otherUserComments]);
+            $otherUserCommentsDtoArr  = $this->adminContactUsService->loadOtherUserMessages();
+            $otherUserCommentsArr     = AdminContactUsDataTransformer::prepareData($otherUserCommentsDtoArr);
+
+        }catch(AuthorizationException $e){
+            session()->flash('message','You dont have Permissions to view otherUser comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Permission Denied!');
+            unset($otherUserCommentsArr);
+
+        }catch(CustomException $e){
+            session()->flash('message',$e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($otherUserCommentsArr);
+
+        }catch(\Exception $e){
+            session()->flash('message',$e->getMessage());
+            //session()->flash('message','Failed to show all otherUser comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($otherUserCommentsArr);
+        }
+
+        return view('admin-panel.admin.contact-us-other-users')->with([
+            'otherUserComments' => $otherUserCommentsArr ?? null
+        ]);
+
     }
-
-
 
 
     public function viewGuestMessages(){
-        $this->authorize('viewAny',ContactUs::class);
-        
-        $guestMessages = ContactUs::where('user_id', null)
-        ->orderBy('contact_us.created_at', 'desc')
-        ->get();
-        
-        return view('admin-panel.admin.contact-us-guests')->with(['guestMessages' => $guestMessages]);
+        try{
+            $this->authorize('viewAny',ContactUs::class);
+
+            $guestCommentsDtoArr  = $this->adminContactUsService->loadGuestMessages();
+            $guestCommentsArr     = AdminContactUsDataTransformer::prepareData($guestCommentsDtoArr);
+
+        }catch(AuthorizationException $e){
+            session()->flash('message','You dont have Permissions to view guest comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Permission Denied!');
+            unset($guestCommentsArr);
+
+        }catch(CustomException $e){
+            session()->flash('message',$e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($guestCommentsArr);
+
+        }catch(\Exception $e){
+            session()->flash('message',$e->getMessage());
+            //session()->flash('message','Failed to show all guest comments!');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            unset($guestCommentsArr);
+        }
+
+        return view('admin-panel.admin.contact-us-guests')->with([
+            'guestMessages' => $guestCommentsArr ?? null
+        ]);
+
     }
 
 
-    public function deleteComment(Request $request, $id){
+
+
+
+
+    public function deleteComment(Request $request, int $id){
 
         //dd($id);
         try{
-            
-            if(!filter_var($id, FILTER_VALIDATE_INT)){
+
+            $userType = (isset($request->userType)?$request->userType:null);
+            switch ($userType) {
+                case "teacher":
+                    $redirectRoute = 'admin.feedback.teachers';
+                    break;
+                case "student":
+                    $redirectRoute = 'admin.feedback.students';
+                    break;
+                case "other":
+                    $redirectRoute = 'admin.feedback.other-users';
+                    break;
+                case "guest":
+                    $redirectRoute = 'admin.feedback.guests';
+                    break;
+                default:
+                    $redirectRoute = 'admin.dashboard';
+            }
+
+            if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-            }
-            $comment = ContactUs::find($id);
-            
-            if ($comment) {
 
-                $this->authorize('delete',$comment);
+            $commentRec  = $this->adminContactUsService->findContactUsMessageRec($id);
+            if (is_null($commentRec))
+                throw new CustomException('Comment does not exist!');
 
-                $comment->delete();
-                $userType = (isset($request->userType)?$request->userType:null);
+            $this->authorize('delete', $commentRec);
 
-                switch ($userType) {
-                    case "teacher":
-                        $redirectRoute = 'admin.feedback.teachers';
-                        break;
-                    case "student":
-                        $redirectRoute = 'admin.feedback.students';
-                        break;
-                    case "other":
-                        $redirectRoute = 'admin.feedback.other-users';
-                        break;
-                    case "guest":
-                        $redirectRoute = 'admin.feedback.guests';
-                        break;
-                    default:
-                        $redirectRoute = 'admin.dashboard';
-                }
+            $isDelete  = $this->adminContactUsService->deleteContactUsMessage($id);
+            if(!$isDelete)
+                throw new CustomException("Failed to delete comment !");
 
-                return redirect(route($redirectRoute))
-                    ->with([
-                        'message'  => 'successfully deleted the comment',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success!',
-                    ]);
+            return redirect(route($redirectRoute))->with([
+                'message'  => 'successfully deleted the comment',
+                'cls'     => 'flash-success',
+                'msgTitle'=> 'Success!',
+            ]);
 
-            } else {
 
-                throw new CustomException('Comment does not exist!',[
-                    'cls'     => 'flash-warning',
-                    'msgTitle'=> 'Warning!',
-                ]);
-
-            }
         }catch(CustomException $e){
-
             $exData = $e->getData();
-            //dd($e->getData());
-            return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([            
+            return redirect()->back()->with([
+            //return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([
                 'message'     => $e->getMessage(),
                 'cls'         => $exData['cls'] ?? "flash-danger",
                 'msgTitle'    => $exData['msgTitle']  ?? 'Error!',
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([
+            return redirect(route('admin.dashboard'))->with([
                 'message'     => 'You dont have Permissions to delete the comment !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied!',
             ]);
-            //Illuminate\Auth\Access\AuthorizationException
+
         }catch(\Exception $e){
-            //dd($e);
-            //dd(get_class($e));
-            return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([
+            return redirect()->back()->with([
+                //'message'     => $e->getMessage(),
                 'message'     => 'Comment delete failed!',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Error!',

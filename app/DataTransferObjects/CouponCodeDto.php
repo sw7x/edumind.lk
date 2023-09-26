@@ -5,14 +5,14 @@ namespace App\DataTransferObjects;
 
 use App\DataTransferObjects\AbstractDto;
 
-use App\DataTransferObjects\CourseDTO;
-use App\DataTransferObjects\UserDTO;
+use App\DataTransferObjects\CourseDto;
+use App\DataTransferObjects\UserDto;
 
 
 class CouponCodeDto extends AbstractDto
 {
     //public read only
-    private ?CourseDTO $courseDTO;
+    private ?CourseDto $courseDto;
     private string     $code;
     private float      $discountPercentage;
     
@@ -22,11 +22,11 @@ class CouponCodeDto extends AbstractDto
     private ?int       $usedCount;
     private ?bool      $isEnabled;    
     
-    private ?UserDTO   $beneficiaryDTO;
+    private ?UserDto   $beneficiaryDto;
 
 
     public function __construct(
-        CourseDTO $courseDTO                       = null, 
+        CourseDto $courseDto                       = null, 
         string    $code, 
         float     $discountPercentage, 
         
@@ -36,9 +36,9 @@ class CouponCodeDto extends AbstractDto
         ?int      $usedCount                       = null, 
         ?bool     $isEnabled                       = null, 
 
-        ?UserDTO  $beneficiaryDTO                  = null
+        ?UserDto  $beneficiaryDto                  = null
     ) {
-        $this->courseDTO                           = $courseDTO;
+        $this->courseDto                           = $courseDto;
         $this->code                                = $code;
         $this->discountPercentage                  = $discountPercentage;
         
@@ -54,7 +54,7 @@ class CouponCodeDto extends AbstractDto
 
 
         
-        $this->beneficiaryDTO                      = $beneficiaryDTO;
+        $this->beneficiaryDto                      = $beneficiaryDto;
     }
     
 
@@ -80,6 +80,10 @@ class CouponCodeDto extends AbstractDto
     public function getCommisionPercentageFromDiscount() : ?float {
         return $this->commisionPercentageFromDiscount;
     }
+    
+    public function getEdumindPercentageFromDiscount() : ?float {
+        return (float)(100 - $this->commisionPercentageFromDiscount);
+    }
 
     public function getTotalCount() : ?int {
         return $this->totalCount;
@@ -93,12 +97,12 @@ class CouponCodeDto extends AbstractDto
         return $this->isEnabled;
     }
 
-    public function getCourseDTO() : ?CourseDTO {
-        return $this->courseDTO;
+    public function getCourseDto() : ?CourseDto {
+        return $this->courseDto;
     }
 
-    public function getBeneficiaryDTO() : ?UserDTO {
-        return $this->beneficiaryDTO;
+    public function getBeneficiaryDto() : ?UserDto {
+        return $this->beneficiaryDto;
     }
 
     
@@ -113,11 +117,11 @@ class CouponCodeDto extends AbstractDto
             'usedCount'                         => $this->usedCount,
             'isEnabled'                         => $this->isEnabled,
             
-            'assignedCourseArr'                 => $this->courseDTO ? $this->courseDTO->toArray() : null,
-            'assignedCourseId'                  => $this->courseDTO ? $this->courseDTO->getId() : null,
+            'assignedCourseArr'                 => $this->courseDto ? $this->courseDto->toArray() : null,
+            'assignedCourseId'                  => $this->courseDto ? $this->courseDto->getId() : null,
 
-            'beneficiaryArr'                    => $this->beneficiaryDTO ? $this->beneficiaryDTO->toArray() : null,
-            'beneficiaryId'                     => $this->beneficiaryDTO ? $this->beneficiaryDTO->getId() : null,
+            'beneficiaryArr'                    => $this->beneficiaryDto ? $this->beneficiaryDto->toArray() : null,
+            'beneficiaryId'                     => $this->beneficiaryDto ? $this->beneficiaryDto->getId() : null,
 
         ];
     }

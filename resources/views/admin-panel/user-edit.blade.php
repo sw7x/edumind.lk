@@ -35,44 +35,46 @@
     <div class="row" id="">
         <div class="col-lg-12">
 
-            @if(Session::has('user_edit_message'))
-                <div class="flash-msg {{ Session::get('user_edit_cls', 'flash-info')}}">
+            @if(Session::has('message'))
+                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
                     <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('user_edit_msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('user_edit_message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('user_edit_message2') ?? '' !!}</div>
+                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
+                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
+                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
                 </div>
-            @else           
+            @endif           
+            
+            @isset($userData)
                 <div class="ibox">
                     <div class="ibox-content">
 
                         <div class="tabs-container">
                             {{--userData--}}
-                            {{--$userType--}}
+                            {{--$userData['userType']--}}
                             <ul class="nav nav-tabs" role="tablist">
-                                <li><a class="nav-link {{ ($userType == 'teacher') ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-teachers">Edit teacher</a></li>
-                                <li><a class="nav-link {{ ($userType == 'student') ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-students">Edit student</a></li>
-                                <li><a class="nav-link {{ ($userType == 'marketer') ? 'active' : 'disabled' }}" data-toggle="tab" href="#tab-marketers">Edit marketer</a></li>
-                                <li><a class="nav-link {{ ($userType == 'editor') ? 'active' : 'disabled' }}" data-toggle="tab"   href="#tab-editor">Edit editor</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == 'teacher') ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-teachers">Edit teacher</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == 'student') ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-students">Edit student</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == 'marketer') ? 'active' : 'disabled' }}" data-toggle="tab" href="#tab-marketers">Edit marketer</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == 'editor') ? 'active' : 'disabled' }}" data-toggle="tab"   href="#tab-editor">Edit editor</a></li>
                             </ul>
 
                             <div class="tab-content mb-3">
 
-                                @if($userType == 'teacher')
-                                <div role="tabpanel" id="tab-teachers" class="tab-pane {{ ($userType == 'teacher') ? 'active' : '' }}">
+                                @if($userData['userType'] == 'teacher')
+                                <div role="tabpanel" id="tab-teachers" class="tab-pane {{ ($userData['userType'] == 'teacher') ? 'active' : '' }}">
                                     <div class="panel-body">
 
-                                        <form class="" id="" action="{{route('admin.user.update-teacher',['id' => $userData->id])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.user.update-teacher',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
-                                            <input type="hidden" name="id" value="{{$userData->id}}">
+                                            <input type="hidden" name="teacher_id" value="{{$userData['id']}}">
 
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="teacher-name" class="form-control" required value="{{ $userData->full_name}}">
-                                                    @if ($errors->has('teacher-name'))
+                                                    <input type="text" name="teacher_name" class="form-control" required value="{{ $userData['fullName']}}">
+                                                    @if ($errors->has('teacher_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-name') as $error)
+                                                            @foreach ($errors->get('teacher_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -84,7 +86,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="teacher-uname" class="form-control" disabled value="{{ $userData->username}}">
+                                                    <input type="text" name="teacher_uname" class="form-control" disabled value="{{ $userData['username']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -92,7 +94,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="qemail" name="teacher-email" class="form-control" required disabled value="{{ $userData->email}}">
+                                                    <input type="email" name="teacher_email" class="form-control" required disabled value="{{ $userData['email']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -100,10 +102,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="teacher-phone" class="form-control" required value="{{ $userData->phone}}">
-                                                    @if ($errors->has('teacher-phone'))
+                                                    <input type="tel" name="teacher_phone" class="form-control" required value="{{ $userData['phone']}}">
+                                                    @if ($errors->has('teacher_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-phone') as $error)
+                                                            @foreach ($errors->get('teacher_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -149,7 +151,7 @@
                                                 <label class="col-sm-4 col-form-label">Education qualifications</label>
                                                 <div class="col-sm-8">
                                                     <div class="border border-edu">
-                                                        <textarea rows="3" class="form-control" name="teacher_edu_details">{{-- $userData->edu_qualifications --}}</textarea>
+                                                        <textarea rows="3" class="form-control" name="teacher_edu_details">{{-- $userData['eduQualifications'] --}}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -169,9 +171,9 @@
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
-                                            <input type="hidden" value="{{URL('/')}}/storage/{{$userData->profile_pic}}"
+                                            <input type="hidden" value="{{$userData['profilePic']}}"
                                                    name="teacher_img"/>
-                                            <input type="hidden" value="{{$userData->profile_pic}}"
+                                            <input type="hidden" value="{{$userData['profilePic']}}"
                                                    name="teacher_img_url"/>
                                             <input type="hidden" value="1"
                                                    name="teacher_img_add_count"/>
@@ -179,15 +181,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" required id="teacher-gender" name="teacher-gender" value="{{ $userData->gender }}">
+                                                    <select class="form-control m-b" required id="teacher_gender" name="teacher_gender" value="{{ $userData['gender'] }}">
                                                         <option></option>
-                                                        <option {{ $userData->gender == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ $userData->gender == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ $userData->gender == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ $userData['gender'] == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ $userData['gender'] == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ $userData['gender'] == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('teacher-gender'))
+                                                    @if ($errors->has('teacher_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-gender') as $error)
+                                                            @foreach ($errors->get('teacher_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -200,16 +202,32 @@
                                                 <label class="col-sm-4 col-form-label">Submit status</label>
                                                 <div class="col-sm-8">
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "enable" ? "checked" : ($userData->status =="disable" ? "" : "checked") }}
+                                                        <label> <input {{  $userData['status'] == true ? "checked" : ($userData['status'] == false ? "" : "checked") }}
                                                                        type="radio" checked value="enable" name="teacher_stat"> <i></i> Enable </label>
                                                     </div>
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "disable" ? "checked" : "" }}
+                                                        <label> <input {{  $userData['status'] == false ? "checked" : "" }}
                                                                        type="radio" value="disable" name="teacher_stat"> <i></i> Disable </label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
+
+
+                                            @if(array_key_exists("isActivated",$userData))
+                                                <div class="form-group row">
+                                                    <label class="col-sm-4 col-form-label">Activation status</label>
+                                                    <label class="col-sm-8 col-form-label">
+                                                        @if($userData['isActivated'] === true)
+                                                            <span class="label label-primary">Activated</span>
+                                                        @else($userData['isActivated'] === false)
+                                                            <span class="label label-warning">Not Activated</span>
+                                                        @endif
+                                                    </label>
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                            @endif
+                                            
 
                                             {{csrf_field ()}}
                                             <div class="form-group row">
@@ -223,22 +241,22 @@
                                 </div>
                                 @endif
 
-                                @if($userType == 'student')
-                                <div role="tabpanel" id="tab-students" class="tab-pane {{ ($userType == 'student') ? 'active' : '' }}">
+                                @if($userData['userType'] == 'student')
+                                <div role="tabpanel" id="tab-students" class="tab-pane {{ ($userData['userType'] == 'student') ? 'active' : '' }}">
                                     <div class="panel-body">
                                         @foreach ($errors->all() as $error)
                                             {{-- $error --}}
                                         @endforeach
 
-                                        <form class="" id="" action="{{route('admin.user.update-student',['id' => $userData->id])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.user.update-student',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="stud-name" class="form-control" required value="{{$userData->full_name}}">
-                                                    @if ($errors->has('stud-name'))
+                                                    <input type="text" name="stud_name" class="form-control" required value="{{$userData['fullName']}}">
+                                                    @if ($errors->has('stud_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-name') as $error)
+                                                            @foreach ($errors->get('stud_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -250,7 +268,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="stud-uname" disabled class="form-control" value="{{ $userData->username}}">
+                                                    <input type="text" name="stud_uname" disabled class="form-control" value="{{ $userData['username']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -258,7 +276,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="email" name="stud-email" disabled class="form-control" required value="{{ $userData->email}}">
+                                                    <input type="email" name="stud_email" disabled class="form-control" required value="{{ $userData['email']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -266,10 +284,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="stud-phone" class="form-control" required value="{{ $userData->phone}}">
-                                                    @if ($errors->has('stud-phone'))
+                                                    <input type="tel" name="stud_phone" class="form-control" required value="{{ $userData['phone']}}">
+                                                    @if ($errors->has('stud_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-phone') as $error)
+                                                            @foreach ($errors->get('stud_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -315,7 +333,7 @@
                                                 <label class="col-sm-4 col-form-label">Student details</label>
                                                 <div class="col-sm-8">
                                                     <div class="border border-edu">
-                                                        <textarea rows="3" class="form-control" name="stud_details">{{-- $userData->profile_text --}}</textarea>
+                                                        <textarea rows="3" class="form-control" name="stud_details">{{-- $userData['profileText'] --}}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -324,15 +342,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" id="stud-gender" name="stud-gender">
+                                                    <select class="form-control m-b" id="stud_gender" name="stud_gender">
                                                         <option></option>
-                                                        <option {{ $userData->gender == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ $userData->gender == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ $userData->gender == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ $userData['gender'] == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ $userData['gender'] == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ $userData['gender'] == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('stud-gender'))
+                                                    @if ($errors->has('stud_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-gender') as $error)
+                                                            @foreach ($errors->get('stud_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -345,12 +363,12 @@
                                                 <label class="col-sm-4 col-form-label">Submit status</label>
                                                 <div class="col-sm-8">
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "enable" ? "checked" : ($userData->status =="disable" ? "" : "checked") }}
+                                                        <label> <input {{  $userData['status'] == true ? "checked" : ($userData['status'] == false ? "" : "checked") }}
                                                                        type="radio" value="enable" name="student_stat">
                                                             <i></i> Enable </label>
                                                     </div>
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "disable" ? "checked" : "" }}
+                                                        <label> <input {{  $userData['status'] == false ? "checked" : "" }}
                                                                        type="radio" value="disable" name="student_stat">
                                                             <i></i> Disable </label>
                                                     </div>
@@ -370,22 +388,22 @@
                                 </div>
                                 @endif
 
-                                @if($userType == 'marketer')
-                                <div role="tabpanel" id="tab-marketers" class="tab-pane {{ ($userType == 'marketer') ? 'active' : '' }}">
+                                @if($userData['userType'] == 'marketer')
+                                <div role="tabpanel" id="tab-marketers" class="tab-pane {{ ($userData['userType'] == 'marketer') ? 'active' : '' }}">
                                     <div class="panel-body">
                                         @foreach ($errors->all() as $error)
                                             {{-- $error --}}
                                         @endforeach
 
-                                        <form class="" id="" action="{{route('admin.user.update-marketer',['id' => $userData->id])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.user.update-marketer',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="marketer-name" class="form-control"  required value="{{ $userData->full_name}}">
-                                                    @if ($errors->has('marketer-name'))
+                                                    <input type="text" name="marketer_name" class="form-control"  required value="{{ $userData['fullName']}}">
+                                                    @if ($errors->has('marketer_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-name') as $error)
+                                                            @foreach ($errors->get('marketer_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -397,7 +415,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="marketer-uname" class="form-control" disabled value="{{$userData->username}}">
+                                                    <input type="text" name="marketer_uname" class="form-control" disabled value="{{$userData['username']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -405,7 +423,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="email" name="marketer-email" class="form-control" disabled required value="{{$userData->email}}">
+                                                    <input type="email" name="marketer_email" class="form-control" disabled required value="{{$userData['email']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -413,10 +431,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="marketer-phone" class="form-control" required value="{{$userData->phone }}">
-                                                    @if ($errors->has('marketer-phone'))
+                                                    <input type="tel" name="marketer_phone" class="form-control" required value="{{$userData['phone'] }}">
+                                                    @if ($errors->has('marketer_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-phone') as $error)
+                                                            @foreach ($errors->get('marketer_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -441,15 +459,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" id="marketer-gender" name="marketer-gender"  required>
+                                                    <select class="form-control m-b" id="marketer_gender" name="marketer_gender"  required>
                                                         <option></option>
-                                                        <option {{ $userData->gender == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ $userData->gender == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ $userData->gender == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ $userData['gender'] == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ $userData['gender'] == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ $userData['gender'] == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('marketer-gender'))
+                                                    @if ($errors->has('marketer_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-gender') as $error)
+                                                            @foreach ($errors->get('marketer_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -462,11 +480,11 @@
                                                 <label class="col-sm-4 col-form-label">Submit status</label>
                                                 <div class="col-sm-8">
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "enable" ? "checked" : ($userData->status =="disable" ? "" : "checked") }}
+                                                        <label> <input {{  $userData['status'] == true ? "checked" : ($userData['status'] == false ? "" : "checked") }}
                                                                        type="radio" checked value="enable" name="marketer_stat"> <i></i> Enable </label>
                                                     </div>
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "disable" ? "checked" : "" }}
+                                                        <label> <input {{  $userData['status'] == false ? "checked" : "" }}
                                                                        type="radio" value="disable" name="marketer_stat"> <i></i> Disable </label>
                                                     </div>
                                                 </div>
@@ -485,22 +503,22 @@
                                 </div>
                                 @endif
 
-                                @if($userType == 'editor')
-                                <div role="tabpanel" id="tab-editor" class="tab-pane {{ ($userType == 'editor') ? 'active' : '' }}">
+                                @if($userData['userType'] == 'editor')
+                                <div role="tabpanel" id="tab-editor" class="tab-pane {{ ($userData['userType'] == 'editor') ? 'active' : '' }}">
                                     <div class="panel-body">
                                          @foreach ($errors->all() as $error)
                                             {{-- $error --}}
                                         @endforeach
                                         
-                                        <form class="" id="" action="{{route('admin.user.update-editor',['id' => $userData->id])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.user.update-editor',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="editor-name" class="form-control" required value="{{$userData->full_name}}">
-                                                    @if ($errors->has('editor-name'))
+                                                    <input type="text" name="editor_name" class="form-control" required value="{{$userData['fullName']}}">
+                                                    @if ($errors->has('editor_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-name') as $error)
+                                                            @foreach ($errors->get('editor_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -512,7 +530,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="editor-uname" disabled class="form-control" value="{{$userData->username}}">
+                                                    <input type="text" name="editor_uname" disabled class="form-control" value="{{$userData['username']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -520,7 +538,7 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="email" name="editor-email" class="form-control" disabled required value="{{$userData->email}}">
+                                                    <input type="email" name="editor_email" class="form-control" disabled required value="{{$userData['email']}}">
                                                 </div>
                                             </div>
                                             <div class="hr-line-dashed"></div>
@@ -528,10 +546,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="editor-phone" class="form-control" required value="{{$userData->phone}}">
-                                                    @if ($errors->has('editor-phone'))
+                                                    <input type="tel" name="editor_phone" class="form-control" required value="{{$userData['phone']}}">
+                                                    @if ($errors->has('editor_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-phone') as $error)
+                                                            @foreach ($errors->get('editor_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -556,15 +574,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" id="editor-gender" name="editor-gender" required>
+                                                    <select class="form-control m-b" id="editor_gender" name="editor_gender" required>
                                                         <option></option>
-                                                        <option {{ $userData->gender == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ $userData->gender == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ $userData->gender == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ $userData['gender'] == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ $userData['gender'] == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ $userData['gender'] == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('editor-gender'))
+                                                    @if ($errors->has('editor_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-gender') as $error)
+                                                            @foreach ($errors->get('editor_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -577,11 +595,11 @@
                                                 <label class="col-sm-4 col-form-label">Submit status</label>
                                                 <div class="col-sm-8">
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "enable" ? "checked" : ($userData->status =="disable" ? "" : "checked") }}
+                                                        <label> <input {{  $userData['status'] == true ? "checked" : ($userData['status'] == false ? "" : "checked") }}
                                                                        type="radio" checked value="enable" name="editor_stat"> <i></i> Enable </label>
                                                     </div>
                                                     <div class="i-checks">
-                                                        <label> <input {{  $userData->status == "disable" ? "checked" : "" }}
+                                                        <label> <input {{  $userData['status'] == false ? "checked" : "" }}
                                                                        type="radio" value="disable" name="editor_stat"> <i></i> Disable </label>
                                                     </div>
                                                 </div>
@@ -606,7 +624,7 @@
 
                     </div>
                 </div>
-            @endif
+            @endisset
 
 
 
@@ -649,8 +667,8 @@
 @section('javascript')
 <script>
 
-    var dobYear = {!! $userData->dob_year ?? '""'!!};
-    var userType = '{!! $userType ?? '' !!}';
+    var dobYear = {!! $userData['dobYear'] ?? '""'!!};
+    var userType = '{!! $userData['userType'] ?? '' !!}';
 
 	(function () {
 		/* We want to preview images, so we need to register the Image Preview plugin  */
@@ -727,7 +745,7 @@
 		//var elem = document.querySelector('.ccode-stat');
 		//var init = new Switchery(elem);
 
-		//$('[name="teacher-edu-details"]').summernote();
+		//$('[name="teacher_edu-details"]').summernote();
         var elems = document.querySelectorAll('.rest-password');
 		new Switchery(elems[0], { size: 'default' });
 
@@ -779,9 +797,9 @@
 			],
 		});
 
-        @if(isset($userData->edu_qualifications))
-		    //$('[name="teacher_edu_details"]').summernote('code', '{{$userData->edu_qualifications}}');
-            $('[name="teacher_edu_details"]').summernote('code', `{!!$userData->edu_qualifications!!}`);
+        @if(isset($userData['eduQualifications']))
+		    //$('[name="teacher_edu_details"]').summernote('code', '{{$userData['eduQualifications']}}');
+            $('[name="teacher_edu_details"]').summernote('code', `{!!$userData['eduQualifications']!!}`);
         @endif
 
 
@@ -818,9 +836,9 @@
 			],
 		});
 
-		@if(isset($userData->profile_text))
-		    //$('[name="stud_details"]').summernote('html', '{{$userData->profile_text}}');
-            $('[name="stud_details"]').summernote('code', `{!!$userData->profile_text!!}`);
+		@if(isset($userData['profileText']))
+		    //$('[name="stud_details"]').summernote('html', '{{$userData['profileText']}}');
+            $('[name="stud_details"]').summernote('code', `{!!$userData['profileText']!!}`);
             //$('textarea[name="content"]').html($('[name="stud_details"]').code());
         @endif
 
@@ -839,8 +857,8 @@
 			endDate: '+0d',
 			startDate: '-99y',
 		});
-        @if(isset($userData->dob_year) && $userType == 'student')
-		$("[name='stud_birth_year']").datepicker("update", '{{$userData->dob_year}}');
+        @if(isset($userData['dobYear']) && $userData['userType'] == 'student')
+		  $("[name='stud_birth_year']").datepicker("update", '{{$userData['dobYear']}}');
         @endif
 
 
@@ -853,30 +871,30 @@
             startDate: '-99y',
 		});
 
-        @if(isset($userData->dob_year) && $userType == 'teacher')
-		    $("[name='teacher_birth_year']").datepicker("update", '{{$userData->dob_year}}');
+        @if(isset($userData['dobYear']) && $userData['userType'] == 'teacher')
+		    $("[name='teacher_birth_year']").datepicker("update", '{{$userData['dobYear']}}');
         @endif
 
 
 
 
 
-		$("#stud-gender").select2({
+		$("#stud_gender").select2({
 			placeholder: "Select student gender",
 			allowClear: true,
 			width: '100%'
 		});
-		$("#marketer-gender").select2({
+		$("#marketer_gender").select2({
 			placeholder: "Select marketer gender",
 			allowClear: true,
 			width: '100%'
 		});
-		$("#teacher-gender").select2({
+		$("#teacher_gender").select2({
 			placeholder: "Select teacher gender",
 			allowClear: true,
 			width: '100%'
 		});
-		$("#editor-gender").select2({
+		$("#editor_gender").select2({
 			placeholder: "Select editor gender",
 			allowClear: true,
 			width: '100%'

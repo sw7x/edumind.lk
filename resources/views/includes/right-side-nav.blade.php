@@ -29,7 +29,7 @@
                     @if(Sentinel::check())
 
                         <!-- cart -->
-                        @if(Sentinel::getUser()->roles()->first()->slug == 'student')
+                        @if(optional(Sentinel::getUser()->roles()->first())->slug == 'student')
                         <a href="#" class="header_widgets">
                             <ion-icon name="cart-outline" class="is-icon"></ion-icon>
                             <span>{{$cartCourseCount}}</span>
@@ -127,15 +127,15 @@
                                             @if(Sentinel::getUser()->profile_pic)
                                                 <img src="{{Sentinel::getUser()->profile_pic}}" class="" alt="">
                                             @else
-                                                @if(Sentinel::getUser()->roles()->first()->slug == 'student')
+                                                @if( optional(Sentinel::getUser()->roles()->first())->slug == 'student')
                                                     <img src="{{asset('images/default-images/student.png')}}" class="" alt="">
-                                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'teacher')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'teacher')
                                                     <img src="{{asset('images/default-images/teacher.png')}}" class="" alt="">
-                                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'marketer')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'marketer')
                                                     <img src="{{asset('images/default-images/marketer.png')}}" class="" alt="">
-                                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'editor')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'editor')
                                                     <img src="{{asset('images/default-images/editor.png')}}" class="" alt="">
-                                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'admin')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'admin')
                                                     <img src="{{asset('images/default-images/admin.png')}}" class="" alt="">
                                                 @else
                                                     <img src="{{asset('images/default-images/user.png')}}" class="" alt="">
@@ -146,7 +146,7 @@
                                         <div class="user_name">
                                             <div>{{Sentinel::getUser()->full_name}}</div>
                                             <span class="text-base">{{Sentinel::getUser()->username}}</span>
-                                            <span class="text-base">({{Sentinel::getUser()->roles()->first()->slug}})</span>
+                                            <span class="text-base">({{optional(Sentinel::getUser()->roles()->first())->slug}})</span>
                                         </div>
                                     </a>
                                 </li>
@@ -155,7 +155,7 @@
                                 </li>
 
 
-                                @if(Sentinel::getUser()->roles()->first()->slug == 'student')
+                                @if(optional(Sentinel::getUser()->roles()->first())->slug == 'student')
                                     <li>
                                         <a href="{{route('student.my-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses</span></a>
                                     </li>
@@ -169,7 +169,9 @@
                                         <a href="{{route('student.my-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses(full-width)</span></a>
                                     </li>
                                     <li>
-                                        <a href="{{route('student.my-profile')}}"><ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My Account</span></a>
+                                        <a href="{{route('profile')}}">
+                                            <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
+                                        </a>
                                     </li>
                                     <li>
                                         <a href="{{route('student.profile-edit')}}"><ion-icon name="settings" class="is-icon"></ion-icon> <span>Account Settings</span></a>
@@ -179,7 +181,7 @@
                                     </li>
                                     
 
-                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'teacher')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'teacher')
                                     
                                     <li>
                                         <a href="{{route('teacher.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></a>
@@ -192,7 +194,9 @@
                                         <a href="{{route('teacher.course-create')}}"><ion-icon name="duplicate" class="is-icon"></ion-icon> <span>Add Course</span></a>
                                     </li>
                                     <li>
-                                        <a href="{{route('teacher.my-profile')}}"><ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My Account</span></a>
+                                        <a href="{{route('profile')}}">
+                                            <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
+                                        </a>
                                     </li>
                                     <li>
                                         <a href="{{route('teacher.profile-edit')}}"><ion-icon name="settings" class="is-icon"></ion-icon> <span>Account Settings</span></a>
@@ -204,32 +208,45 @@
                                         <a href="{{route('teacher.earnings')}}"><ion-icon name="cash" class="is-icon"></ion-icon> <span>My Earnings</span></a>
                                     </li>
 
-                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'marketer')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'marketer')
                                     {{--todo create routes for marketer dashboard, and other pages--}}
                                     <li>
                                         <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
-                                    </li><li><hr></li>
+                                    </li><li><hr></li>                                    
+                                    <li>
+                                        <a href="{{route('admin.profile')}}">
+                                            <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
+                                        </a>
+                                    </li>
 
-                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'editor')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'editor')
                                     {{--todo create route for editor dashboard, and other pages--}}
                                     <li>
                                         <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
                                     </li><li><hr></li>
+                                    <li>
+                                        <a href="{{route('admin.profile')}}">
+                                            <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
+                                        </a>
+                                    </li>
 
-                                @elseif(Sentinel::getUser()->roles()->first()->slug == 'admin')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'admin')
                                     <li>
                                         <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
                                     </li><li><hr></li>
+                                    <li>
+                                        <a href="{{route('profile')}}">
+                                            <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
+                                        </a>
+                                    </li>
 
                                 @else
 
                                 @endif
                                 <li><hr></li>
-
                                 <li>
                                     <a href="{{route('auth.change-password')}}"><ion-icon name="lock-open" class="is-icon"></ion-icon> <span>Change Password</span></a>
                                 </li>
-
                                 <li><hr></li>
 
                                 {{--

@@ -34,7 +34,7 @@ class TeacherUpdateRequest extends FormRequest
     protected function prepareForValidation()
     {
         //dd(request()->route('id'));
-        //dd($this->request->get('teacher-name'));        
+        //dd($this->request->get('teacher_name'));        
         $this->recordId = $this->route('id');
     }
 
@@ -47,14 +47,14 @@ class TeacherUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'teacher-name'      => 'required|unique:users,full_name,'.$this->recordId,
-            //'teacher-name'      => 'required|unique:users,full_name',
+            'teacher_name'      => 'required|unique:users,full_name,'.$this->recordId,
+            //'teacher_name'      => 'required|unique:users,full_name',
             
-            'teacher-phone'     => 'required|unique:users,phone,'.$this->recordId,
-            //'teacher-phone'     => 'required|unique:users,phone',
+            'teacher_phone'     => 'required|unique:users,phone,'.$this->recordId,
+            //'teacher_phone'     => 'required|unique:users,phone',
             
             'teacher_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
-            'teacher-gender'    => 'required',
+            'teacher_gender'    => 'required',
         ];
     }
 
@@ -67,9 +67,9 @@ class TeacherUpdateRequest extends FormRequest
     public function messages()
     {        
         return [
-            'teacher-name.required' => 'Name field is required',
-            'teacher-name.unique'   => "{$this->get('teacher-name')} is already been used as a full name",
-            'teacher-phone.unique'  => "{$this->get('teacher-phone')} is already been used as a phone number",
+            'teacher_name.required' => 'Name field is required',
+            'teacher_name.unique'   => "{$this->get('teacher_name')} is already been used as a full name",
+            'teacher_phone.unique'  => "{$this->get('teacher_phone')} is already been used as a phone number",
         ];
     }
 
@@ -78,10 +78,10 @@ class TeacherUpdateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'teacher-name'      => 'name',
-            'teacher-phone'     => 'phone',
+            'teacher_name'      => 'name',
+            'teacher_phone'     => 'phone',
             'teacher_birth_year'=> 'year of birth',
-            'teacher-gender'    => 'gender',
+            'teacher_gender'    => 'gender',
         ];
     }
 

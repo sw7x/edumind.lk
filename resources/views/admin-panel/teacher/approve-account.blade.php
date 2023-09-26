@@ -24,82 +24,82 @@
             <div class="ibox">               
                 <div class="ibox-content feedback-container forum-post-container mb-5">
                     @if(isset($userData))
-                        @if(isset($userData->full_name))
+                        @if(isset($userData['fullName']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <label class="col-sm-9 col-form-label">{{$userData->full_name}}</label>
+                                <label class="col-sm-9 col-form-label">{{$userData['fullName']}}</label>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
 
 
-                        @if(isset($userType))
+                        @if(isset($userData['userType']))
                         <div class="form-group  row">
                             <label class="col-sm-3 col-form-label">User type</label>
-                            <label class="col-sm-9 col-form-label">{{$userType}}</label>
+                            <label class="col-sm-9 col-form-label">{{$userData['userType']}}</label>
                         </div>
                         <div class="hr-line-dashed"></div>
                         @endif
 
-                        @if(isset($userData->username))
+                        @if(isset($userData['username']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Username</label>
-                                <label class="col-sm-9 col-form-label">{{$userData->username}}</label>
+                                <label class="col-sm-9 col-form-label">{{$userData['username']}}</label>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
 
 
-                        @if(isset($userData->email))
+                        @if(isset($userData['email']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <label class="col-sm-9 col-form-label">{{$userData->email}}</label>
+                                <label class="col-sm-9 col-form-label">{{$userData['email']}}</label>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
 
 
-                        @if(isset($userData->phone))
+                        @if(isset($userData['phone']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <label class="col-sm-9 col-form-label">{{$userData->phone}}</label>
+                                <label class="col-sm-9 col-form-label">{{$userData['phone']}}</label>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
 
 
-                        @if(isset($userData->dob_year))
+                        @if(isset($userData['dobYear']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Year of birth</label>
-                                <label class="col-sm-9 col-form-label">{{$userData->dob_year}}</label>
+                                <label class="col-sm-9 col-form-label">{{$userData['dobYear']}}</label>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
 
 
-                        @if(isset($userData->edu_qualifications))
+                        @if(isset($userData['eduQualifications']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Education qualifications</label>
-                                <div class="col-sm-9 col-form-label">{!! $userData->edu_qualifications !!}</div>
+                                <div class="col-sm-9 col-form-label">{!! $userData['eduQualifications'] !!}</div>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
 
-                        @if(isset($userData->profile_text))
+                        @if(isset($userData['profileText']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Student details</label>
-                                <div class="col-sm-9 col-form-label">{!! $userData->profile_text !!}</div>
+                                <div class="col-sm-9 col-form-label">{!! $userData['profileText'] !!}</div>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
 
 
-                        @if(isset($userData->profile_pic))
+                        @if(isset($userData['profilePic']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Profile image</label>
                                 <label class="col-sm-9 col-form-label">
-                                    <a class="no-clickable popup-img effect" href="{{$userData->profile_pic}}" data-effect="mfp-zoom-in">
-                                        <img src="{{$userData->profile_pic}}" width="200px" alt="">
+                                    <a class="no-clickable popup-img effect" href="{{$userData['profilePic']}}" data-effect="mfp-zoom-in">
+                                        <img src="{{$userData['profilePic']}}" width="200px" alt="">
                                     </a>
                                 </label>
                             </div>
@@ -107,10 +107,10 @@
                         @endif
 
 
-                        @if(isset($userData->gender))
+                        @if(isset($userData['gender']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <label class="col-sm-9 col-form-label">{{$userData->gender}}</label>
+                                <label class="col-sm-9 col-form-label">{{$userData['gender']}}</label>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
@@ -118,7 +118,7 @@
                         <div class="form-group  row">
                             <label class="col-sm-3 col-form-label">Account (Enable /Disable)<br> by admin</label>
                             <label class="col-sm-9 col-form-label">
-                                @if($userData->status === 1)
+                                @if($userData['status'] === true)
                                     <span class="label label-primary">Enabled</span>
                                 @else
                                     <span class="label label-warning">Disabled</span>
@@ -127,16 +127,14 @@
                         </div>
                         <div class="hr-line-dashed"></div>
 
-                        @if(isset($userData))
+                        @if(array_key_exists("isActivated",$userData))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Activation status</label>
                                 <label class="col-sm-9 col-form-label">
-                                    @if($userData->isactivated() === true)
+                                    @if($userData['isActivated'] === true)
                                         <span class="label label-primary">Activated</span>
-                                    @elseif($userData->isactivated() === false)
-                                        <span class="label label-warning">Not Activated</span>
                                     @else
-                                        <span class="label">error</span>
+                                        <span class="label label-warning">Not Activated</span>
                                     @endif
                                 </label>
                             </div>
@@ -144,10 +142,10 @@
                         @endif
 
 
-                        @if(isset($userData->last_login))
+                        @if(isset($userData['lastLogin']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Last login</label>
-                                <label class="col-sm-9 col-form-label">{{$userData->last_login}} <small>({{$userData->getLastLoginTime()}})</small></label>
+                                <label class="col-sm-9 col-form-label">{{$userData['lastLogin']}} <small>({{$userData['getLastLoginTime']}})</small></label>
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
@@ -158,15 +156,6 @@
                                 <a class="btn btn-danger btn-sm font-semibold"  type="submit" href="{{route('admin.user.index')}}">Go back</a>
                             </div>
                         </div>              
-                    @else
-                        @if($view_user_message)
-                            <div class="flash-msg {{ $view_user_cls ?? 'flash-info'}}">
-                                <a href="#" class="close">×</a>
-                                <div class="text-lg"><strong>{{ $view_user_msgTitle ?? 'Info!'}}</strong></div>
-                                <p class="mb-1">{{ $view_user_message ?? 'Info!' }}</p>
-                                <a class="font-semibold" href="{{route('admin.user.index')}}">Go back</a>
-                            </div>
-                        @endif
                     @endif
                 </div>
             </div>

@@ -4,7 +4,7 @@
         <a class="nav-link {{ Route::is('student.dashboard') ? 'active' : '' }}" data-toggle="tab" href="{{route('student.dashboard')}}">Dashboard</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ Route::is('student.my-profile') ? 'active' : '' }}" data-toggle="tab" href="{{route('student.my-profile')}}">View Profile</a>
+        <a class="nav-link {{ Route::is('profile') ? 'active' : '' }}" data-toggle="tab" href="{{route('profile')}}">View Profile</a>
     </li>
     <li class="nav-item">
         <a class="nav-link {{ Route::is('student.profile-edit') ? 'active' : '' }}" data-toggle="tab" href="{{route('student.profile-edit')}}">Edit Profile</a>

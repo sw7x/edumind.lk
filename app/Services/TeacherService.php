@@ -2,52 +2,108 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use Sentinel;
-use App\Models\Course;
 
+use App\Models\Course as CourseModel;
+use App\Models\User as UserModel;
+use App\Exceptions\CustomException;
+use App\Repositories\CourseRepository;
+use App\Repositories\UserRepository;
+use App\Builders\UserBuilder;
+use App\Builders\CourseBuilder;
+
+//use App\Mappers\CourseMapper;
+//use App\Domain\Factories\CourseFactory;
+//use App\DataTransferObjects\Factories\CourseDtoFactory;
 
 class TeacherService
 {
 
+    private UserRepository $userRepository;
+    private CourseRepository $courseRepository;
 
-
-    public function loadPopularTeachers(){
-        //load 8 teachers that have higher number of courses
-
-        $popularTeachers = User::withCount('getTeachingCourses')->orderBy('get_teaching_courses_count', 'desc')->skip(0)->take(8)->get();;
-        //$popularTeachers = User::withCount('enrolled_courses')->orderBy('enrolled_courses_count', 'desc')->skip(0)->take(8)->get();;
-
-        //dd($popularTeachers);
-
-        //return null;
-        return $popularTeachers;
-
-
+    function __construct(UserRepository $userRepository, CourseRepository $courseRepository){
+        $this->userRepository   = $userRepository;
+        $this->courseRepository = $courseRepository;
     }
 
 
-    public function getPublishedCoursesByTeacher(User $teacher){
-        //return $teacher->getTeachingCourses()->where('status',Course::PUBLISHED)->get();
-        return $teacher->getTeachingCourses()->get();
+    public function loadTeacherDataByUserName(string $username) : array {
+        $user = $this->userRepository->findUserByUsername($username);
+        if(is_null($user))
+            throw new CustomException('Access denied');
+
+        $role = optional($user->roles()->first())->name;
+        if($role != 'teacher')
+            throw new CustomException('Wrong user type');
+
+        return array(
+            'dbRec'     => $user,
+            'dto'       => UserBuilder::buildDto($user->toArray()),
+            'createdAt' => $user->created_at
+        );
     }
 
-    public function getAllCoursesByTeacher(User $teacher){
-        //dd($teacher->getTeachingCourses()->get());
-        
-        //return $teacher->getTeachingCourses()->get();
-        return $teacher->getTeachingCourses()->withoutGlobalScope('published')->get();
+    public function loadPublishedCoursesByTeacher(UserModel $teacher){
+        $courses = $this->courseRepository->getPublishedCoursesByTeacher($teacher);
 
+        $dataArr = array();
+        $courses->each(function (CourseModel $record, int $key) use (&$dataArr){
+            $dataArr[]          = CourseBuilder::buildDto($record->toArray());
+        });
+        return $dataArr;
+    }
+
+
+    public function loadAllAvailableTeachers() : array {
+        $teachers = $this->userRepository->findAllAvailableTeachers();
+
+        $teachersDtoArr = array();
+        $teachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
+            $tempArr['dto']         =   UserBuilder::buildDto($record->toArray());
+            $tempArr['courseCount'] =   $record->getCourseCount();
+            $teachersDtoArr[]       =   $tempArr;
+        });
+        return $teachersDtoArr;
     }
 
 
 
-    public function getAllTeachers(){
-        //dd($teacher->getTeachingCourses()->get());
-        //$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
-        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
-        return $teachers;
+
+
+
+
+
+
+    public function loadPopularTeachers() : array {
+        $courseCount        = 8;
+        $popularTeachers    = $this->userRepository->getPopularTeachers($courseCount);
+
+        $teachersDtoArr = array();
+        $popularTeachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
+            $teachersDtoArr[]  =   UserBuilder::buildDto($record->toArray());
+        });
+        return $teachersDtoArr;
     }
+
+
+    public function loadAllCoursesByTeacher(UserModel $teacher) : array {
+        $teacherCourses = $this->courseRepository->getPublishedCoursesByTeacher($teacher);
+        //$teacherCourses = $teacher->getTeachingCourses()->get();
+
+        $dataArr = array();
+        $teacherCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
+            $dataArr[]          = CourseBuilder::buildDto($record->toArray());
+            /*$courseArr       = (new CourseRepository())->findDataArrById($record->id);
+            $courseEntityArr = CourseMapper::dbRecConvertToEntityArr($courseArr);
+            $courseEntity    = (new CourseFactory())->createObjTree($courseEntityArr);
+            $courseDto       =  CourseDtoFactory::fromArray($courseEntity->toArray());
+            $dataArr[]       = $courseDto; */
+        });
+        return $dataArr;
+    }
+
+
 
 
 
@@ -60,16 +116,16 @@ class TeacherService
 
 
 
-//service only methods - not in entity    
+//service only methods - not in entity
     //viewprofile()  - site frontend
     //edit profile   - (teacher can edit his own profile in admin panel)
 
-    //view teacher courses   
+    //view teacher courses
     //view earnings by teacher
-    
 
 
-//service methods - also in entity   
+
+//service methods - also in entity
     //change user status
 
 

@@ -4,9 +4,9 @@ namespace App\Services;
 
 class CartService
 {
-	
-	function __construct(argument){
-		
+
+	function __construct(){
+
 	}
 
 	public function aaa(){
@@ -20,14 +20,14 @@ class CartService
 
 
 
-//service only methods - not in entity    
+//service only methods - not in entity
 
 
 
 
 
-//methods - also in entity 		
+//methods - also in entity
 	//addToCart()
 	//removeFromCart()
 	//checkout()
-	//applyCoupon()   
+	//applyCoupon()

@@ -2,7 +2,7 @@
 
 namespace App\DataTransferObjects;
 
-use App\DataTransferObjects\UserDTO;
+use App\DataTransferObjects\UserDto;
 use App\DataTransferObjects\AbstractDto;
 
 
@@ -17,9 +17,9 @@ class SubjectDto extends AbstractDto{
 	private ?string $description;
 	private ?string $image;
 	private ?string $slug;
-	private ?bool   $status;
+	private ?string $status;
 
-    private ?UserDTO $authorDTO;
+    private ?UserDto $authorDto;
 
 
     public function __construct(        
@@ -30,9 +30,9 @@ class SubjectDto extends AbstractDto{
         ?string  $description = null,
         ?string  $image       = null,
         ?string  $slug        = null,
-        ?bool    $status      = null,
+        ?string  $status      = null,
 
-        ?UserDTO $authorDTO   = null
+        ?UserDto $authorDto   = null
     ) {
         $this->name           = $name;
         
@@ -43,7 +43,7 @@ class SubjectDto extends AbstractDto{
         $this->slug           = $slug;
         $this->status         = $status;
 
-        $this->authorDTO      = $authorDTO;
+        $this->authorDto      = $authorDto;
     }
 
 
@@ -75,12 +75,12 @@ class SubjectDto extends AbstractDto{
         return $this->slug;
     }
     
-    public function getStatus() : ?bool {
+    public function getStatus() : ?string {
         return $this->status;
     }
 
-    public function getAuthor() : ?UserDTO {
-        return $this->authorDTO;
+    public function getAuthorDto() : ?UserDto {
+        return $this->authorDto;
     }
 
     
@@ -94,8 +94,8 @@ class SubjectDto extends AbstractDto{
             'slug' 			=> $this->slug,
             'status' 		=> $this->status,
             
-            'creatorArr'     => $this->authorDTO ? $this->authorDTO->toArray() : null,
-            'creatorId'      => $this->authorDTO ? $this->authorDTO->getId() : null,
+            'creatorArr'     => $this->authorDto ? $this->authorDto->toArray() : null,
+            'creatorId'      => $this->authorDto ? $this->authorDto->getId() : null,
         ];
     }
 

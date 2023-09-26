@@ -53,7 +53,7 @@ class CouponStoreRequest extends FormRequest
         return [
 
             'cc-code'                 => 'required|regex:/^[a-zA-Z0-9]+$/|size:6|unique:coupons,code',
-            'discount_percentage'     => 'required|numeric|min:1|max:50',
+            'discount_percentage'     => 'required|numeric|min:1|max:99',
             'course'                  => 'required',
             'cc-count'                => 'required|numeric|min:1',
             'beneficiary'             => 'nullable',            
@@ -80,7 +80,7 @@ class CouponStoreRequest extends FormRequest
             'discount_percentage.required' => ':attribute is required',
             'discount_percentage.numeric'  => ':attribute should be a number',
             'discount_percentage.min'      => ':attribute minimum value can be 1',
-            'discount_percentage.max'      => ':attribute maximum value can be 50',
+            'discount_percentage.max'      => ':attribute maximum value can be 99',
 
             'course.required'             => ':attribute is required.',
             

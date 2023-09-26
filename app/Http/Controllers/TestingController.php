@@ -85,7 +85,7 @@ class TestingController extends Controller
     //coupon
     public function coupon(Request $request){
 
-        $cs3 = (new CouponRepository())->findDataArrByCode('1R5WH6');
+        $cs3 = (new CouponRepository())->findDataArrByCode('0JUA9B');
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = CouponMapper::dbRecConvertToEntityArr($cs3);
@@ -118,7 +118,7 @@ class TestingController extends Controller
         $cs9 = CouponDtoFactory::fromArray($cs5->toArray());
         echo 'Coupon(Entity) --> toArray --> Coupon(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new CouponRepository())->findDtoDataByCode('1R5WH6');
+        $cs10 = (new CouponRepository())->findDtoDataByCode('0JUA9B');
         echo 'CouponRepository --> findDtoDataByCode<br>';dump($cs10);echo '<hr><br>';
 
         $cs11 = $cs3;
@@ -309,8 +309,7 @@ class TestingController extends Controller
         echo 'Course(Dto)<br>';dump($cs7);echo '<hr><br>';
         echo 'Course(Dto) toArray<br>';dump($cs7->toArray());echo '<hr><br>';
 
-
-
+        
         $cs8 = CourseDtoFactory::fromArray($cs7->toArray());
         echo 'Course(Dto) --> toArray --> Course(Dto)<br>';dump($cs8);echo '<hr><br>';
 
@@ -347,7 +346,7 @@ class TestingController extends Controller
     //contactUs
     public function contactUs(Request $request){
 
-        $cs3 = (new ContactUsRepository())->findDataArrById(8);
+        $cs3 = (new ContactUsRepository())->findDataArrById(6);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = ContactUsMapper::dbRecConvertToEntityArr($cs3);
@@ -374,7 +373,7 @@ class TestingController extends Controller
         $cs9 = ContactUsMessageDtoFactory::fromArray($cs5->toArray());
         echo 'ContactUs(Entity) --> toArray --> ContactUs(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new ContactUsRepository())->findDtoDataById(8);
+        $cs10 = (new ContactUsRepository())->findDtoDataById(6);
         echo 'ContactUsRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
         $cs11 = $cs3;
@@ -400,7 +399,7 @@ class TestingController extends Controller
     //subject
     public function subject(Request $request){
 
-        $cs3 = (new SubjectRepository())->findDataArrById(10);
+        $cs3 = (new SubjectRepository())->findDataArrById(11);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = SubjectMapper::dbRecConvertToEntityArr($cs3);
@@ -427,7 +426,7 @@ class TestingController extends Controller
         $cs9 = SubjectDtoFactory::fromArray($cs5->toArray());
         echo 'Subject(Entity) --> toArray --> Subject(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new SubjectRepository())->findDtoDataById(10);
+        $cs10 = (new SubjectRepository())->findDtoDataById(11);
         echo 'SubjectRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
         $cs11 = $cs3;
@@ -508,7 +507,7 @@ class TestingController extends Controller
 
     //enrollment  - id - 10 , 20
     public function enrollment(Request $request){
-        $cs3 = (new EnrollmentRepository())->findDataArrById(17);
+        $cs3 = (new EnrollmentRepository())->findDataArrById(20);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = EnrollmentMapper::dbRecConvertToEntityArr($cs3);
@@ -536,7 +535,7 @@ class TestingController extends Controller
         $cs9 = EnrollmentDtoFactory::fromArray($cs5->toArray());
         echo 'Enrollment(Entity) --> toArray --> Enrollment(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new EnrollmentRepository())->findDtoDataById(17);
+        $cs10 = (new EnrollmentRepository())->findDtoDataById(20);
         echo 'EnrollmentRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
         $cs11 = $cs3;
@@ -558,7 +557,7 @@ class TestingController extends Controller
 
     public function order(Request $request){
 
-        $cs3 = (new OrderRepository())->findDataArrById(1203);
+        $cs3 = (new OrderRepository())->findDataArrById(1205);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = OrderMapper::dbRecConvertToEntityArr($cs3);
@@ -585,7 +584,7 @@ class TestingController extends Controller
         $cs9 = OrderDtoFactory::fromArray($cs5->toArray());
         echo 'Order(Entity) --> toArray --> Order(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new OrderRepository())->findDtoDataById(1203);
+        $cs10 = (new OrderRepository())->findDtoDataById(1205);
         echo 'OrderRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
         

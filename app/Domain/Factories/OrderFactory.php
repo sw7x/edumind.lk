@@ -28,7 +28,6 @@ class OrderFactory implements IFactory {
     // ------> invoiceArr, invoice_id
     // ------> enrollmentsArr
 	public function createObjTree(array $orderData): OrderEntity {			
-		
 		if(!isset($orderData['enrollmentsArr']))      
             throw new MissingArgumentDomainException("Missing enrollmentsArr parameter for create Order entity");              
         

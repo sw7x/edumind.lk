@@ -25,7 +25,8 @@ class SubjectMapper  extends Mapper{
             ["slug",                      '<=>',      'slug'], 
             ["status",                    '<=>',      'status'],            
             
-            ['creator_id',                '<=>',      'creatorId'],
+            //['creator_id',                '<=>',      'creatorId'],
+			['author_id',                '<=>',      'creatorId'],
 
             '__ARRAY__' => [
                 [

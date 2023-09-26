@@ -5,8 +5,8 @@ namespace App\DataTransferObjects;
 
 use App\DataTransferObjects\AbstractDto;
 
-use App\DataTransferObjects\SubjectDTO;
-use App\DataTransferObjects\UserDTO;
+use App\DataTransferObjects\SubjectDto;
+use App\DataTransferObjects\UserDto;
 
 //dto have no id
 
@@ -30,8 +30,8 @@ class CourseDto extends AbstractDto{
     private ?string     $duration;
     private ?string     $status;
 
-    private ?SubjectDTO $subjectDTO;
-    private ?UserDTO    $authorDTO;
+    private ?SubjectDto $subjectDto;
+    private ?UserDto    $authorDto;
 
 
     public function __construct(
@@ -51,8 +51,8 @@ class CourseDto extends AbstractDto{
         ?string     $duration                = null,
         ?string     $status                  = null,
 
-        ?SubjectDTO $subjectDTO              = null,
-        ?UserDTO    $authorDTO               = null
+        ?SubjectDto $subjectDto              = null,
+        ?UserDto    $authorDto               = null
     ) {
         $this->name                          = $name;
         $this->price                         = $price;
@@ -70,8 +70,8 @@ class CourseDto extends AbstractDto{
         $this->duration                      = $duration;
         $this->status                        = $status;  
 
-        $this->subjectDTO                    = $subjectDTO;
-        $this->authorDTO                     = $authorDTO;
+        $this->subjectDto                    = $subjectDto;
+        $this->authorDto                     = $authorDto;
     }
 
 
@@ -112,6 +112,10 @@ class CourseDto extends AbstractDto{
     public function getAuthorSharePercentage() : ?float {
         return $this->authorSharePercentage;
     }
+    
+    public function getEdumindSharePercentage() : ?float {
+        return (float)(100 - $this->authorSharePercentage);
+    }
 
     public function getPrice() : float {
         return $this->price;
@@ -130,12 +134,12 @@ class CourseDto extends AbstractDto{
     }
 
 
-    public function getSubject() : ?SubjectDTO {
-        return $this->subjectDTO;
+    public function getSubjectDto() : ?SubjectDto {
+        return $this->subjectDto;
     }    
 
-    public function getAuthor() : ?UserDTO {
-        return $this->authorDTO;
+    public function getAuthorDto() : ?UserDto {
+        return $this->authorDto;
     }
 
 
@@ -157,11 +161,11 @@ class CourseDto extends AbstractDto{
 			'duration' 				  => $this->duration,
 			'status' 				  => $this->status,
             
-            'subjectArr'              => $this->subjectDTO ? $this->subjectDTO->toArray() : null,
-            'subjectId'               => $this->subjectDTO ? $this->subjectDTO->getId() : null,
+            'subjectArr'              => $this->subjectDto ? $this->subjectDto->toArray() : null,
+            'subjectId'               => $this->subjectDto ? $this->subjectDto->getId() : null,
 
-            'creatorArr'              => $this->authorDTO ? $this->authorDTO->toArray() : null,
-            'creatorId'               => $this->authorDTO ? $this->authorDTO->getId() : null,
+            'creatorArr'              => $this->authorDto ? $this->authorDto->toArray() : null,
+            'creatorId'               => $this->authorDto ? $this->authorDto->getId() : null,
         ];
     }
 

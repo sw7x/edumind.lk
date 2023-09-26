@@ -32,7 +32,7 @@ class UserPolicy
     public function view(User $user, User $model)
     {
         $currentUserRole   = $user->roles()->first()->slug;
-        $givenUserRole     = $model->roles()->first()->slug;
+        $givenUserRole     = $model->roles()->first() ? $model->roles()->first()->slug : null;
 
         if($currentUserRole == Role::ADMIN){       
             return true;
@@ -51,7 +51,6 @@ class UserPolicy
 
         }else{
             return false;
-
         }
     }
 

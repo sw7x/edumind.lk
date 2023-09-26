@@ -24,16 +24,16 @@ class ContactUsMessageDtoFactory extends AbstractDtoFactory
             throw new MissingArgumentDtoException('ContactUsMessageDto create failed due to missing message parameter');
 
         
-        $creatorDTO = isset($data['userId']) ? 
+        $creatorDto = isset($data['userId']) ? 
                         (new UserDtoFactory())->createDtoById($data['userId']) : 
                         (isset($data['userArr']) && !empty($data['userArr']) ? 
                             UserDtoFactory::fromArray($data['userArr']) : 
                             null 
                         );
         
-        //dump($creatorDTO);
+        //dump($creatorDto);
         //dump($data);
-        //echo 'creatorDTO<br><hr>';
+        //echo 'creatorDto<br><hr>';
 
         return new ContactUsMessageDto(
             $data['message'],
@@ -44,8 +44,9 @@ class ContactUsMessageDtoFactory extends AbstractDtoFactory
             $data['fullName'] ?? null,             
             $data['email'] ?? null,                  
             $data['phone'] ?? null,        
-            
-            $creatorDTO
+            $data['createdAt'] ?? null,
+
+            $creatorDto
         );
     }
     
@@ -58,16 +59,16 @@ class ContactUsMessageDtoFactory extends AbstractDtoFactory
         if($request->input('message') == null )
             throw new MissingArgumentDtoException('ContactUsMessageDto create failed due to missing message parameter');
 
-        $creatorDTO = null;
+        $creatorDto = null;
         if($request->has('user_id') && $request->filled('user_id')){
-            $creatorDTO = (new UserDtoFactory())->createDtoById($request->input('user_id'));
+            $creatorDto = (new UserDtoFactory())->createDtoById($request->input('user_id'));
         }elseif (
             $request->has('user_arr') && 
             $request->filled('user_arr') && 
             !empty($request->input('user_arr'))
         ) {
             $userArr    = UserMapper::arrConvertToDtoArr($request->input('user_arr'));
-            $creatorDTO = UserDtoFactory::fromArray($userArr);
+            $creatorDto = UserDtoFactory::fromArray($userArr);
         } 
 
         return new ContactUsMessageDto(
@@ -78,9 +79,10 @@ class ContactUsMessageDtoFactory extends AbstractDtoFactory
             //$request->input('uuid') ?? null,
             $request->input('full_name') ?? null,
             $request->input('email') ?? null,
-            $request->input('phone') ?? null,            
+            $request->input('phone') ?? null,
+            $request->input('created_at') ?? null,            
 
-            $creatorDTO
+            $creatorDto
         );
         
     }

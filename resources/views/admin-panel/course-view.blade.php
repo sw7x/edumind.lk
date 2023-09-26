@@ -56,19 +56,19 @@
                                         <form class="" id="" action="" method="POST">
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->name}}</label>
+                                                <label class="col-sm-8 col-form-label">{{$course['name']}}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Subject</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->subject->name}}</label>
+                                                <label class="col-sm-8 col-form-label">{{$course['subjectName']}}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Teacher</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->teacher->full_name}}</label>
+                                                <label class="col-sm-8 col-form-label">{{$course['teacherName']}}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
@@ -76,21 +76,21 @@
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Heading text</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->heading_text}}</label>
+                                                <label class="col-sm-8 col-form-label">{{$course['headingText']}}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Description</label>
-                                                <label class="col-sm-8 col-form-label">{!! $course->description !!}</label>
+                                                <label class="col-sm-8 col-form-label">{!! $course['description'] !!}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
                                             <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
                                                 <div class="col-sm-8">
                                                     
-                                                    <img style="max-width:500px" src="{{$course->image}}"/>
+                                                    <img style="max-width:500px" src="{{$course['image']}}"/>
                                                     
                                                     <br>
                                                     <small>Image Size should be 300X350</small>
@@ -101,43 +101,50 @@
 
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
-                                                <label class="col-sm-8 col-form-label">{{$course->duration}}</label>
+                                                <label class="col-sm-8 col-form-label">{{$course['duration']}}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
-                                                <label class="col-sm-8 col-form-label">{{$course->video_count}}</label>
+                                                <label class="col-sm-8 col-form-label">{{$course['videoCount']}}</label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Price</label>
-                                                @if(isset($course->price) && $course->price != '0.00')
-                                                    <label class="col-sm-8 col-form-label">Rs {{$course->price}}</label>
+                                                @if(isset($course['price']) && $course['price'] != '0.00')
+                                                    <label class="col-sm-8 col-form-label">Rs {{$course['price']}}</label>
                                                 @else
                                                     <label class="col-sm-8 col-form-label">Free</label>
                                                 @endif
-
                                             </div>
                                             <div class="hr-line-dashed"></div>
+                                            
+                                            @if(isset($course['authorSharePercentage']) && is_numeric($course['authorSharePercentage']))
+                                                <div class="form-group  row">
+                                                    <label class="col-sm-4 col-form-label">Author Share</label>                                                
+                                                    <label class="col-sm-8 col-form-label">{{$course['authorSharePercentage']}}%</label>
+                                                </div>
+                                                <div class="hr-line-dashed"></div>
+                                            @endif
 
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Created</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->getCreatedTime()}} <small>({{$course->created_at}})</small></label>
+                                                <label class="col-sm-8 col-form-label">{{$course['createdAtAgo']}} <small>({{$course['createdAt']}})</small></label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Last update</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->getLastUpdatedTime()}} <small>({{$course->updated_at}})</small></label>
+                                                <label class="col-sm-8 col-form-label">{{$course['updatedAtAgo']}} <small>({{$course['updatedAt']}})</small></label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Submit status</label>
-                                                <label class="col-sm-8 col-form-label">{{$course->status}} </label>
+                                                <label class="col-sm-8 col-form-label">{{$course['status']}} </label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
@@ -146,7 +153,7 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-4 offset-sm-4">
                                                     <a class="btn btn-danger btn-sm mr-2" href="{{route('admin.course.index')}}">Go back</a>
-                                                    <a class="btn btn-info btn-sm" target="_blank" href="{{route('course-single',$course->slug)}}">Open course in new tab</a>
+                                                    <a class="btn btn-info btn-sm" target="_blank" href="{{route('course-single',$course['slug'])}}">Open course in new tab</a>
                                                 </div>                                                
                                             </div>
 
@@ -165,6 +172,7 @@
 
                                             @php
                                                 //dump($course->content);
+                                                //dump($courseContent);
                                             @endphp
 
                                             @if(isset($courseContent))

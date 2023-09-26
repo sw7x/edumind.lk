@@ -522,59 +522,6 @@ class CourseController extends Controller
 
 
 
-    public function dummyMethod(Request $request){    
-
-        try{
-
-            $user = Sentinel::getUser();
-            
-            if($user != null && ($user->roles()->first()->slug == Role::STUDENT)){
-
-                /*$courseDto  = new CourseDto(
-                    id : null,
-                    name : null,
-                    description : null,
-                    image : null,
-                    headingText : null,
-                    topics : $topics,
-                    content : $content,
-                    slug : null,
-                    authorSharePercentage : null,
-                    price : null,
-                    videoCount : null,
-                    duration : null,
-                    status : null
-                );*/
-
-                //$courseDto  = new CourseDto($request);
-                $courseDto  = CourseDto::fromAppRequest($request);
-                //$courseDto  = CourseDto::fromAppRequest($request);
-
-
-
-                
-                $courses = (new CourseService())->dummyMethod($courseDto);
-            }else{
-
-                $courses = Course::all();
-            }
-
-            return view('all-courses')->with(['all_courses' => $courses]);
-
-        }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('all-courses');
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            session()->flash('message', 'Failed to load your courses');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('all-courses');
-
-        }
-    }
+    
 
 }

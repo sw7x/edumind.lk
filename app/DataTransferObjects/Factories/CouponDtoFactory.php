@@ -25,14 +25,14 @@ class CouponDtoFactory extends AbstractDtoFactory
         if(!isset($data['discountPercentage']))
             throw new MissingArgumentDtoException('CouponCodeDto create failed due to missing discountPercentage parameter');
             
-        $courseDTO      =   (isset($data['assignedCourseArr']) && !empty($data['assignedCourseArr'])) ?
+        $courseDto      =   (isset($data['assignedCourseArr']) && !empty($data['assignedCourseArr'])) ?
                                 CourseDtoFactory::fromArray($data['assignedCourseArr']) : 
                                 (isset($data['ccCourseId']) ? 
                                     (new CourseDtoFactory())->createDtoById($data['assignedCourseId']) : 
                                     null 
                                 );
 
-        $beneficiaryDTO =   (isset($data['beneficiaryArr']) && !empty($data['beneficiaryArr'])) ?
+        $beneficiaryDto =   (isset($data['beneficiaryArr']) && !empty($data['beneficiaryArr'])) ?
                                 UserDtoFactory::fromArray($data['beneficiaryArr']) :
                                 (isset($data['beneficiaryId']) ? 
                                     (new UserDtoFactory())->createDtoById($data['beneficiaryId']) : 
@@ -40,7 +40,7 @@ class CouponDtoFactory extends AbstractDtoFactory
                                 );
 
         return new CouponCodeDto(
-            $courseDTO,
+            $courseDto,
             $data['code'],  
             $data['discountPercentage'],              
             
@@ -50,7 +50,7 @@ class CouponDtoFactory extends AbstractDtoFactory
             $data['usedCount'] ?? null,              
             $data['isEnabled'] ?? null,  
             
-            $beneficiaryDTO                
+            $beneficiaryDto                
         );
 
     }
@@ -63,33 +63,33 @@ class CouponDtoFactory extends AbstractDtoFactory
         if($request->input('discount_percentage') === null )
             throw new MissingArgumentDtoException('CouponCodeDto create failed due to missing discount_percentage parameter');
             
-        $courseDTO = null;
+        $courseDto = null;
         if($request->has('assigned_course_id') && $request->filled('assigned_course_id')){
-            $courseDTO = (new CourseDtoFactory())->createDtoById($request->input('assigned_course_id'));
+            $courseDto = (new CourseDtoFactory())->createDtoById($request->input('assigned_course_id'));
         }elseif (
             $request->has('assigned_course_arr') && 
             $request->filled('assigned_course_arr') &&
             !empty($request->input('assigned_course_arr'))
         ) {
             $assignedCourseArr  = CourseMapper::arrConvertToDtoArr($request->input('assigned_course_arr'));
-            $courseDTO          = CourseDtoFactory::fromArray($assignedCourseArr);
+            $courseDto          = CourseDtoFactory::fromArray($assignedCourseArr);
         }
 
 
-        $beneficiaryDTO = null;
+        $beneficiaryDto = null;
         if($request->has('beneficiary_id') && $request->filled('beneficiary_id')){
-            $beneficiaryDTO = (new UserDtoFactory())->createDtoById($request->input('beneficiary_id'));
+            $beneficiaryDto = (new UserDtoFactory())->createDtoById($request->input('beneficiary_id'));
         }elseif (
             $request->has('beneficiary_arr') && 
             $request->filled('beneficiary_arr') && 
             !empty($request->input('beneficiary_arr'))
         ) {
             $beneficiaryArr = UserMapper::arrConvertToDtoArr($request->input('beneficiary_arr'));
-            $beneficiaryDTO = UserDtoFactory::fromArray($beneficiaryArr);
+            $beneficiaryDto = UserDtoFactory::fromArray($beneficiaryArr);
         }
 
         return new CouponCodeDto(
-            $courseDTO,
+            $courseDto,
             $request->input('code'),
             $request->input('discount_percentage'),            
 
@@ -99,7 +99,7 @@ class CouponDtoFactory extends AbstractDtoFactory
             $request->input('used_count') ?? null,            
             $request->input('is_enabled') ?? null,                
             
-            $beneficiaryDTO
+            $beneficiaryDto
         );        
     }
     

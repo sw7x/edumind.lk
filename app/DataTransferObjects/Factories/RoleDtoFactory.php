@@ -46,8 +46,8 @@ class RoleDtoFactory extends AbstractDtoFactory{
 
     public function createDtoById(int $roleId): ?RoleDto {
         $data       = (new RoleRepository())->findDtoDataById($roleId);
-        $roleDTO    = self::fromArray($data);
-        return $roleDTO;
+        $roleDto    = self::fromArray($data);
+        return $roleDto;
     }
 
 }

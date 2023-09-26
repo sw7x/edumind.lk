@@ -1,7 +1,7 @@
 <?php
 namespace App\DataTransferObjects;
 
-use App\DataTransferObjects\RoleDTO;
+use App\DataTransferObjects\RoleDto;
 use App\DataTransferObjects\AbstractDto;
 
 
@@ -21,8 +21,9 @@ class UserDto extends AbstractDto{
     private   ?int     $dobYear;
     private   ?string  $profileText;
     private   ?string  $eduQualifications;
+    private   ?bool    $isActivated;
 
-    private   ?RoleDTO $roleDTO;
+    private   ?RoleDto $roleDto;
 
 
     public function __construct(        
@@ -39,8 +40,9 @@ class UserDto extends AbstractDto{
         ?int     $dobYear           = null,
         ?string  $profileText       = null,
         ?string  $eduQualifications = null,
+        ?bool    $isActivated       = null,
 
-        ?RoleDTO $roleDTO           = null
+        ?RoleDto $roleDto           = null
     ) {        
         $this->fullName             = $fullName;
         $this->email                = $email;     
@@ -55,8 +57,10 @@ class UserDto extends AbstractDto{
         $this->dobYear              = $dobYear;        
         $this->profileText          = $profileText;     
         $this->eduQualifications    = $eduQualifications;
+        $this->isActivated          = $isActivated;
 
-        $this->roleDTO              = $roleDTO;
+        
+        $this->roleDto              = $roleDto;
     }
     
 
@@ -106,10 +110,14 @@ class UserDto extends AbstractDto{
 
     public function getProfileText() : ?string {
         return $this->profileText;
+    }    
+
+    public function getIsActivated() : ?bool {
+        return $this->isActivated;
     }
 
-    public function getRole() : ?RoleDTO {
-        return $this->roleDTO;
+    public function getRoleDto() : ?RoleDto {
+        return $this->roleDto;
     }
 
 
@@ -128,9 +136,10 @@ class UserDto extends AbstractDto{
             'dobYear'           => $this->dobYear,
             'profileText'       => $this->profileText,
             'eduQualifications' => $this->eduQualifications,
+            'isActivated'       => $this->isActivated,
             
-            'roleArr'           => $this->roleDTO ? $this->roleDTO->toArray() : null,
-            'roleId'            => $this->roleDTO ? $this->roleDTO->getId() : null,
+            'roleArr'           => $this->roleDto ? $this->roleDto->toArray() : null,
+            'roleId'            => $this->roleDto ? $this->roleDto->getId() : null,
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\DataTransferObjects;
 
-use App\DataTransferObjects\UserDTO;
+use App\DataTransferObjects\UserDto;
 use App\DataTransferObjects\AbstractDto;
 
 
@@ -18,7 +18,8 @@ class ContactUsMessageDto extends AbstractDto{
     private     ?string  $email;
     private     ?string  $phone;
 
-    private     ?UserDTO $creatorDTO;
+    private     ?UserDto $creatorDto;
+    private     ?string  $createdAt;    
 
     
     public function __construct(
@@ -30,8 +31,9 @@ class ContactUsMessageDto extends AbstractDto{
         ?string  $fullName   = null ,
         ?string  $email      = null , 
         ?string  $phone      = null , 
+        ?string  $createdAt  = null, 
 
-        ?UserDTO $creatorDTO = null
+        ?UserDto $creatorDto = null
     ) {
         $this->subject       = $subject;
         $this->message       = $message;
@@ -41,8 +43,9 @@ class ContactUsMessageDto extends AbstractDto{
         $this->fullName      = $fullName;
         $this->email         = $email;
         $this->phone         = $phone;
+        $this->createdAt     = $createdAt; 
 
-        $this->creatorDTO    = $creatorDTO;
+        $this->creatorDto    = $creatorDto;
     }
         
 
@@ -75,10 +78,16 @@ class ContactUsMessageDto extends AbstractDto{
     public function getMessage() : string {
         return $this->message;
     }
-
-    public function getCreator() : ?UserDTO {
-        return $this->creatorDTO;
+    
+    public function getCreatedAt() : ?string {
+        return $this->createdAt;
     }
+
+    public function getCreatorDto() : ?UserDto {
+        return $this->creatorDto;
+    }
+    
+
 
 
     // toArray method
@@ -91,9 +100,10 @@ class ContactUsMessageDto extends AbstractDto{
             'phone'         => $this->phone,
             'subject'       => $this->subject,
             'message'       => $this->message,            
+            'createdAt'     => $this->createdAt,       
             
-            "userArr"       => $this->creatorDTO ? $this->creatorDTO->toArray() : null,
-            "userId"        => $this->creatorDTO ? $this->creatorDTO->getId() : null,
+            "userArr"       => $this->creatorDto ? $this->creatorDto->toArray() : null,
+            "userId"        => $this->creatorDto ? $this->creatorDto->getId() : null,
         ];
     }
     

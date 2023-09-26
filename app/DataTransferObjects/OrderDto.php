@@ -4,8 +4,8 @@ namespace App\DataTransferObjects;
 
 use App\DataTransferObjects\AbstractDto;
 
-use App\DataTransferObjects\InvoiceDTO;
-use App\DataTransferObjects\UserDTO;
+use App\DataTransferObjects\InvoiceDto;
+use App\DataTransferObjects\UserDto;
 
 
 
@@ -14,34 +14,34 @@ class OrderDto extends AbstractDto
         
     //public read only
     private array        $enrollments;
-    private UserDTO      $customerDTO;
+    private UserDto      $customerDto;
     
     private ?string      $checkoutDate;
     private ?int         $id;
     //private ?string      $uuid;
     
-    private ?InvoiceDTO  $invoiceDTO;
+    private ?InvoiceDto  $invoiceDto;
 
 
     // Constructor
     public function __construct(        
         array       $enrollments,
-        UserDTO     $customerDTO,
+        UserDto     $customerDto,
         
         string      $checkoutDate = null,
         ?int        $id           = null,
         //?string     $uuid         = null,        
         
-        ?InvoiceDTO $invoiceDTO   = null
+        ?InvoiceDto $invoiceDto   = null
     ) {
         $this->enrollments        = $enrollments;
-        $this->customerDTO        = $customerDTO;
+        $this->customerDto        = $customerDto;
 
         $this->id                 = $id;
         //$this->uuid               = $uuid;
         $this->checkoutDate       = $checkoutDate;
         
-        $this->invoiceDTO         = $invoiceDTO;
+        $this->invoiceDto         = $invoiceDto;
     }
 
 
@@ -60,23 +60,24 @@ class OrderDto extends AbstractDto
 
 
 
-    public function getCustomer() : UserDTO {
-        return $this->customerDTO;
+    public function getCustomerDto() : UserDto {
+        return $this->customerDto;
     }    
-    public function getEnrollmentDTOs() : array {
+    
+    public function getEnrollmentDtos() : array {
         return $this->enrollments;
     }
 
-    public function getInvoice() : ?InvoiceDTO {
-        return $this->invoiceDTO;
+    public function getInvoiceDto() : ?InvoiceDto {
+        return $this->invoiceDto;
     }    
 
 
     // To Array Method
     public function toArray() : array {
         $enrollmentsArr = [];
-        foreach ($this->enrollments as $enrollmentDTO) {
-            $enrollmentsArr[] = $enrollmentDTO->toArray();
+        foreach ($this->enrollments as $enrollmentDto) {
+            $enrollmentsArr[] = $enrollmentDto->toArray();
         }
 
         return [
@@ -84,13 +85,13 @@ class OrderDto extends AbstractDto
             //'uuid'          => $this->uuid,
             'checkoutDate'  => $this->checkoutDate,
             
-            'invoiceArr'    => $this->invoiceDTO  ? $this->invoiceDTO->toArray() : null,
-            'invoiceId'     => $this->invoiceDTO  ? $this->invoiceDTO->getId() : null,
+            'invoiceArr'    => $this->invoiceDto  ? $this->invoiceDto->toArray() : null,
+            'invoiceId'     => $this->invoiceDto  ? $this->invoiceDto->getId() : null,
 
             'enrollmentsArr'=> $enrollmentsArr,
             
-            'studentArr'    => $this->customerDTO->toArray(),
-            'studentId'     => $this->customerDTO->getId(),            
+            'studentArr'    => $this->customerDto->toArray(),
+            'studentId'     => $this->customerDto->getId(),            
             
         ];
     }

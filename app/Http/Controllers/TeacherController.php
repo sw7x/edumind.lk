@@ -3,68 +3,52 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
-use App\Models\User;
-use App\Services\StudentService;
 use App\Services\TeacherService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 use Sentinel;
+use App\View\DataTransformers\TeacherDataTransformer;
+
+
 
 
 class TeacherController extends Controller
 {
 
-    public function viewMyProfile()
+    private TeacherService $teacherService;
+    
+    function __construct(TeacherService $teacherService){
+        $this->teacherService    = $teacherService;
+    }
+
+
+
+    public function viewAllTeachers()
     {
-        //@if(!Sentinel::check())
-        //Sentinel::getUser()->profile_pic
-        //@if(Sentinel::getUser()->roles()->first()->slug == 'student')
         try{
 
-            $user = Sentinel::getUser();
+            $teachers       = $this->teacherService->loadAllAvailableTeachers();
 
-            if($user != null){
-                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
-                if($role=='teacher'){
-                    return view('teacher.teacher-my-profile-full-width')->with(['userData' => $user]);
-                    //return view('teacher-my-profile')->with(['userData' => $user]);
-                }else{
-                    throw new CustomException('Wrong user type');
-                }
-            }else{
-                throw new CustomException('Access denied');
-            }
+            $teachersArr    = TeacherDataTransformer::prepareUserListData($teachers);
+            return view('teacher-list')->with(['teachers' => $teachersArr]);
+                       
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('teacher.teacher-my-profile');            
+            return view('teacher-list'); 
 
         }catch(\Exception $e){
-            session()->flash('message', 'Failed to load your profile');
+            session()->flash('message', $e->getMessage());
+            //session()->flash('message', 'Unable to Load teachers');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('teacher.teacher-my-profile');
-            
+            return view('teacher-list');  
         }
-    }
-
-    public function viewAllTeachers()
-    {
-        //$teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('status',1)->orderBy('id')->get();
-        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
         
-
-
-        //$teachers->getCourseCount();
-        //todo
-        foreach($teachers as $teacher){
-            //dump($teacher->getTeachingCourses);
-        }
-        //dd();
-        //dd($teachers);
-        return view('teacher-list')->with(['teachers' => $teachers]);
     }
+
+
+
 
     public function viewInstruction()
     {
@@ -76,48 +60,36 @@ class TeacherController extends Controller
         return view('teacher.teacher-profile-help');
     }
 
-    public function viewTeacher($username = null)
-    {
-        //$username = 'lasantha50';
-        //dd($username);
+    public function viewTeacher($username = null){
+        
         try{
-            if(!$username){
-                throw new CustomException('Profile id not provided');
-            }
 
-            $user = User::where('username', $username)->first();
+            if(!$username)
+                throw new CustomException('Profile username not provided');
+            
+            $teacherData            = $this->teacherService->loadTeacherDataByUserName($username);
+            $teacherCoursesData     = $this->teacherService->loadPublishedCoursesByTeacher($teacherData['dbRec']);
+            
+            $userarr     = TeacherDataTransformer::prepareUserData($teacherData);
+            $coursesarr  = TeacherDataTransformer::prepareCourseData($teacherCoursesData);
+       
+            return view('view-teacher-profile')->with([
+                'userData'          => $userarr,
+                'teacher_courses'   => $coursesarr
+            ]);
 
-            if($user != null){
-                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
-                if($role=='teacher'){
-
-                    $teacherService     = new TeacherService();
-                    $teacher_courses    = $teacherService->getPublishedCoursesByTeacher($user);
-
-                    return view('view-teacher-profile')->with([
-                        'userData'          => $user,
-                        'teacher_courses'   => $teacher_courses
-                    ]);
-
-                }else{
-                    throw new CustomException('Wrong user type');
-                }
-
-            }else{
-                throw new CustomException('Teacher profile does not exists');
-            }
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
             return view('view-teacher-profile');
 
-        }catch(\Exception $e){
-            session()->flash('message', 'Failed to load teacher profile');
+        }catch(\Exception $e){            
+            session()->flash('message', $e->getMessage());
+            //session()->flash('message', 'Failed to load teacher profile');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
             return view('view-teacher-profile');
-
         }
 
     }
@@ -126,30 +98,24 @@ class TeacherController extends Controller
 
     public function viewMyCourses()
     {
-        //todo
         try{
-
             $user = Sentinel::getUser();
-
-            if($user != null){
-                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
-                if($role=='teacher'){
-
-                    $teacherService     = new TeacherService();
-                    $teacher_courses    = $teacherService->getAllCoursesByTeacher($user);
-
-                    return view('teacher.teacher-my-courses-full-width')->with([
-                    //return view('teacher-my-courses')->with([
-                        'userData'          => $user,
-                        'teacher_courses'   => $teacher_courses
-                    ]);
-
-                }else{
-                    throw new CustomException('Wrong user type');
-                }
-            }else{
+            if(is_null($user))
                 throw new CustomException('Access denied');
-            }
+            
+            $role = optional($user->roles()->first())->name;
+            if($role != 'teacher')
+                throw new CustomException('Wrong user type');
+
+            $courses    = $this->teacherService->loadAllCoursesByTeacher($user);
+            $coursesArr = TeacherDataTransformer::prepareCourseData($courses);
+
+            return view('teacher.teacher-my-courses-full-width')->with([
+            //return view('teacher-my-courses')->with([
+                //'userData'          => $user,
+                'teacher_courses'   => $coursesArr
+            ]);
+
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
@@ -157,68 +123,36 @@ class TeacherController extends Controller
             return view('teacher.teacher-my-courses');
 
         }catch(\Exception $e){
-            session()->flash('message', 'Failed to load your courses');
+            //dd($e->getMessage());            
+            session()->flash('message', $e->getMessage());
+             //session()->flash('message', 'Failed to load your courses');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
             return view('teacher.teacher-my-courses');
-
-        }
+        }        
 
     }
 
 
-    public function profileEdit()
-    {
+    public function profileEdit(){
         return view('teacher.teacher-profile-edit');
     }
 
-
-
-    public function createCourse()
-    {
+    public function createCourse(){
         return view('teacher.teacher-profile-course-create');
     }
 
-    public function courseAddContent()
-    {
+    public function courseAddContent(){
         return view('teacher.teacher-profile-course-add-content');
     }
-    public function ViewEarnings()
-    {
+    
+    public function ViewEarnings(){
         return view('teacher.teacher-profile-earnings');
     }
 
-
-    public function viewDashboard()
-    {
+    public function viewDashboard(){
         return view('teacher.teacher-profile-dashboard');
     }
 
     
 }
-    
-
-    /*
-    public function viewMyProfile()
-
-    public function viewAllTeachers()
-
-    public function viewInstruction()
-
-    public function viewTeacherProfileHelp()
-
-    public function viewTeacher($username = null)
-
-    public function viewMyCourses()
-
-    public function profileEdit()
-
-    public function createCourse()
-
-    public function courseAddContent()
-
-    public function ViewEarnings()
-
-    public function viewDashboard()
-
-    */

@@ -5,15 +5,15 @@ namespace App\DataTransferObjects;
 
 use App\DataTransferObjects\AbstractDto;
 
-use App\DataTransferObjects\courseDTO;
-use App\DataTransferObjects\CouponCodeDTO;
+use App\DataTransferObjects\courseDto;
+use App\DataTransferObjects\CouponCodeDto;
 
 
 
 class CourseItemDto extends AbstractDto{
 
     //public read only
-    private courseDTO      $courseDTO;
+    private courseDto      $courseDto;
     private string         $cartAddedDate;
     private bool           $isCheckout;
 
@@ -26,12 +26,12 @@ class CourseItemDto extends AbstractDto{
     private ?float         $beneficiaryEarnAmount;
     private ?float         $authorAmount;    
     
-    private ?CouponCodeDTO $couponCodeDTO;
+    private ?CouponCodeDto $couponCodeDto;
     
 
     // Constructor
     public function __construct(
-        CourseDTO       $courseDTO,
+        CourseDto       $courseDto,
         string          $cartAddedDate,
         bool            $isCheckout,
 
@@ -44,9 +44,9 @@ class CourseItemDto extends AbstractDto{
         ?float          $beneficiaryEarnAmount  = 0, 
         ?float          $authorAmount           = 0,         
         
-        ?CouponCodeDTO  $couponCodeDTO          = null
+        ?CouponCodeDto  $couponCodeDto          = null
     ) {        
-        $this->courseDTO                        = $courseDTO;
+        $this->courseDto                        = $courseDto;
         $this->cartAddedDate                    = $cartAddedDate;
         $this->isCheckout                       = $isCheckout;
         
@@ -59,7 +59,7 @@ class CourseItemDto extends AbstractDto{
         $this->beneficiaryEarnAmount            = $beneficiaryEarnAmount;
         $this->authorAmount                     = $authorAmount;
 
-        $this->couponCodeDTO                    = $couponCodeDTO;
+        $this->couponCodeDto                    = $couponCodeDto;
     }
 
     
@@ -79,11 +79,11 @@ class CourseItemDto extends AbstractDto{
     }
 
     public function getIsCheckout() : bool {
-        return $this->isCheckout();
+        return $this->isCheckout;
     }    
 
     public function getDiscountAmount() : ?float {
-        return $this->discountAmount();
+        return $this->discountAmount;
     }
 
     public function getEdumindLooseAmount() : ?float {
@@ -107,12 +107,12 @@ class CourseItemDto extends AbstractDto{
     }
 
 
-    public function getCourse() : courseDTO {
-        return $this->courseDTO;
+    public function getCourseDto() : courseDto {
+        return $this->courseDto;
     } 
 
-    public function getCouponCode() : ?CouponCodeDTO {
-        return $this->couponCodeDTO;
+    public function getCouponCodeDto() : ?CouponCodeDto {
+        return $this->couponCodeDto;
     } 
 
     public function edumindEarnTotalAmount() : ?float {
@@ -138,11 +138,11 @@ class CourseItemDto extends AbstractDto{
             'edumindLoseAmount'     => $this->edumindLoseAmount,
             'beneficiaryEarnAmount' => $this->beneficiaryEarnAmount,
 
-            'courseArr'             => $this->courseDTO->toArray(),
-            'courseId'              => $this->courseDTO->getId(),
+            'courseArr'             => $this->courseDto->toArray(),
+            'courseId'              => $this->courseDto->getId(),
             
-            'usedCouponArr'         => $this->couponCodeDTO ? $this->couponCodeDTO->toArray() : null,
-            'usedCouponCode'        => $this->couponCodeDTO ? $this->couponCodeDTO->getCode() : null,
+            'usedCouponArr'         => $this->couponCodeDto ? $this->couponCodeDto->toArray() : null,
+            'usedCouponCode'        => $this->couponCodeDto ? $this->couponCodeDto->getCode() : null,
         ];
     }
 

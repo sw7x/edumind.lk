@@ -3,9 +3,44 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Repositories\UserRepository;
+use Sentinel;
+use App\Builders\UserBuilder;
+use App\Exceptions\CustomException;
 
 class UserService
-{
+{  
+
+    private UserRepository $userRepository;
+
+    function __construct(UserRepository $userRepository){
+        $this->userRepository = $userRepository;
+    }
+    
+
+    public function findDbRec(int $id) : array {
+        $dbRec  =   $this->userRepository->findById($id);
+        $dto    =   $dbRec ? UserBuilder::buildDto($dbRec->toArray()) : null;
+        
+        return array(
+            'dbRec' => $dbRec,
+            'dto'   => $dto
+        );
+    }
+
+    public function loadLoggedInUserData() : array {
+        $user = Sentinel::getUser();
+        if(is_null($user))
+            throw new CustomException('Access denied');
+
+        return array(
+            'dto'   =>  UserBuilder::buildDto($user->toArray()),
+            'dbRec' =>  $user,
+        );
+    }
+
+
+    
     /*
     private $userRepository;
 
@@ -107,7 +142,7 @@ class UserService
         }else{
             return $user->role->role_name;
         }
-    }*/
+    }
 
 
     public function checkUsernameExists($username){
@@ -136,7 +171,7 @@ class UserService
         } while ($x == 1);
         return $uname;
     }
-
+    */
 }
 
 

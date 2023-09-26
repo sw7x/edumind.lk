@@ -30,8 +30,8 @@ class MarketerStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $email      = $this->get('marketer-email');
-        $username   = $this->get('marketer-uname');
+        $email      = $this->get('marketer_email');
+        $username   = $this->get('marketer_uname');
         //dd($email);
 
         if($username == null){
@@ -47,7 +47,7 @@ class MarketerStoreRequest extends FormRequest
 
         $username = strtolower($username);
         $this->merge([
-            'marketer-uname' => $username,
+            'marketer_uname' => $username,
             //'teacher-name' => '',
         ]);
 
@@ -66,13 +66,13 @@ class MarketerStoreRequest extends FormRequest
     {
 
         return [
-            'marketer-name'      => 'required|unique:users,full_name',
-            'marketer-email'     => 'required|email|unique:users,email',
-            //'marketer-uname'     => 'alpha_dash|unique:users,username',
-            'marketer-uname'     => 'alpha_dash',
-            'marketer-phone'     => 'required|unique:users,phone',
-            'marketer-password'  => 'required|min:6|max:12',
-            'marketer-gender'    => 'required',
+            'marketer_name'      => 'required|unique:users,full_name',
+            'marketer_email'     => 'required|email|unique:users,email',
+            //'marketer_uname'     => 'alpha_dash|unique:users,username',
+            'marketer_uname'     => 'alpha_dash',
+            'marketer_phone'     => 'required|unique:users,phone',
+            'marketer_password'  => 'required|min:6|max:12',
+            'marketer_gender'    => 'required',
         ];
     }
 
@@ -85,8 +85,8 @@ class MarketerStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'marketer-name.required' => 'Name field is required',
-            'marketer-email.required' => 'Email field is required',
+            'marketer_name.required' => 'Name field is required',
+            'marketer_email.required' => 'Email field is required',
         ];
     }
 
@@ -96,12 +96,12 @@ class MarketerStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'marketer-name'      => 'name',
-            'marketer-email'     => 'email',
-            'marketer-uname'     => 'username',
-            'marketer-phone'     => 'phone',
-            'marketer-password'  => 'password',
-            'marketer-gender'    => 'gender',
+            'marketer_name'      => 'name',
+            'marketer_email'     => 'email',
+            'marketer_uname'     => 'username',
+            'marketer_phone'     => 'phone',
+            'marketer_password'  => 'password',
+            'marketer_gender'    => 'gender',
         ];
     }
 

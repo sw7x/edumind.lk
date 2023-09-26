@@ -122,25 +122,25 @@
                 </div>
 
                 @foreach ($popular_courses as $course)
-                    <a href="{{route('course-single',$course->slug)}}" class="uk-link-reset">
+                    <a href="{{route('course-single',$course['slug'])}}" class="uk-link-reset">
                         <div class="horizontal-course-item bg-white md:flex shadow-sm rounded-lg uk-transition-toggle mb-5">
                             <div class="md:w-5/12 md:h-60 h-40 overflow-hidden rounded-l-lg relative">
-                                <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                
+                                <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                
                             </div>
                             <div class="flex-1 md:p-6 p-4">
-                                <div class="font-semibold line-clamp-2 md:text-xl md:leading-relaxed">{{$course->name}}</div>
-                                <div class="line-clamp-2 mt-2 md:block hidden">{{$course->heading_text}}</div>
-                                <div class="font-semibold mt-3">{{$course->teacher->full_name}}</div>
+                                <div class="font-semibold line-clamp-2 md:text-xl md:leading-relaxed">{{$course['name']}}</div>
+                                <div class="line-clamp-2 mt-2 md:block hidden">{{$course['headingText']}}</div>
+                                <div class="font-semibold mt-3">{{$course['teacherName']}}</div>
 
                                 <div class="items-center mt-2">
                                     <div class="lg:flex __space-x-2 items-center text-sm justify-between">
                                         <div class="md:flex">
                                             <div class="font-semibold mt-3 lg:mt-0 lg:mr-3 md:mt-2 md:mr-4"><span class="">
-                                                    <i class="align-middle icon-feather-youtube mr-1" style="font-size: 1.20rem;"></i> {{$course->video_count}} lectures</span>
+                                                    <i class="align-middle icon-feather-youtube mr-1" style="font-size: 1.20rem;"></i> {{$course['videoCount']}} lectures</span>
                                             </div>
 
                                             <div class="font-semibold mt-3 lg:mt-0 lg:mr-3 md:mt-2">
-                                                <span class=""><i class="align-middle icon icon-feather-clock mr-1" style="font-size: 1.20rem;"></i>{{$course->duration}}</span>
+                                                <span class=""><i class="align-middle icon icon-feather-clock mr-1" style="font-size: 1.20rem;"></i>{{$course['duration']}}</span>
                                             </div>                                            
                                         </div>
                                         {{--
@@ -162,8 +162,8 @@
                                         --}}
                                     </div>
 
-                                    @if($course->price)
-                                        <div class="text-lg font-semibold mt-3">{{ $course->price == 0 ? "Free" : 'Rs '.$course->price }}</div>
+                                    @if($course['price'])
+                                        <div class="text-lg font-semibold mt-3">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                     @endif
                                 </div>
                             </div>
@@ -263,23 +263,23 @@
                         <ul class="uk-slider-items uk-child-width-1-4@m uk-child-width-1-2@s uk-grid-small uk-grid">
                             @foreach ($new_courses as $course)
                                 <li>
-                                    <a href="{{route('course-single',$course->slug)}}" class="uk-link-reset">
+                                    <a href="{{route('course-single',$course['slug'])}}" class="uk-link-reset">
                                         <div class="bg-white shadow-sm rounded-lg uk-transition-toggle">
                                             <div class="w-full h-40 overflow-hidden rounded-t-lg relative">
-                                                <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                               
+                                                <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                               
                                                 <img src="{{asset('images/icon-play.svg')}}" class="w-12 h-12 uk-position-center uk-transition-fade" alt="">
                                             </div>
                                             <div class="p-4">
-                                                <div class="font-semibold line-clamp-2">{{$course->name}}</div>
+                                                <div class="font-semibold line-clamp-2">{{$course['name']}}</div>
                                                 <div class="_flex _space-x-2 items-center text-sm pt-3">
-                                                    <div>{{$course->duration}}</div>
+                                                    <div>{{$course['duration']}}</div>
                                                     {{--<div>·</div>--}}
-                                                    <div>{{$course->video_count}} lectures</div>
+                                                    <div>{{$course['videoCount']}} lectures</div>
                                                 </div>
                                                 <div class="pt-1 _flex items-center justify-between">
-                                                    <div class="text-sm font-semibold">{{$course->teacher->full_name}}</div>
-                                                    @if($course->price)
-                                                        <div class="text-lg font-semibold">{{ $course->price == 0 ? "Free" : 'Rs '.$course->price }}</div>
+                                                    <div class="text-sm font-semibold">{{$course['teacherName']}}</div>
+                                                    @if($course['price'])
+                                                        <div class="text-lg font-semibold">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -381,9 +381,9 @@
                         @foreach ($teachers as $teacher)
                             <li>
                                 <div class="relative overflow-hidden bg-white shadow-sm md:rounded-lg rounded-md">
-                                    <a href="{{route('teacher.view-profile',$teacher->username)}}">
-                                        <img src="{{$teacher->profile_pic}}" class="w-full h-52 object-cover" alt="">                                        
-                                        <div class="p-3 truncate">{{$teacher->full_name}}</div>
+                                    <a href="{{route('teacher.view-profile',$teacher['username'])}}">
+                                        <img src="{{$teacher['profilePic']}}" class="w-full h-52 object-cover" alt="">                                        
+                                        <div class="p-3 truncate">{{$teacher['fullName']}}</div>
                                     </a>
                                 </div>
                             </li>

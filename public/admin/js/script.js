@@ -98,6 +98,7 @@ $(document).on('click', '#chngpwclose', function (event){
     });
     event.preventDefault();
 });
+
 $(document).on('click', '#chngpwlink', function (event){
     $('#admin_change_password input[name="password_old"]').val('');
     $('#admin_change_password input[name="password_new"]').val('');
@@ -121,6 +122,7 @@ $(document).on('click', '#signoutlink', function (event){
     });
     event.preventDefault();
 });
+
 $(document).on('click', '#chngLogoutclose', function (event){
     $('#mb-signout').fadeOut("slow", function() {
         $(this).removeClass("open");
@@ -130,12 +132,21 @@ $(document).on('click', '#chngLogoutclose', function (event){
 
 
 
-$('form.admin-logout-form a').click(function(event){
+$('form.admin-logout-form a.logout').click(function(event){
     //$(this).parent().addClass('aahidden');
     $(this).parent().submit();
     //onclick="document.getElementById('logout-form').submit();"
     event.preventDefault();
 });
+
+$('form.admin-logout-form a.closeBtn').click(function(event){
+    $('#mb-signout').fadeOut("slow", function() {
+        $(this).removeClass("open");
+    });
+    event.preventDefault();
+});
+
+
 
 
 //var config = {draggablePnelsEnable : true}

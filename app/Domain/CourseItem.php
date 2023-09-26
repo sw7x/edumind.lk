@@ -182,8 +182,10 @@ class CourseItem extends Entity{
         $revisedPrice                   = $this->course->getPrice()->subtract($this->discountAmount);        
         $this->revisedPrice             = $revisedPrice;
         
-
+        
         $commisionPercentage            = $couponCode->getCommisionPercentageFromDiscount();
+        //dump($couponCode);
+        //dd($commisionPercentage);
                 
         //$this->edumindLoseAmount      = ($this->discountAmount/100) * (100 + $commisionPercentage);
         $this->edumindLoseAmount        = $this->discountAmount->multiply(1 + $commisionPercentage->asFraction());

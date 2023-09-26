@@ -186,7 +186,11 @@
                     </ul>
 				</li>
 
+                               
 
+                <li class="{{ Route::is('admin.profile') ? 'active current' : '' }}">
+                    <a href="{{route('admin.profile')}}"><i class="fa fa-id-card text-lg"></i> <span class="nav-label">Profile</span></a>
+                </li>
 				
 
                 

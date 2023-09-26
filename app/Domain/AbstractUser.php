@@ -13,9 +13,10 @@ abstract class AbstractUser extends Entity{
     protected string    $phone;
     protected string    $username;
     protected bool      $status;
-    
+
     protected ?string   $profilePic = null;
     protected ?string   $gender     = null;
+    protected ?bool     $isActivated= null;
 
     
 
@@ -73,6 +74,10 @@ abstract class AbstractUser extends Entity{
 
     public function getStatus() : bool {
         return $this->status;
+    }    
+
+    public function getIsActivated() : ?bool {
+        return $this->isActivated;
     }
 
 
@@ -98,6 +103,10 @@ abstract class AbstractUser extends Entity{
 
     public function setGender(string $gender) : void {
         $this->gender = $gender;
+    }
+    
+    public function setIsActivated(bool $isActivated) : void {
+        $this->isActivated = $isActivated;
     }
 
     public function setRole(RoleEntity $role) : void {

@@ -70,7 +70,8 @@ class TeacherUser extends User {
             'gender'            => $this->gender,
             'dobYear'           => $this->dobYear,
             'status'            => $this->status,
-
+            'isActivated'       => $this->isActivated,
+            
             'roleArr'           => $this->role ? $this->role->toArray() : null,
             'roleId'            => $this->role ? $this->role->getId()   : null,
         ];

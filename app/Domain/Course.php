@@ -295,7 +295,7 @@ class Course extends Entity
     }
     */
 
-    public function calculateEdumindEarnAmount(int $discountPrecentage, int $commissionPrecentage) : AmountVO {
+    public function checkEdumindCanEarn(int $discountPrecentage, int $commissionPrecentage) : bool {
         $coursePrice            = $this->price;
         $discountPrecentageVO   = new PercentageVO((float)$discountPrecentage);
         $commissionPrecentageVO = new PercentageVO((float)$commissionPrecentage);
@@ -310,7 +310,7 @@ class Course extends Entity
         $edumindLoseAmount    = $discountAmount->multiply(1 + $commissionPrecentageVO->asFraction());
         
         //return ($edumindAmount - $edumindLoseAmount);
-        return $edumindAmount->subtract($edumindLoseAmount);
+        return $edumindAmount->isHigher($edumindLoseAmount);
     }
 
 

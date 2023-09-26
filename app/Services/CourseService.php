@@ -4,38 +4,45 @@
 namespace App\Services;
 
 
-use App\Repositories\SubjectRepository;
+use App\Repositories\CourseRepository;
 
 
-use App\Models\Course;
+use App\Models\Course as CourseModel;
 use Illuminate\Support\Str;
 use App\Models\Role;
-
+use App\Builders\CourseBuilder;
 class CourseService
 {    
-    public function ddd(SubjectRepository $subjectRepository){
-        dump($subjectRepository);
-        dd('g');
+    
+    private CourseRepository $courseRepository;
+
+    function __construct(CourseRepository $courseRepository){
+        $this->courseRepository = $courseRepository;
     }
 
-    public function loadNewCourse(){
-        return Course::latest()->take(8)->get();
-        //return Course::latest('id')->take(8)->get();
+
+    public function loadNewCourses(){
+        $courseCount    = 10;
+        $newCourses     = $this->courseRepository->getNewCourse($courseCount);
+        
+        $dataArr = array();
+        $newCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
+            $dataArr[]  =   CourseBuilder::buildDto($record->toArray());
+        });
+        return $dataArr;
     }
 
-    public function loadPopularCourse(){
-        /*
-        // todo filter when rows have (course_id,student_id) duplicate values
-        return Course::whereHas('students', function ($q) {
-            $q->where('enrollments.status', 'enrolled')
-                ->orWhere('enrollments.status', 'completed');
-        })->withCount(['students'=> function($query){
-            $query->where('enrollments.status', 'enrolled')
-                ->orWhere('enrollments.status', 'completed');
-        }])->orderBy('students_count', 'desc')->skip(0)->take(8)->get();
-        //dd($rr);
-        */
-        return Course::orderBy('id', 'desc')->skip(0)->take(5)->get();
+    
+
+
+    public function loadPopularCourses(){
+        $courseCount    = 5;
+        $popularCourses = $this->courseRepository->getPopularCourses($courseCount);
+        $dataArr = array();
+        $popularCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
+            $dataArr[]  =   CourseBuilder::buildDto($record->toArray());
+        });
+        return $dataArr;     
     }
 
 
@@ -47,51 +54,10 @@ class CourseService
 
    public function getlinkCount($data){
         return User::where('username',$username)->get()->count();
-    }*/
-
-    public function getCourseValidationErrors($validationErrorsArr){
-
-        $contentLinksErrMsgArr    = array();
-        $contentErrMsgArr         = array();
-        $infoErrMsgArr            = array();
-
-        //dd($validationErrorsArr);
-        
-        foreach ($validationErrorsArr as $errField => $valErrMsgArr){            
-            if(Str::startsWith($errField, 'contentArr.')){                
-                
-                $sectionHeading = Str::of($errField)->explode('.')[1];             
-                foreach ($valErrMsgArr as $errMsg){
-                    if(isset(Str::of($errField)->explode('.')[2])){
-                        $linkIndex = Str::of($errField)->explode('.')[2];
-
-                        if(!isset($contentLinksErrMsgArr[$sectionHeading][$linkIndex])){
-                            $contentLinksErrMsgArr[$sectionHeading][$linkIndex] = $errMsg;
-                        }else{
-                            $contentLinksErrMsgArr[$sectionHeading][$linkIndex] .= ', '.$errMsg;
-                        }
-                    
-                    }else{
-                        $contentErrMsgArr[$sectionHeading][] = $errMsg;
-                    }                    
-                }
-            }else{
-                $infoErrMsgArr[$errField] = $valErrMsgArr;               
-            }
-        }
-        
-        return array(
-            'contentLinksErrMsgArr' => $contentLinksErrMsgArr, 
-            'contentErrMsgArr'      => $contentErrMsgArr,
-            'infoErrMsgArr'         => $infoErrMsgArr
-        );
     }
+    */
 
-
-
-
-
-
+    
 
 
     public function loadCoursePage($currentUser, $course){
@@ -111,11 +77,7 @@ class CourseService
             $viewFile = ($isAuthor)? 'course-single-enrolled' : 'course-single-before-enrolled';            
         }
 
-        
-
-
         //dump($course->id);
-
 
 
         /* ==== student ====*/
@@ -285,7 +247,7 @@ class CourseService
                 */
 
 
-        //return new UserDTO($user->id, $user->name, $user->email, $user->password);
+        //return new UserDto($user->id, $user->name, $user->email, $user->password);
         
         
 

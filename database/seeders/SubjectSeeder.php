@@ -17,16 +17,30 @@ class SubjectSeeder extends Seeder
      */
     public function run()
     {
-        // create subjects folder          
-        $folderPath = $storagePath = storage_path('app/public/subjects');
         
-        if (!File::exists($folderPath)) {
-            File::makeDirectory($folderPath, 0755, true);
-            $this->command->info($folderPath.' - Folder created successfully.');
-        } else {
-            //$this->command->info($folderPath.' - Folder already exists.');
+        try {                        
+            
+
+            //$this->command->alert('Failed to seed subjects to database !');
+            //$this->command->warn('Failed to seed subjects to database !');
+            //$this->command->info('Failed to seed subjects to database !');
+            //$this->command->bulletList(['Failed to seed subjects to database !','kkk','gg']);
+            //dd('kk');
+
+            // create subjects folder          
+            $folderPath = storage_path('app\public\subjects');
+            if (!File::exists($folderPath)) {
+                File::makeDirectory($folderPath, 0755, true);
+                $this->command->alert($folderPath.' - Folder created successfully.');
+            } else {
+                //$this->command->info($folderPath.' - Folder already exists.');
+            }
+            
+            Subject::factory()->count(12)->create();        
+        } catch (\Exception $e) {
+            $this->command->error('Failed to seed subjects to database !');
         }
 
-        Subject::factory()->count(12)->create();
+
     }
 }

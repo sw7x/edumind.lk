@@ -61,7 +61,7 @@
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Coupon code</label>
                             <div class="col-sm-5">
-                                <input type="text" class="form-control" name="cc-code" maxlength="6">
+                                <input type="text" class="form-control" name="cc-code" maxlength="6" value="{{old('cc-code')}}">
                                 <div class="error-msg"></div>
                             </div>
                             <div class="col-sm-3">
@@ -77,13 +77,16 @@
                             </label>
                             <div class="col-sm-8">
                                 <div class="text-2xl text-center font-bold output"></div><br>
-                                <input type="range" name="discount_percentage" value="25" min="0" max="50" step="1">    
+                                <input  type="range" name="discount_percentage" 
+                                        value="{{old('discount_percentage',25)}}" min="1" max="99" step="1" >    
                                 <div class="error-msg"></div>                            
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-
-
+                            
+                        @php
+                            //dump($courses);
+                        @endphp    
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Select course <br><span class="text-xs text-red font-semibold">(Paid courses)</span></label>
 
@@ -107,7 +110,6 @@
                         </div>
                         <div class="hr-line-dashed"></div>
 
-                        
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Select - Marketer / Teacher <span class="text-xs text-red font-semibold">(course created teacher)</span></label>
                             <div class="col-sm-8">
@@ -137,7 +139,7 @@
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Count</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="cc-count">
+                                <input type="text" class="form-control" name="cc-count" value="{{old('cc-count')}}">
                                 <div class="error-msg"></div>
                             </div>
                         </div>
@@ -150,7 +152,9 @@
                                 </label>
                                 <div class="col-sm-8">
                                     <div class="text-2xl text-center font-bold output"></div><br>
-                                    <input type="range" name="beneficiary_share_percentage_from_discount" value="100" min="0" max="100" step="1">
+                                    <input  type="range" name="beneficiary_share_percentage_from_discount"
+                                            value="{{old('beneficiary_share_percentage_from_discount', 100)}}"
+                                            min="0" max="100" step="1">
                                     <div class="error-msg"></div>
                                 </div>
                             </div>
@@ -158,19 +162,19 @@
                             <div class="hr-line-dashed"></div>
                         </div>
 
-                        
-
-
-
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Submit status</label>
 
                             <div class="col-sm-8">
                                 <div class="i-checks">
-                                    <label> <input type="radio" checked="checked" value="enable" name="ccode_stat"> <i></i> Enable </label>
+                                    <label>
+                                        <input  type="radio" value="enable" name="ccode_stat" 
+                                                {{(old('ccode_stat')) != 'disable'? 'checked':''}}> <i></i> Enable </label>
                                 </div>
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="disable" name="ccode_stat"> <i></i> Disable </label>
+                                    <label>
+                                        <input type="radio" value="disable" name="ccode_stat"
+                                                {{(old('ccode_stat')) == 'disable'? 'checked':''}}> <i></i> Disable </label>
                                 </div>
                             </div>
                         </div>
@@ -222,7 +226,6 @@
         var $inputDiscountPercentageRange   = $('input[name="discount_percentage"]');
 
 
-
         for (var i = $inputAuthorShareRange.length - 1; i >= 0; i--) {
             valueOutput($inputAuthorShareRange[i]);
         }
@@ -251,7 +254,8 @@
         });
 
 
-        /*$('select[name="course"]').on('select2:unselect', function (e) {
+        /*
+        $('select[name="course"]').on('select2:unselect', function (e) {
             console.log(e.params.data);
             console.log(e.params);
 
@@ -262,9 +266,15 @@
                 $select2.val(firstOption.val());
                 $select2.trigger('change');
             }
-        });*/
+        });
+        */
 
 
+        //if old submit value is there for course then set it
+        @if(!is_null(old('course')) && array_key_exists(old('course'), $courses))
+            var courseVal = {{ Js::from(old('course')) }};
+            $('select[name="course"]').select2().select2('val', courseVal);
+        @endisset
 
 
         $('select[name="beneficiary"]').select2({
@@ -272,6 +282,7 @@
             allowClear: true,
             width: '100%'
         });
+
 
         $('select[name="beneficiary"]').on('change',function(event){
             console.log($(this).val());
@@ -304,10 +315,36 @@
             "hideMethod": "fadeOut"
         };
 
-        populateBeneficiaries(0);
+        
+        // when page loads populate Beneficiaries dropdown
+        populateBeneficiaries(0)
+            .then(function(response) {
+                // Code to run if the AJAX call is successful
+                //console.log('Beneficiaries loaded:', response);
+
+                @if(!is_null(old('course')) && !is_null(old('beneficiary')))           
+                    var beneficiaryVal      = {{ Js::from(old('beneficiary')) }};
+                    var beneficiaryValArr   = [];
+                    
+                    // Add each option's value to the array
+                    $('select[name="beneficiary"] option').each(function() {                        
+                        //console.log($(this).val());
+                        beneficiaryValArr.push($(this).val());
+                    });
+
+                    if (beneficiaryValArr.includes(beneficiaryVal))
+                        $('select[name="beneficiary"]').select2().select2('val',beneficiaryVal);
+                
+                @endif
+            })
+            .catch(function(error) {
+                // Code to run if there's an error
+                //console.error('Error:', error);
+            });
+
+
 
         
-
         $('.beneficiary_share_percentage_from_discount-wrapper').hide();
 
 
@@ -330,13 +367,10 @@
                 },
                 "cc-code"                 : {required: true, exactlength :6, lettersAndNumbersOnly:true},
                 "cc-count"                : {required: true,number: true, min:1},
-                'discount_percentage'     : {required: true,number: true, min:1,max:50},
+                'discount_percentage'     : {required: true,number: true, min:1,max:99},
                 'beneficiary_share_percentage_from_discount' : {
                     //required: true,
                     required: function(element) {
-                        console.log('----------------');
-                        console.log($('select[name="beneficiary"]').val() != '');
-                        console.log('----------------');
                         return ($('select[name="beneficiary"]').val() != '');
                     },
                     number: true, 
@@ -367,8 +401,8 @@
                 'beneficiary_share_percentage_from_discount': {
                     required:'Author share percentage is required',
                     number  :'Author share percentage should be a number', 
-                    min     :'Author share percentage minimum value can be 1',
-                    max     :'Author share percentage maximum value can be 99'
+                    min     :'Author share percentage minimum value can be 0',
+                    max     :'Author share percentage maximum value can be 100'
                 },
             },
             submitHandler: function(form){
@@ -452,7 +486,7 @@
             //var validator = $("#contact-form").validate();
             validator.resetForm();
 
-            $('input[name="discount_percentage"]').val(10).change();
+            $('input[name="discount_percentage"]').val(25).change();
             $('input[name="beneficiary_share_percentage_from_discount"]').val(100).change();
             
             $('input[name="ccode_stat"][value="enable"]').iCheck('check');
@@ -499,10 +533,16 @@
         if(!valueSelected){
             valueSelected = 0;
         }
-
-        populateBeneficiaries(valueSelected);
-        $("#cc-add-form").valid();
-   });
+        
+        populateBeneficiaries(valueSelected)
+            .then(function(response) {
+                $("#cc-add-form").valid();
+            })
+            .catch(function(error) {
+                // Code to run if there's an error
+                //console.error('Error:', error);
+            });    
+    });
 
 
 
@@ -512,62 +552,66 @@
 
 
     function populateBeneficiaries(valueSelected){
+        return new Promise(function(resolve, reject) {
+            
+            $.ajax({
+                url: "{{route('admin.coupon-code.load-beneficiaries')}}",
+                type: "post",
+                async:true,
+                dataType:'json',
+                data:{
+                    //_token      : '{{ csrf_token() }}', 
+                    courseId   : valueSelected                  
+                },
+                success: function (response) {
 
-        $.ajax({
-            url: "{{route('admin.coupon-code.load-beneficiaries')}}",
-            type: "post",
-            async:true,
-            dataType:'json',
-            data:{
-                //_token      : '{{ csrf_token() }}', 
-                courseId   : valueSelected                  
-            },
-            success: function (response) {
+                    if(response.status == 'success'){                  
 
-                if(response.status == 'success'){                  
+                        // console.log(response.marketers);
+                        // console.log(response.teachers);
 
-                    // console.log(response.marketers);
-                    // console.log(response.teachers);
+                        // console.log(Object.keys(response.marketers).length);
+                        // console.log(Object.keys(response.teachers).length);
 
-                    // console.log(Object.keys(response.marketers).length);
-                    // console.log(Object.keys(response.teachers).length);
+                        var dropDown = '';
+                        
+                        dropDown    +=      '<option></option>';
+                        
+                        if(Object.keys(response.teachers).length >0 && (valueSelected != 0)){                                                
+                            //dropDown    +=  '<optgroup class="select2-result-selectable" label="Teachers">';
+                            dropDown    +=  '<optgroup class="select2-result-selectable" label="Author">';
+                            for (let x in response.teachers) {
+                                dropDown +=     '<option value="' + x + '">' + response.teachers[x] + '</option>';
+                            }                    
+                            dropDown    +=  '</optgroup>';                                
+                        }
 
-                    var dropDown = '';
-                    
-                    dropDown    +=      '<option></option>';
-                    
-                    if(Object.keys(response.teachers).length >0 && (valueSelected != 0)){                                                
-                        //dropDown    +=  '<optgroup class="select2-result-selectable" label="Teachers">';
-                        dropDown    +=  '<optgroup class="select2-result-selectable" label="Author">';
-                        for (let x in response.teachers) {
-                            dropDown +=     '<option value="' + x + '">' + response.teachers[x] + '</option>';
-                        }                    
-                        dropDown    +=  '</optgroup>';                                
+                        if(Object.keys(response.marketers).length >0){
+                            dropDown    +=  '<optgroup class="select2-result-selectable" label="Marketers" >';               
+                            for (let x in response.marketers) {
+                                dropDown +=     '<option value="' + x + '">' + response.marketers[x] + '</option>';
+                            }                    
+                            dropDown   +=    '</optgroup>';                    
+                        }
+
+                        $('select[name="beneficiary"]').html(dropDown);
+                        resolve(response); // Resolve the Promise
+                    }else{
+                        toastr["error"](response.message);
+                        reject(response); // Reject the Promise
                     }
 
-                    if(Object.keys(response.marketers).length >0){
-                        dropDown    +=  '<optgroup class="select2-result-selectable" label="Marketers" >';               
-                        for (let x in response.marketers) {
-                            dropDown +=     '<option value="' + x + '">' + response.marketers[x] + '</option>';
-                        }                    
-                        dropDown   +=    '</optgroup>';                    
-                    }
-
-                    $('select[name="beneficiary"]').html(dropDown);
-
-                }else{
-                    toastr["error"](response.message);
+                },
+                error:function(request,errorType,errorMessage)
+                {
+                    //alert ('error - '+errorType+'with message - '+errorMessage);
+                    //toastr["success"]("User updated successfully! ", "Good Job!")
+                    toastr["error"]("Beneficiaries loading failed!");
+                    reject(errorMessage); // Reject the Promise
                 }
+            });
 
-            },
-            error:function(request,errorType,errorMessage)
-            {
-                //alert ('error - '+errorType+'with message - '+errorMessage);
-                //toastr["success"]("User updated successfully! ", "Good Job!")
-                toastr["error"]("Beneficiaries loading failed!")
-            }
-        });
-        
+        });        
     }
 
     

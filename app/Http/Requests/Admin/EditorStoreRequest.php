@@ -30,8 +30,8 @@ class EditorStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $email      = $this->get('editor-email');
-        $username   = $this->get('editor-uname');
+        $email      = $this->get('editor_email');
+        $username   = $this->get('editor_uname');
         //dd($email);
 
         if($username == null){
@@ -47,8 +47,8 @@ class EditorStoreRequest extends FormRequest
 
         $username = strtolower($username);
         $this->merge([
-            'editor-uname' => $username,
-            //'editor-name' => '',
+            'editor_uname' => $username,
+            //'editor_name' => '',
         ]);
 
     }
@@ -66,13 +66,13 @@ class EditorStoreRequest extends FormRequest
     {
 
         return [
-            'editor-name'      => 'required|unique:users,full_name',
-            'editor-email'     => 'required|email|unique:users,email',
-            //'editor-uname'     => 'alpha_dash|unique:users,username',
-            'editor-uname'     => 'alpha_dash',
-            'editor-phone'     => 'required|unique:users,phone',
-            'editor-password'  => 'required|min:6|max:12',
-            'editor-gender'    => 'required',
+            'editor_name'      => 'required|unique:users,full_name',
+            'editor_email'     => 'required|email|unique:users,email',
+            //'editor_uname'     => 'alpha_dash|unique:users,username',
+            'editor_uname'     => 'alpha_dash',
+            'editor_phone'     => 'required|unique:users,phone',
+            'editor_password'  => 'required|min:6|max:12',
+            'editor_gender'    => 'required',
         ];
 
     }
@@ -86,8 +86,8 @@ class EditorStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'editor-name.required' => 'Name field is required',
-            'editor-email.required' => 'Email field is required',
+            'editor_name.required' => 'Name field is required',
+            'editor_email.required' => 'Email field is required',
         ];
     }
 
@@ -97,12 +97,12 @@ class EditorStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'editor-name'      => 'name',
-            'editor-email'     => 'email',
-            'editor-uname'     => 'username',
-            'editor-phone'     => 'phone',
-            'editor-password'  => 'password',
-            'editor-gender'    => 'gender',
+            'editor_name'      => 'name',
+            'editor_email'     => 'email',
+            'editor_uname'     => 'username',
+            'editor_phone'     => 'phone',
+            'editor_password'  => 'password',
+            'editor_gender'    => 'gender',
         ];
     }
 

@@ -16,7 +16,9 @@ class ContactUs extends Model
     protected $table = 'contact_us';
     protected $fillable = ['uuid','full_name','email','phone','subject','message','user_id'];
     
-
+    protected $casts = [
+        'created_at'    => 'date:Y-m-d h:i:s',
+    ];
 
     public static function boot(){
         parent::boot();        

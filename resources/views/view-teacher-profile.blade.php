@@ -34,23 +34,23 @@
                     <div class="lg:w-1/3 w-full">
                         <div class="md:block flex space-x-4" uk-sticky="offset: 91;bottom: true">
                             <div>
-                                <img src="{{$userData->profile_pic}}" class="shadow-lg rounded-md w-32 md:w-full" alt="">
+                                <img src="{{$userData['profilePic']}}" class="shadow-lg rounded-md w-32 md:w-full" alt="">
                             </div>
 
                             <div class="flex-1">
                                 <ul class="my-5 text-sm space-y-2">
 
-                                    @if($userData->created_at)
-                                        <li>Registed : {{$userData->created_at->diffForHumans()}}</li>
+                                    @if($userData['createdAt'])
+                                        <li>Registed : {{$userData['createdAtAgo']}}</li>
                                     @endif
                                     {{-- todo total courses --}}
                                     {{-- todo subjects --}}
 
-                                    @if($userData->dob_year)
-                                        <li> Year of Birth : {{$userData->dob_year}}</li>
+                                    @if($userData['dobYear'])
+                                        <li> Year of Birth : {{$userData['dobYear']}}</li>
                                     @endif
 
-                                    <li> Profile ID : {{$userData->username }}</li>
+                                    <li> Profile ID : {{$userData['username'] }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -58,24 +58,24 @@
 
                     <div class="lg:w-2/3 flex-shrink-0 mt-10 lg:m-0">
                         <div>
-                            <h2 class="font-semibold mb-3 text-xl lg:text-3xl">{{$userData->full_name}}</h2>
+                            <h2 class="font-semibold mb-3 text-xl lg:text-3xl">{{$userData['fullName']}}</h2>
                             <hr class="mb-5">
 
                             <div class="space-y-2">
-                                {!! $userData->edu_qualifications !!}
+                                {!! $userData['eduQualifications'] !!}
                             </div>
                             <hr class="mt-3 mb-3">
                             <div>
                                 <h4 class="font-semibold mb-0 text-base">Contact Information</h4>
-                                <p class="mb-0"><strong>Email</strong>: {{$userData->email}}</p>
-                                <p class="mt-0"><strong>Phone</strong>: {{$userData->phone}}</p>
+                                <p class="mb-0"><strong>Email</strong>: {{$userData['email']}}</p>
+                                <p class="mt-0"><strong>Phone</strong>: {{$userData['phone']}}</p>
                             </div>
                         </div>
                     </div>
 
                 </div>
                 <?php //var_dump($teacher_courses->count())?>
-                @if($teacher_courses->count())
+                @if(count($teacher_courses))
                     <div class="tube-card mt-3 lg:mx-0 -mx-5">
                         <h4 class="py-3 px-5 border-b font-semibold text-grey-700">
                             <ion-icon name="book" role="img" class="md book" aria-label="star"></ion-icon> Featured courses </h4>
@@ -84,14 +84,16 @@
 
                             @foreach ($teacher_courses as $course)
                                 <div class="flex md:space-x-6 space-x-3 md:p-5 p-2 relative">
-                                    <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
-                                        <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
+                                    <a href="{{route('course-single',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
+                                        <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                     </a>
                                     <div class="flex-1 md:space-y-2 space-y-1">
-                                        <a href="{{route('course-single',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
-                                        <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course->heading_text}}</p>
+                                        <a href="{{route('course-single',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
+                                        <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course['headingText']}}</p>
 
-                                        <a href="{{route('viewTopic',$course->subject->slug)}}" class="md:font-semibold block text-base">{{$course->subject->name}}</a>
+                                        <a href="{{route('viewTopic',$course['subjectSlug'])}}" class="md:font-semibold block text-base">
+                                            {{$course['subjectName']}}
+                                        </a>
 
 
                                         <div class="flex items-center justify-between">
@@ -100,14 +102,14 @@
                                                 <div class="font-semibold">
                                                     <span class="">
                                                         <i class="align-middle icon-feather-youtube" style="font-size: 1.20rem;"></i>
-                                                        {{$course->video_count}} lectures
+                                                        {{$course['videoCount']}} lectures
                                                     </span>
                                                 </div>
 
                                                 <div class="font-semibold ml-3">
                                                     <span class="">
                                                         <i class="align-middle icon icon-feather-clock" style="font-size: 1.20rem;"></i>
-                                                        {{$course->duration}}
+                                                        {{$course['duration']}}
                                                     </span>
                                                 </div>
 
@@ -124,8 +126,8 @@
                                                 <div></div>
                                             </div>
 
-                                            @if($course->price)
-                                                <div class="text-lg font-semibold">{{ $course->price == 0 ? "Free" : 'Rs '.$course->price }}</div>
+                                            @if(isset($course['price']))
+                                                <div class="text-lg font-semibold">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                             @endif
                                         </div>
                                     </div>

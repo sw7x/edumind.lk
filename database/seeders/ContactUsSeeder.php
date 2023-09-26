@@ -14,6 +14,10 @@ class ContactUsSeeder extends Seeder
      */
     public function run()
     {
-        ContactUs::factory()->count(200)->create();
+        try {                        
+            ContactUs::factory()->count(200)->create();
+        } catch (\Exception $e) {
+            $this->command->error('Failed to seed contact us messages(user feedbacks) to database !');
+        }
     }
 }

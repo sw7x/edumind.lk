@@ -43,10 +43,10 @@ class StudentUpdateRequest extends FormRequest
         //userId
         //reset_pw_stat
         return [
-            'stud-name'      => 'required|unique:users,full_name,'.$this->recordId,
-            'stud-phone'     => 'required|unique:users,phone,'.$this->recordId,
+            'stud_name'      => 'required|unique:users,full_name,'.$this->recordId,
+            'stud_phone'     => 'required|unique:users,phone,'.$this->recordId,
             'stud_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
-            'stud-gender'    => 'required',
+            'stud_gender'    => 'required',
         ];
     }
 
@@ -59,9 +59,9 @@ class StudentUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'stud-name.required' => 'Name field is required',
-            'stud-name.unique'   => "{$this->get('stud-name')} is already been used as a full name",
-            'stud-phone.unique'  => "{$this->get('stud-phone')} is already been used as a phone number",
+            'stud_name.required' => 'Name field is required',
+            'stud_name.unique'   => "{$this->get('stud_name')} is already been used as a full name",
+            'stud_phone.unique'  => "{$this->get('stud_phone')} is already been used as a phone number",
         
         ];
     }
@@ -72,10 +72,10 @@ class StudentUpdateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'stud-name'      => 'name',
-            'stud-phone'     => 'phone',
+            'stud_name'      => 'name',
+            'stud_phone'     => 'phone',
             'stud_birth_year'=> 'year of birth',
-            'stud-gender'    => 'gender',
+            'stud_gender'    => 'gender',
         ];
     }
 

@@ -25,7 +25,8 @@ class CouponMapper extends Mapper
             ['used_count',                                        '<=>',        'usedCount'],
             ['is_enabled',                                        '<=>',        'isEnabled'],
 
-            ['assigned_course_id',                                '<=>',        'assignedCourseId'],
+            //['assigned_course_id',                              '<=>',        'assignedCourseId'],
+            ['cc_course_id',                                      '<=>',        'assignedCourseId'],
             
             ['beneficiary_id',                                    '<=>',        'beneficiaryId'],
             
@@ -38,6 +39,10 @@ class CouponMapper extends Mapper
                 ]
             ]
         ],
+
+
+
+
 
 
         /*  DTO Factory Input   <--- convet_to ---  Array(from frontend)

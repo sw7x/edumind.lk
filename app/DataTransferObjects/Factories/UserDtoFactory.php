@@ -32,14 +32,14 @@ class UserDtoFactory extends AbstractDtoFactory{
             }
         }
 		
-		$roleDTO    =   (isset($data['roleArr']) && !empty($data['roleArr'])) ? 
+		$roleDto    =   (isset($data['roleArr']) && !empty($data['roleArr'])) ? 
                             RoleDtoFactory::fromArray($data['roleArr']) : 
                             (isset($data['roleId']) ? 
                                 (new RoleDtoFactory())->createDtoById($data['roleId']) : 
                                 null 
                             );
 
-        return new UserDTO(
+        return new UserDto(
             $data['fullName'],            
             $data['email'],                 
             $data['phone'],               
@@ -53,8 +53,9 @@ class UserDtoFactory extends AbstractDtoFactory{
             $data['dobYear']?? null,                  
             $data['profileText']?? null,            
             $data['eduQualifications']?? null,
-            
-            $roleDTO                   
+            $data['isActivated']?? null,
+
+            $roleDto                   
         );        
     }
 
@@ -62,25 +63,25 @@ class UserDtoFactory extends AbstractDtoFactory{
     public static function fromRequest(Request $request) : ?UserDto {        
         $inputKeys = ['full_name', 'email', 'phone', 'username', 'status'];
         foreach ($inputKeys as $key) {
-            if ($request->input($key) == null) { 
+            if ($request->input($key) === null) { 
                 throw new MissingArgumentDtoException('UserDto create failed due to missing '.$key.' parameter');
             }
         }        
 
-        $roleDTO = null;
+        $roleDto = null;
         if($request->has('role_id') && $request->filled('role_id')){
-            $roleDTO = (new RoleDtoFactory())->createDtoById($request->input('role_id'));
+            $roleDto = (new RoleDtoFactory())->createDtoById($request->input('role_id'));
         }elseif (
             $request->has('role_arr') && 
             $request->filled('role_arr') && 
             !empty($request->input('role_arr'))
         ) {
             $roleArr = RoleMapper::arrConvertToDtoArr($request->input('role_arr'));
-            $roleDTO = RoleDtoFactory::fromArray($roleArr);
+            $roleDto = RoleDtoFactory::fromArray($roleArr);
         }
 
 
-        return new UserDTO(
+        return new UserDto(
             $request->input('full_name'),
             $request->input('email'),            
             $request->input('phone'),
@@ -94,16 +95,17 @@ class UserDtoFactory extends AbstractDtoFactory{
             $request->input('dob_year') ?? null,
             $request->input('profile_text') ?? null,
             $request->input('edu_qualifications') ?? null,
+            $request->input('is_activated') ?? null,
 
-            $roleDTO         
+            $roleDto         
         );            
     }
 
     public function createDtoById(int $userId): ?UserDto {
         $data       = (new UserRepository())->findDtoDataById($userId); 
         $data                   = arrKeysSnakeToCamel($data);       
-        $userDTO = self::fromArray($data);
-        return $userDTO;
+        $userDto = self::fromArray($data);
+        return $userDto;
     }
 
 }

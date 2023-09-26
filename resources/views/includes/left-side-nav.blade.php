@@ -46,7 +46,6 @@
                                                 <li> <a href="{{route('student.dashboard')}}">Student profile dashboard</a></li>
                                                 <li> <a href="{{route('student.profile-edit')}}">Student profile edit</a></li>
                                                 <li> <a href="{{route('student.help')}}">Student profile-help</a></li>
-                                                <li> <a href="{{route('student.my-profile')}}">Student(my) profile</a></li>
                                                 <li> <a href="{{route('student.my-courses')}}">student(my) courses</a></li>
                                                 <li> <a href="{{route('student.view-profile','dasun50')}}">View Student profile</a></li>
                                                 <li> <a href="{{route('student.courses','dasun50')}}">student enrolled courses (full-width)</a></li>
@@ -61,7 +60,6 @@
                                                 <li> <a href="{{route('teacher.profile-edit')}}">teacher-profile-edit</a></li>
                                                 <li> <a href="{{route('teacher.help')}}">teacher-profile-help</a></li>
 
-                                                <li> <a href="{{route('teacher.my-profile')}}">teacher(my) profile</a></li>
                                                 <li> <a href="{{route('teacher.my-courses')}}">teacher(my) courses</a></li>
 
                                                 <li> <a href="{{route('teacher.course-add-content')}}">teacher course edit</a></li>
@@ -163,7 +161,6 @@
                                                     <li> <a href="{{route('student.dashboard')}}">Student profile dashboard</a></li>
                                                     <li> <a href="{{route('student.profile-edit')}}">Student profile edit</a></li>
                                                     <li> <a href="{{route('student.help')}}">Student profile-help</a></li>
-                                                    <li> <a href="{{route('student.my-profile')}}">Student(my) profile</a></li>
                                                     <li> <a href="{{route('student.my-courses')}}">student(my) courses</a></li>
                                                     <li> <a href="{{route('student.view-profile','dasun50')}}">View Student profile</a></li>
                                                     <li> <a href="{{route('student.courses','dasun50')}}">student enrolled courses (full-width)</a></li>
@@ -179,7 +176,6 @@
                                                     <li> <a href="{{route('teacher.profile-edit')}}">teacher-profile-edit</a></li>
                                                     <li> <a href="{{route('teacher.help')}}">teacher-profile-help</a></li>
 
-                                                    <li> <a href="{{route('teacher.my-profile')}}">teacher(my) profile</a></li>
                                                     <li> <a href="{{route('teacher.my-courses')}}">teacher(my) courses</a></li>
 
                                                     <li> <a href="{{route('teacher.course-add-content')}}">teacher course edit</a></li>
@@ -233,6 +229,8 @@
                                         <li> <a href="{{route('contact.index')}}">contact</a></li>
                                         <li> <a href="{{route('course-single')}}">course-intro-3</a></li>
                                         <li> <a href="{{route('courses')}}">courses</a></li>
+                                        <li> <a href="{{route('profile')}}">profile</a></li>
+
                                     </ul>
                                 </div>
                             </li>

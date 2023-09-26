@@ -45,10 +45,10 @@ class EditorUpdateRequest extends FormRequest
         //userId
         //reset_pw_stat
         return [
-            'editor-name'      => 'required|unique:users,full_name,'.$this->recordId,
-            'editor-phone'     => 'required|unique:users,phone,'.$this->recordId,
+            'editor_name'      => 'required|unique:users,full_name,'.$this->recordId,
+            'editor_phone'     => 'required|unique:users,phone,'.$this->recordId,
             'editor_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
-            'editor-gender'    => 'required',
+            'editor_gender'    => 'required',
         ];
     }
 
@@ -61,9 +61,9 @@ class EditorUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'editor-name.required' => 'Name field is required',
-            'editor-name.unique'   => "{$this->get('editor-name')} is already been used as a full name",
-            'editor-phone.unique'  => "{$this->get('editor-phone')} is already been used as a phone number",
+            'editor_name.required' => 'Name field is required',
+            'editor_name.unique'   => "{$this->get('editor_name')} is already been used as a full name",
+            'editor_phone.unique'  => "{$this->get('editor_phone')} is already been used as a phone number",
         
         ];
     }
@@ -74,10 +74,10 @@ class EditorUpdateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'editor-name'      => 'name',
-            'editor-phone'     => 'phone',
+            'editor_name'      => 'name',
+            'editor_phone'     => 'phone',
             'editor_birth_year'=> 'year of birth',
-            'editor-gender'    => 'gender',
+            'editor_gender'    => 'gender',
         ];
     }
 

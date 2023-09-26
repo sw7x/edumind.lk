@@ -3,14 +3,15 @@ namespace App\Domain;
 
 use App\Domain\CourseItem as CourseItemEntity;
 use App\Domain\Order;
-use App\Domain\Users\StudentUser as StudentUserEntity;
 
 use App\Domain\AuthorFee as AuthorFeeEntity;
 use App\Domain\CommissionFee as CommissionFeeEntity;
 use App\Domain\EdumindFee as EdumindFeeEntity;
 use App\Domain\Course as CourseEntity;
 use App\Domain\CouponCode as CouponCodeEntity;
+
 use App\Domain\Users\User as UserEntity;
+use App\Domain\Users\StudentUser as StudentUserEntity;
 
 
 

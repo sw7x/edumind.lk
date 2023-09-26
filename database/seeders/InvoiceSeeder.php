@@ -14,6 +14,10 @@ class InvoiceSeeder extends Seeder
      */
     public function run()
     {
-        Invoice::factory()->count(10)->create();
+        try {                        
+            Invoice::factory()->count(10)->create();        
+        } catch (\Exception $e) {
+            $this->command->error('Failed to seed invoices to database !');
+        }
     }
 }

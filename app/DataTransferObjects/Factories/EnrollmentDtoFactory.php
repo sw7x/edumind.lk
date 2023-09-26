@@ -47,22 +47,22 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
             throw new MissingArgumentDtoException('EnrollmentDto create failed due to missing both studentId and studentArr parameters');
     
         
-        $courseItemDTO  =   (isset($data['courseItemArr']) && !empty($data['courseItemArr'])) ?
+        $courseItemDto  =   (isset($data['courseItemArr']) && !empty($data['courseItemArr'])) ?
                                 CourseItemDtoFactory::fromArray($data['courseItemArr']) :
                                 (new CourseItemDtoFactory())->createDtoById($data['courseItemId']);
                        
-        $studentDTO =   (isset($data['studentArr']) && !empty($data['studentArr'])) ?
+        $studentDto =   (isset($data['studentArr']) && !empty($data['studentArr'])) ?
                                 UserDtoFactory::fromArray($data['studentArr']) :
                                 (new UserDtoFactory())->createDtoById($data['studentId']);
         
-        $authorFee          = $courseItemDTO->getAuthorAmount();
-        $authorFeeDTO       = AuthorFeeDtoFactory::fromArray(array('amount'=> $authorFee));        
+        $authorFee          = $courseItemDto->getAuthorAmount();
+        $authorFeeDto       = AuthorFeeDtoFactory::fromArray(array('amount'=> $authorFee));        
         
-        $commissionFee      = $courseItemDTO->getBeneficiaryEarnAmount();
-        $commissionFeeDTO   = CommissionFeeDtoFactory::fromArray(array('amount'=> $commissionFee));
+        $commissionFee      = $courseItemDto->getBeneficiaryEarnAmount();
+        $commissionFeeDto   = CommissionFeeDtoFactory::fromArray(array('amount'=> $commissionFee));
         
-        $edumindFee         = $courseItemDTO->edumindEarnTotalAmount();
-        $edumindFeeDTO      = EduminFeeDtoFactory::fromArray(array('amount'=> $edumindFee));
+        $edumindFee         = $courseItemDto->edumindEarnTotalAmount();
+        $edumindFeeDto      = EduminFeeDtoFactory::fromArray(array('amount'=> $edumindFee));
         
         
         if(isset($data['completeDate'])){
@@ -75,8 +75,8 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
 
 
         $dto = new EnrollmentDto(
-            $courseItemDTO,
-            $studentDTO,
+            $courseItemDto,
+            $studentDto,
 
             $data['id'] ?? null,
             //$data['uuid'] ?? null,
@@ -84,9 +84,9 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
             $completeDateStr ?? null,                
             $data['rating'] ?? null,
                             
-            $authorFeeDTO,
-            $commissionFeeDTO,
-            $edumindFeeDTO
+            $authorFeeDto,
+            $commissionFeeDto,
+            $edumindFeeDto
         );   
         //dd($dto);
         return $dto;           
@@ -109,28 +109,28 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
         
         
         if ($request->has('course_item_id') && $request->filled('course_item_id')) {          
-            $courseItemDTO = (new CourseItemDtoFactory())->createDtoById($request->input('course_item_id'));
+            $courseItemDto = (new CourseItemDtoFactory())->createDtoById($request->input('course_item_id'));
         }else{
             $courseItemArr  = CourseItemMapper::arrConvertToDtoArr($request->input('course_item_arr'));
-            $courseItemDTO  = CourseItemDtoFactory::fromArray($courseItemArr); 
+            $courseItemDto  = CourseItemDtoFactory::fromArray($courseItemArr); 
         }
             
 
         if ($request->has('student_id') && $request->filled('student_id')) {           
-            $studentDTO = (new UserDtoFactory())->createDtoById($request->input('student_id'));
+            $studentDto = (new UserDtoFactory())->createDtoById($request->input('student_id'));
         }else{
             $studentArr     = UserMapper::arrConvertToDtoArr($request->input('student_arr'));
-            $studentDTO     = UserDtoFactory::fromArray($studentArr);
+            $studentDto     = UserDtoFactory::fromArray($studentArr);
         }
         
-        $authorFee          = $courseItemDTO->getAuthorAmount();
-        $authorFeeDTO       = AuthorFeeDtoFactory::fromArray(array('amount'=> $authorFee));        
+        $authorFee          = $courseItemDto->getAuthorAmount();
+        $authorFeeDto       = AuthorFeeDtoFactory::fromArray(array('amount'=> $authorFee));        
         
-        $commissionFee      = $courseItemDTO->getBeneficiaryEarnAmount();
-        $commissionFeeDTO   = CommissionFeeDtoFactory::fromArray(array('amount'=> $commissionFee));
+        $commissionFee      = $courseItemDto->getBeneficiaryEarnAmount();
+        $commissionFeeDto   = CommissionFeeDtoFactory::fromArray(array('amount'=> $commissionFee));
         
-        $edumindFee         = $courseItemDTO->edumindEarnTotalAmount();
-        $edumindFeeDTO      = EduminFeeDtoFactory::fromArray(array('amount'=> $edumindFee));
+        $edumindFee         = $courseItemDto->edumindEarnTotalAmount();
+        $edumindFeeDto      = EduminFeeDtoFactory::fromArray(array('amount'=> $edumindFee));
             
 
         if($request->has('complete_date') && $request->filled('complete_date')){
@@ -142,8 +142,8 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
         }
 
         return new EnrollmentDto(
-            $courseItemDTO,
-            $studentDTO,
+            $courseItemDto,
+            $studentDto,
 
             $request->input('id') ?? null,
             //$request->input('uuid') ?? null,
@@ -151,9 +151,9 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
             $completeDateStr ?? null,                
             $request->input('rating') ?? null,
                             
-            $authorFeeDTO,
-            $commissionFeeDTO,
-            $edumindFeeDTO
+            $authorFeeDto,
+            $commissionFeeDto,
+            $edumindFeeDto
         );        
     }    
 

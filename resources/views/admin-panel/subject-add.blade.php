@@ -33,13 +33,13 @@
                     <form class="edit-user-form" id="add-subject" action="{{route('admin.subject.store')}}" method="POST" enctype='multipart/form-data'>
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Name</label>
-                            <div class="col-sm-8"><input type="text" name="subject_name" class="form-control" required="required"></div>
+                            <div class="col-sm-8"><input type="text" name="name" class="form-control" required="required"></div>
                         </div>
                         <div class="hr-line-dashed"></div>
 
                         <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
                             <div class="col-sm-8">
-                                <textarea rows="3" class="form-control" placeholder="Enter Description"  name="subject_description" cols="50"></textarea>
+                                <textarea rows="3" class="form-control" placeholder="Enter Description"  name="description" cols="50"></textarea>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -51,7 +51,7 @@
                                 --}}
                                 <input type="file"
                                        class="filepond-img"
-                                       name="subject_img"
+                                       name="image"
                                        accept="image/webp, image/png, image/jpeg, image/gif"
                                        data-max-file-size="1MB"/>
                                 <p>Image Size 300X350</p>
@@ -65,10 +65,10 @@
                             <label class="col-sm-4 col-form-label">Submit status</label>
                             <div class="col-sm-8">
                                 <div class="i-checks">
-                                    <label> <input type="radio" value="draft" name="subject_stat"> <i></i> Draft </label>
+                                    <label> <input type="radio" value="draft" name="status"> <i></i> Draft </label>
                                 </div>
                                 <div class="i-checks">
-                                    <label> <input type="radio" checked="" value="published" name="subject_stat"> <i></i> Published </label>
+                                    <label> <input type="radio" checked="" value="published" name="status"> <i></i> Published </label>
                                 </div>
                             </div>
                         </div>

@@ -81,6 +81,7 @@ class StudentUser extends User {
             'dobYear'       => $this->dobYear,
             'profileText'   => $this->profileText,
             'status'        => $this->status,
+            'isActivated'   => $this->isActivated,
             
             'roleArr'       => $this->role ? $this->role->toArray() : null,
             'roleId'        => $this->role ? $this->role->getId()   : null,

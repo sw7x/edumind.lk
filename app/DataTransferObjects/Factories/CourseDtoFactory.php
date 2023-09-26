@@ -23,14 +23,14 @@ class CourseDtoFactory extends AbstractDtoFactory
         if(!isset($data['price']))
             throw new MissingArgumentDtoException('CourseDto create failed due to missing price parameter');
 
-        $subjectDTO =   (isset($data['subjectArr']) && !empty($data['subjectArr'])) ? 
+        $subjectDto =   (isset($data['subjectArr']) && !empty($data['subjectArr'])) ? 
                             SubjectDtoFactory::fromArray($data['subjectArr']) : 
                             ( isset($data['subjectId']) ? 
                                 (new SubjectDtoFactory())->createDtoById($data['subjectId']) : 
                                 null 
                             );
               
-        $authorDTO  =   (isset($data['creatorArr']) && !empty($data['creatorArr'])) ? 
+        $authorDto  =   (isset($data['creatorArr']) && !empty($data['creatorArr'])) ? 
                             UserDtoFactory::fromArray($data['creatorArr']) : 
                             ( isset($data['creatorId']) ? 
                                 (new UserDtoFactory())->createDtoById($data['creatorId']) : 
@@ -53,8 +53,8 @@ class CourseDtoFactory extends AbstractDtoFactory
             $data['duration'] ?? null,               
             $data['status'] ?? null,
 
-            $subjectDTO,
-            $authorDTO
+            $subjectDto,
+            $authorDto
         );
             
     }
@@ -68,29 +68,29 @@ class CourseDtoFactory extends AbstractDtoFactory
         if($request->input('price') === null )
             throw new MissingArgumentDtoException('CourseDto create failed due to missing price parameter'); 
 
-        $subjectDTO = null;
+        $subjectDto = null;
         if($request->has('subject_id') && $request->filled('subject_id')){
-            $subjectDTO = (new SubjectDtoFactory())->createDtoById($request->input('subject_id'));
+            $subjectDto = (new SubjectDtoFactory())->createDtoById($request->input('subject_id'));
         }elseif (
             $request->has('subject_arr') && 
             $request->filled('subject_arr') &&
             !empty($request->input('subject_arr'))
         ) {            
             $subjectArr = SubjectMapper::arrConvertToDtoArr($request->input('subject_arr'));
-            $subjectDTO = SubjectDtoFactory::fromArray($subjectArr);
+            $subjectDto = SubjectDtoFactory::fromArray($subjectArr);
         }
         
         
-        $authorDTO = null;
+        $authorDto = null;
         if($request->has('creator_id') && $request->filled('creator_id')){
-            $authorDTO = (new UserDtoFactory())->createDtoById($request->input('creator_id'));
+            $authorDto = (new UserDtoFactory())->createDtoById($request->input('creator_id'));
         }elseif (
             $request->has('creator_arr') && 
             $request->filled('creator_arr') && 
             !empty($request->input('creator_arr'))
         ) {
             $creatorArr = UserMapper::arrConvertToDtoArr($request->input('creator_arr'));
-            $authorDTO = UserDtoFactory::fromArray($creatorArr);
+            $authorDto = UserDtoFactory::fromArray($creatorArr);
         }
 
         return new CourseDto(
@@ -109,15 +109,15 @@ class CourseDtoFactory extends AbstractDtoFactory
             $request->input('duration') ?? null,
             $request->input('status') ?? null,
 
-            $subjectDTO,
-            $authorDTO
+            $subjectDto,
+            $authorDto
         );      
     }
     
     public function createDtoById(int $courseId): ?CourseDto {
         $data       = (new CourseRepository())->findDtoDataById($courseId);
-        $courseDTO  = (!empty($data))? self::fromArray($data): null;
-        return $courseDTO;
+        $courseDto  = (!empty($data))? self::fromArray($data): null;
+        return $courseDto;
     }
 
 

@@ -7,9 +7,9 @@ namespace App\Services;
 
 class DashboardService
 {
-    
-    function __construct(argument){
-        
+
+    function __construct(){
+
     }
 
     public function aaa(){

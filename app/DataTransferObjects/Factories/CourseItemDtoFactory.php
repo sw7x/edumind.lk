@@ -34,12 +34,12 @@ class CourseItemDtoFactory extends AbstractDtoFactory
         
         
         //dump('jj');dump(isset($data['usedCouponArr']));dd($data);
-        $courseDTO  =   (isset($data['courseArr'])  && !empty($data['courseArr']))? 
+        $courseDto  =   (isset($data['courseArr'])  && !empty($data['courseArr']))? 
                             CourseDtoFactory::fromArray($data['courseArr']) : 
                             (new CourseDtoFactory())->createDtoById($data['courseId']);
         
         
-        $couponCodeDTO  =   (isset($data['usedCouponArr']) && !empty($data['usedCouponArr'])) ? 
+        $couponCodeDto  =   (isset($data['usedCouponArr']) && !empty($data['usedCouponArr'])) ? 
                                 CouponDtoFactory::fromArray($data['usedCouponArr']) : 
                                 (isset($data['usedCouponCode']) ? 
                                     (new CouponDtoFactory())->createDtoByCode($data['usedCouponCode']) : 
@@ -56,7 +56,7 @@ class CourseItemDtoFactory extends AbstractDtoFactory
 
                             
         return new CourseItemDto(
-            $courseDTO,
+            $courseDto,
             $cartAddedDateString,
             $data['isCheckout'],
 
@@ -69,7 +69,7 @@ class CourseItemDtoFactory extends AbstractDtoFactory
             $data['beneficiaryEarnAmount'] ?? null,
             $data['authorAmount'] ?? null,
 
-            $couponCodeDTO
+            $couponCodeDto
         );       
     }
 
@@ -91,25 +91,25 @@ class CourseItemDtoFactory extends AbstractDtoFactory
         }
 
         if($request->has('course_id') && $request->filled('course_id')){
-            $courseDTO = (new CourseDtoFactory())->createDtoById($request->input('course_id'));
+            $courseDto = (new CourseDtoFactory())->createDtoById($request->input('course_id'));
         }else {            
             $courseArr = $request->input('course_arr');            
             $courseArr = CourseMapper::arrConvertToDtoArr($courseArr);           
-            $courseDTO = CourseDtoFactory::fromArray($courseArr);
+            $courseDto = CourseDtoFactory::fromArray($courseArr);
 
         }
             
         
-        $couponCodeDTO = null;
+        $couponCodeDto = null;
         if($request->has('used_coupon_code') && $request->filled('used_coupon_code')){
-            $couponCodeDTO = (new CouponDtoFactory())->createDtoByCode($request->input('used_coupon_code'));
+            $couponCodeDto = (new CouponDtoFactory())->createDtoByCode($request->input('used_coupon_code'));
         }elseif (
             $request->has('used_coupon_arr') && 
             $request->filled('used_coupon_arr') &&
             !empty($request->input('used_coupon_arr'))
         ) {
             $usedCouponArr = CouponMapper::arrConvertToDtoArr($request->input('used_coupon_arr'));
-            $couponCodeDTO = CouponDtoFactory::fromArray($usedCouponArr);dump('jjj');
+            $couponCodeDto = CouponDtoFactory::fromArray($usedCouponArr);dump('jjj');
         }
 
 
@@ -121,7 +121,7 @@ class CourseItemDtoFactory extends AbstractDtoFactory
         
         
         return new CourseItemDto(
-            $courseDTO,                
+            $courseDto,                
             $cartAddedDateString,                          
             $request->input('is_checkout'),
 
@@ -134,7 +134,7 @@ class CourseItemDtoFactory extends AbstractDtoFactory
             $request->input('beneficiary_earn_amount') ?? null,
             $request->input('author_amount') ?? null,
                           
-            $couponCodeDTO                
+            $couponCodeDto                
         );
     }
 

@@ -22,14 +22,14 @@
         <div class="flex bg-red-900 md:rounded-b-lg lg:-mt-5 relative overflow-hidden" style="background:{{$bgColor ?? '#7f1d1d'}}">
 
             <div class="lg:w-3/12 relative">
-                <img src="{{$subjectData->image}}" class="_absolute bottom-0 right-0 hidden lg:block" alt="">
+                <img src="{{$subjectData['image']}}" class="_absolute bottom-0 right-0 hidden lg:block" alt="">
             </div>
 
             <div class="lg:w-9/12 relative z-10 px-8 py-8">
 
                 {{--<div class="uppercase text-gray-200 mb-2 font-semibold">Web develpment</div>--}}
-                <h1 class="lg:leading-10 lg:text-4xl text-white text-3xl leading-8 font-semibold capitalize" style="color:{{$txtColor??'#fff'}}">{{$subjectData->name}}</h1>
-                <p class="mt-4 text-white text-xl" style="color:{{$txtColor??'#fff'}}">{{$subjectData->description}}</p>
+                <h1 class="lg:leading-10 lg:text-4xl text-white text-3xl leading-8 font-semibold capitalize" style="color:{{$txtColor??'#fff'}}">{{$subjectData['name']}}</h1>
+                <p class="mt-4 text-white text-xl" style="color:{{$txtColor??'#fff'}}">{{$subjectData['description']}}</p>
                 {{--
                 <ul class="flex text-gray-200 gap-4 mt-4 mb-1">
                     <li class="flex items-center">
@@ -130,7 +130,7 @@
 
             @if(!empty($subjectCourses))
             <div class="w-full">
-                <h4 class="font-semibold text-2xl mt-5 mb-5">{{ $subjectCourses->count() == 0 ? "No" : $subjectCourses->count() }} Courses found</h4>
+                <h4 class="font-semibold text-2xl mt-5 mb-5">{{ count($subjectCourses) == 0 ? "No" : count($subjectCourses) }} Courses found</h4>
 
                 <div class="__tube-card mt-3 lg:mx-0 __-mx-5">
 
@@ -147,27 +147,27 @@
                         <div class="horizontal-course-item bg-white md:flex shadow-sm rounded-lg uk-transition-toggle mb-5">
 
                             <div class="md:w-5/12 md:h-60 h-40 overflow-hidden rounded-l-lg relative">
-                                <a href="{{route('course-single',$course->slug)}}" alt="" title="">
-                                    <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
+                                <a href="{{route('course-single',$course['slug'])}}" alt="" title="">
+                                    <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                 </a>
                             </div>
 
                             <div class="flex-1 md:p-6 p-4">
                                 <div class="font-semibold line-clamp-2 md:text-xl md:leading-relaxed">
-                                    <a href="{{route('course-single',$course->slug)}}" alt="" title="">
-                                    {{$course->name}}
+                                    <a href="{{route('course-single',$course['slug'])}}" alt="" title="">
+                                    {{$course['name']}}
                                     </a>
                                 </div>
 
                                 <div class="line-clamp-2 mt-2 md:block hidden">
-                                    <a href="{{route('course-single',$course->slug)}}" alt="" title="">
-                                        {{$course->heading_text}}
+                                    <a href="{{route('course-single',$course['slug'])}}" alt="" title="">
+                                        {{$course['headingText']}}
                                     </a>
                                 </div>
 
                                 <div class="font-semibold mt-3">
-                                    <a href="{{route('teacher.view-profile',$course->teacher->username)}}" alt="" title="">
-                                    {{$course->teacher->full_name}}
+                                    <a href="{{route('teacher.view-profile',$course['creatorArr']['username'])}}" alt="" title="">
+                                    {{$course['creatorArr']['fullName']}}
                                     </a>
                                 </div>
 
@@ -175,11 +175,11 @@
                                     <div class="lg:flex __space-x-2 items-center text-sm justify-between">
                                         <div class="md:flex">
                                             <div class="font-semibold mt-3 lg:mt-0 lg:mr-3 md:mt-2 md:mr-4"><span class="">
-                                                    <i class="align-middle icon-feather-youtube mr-1" style="font-size: 1.20rem;"></i> {{$course->video_count}} lectures</span>
+                                                    <i class="align-middle icon-feather-youtube mr-1" style="font-size: 1.20rem;"></i> {{$course['videoCount']}} lectures</span>
                                             </div>
 
                                             <div class="font-semibold mt-3 lg:mt-0 lg:mr-3 md:mt-2">
-                                                <span class=""><i class="align-middle icon icon-feather-clock mr-1" style="font-size: 1.20rem;"></i>{{$course->duration}}</span>
+                                                <span class=""><i class="align-middle icon icon-feather-clock mr-1" style="font-size: 1.20rem;"></i>{{$course['duration']}}</span>
                                             </div>                                            
                                         </div>
                                         {{--
@@ -201,8 +201,8 @@
                                         --}}
                                     </div>
 
-                                    @if($course->price)
-                                        <div class="text-lg font-semibold mt-3">{{ $course->price == 0 ? "Free" : 'Rs '.$course->price }}</div>
+                                    @if($course['price'])
+                                        <div class="text-lg font-semibold mt-3">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                     @endif
 
 

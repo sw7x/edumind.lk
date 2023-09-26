@@ -44,7 +44,7 @@ class CommissionDtoFactory extends AbstractDtoFactory{
             }
         }                       
         
-        $beneficiaryDTO =   (isset($data['beneficiaryArr']) && !empty($data['beneficiaryArr'])) ? 
+        $beneficiaryDto =   (isset($data['beneficiaryArr']) && !empty($data['beneficiaryArr'])) ? 
                                 UserDtoFactory::fromArray($data['beneficiaryArr']) : 
                                 (new UserDtoFactory())->createDtoById($data['beneficiaryId']);
         
@@ -73,7 +73,7 @@ class CommissionDtoFactory extends AbstractDtoFactory{
 
 
         return new CommissionDto(
-            $beneficiaryDTO,
+            $beneficiaryDto,
             
             $data['id'] ?? null,
             //$data['uuid'] ?? null,
@@ -122,10 +122,10 @@ class CommissionDtoFactory extends AbstractDtoFactory{
         }
     
         if (!is_null($request->input('beneficiary_id'))) {
-            $beneficiaryDTO     = (new UserDtoFactory())->createDtoById($request->input('beneficiary_id'));
+            $beneficiaryDto     = (new UserDtoFactory())->createDtoById($request->input('beneficiary_id'));
         }else{
             $beneficiaryArr     = UserMapper::arrConvertToDtoArr($request->input('beneficiary_arr'));
-            $beneficiaryDTO     = UserDtoFactory::fromArray($beneficiaryArr);
+            $beneficiaryDto     = UserDtoFactory::fromArray($beneficiaryArr);
         }                        
 
 
@@ -155,7 +155,7 @@ class CommissionDtoFactory extends AbstractDtoFactory{
 
 
         return new CommissionDto(
-            $beneficiaryDTO,
+            $beneficiaryDto,
             
             $request->input('id') ?? null,
             //$request->input('uuid') ?? null,

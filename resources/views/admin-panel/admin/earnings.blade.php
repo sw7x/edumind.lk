@@ -36,76 +36,87 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
-
-            @if(Session::has('message'))
-                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
+            
+            @php
+                //dump(Session::get('key111'));                        
+            @endphp           
+            
+            
+            @if(isset($message))
+                <div class="flash-msg {{$cls ?? 'flash-info'}}">
                     <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
-            @endif
+                    <div class="text-lg"><strong>{{$msgTitle ?? 'Info!'}}</strong></div>
+                    <p>{{ $message ?? 'Info!' }}</p>
+                    <div class="text-base">{!! $message2 ?? '' !!}</div>
+                </div>            
+            @else                    
+                @isset($data)
+                    <div class="ibox">
+                        <div class="ibox-content">
 
-            <div class="ibox">
-                <div class="ibox-content">
-
-                    <div class="px-3 row mb-3" id="">
-                        <div class="offset-md-6 col-md-6 px-0">
-                            <div class="text-center"><h3> Date range select:</h3></div>
-                            <div class="earnings-daterange input-daterange input-group" id="datepicker">
-                                <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
+                            <div class="px-3 row mb-3" id="">
+                                <div class="offset-md-6 col-md-6 px-0">
+                                    <div class="text-center"><h3> Date range select:</h3></div>
+                                    <div class="earnings-daterange input-daterange input-group" id="datepicker">
+                                        <input type="text" name="daterange" class="p-0 px-2 py-1 form-control text-center text-lg"/>
+                                    </div>
+                                </div>
                             </div>
+                            @php //dump($data); @endphp
+                            
+                            <div class="table-responsive">
+                                <table id="edumind-earnings-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Total <br>claimed Amount Rs</th>
+                                            <th>Invoice ID <br><small>(Enrollement)</small></th>                                    
+                                            <th>Enrolled <br>Date/time</th>
+                                            <th>Used <br>coupon code</th>
+                                            <th>Coupon code <br>discount %</th>
+                                            <th>id</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach($data as $rec)
+                                            @php  
+                                                //$rec = $record->toArray(); 
+                                            @endphp
+                                            <tr>
+                                                <td></td>
+                                                <td>{{$rec['edumindEarnAmount']}}</td>  
+                                                <td>{{$rec['invoiceId']}}</td>
+                                                <td>{{$rec['enrolledDateTime']}}</td>
+                                                <td>{{$rec['couponCode'] ?? '-'}}</td>
+                                                <td>{{$rec['discountPercentage'] ? $rec['discountPercentage'].'%' : '-'}}</td>
+                                                <td>{{$rec['id']}}</td>
+                                            </tr>
+                                        @endforeach                               
+                                    </tbody>
+
+                                    <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>                                                                       
+                                            <th></th>                                    
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+
+                                </table>
+                            </div>
+
                         </div>
                     </div>
-                   @php //dump($data); @endphp
-                    
-                    <div class="table-responsive">
-                        <table id="edumind-earnings-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Total <br>claimed Amount Rs</th>
-                                    <th>Invoice ID <br><small>(Enrollement)</small></th>                                    
-                                    <th>Enrolled <br>Date/time</th>
-                                    <th>Used <br>coupon code</th>
-                                    <th>Coupon code <br>discount %</th>
-                                    <th>id</th>
-                                </tr>
-                            </thead>
+                @endisset
+            @endif
 
-                            <tbody>
-                                @foreach($data as $record)
-                                    @php  $rec = $record->toArray(); @endphp
-                                    <tr>
-                                        <td></td>
-                                        <td>{{$rec['edumindEarnAmount']}}</td>  
-                                        <td>{{$rec['invoiceId']}}</td>
-                                        <td>{{$rec['enrolledDateTime']}}</td>
-                                        <td>{{$rec['couponCode'] ?? '-'}}</td>
-                                        <td>{{$rec['discountPercentage'] ? $rec['discountPercentage'].'%' : '-'}}</td>
-                                        <td>{{$rec['id']}}</td>
-                                    </tr>
-                                @endforeach                               
-                            </tbody>
-
-                            <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th></th>                                                                       
-                                    <th></th>                                    
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-
-                        </table>
-                    </div>
-
-                </div>
-            </div>
             
+
         </div>
     </div>
 @stop

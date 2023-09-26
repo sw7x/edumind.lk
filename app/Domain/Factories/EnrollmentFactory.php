@@ -60,7 +60,7 @@ class EnrollmentFactory implements IFactory {
         $courseItemEntity   = (new CourseItemFactory())->createObjTree($courseItemArr);
         $studentEntity      = (new UserFactory())->createObjTree($studentArr);
         $enrollmentEntity   = new EnrollmentEntity($courseItemEntity, $studentEntity);
-
+        
         if (!isset($enrollmentData['id']) || $enrollmentData['id'] == null) {
             $enrollmentData['uuid'] = str_replace('-', '', Uuid::uuid4()->toString());
         }

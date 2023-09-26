@@ -52,8 +52,8 @@ class InvoiceDtoFactory  extends AbstractDtoFactory
 
     public function createDtoById(int $invoiceId) : ?InvoiceDto {
         $data       = (new InvoiceRepository())->findDtoDataById($invoiceId);
-        $invoiceDTO = (!empty($data))? self::fromArray($data): null;        
-        return $invoiceDTO;
+        $invoiceDto = (!empty($data))? self::fromArray($data): null;        
+        return $invoiceDto;
     }
 
 

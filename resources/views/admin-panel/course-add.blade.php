@@ -117,7 +117,6 @@
                     class="{{ Session::get('cls', 'flash-info')}}" 
                     :title="Session::get('msgTitle')"
                     :message="Session::get('message')">
-                    tttttttt
                     <x-slot name="insideContent">
                         @if ($errors->infoErrMsgArr->getMessages())
                             <ul class="mt-3 mb-4 ml-4 list-disc text-xs text-red-600 font-bold">
@@ -182,10 +181,13 @@
                             @endforeach
                         @endif
                     </x-slot>
-                </x-flash-message>
-            
+                </x-flash-message>            
             @endif    
 
+            @if(
+                (isset($teachers) && isNotEmptyArray($teachers)) &&
+                (isset($subjects) && isNotEmptyArray($subjects))
+            )
                 <div class="ibox">
                     <div class="ibox-content">                    
                         <form id="course-add-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
@@ -240,7 +242,7 @@
                                                 <select class="form-control m-b" id="teacher" name="teacher">
     												<option></option>
     												@foreach ($teachers as $teacher)
-    													<option value="{{$teacher['id']}}" @if(old('teacher') == $teacher['id']) selected @endif>{{$teacher['full_name']}}</option>
+    													<option value="{{$teacher['id']}}" @if(old('teacher') == $teacher['id']) selected @endif>{{$teacher['fullName']}}</option>
     												@endforeach
                                                 </select>
                                                 <div class="error-msg"></div>
@@ -581,7 +583,24 @@
                         </form>
                     </div>
                 </div>
-            
+            @else
+
+
+                <x-flash-message 
+                    class="flash-danger mt-3" title="Error!" 
+                    message="Failed to show course add form" :canClose="false">
+                    <x-slot name="insideContent">
+                        <br>
+                        @if(!isset($teachers) || !is_array($teachers) || empty($teachers))
+                            <p class="text-xs font-semibold">Unable to load teachers</p>
+                        @endif 
+
+                        @if(!isset($subjects) || !is_array($subjects) || empty($subjects))
+                            <p class="text-xs font-semibold">Unable to load subjects</p>
+                        @endif
+                    </x-slot>
+                </x-flash-message>      
+            @endif
 
         </div>
     </div>

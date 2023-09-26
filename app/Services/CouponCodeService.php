@@ -9,37 +9,37 @@ namespace App\Services;
 
 class CouponCodeService
 {
-	
-	function __construct(argument){
-		
+
+	function __construct(){
+
 	}
 
 	public function aaa(){
 
 	}
 
-	
-
-
-	
-	
-
-	
 
 
 
-	
 
 
-	
 
-	
+
+
+
+
+
+
+
+
+
+
 }
 
 
 
 //service only methods - not in entity
-	//add 
+	//add
 	//view Single
 	//edit
 	//delete

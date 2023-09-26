@@ -33,7 +33,7 @@ class User extends CartalystUser
     const GENDER_OTHER  = 'other';
 
 
-
+    protected $appends = ['is_activated'];
    
 
     /**
@@ -176,7 +176,9 @@ class User extends CartalystUser
         return $imagePath;
     }
 
-
+    public function getIsActivatedAttribute(){
+        return $this->isactivated();
+    }
 
 
 
@@ -295,12 +297,6 @@ class User extends CartalystUser
         return Carbon::parse($this->last_login)->diffForHumans();
     }
 
-    public function aaa(){
-        //dd($this->exists);
-        return 'yyyy';
-    }
-
-
     public function delete()
     {
 
@@ -336,10 +332,11 @@ class User extends CartalystUser
 
 
 
-    //    public function roles(): BelongsToMany
-    //    {
-    //        return $this->belongsToMany(static::$rolesModel, 'role_users', 'user_id', 'role_id')->withTimestamps();
-    //    }
+    /*       
+    public function roles(): BelongsToMany{
+       return $this->belongsToMany(static::$rolesModel, 'role_users', 'user_id', 'role_id')->withTimestamps();
+   }
+   */
 
     public function getUserRoles(){
 
@@ -352,20 +349,13 @@ class User extends CartalystUser
             return $item->getRoleSlug();
         });
         return $userRoles;
-
-        //return 'yyyy';
     }
 
     public function isactivated(){
-        //dd($this->activations[0]-
-
-        if($this->activations->isEmpty()){
+        if($this->activations->isEmpty())
             return null;
-
-        }else{
+        else
             return ($this->activations->first()->completed);
-        }
-
     }
 
     public function getCourseCount(){
@@ -382,7 +372,7 @@ class User extends CartalystUser
 
 
     public function isUserCanAccessAdminPanel(){
-        $userRole = $this->roles()->first()->slug;
+        $userRole = optional($this->roles()->first())->slug;
         return in_array($userRole, [Role::ADMIN, Role::EDITOR, Role::MARKETER, Role::TEACHER]);
     }
 
@@ -393,7 +383,9 @@ class User extends CartalystUser
 
 
     public function isSubjectCreator(Subject $subject){        
-        //dd(static::id);
+        if(is_null($subject->creator))
+            return false;
+
         return ($this->id == $subject->creator->id);        
     }
     

@@ -30,8 +30,8 @@ class StudentStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $email      = $this->get('stud-email');
-        $username   = $this->get('stud-uname');
+        $email      = $this->get('stud_email');
+        $username   = $this->get('stud_uname');
         //dd($email);
 
         if($username == null){
@@ -47,8 +47,8 @@ class StudentStoreRequest extends FormRequest
 
         $username = strtolower($username);
         $this->merge([
-            'stud-uname' => $username,
-            //'stud-name' => '',
+            'stud_uname' => $username,
+            //'stud_name' => '',
         ]);
 
     }
@@ -66,14 +66,14 @@ class StudentStoreRequest extends FormRequest
     {
 
         return [
-            'stud-name'      => 'required|unique:users,full_name',
-            'stud-email'     => 'required|email|unique:users,email',
-            //'stud-uname'     => 'alpha_dash|unique:users,username',
-            'stud-uname'     => 'alpha_dash',
-            'stud-phone'     => 'required|unique:users,phone',
-            'stud-password'  => 'required|min:6|max:12',
+            'stud_name'      => 'required|unique:users,full_name',
+            'stud_email'     => 'required|email|unique:users,email',
+            //'stud_uname'     => 'alpha_dash|unique:users,username',
+            'stud_uname'     => 'alpha_dash',
+            'stud_phone'     => 'required|unique:users,phone',
+            'stud_password'  => 'required|min:6|max:12',
             'stud_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
-            'stud-gender'    => 'required',
+            'stud_gender'    => 'required',
 
 
 
@@ -89,8 +89,8 @@ class StudentStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'stud-name.required' => 'Name field is required',
-            'stud-email.required' => 'Email field is required',
+            'stud_name.required' => 'Name field is required',
+            'stud_email.required' => 'Email field is required',
         ];
     }
 
@@ -100,13 +100,13 @@ class StudentStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'stud-name'      => 'name',
-            'stud-email'     => 'email',
-            'stud-uname'     => 'username',
-            'stud-phone'     => 'phone',
-            'stud-password'  => 'password',
+            'stud_name'      => 'name',
+            'stud_email'     => 'email',
+            'stud_uname'     => 'username',
+            'stud_phone'     => 'phone',
+            'stud_password'  => 'password',
             'stud_birth_year'=> 'year of birth',
-            'stud-gender'    => 'gender',
+            'stud_gender'    => 'gender',
         ];
     }
 

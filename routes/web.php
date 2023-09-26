@@ -34,7 +34,6 @@ use App\Http\Controllers\SubjectController as User_SubjectController;
 use App\Http\Controllers\CourseController as User_CourseController;
 use App\Http\Controllers\CartController;
 
-
 use App\Http\Controllers\Admin\EdumindRevenueController;
 
 
@@ -204,10 +203,10 @@ Route::get ('/course/watch/{slug?}/{videoId?}', [User_CourseController::class,'w
 
 
 
-
+Route::get ('/profile', [PageController::class,'viewProfile'])->name ('profile');
 
 Route::get ('/subjects', [User_SubjectController::class,'ViewAll'])->name ('viewAllTopic');
-Route::get ('/subject/{slug?}', [User_SubjectController::class,'ViewTopic'])->name ('viewTopic');
+Route::get ('/subject/{slug?}', [User_SubjectController::class,'ViewSubject'])->name ('viewTopic');
 
 
 
@@ -219,7 +218,6 @@ Route::group(['middleware'=> 'checkStudent'], function(){
 
 
 Route::group(['prefix'=>'student','as'=>'student.'], function(){
-    Route::get ('/my-profile', [StudentController::class,'viewMyProfile'])->name ('my-profile');
     Route::get ('/my-courses', [StudentController::class,'viewMyCourses'])->name ('my-courses');
 
     Route::get ('/help', [StudentController::class,'viewHelp'])->name ('help');
@@ -234,7 +232,6 @@ Route::group(['prefix'=>'student','as'=>'student.'], function(){
 /*==== teacher ===*/
 Route::group(['prefix'=>'teacher','as'=>'teacher.'], function(){
     Route::get ('/view-all', [TeacherController::class,'viewAllTeachers'])->name ('view-all');
-    Route::get ('/my-profile', [TeacherController::class,'viewMyProfile'])->name ('my-profile');
     Route::get ('/my-courses', [TeacherController::class,'viewMyCourses'])->name ('my-courses');
 
     Route::get ('/earnings', [TeacherController::class,'ViewEarnings'])->name ('earnings');
@@ -318,6 +315,8 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         /* testing routes*/
         Route::get('/11', function () {return view('admin-panel.11');})->name('admin11');
         Route::get('/empty', function () {return view('admin-panel.empty');})->name('empty');
+        //Route::get('/profile', function () {return view('admin-panel.profile');})->name('profile');
+        Route::get('/profile', [AdminPanelController::class,'viewProfile'])->name('profile');
 
 
 
@@ -373,7 +372,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         Route::group(['prefix'=>'coupon-code','as'=>'coupon-code.'], function(){
            
             Route::post ('/generate-code', [CouponController::class,'generateCode'])->name('generate-code');
-            Route::post ('/beneficiaries', [CouponController::class,'loadBeneficiaries'])->name('load-beneficiaries');
+            Route::post ('/beneficiaries', [CouponController::class,'fillBeneficiaries'])->name('load-beneficiaries');
 
             Route::get('/marketers',[CouponController::class,'loadMarketerCoupons'])->name('marketers');            
             Route::get('/teachers',[CouponController::class,'loadTeacherCoupons'])->name('teachers');
@@ -458,7 +457,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
         
     Route::resource('/user', UserController::class)->except(['store','update']);
 
-    Route::resource('/coupon-code', CouponController::class)->except(['edit', 'update','index']);
+    Route::resource('/coupon-code', CouponController::class)->except(['index', 'edit', 'update', 'destroy']);
 
 
 });

@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Subject extends Model
 {
     use HasFactory;
-    use Sluggable;
+    use Sluggable;    
+    //use SoftDeletes;
+
 
     const PUBLISHED = 'published';
     const DRAFT     = 'draft';
@@ -52,7 +55,6 @@ class Subject extends Model
         }
         return $imagePath;
     }
-
 
 
 

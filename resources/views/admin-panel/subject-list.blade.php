@@ -45,20 +45,20 @@
 
                             <tbody>
                             @foreach($data as $item)
-                                <tr class="subject_{{$item->id}}">
-                                    <td>{{$item->name}}</td>
-                                    <td>{{mb_strimwidth($item->description, 0, 100, '...')}}</td>
+                                <tr class="subject_{{$item['data']['id']}}">
+                                    <td>{{$item['data']['name']}}</td>
+                                    <td>{{mb_strimwidth($item['data']['description'], 0, 100, '...')}}</td>
 
                                     <td>
-                                        @if($item->image != '')
-                                            <a class="no-clickable popup-img effect" href="{{$item->image}}" data-effect="mfp-zoom-in">
-                                                <img src="{{$item->image}}" width="100px" alt="">
+                                        @if($item['data']['image'] != '')
+                                            <a class="no-clickable popup-img effect" href="{{$item['data']['image']}}" data-effect="mfp-zoom-in">
+                                                <img src="{{$item['data']['image']}}" width="100px" alt="">
                                             </a>
                                         @endif
                                     </td>
 
                                     <td>
-                                        @if($item->status == App\Models\Subject::PUBLISHED)
+                                        @if($item['data']['status'] == App\Models\Subject::PUBLISHED)
                                             <span class="label label-primary">Published</span>
                                         @else
                                             <span class="label label-disable">Draft</span>
@@ -67,17 +67,17 @@
 
                                     <td class="text-right">
                                         <div class="btn-group">
-                                            <a href="{{route ('admin.subject.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
+                                            <a href="{{route ('admin.subject.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                             
-                                            @can('update',$item)
-                                            <a href="{{route ('admin.subject.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
+                                            @can('update',$item['dbRec'])
+                                            <a href="{{route ('admin.subject.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                             @endcan
                                             
-                                            @can('delete',$item)
+                                            @can('delete',$item['dbRec'])
                                             <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a>
                                             @endcan
                                         </div>
-                                        <form class="subject-destroy" action="{{ route('admin.subject.destroy', $item->id) }}" method="POST">
+                                        <form class="subject-destroy" action="{{ route('admin.subject.destroy', $item['data']['id']) }}" method="POST">
                                             @method('DELETE')
                                             @csrf
                                         </form>

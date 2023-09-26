@@ -50,7 +50,7 @@ class AuthorSalaryDtoFactory extends AbstractDtoFactory{
             }
         }
 
-        $authorDTO  =   (isset($data['authorArr']) && !empty($data['authorArr'])) ?
+        $authorDto  =   (isset($data['authorArr']) && !empty($data['authorArr'])) ?
                             UserDtoFactory::fromArray($data['authorArr']) : 
                             (new UserDtoFactory())->createDtoById($data['authorId']);
         
@@ -82,7 +82,7 @@ class AuthorSalaryDtoFactory extends AbstractDtoFactory{
 
 
         return new AuthorSalaryDto(
-            $authorDTO,
+            $authorDto,
             
             $data['id'] ?? null,
             //$data['uuid'] ?? null,
@@ -132,12 +132,12 @@ class AuthorSalaryDtoFactory extends AbstractDtoFactory{
 
 
         if (!is_null($request->input('author_id'))) {
-            $authorDTO     = (new UserDtoFactory())->createDtoById($request->input('author_id'));
+            $authorDto     = (new UserDtoFactory())->createDtoById($request->input('author_id'));
         }else{
             $authorArr      = UserMapper::arrConvertToDtoArr($request->input('author_arr'));  
-            $authorDTO      = UserDtoFactory::fromArray($authorArr);
+            $authorDto      = UserDtoFactory::fromArray($authorArr);
             //$request      = new Request($authorArr);
-            //$authorDTO    = UserDtoFactory::fromRequest($request);
+            //$authorDto    = UserDtoFactory::fromRequest($request);
         } 
 
         /*paidDate*/
@@ -166,7 +166,7 @@ class AuthorSalaryDtoFactory extends AbstractDtoFactory{
 
 
         return new AuthorSalaryDto(
-            $authorDTO,
+            $authorDto,
             
             $request->input('id') ?? null,
             //$request->input('uuid') ?? null,

@@ -32,7 +32,8 @@ class CourseMapper extends Mapper
             
             ['subject_id',                '<=>',     'subjectId'],
             
-            ['creator_id',                '<=>',     'creatorId'],
+            //['creator_id',                '<=>',     'creatorId'],
+            ['teacher_id',                '<=>',     'creatorId'],
             
             '__ARRAY__' => [
                 [

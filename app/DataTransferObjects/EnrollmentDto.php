@@ -1,12 +1,12 @@
 <?php
 namespace App\DataTransferObjects;
 
-use App\DataTransferObjects\CourseItemDTO;
-use App\DataTransferObjects\UserDTO;
+use App\DataTransferObjects\CourseItemDto;
+use App\DataTransferObjects\UserDto;
 
-use App\DataTransferObjects\AuthorFeeDTO;
-use App\DataTransferObjects\CommissionFeeDTO;
-use App\DataTransferObjects\EdumindFeeDTO;
+use App\DataTransferObjects\AuthorFeeDto;
+use App\DataTransferObjects\CommissionFeeDto;
+use App\DataTransferObjects\EdumindFeeDto;
 
 use App\DataTransferObjects\AbstractDto;
 
@@ -14,8 +14,8 @@ use App\DataTransferObjects\AbstractDto;
 class EnrollmentDto extends AbstractDto{
     
     //public read only
-    private CourseItemDTO     $courseItemDTO;
-    private UserDTO           $studentDTO;
+    private CourseItemDto     $courseItemDto;
+    private UserDto           $studentDto;
 
     private ?int              $id;
     //private ?string           $uuid;
@@ -23,14 +23,14 @@ class EnrollmentDto extends AbstractDto{
     private ?string           $completeDate;
     private ?int              $rating;    
     
-    private ?AuthorFeeDTO     $authorFeeDTO;
-    private ?CommissionFeeDTO $commissionFeeDTO;
-    private ?EdumindFeeDTO    $edumindFeeDTO;
+    private ?AuthorFeeDto     $authorFeeDto;
+    private ?CommissionFeeDto $commissionFeeDto;
+    private ?EdumindFeeDto    $edumindFeeDto;
 
     // Constructor
     public function __construct(
-        CourseItemDTO     $courseItemDTO,
-        UserDTO           $studentDTO,
+        CourseItemDto     $courseItemDto,
+        UserDto           $studentDto,
         
         ?int              $id               = null,
         //?string           $uuid             = null,
@@ -38,12 +38,12 @@ class EnrollmentDto extends AbstractDto{
         ?string           $completeDate     = null,
         ?int              $rating           = null,
         
-        ?AuthorFeeDTO     $authorFeeDTO     = null,
-        ?CommissionFeeDTO $commissionFeeDTO = null,
-        ?EdumindFeeDTO    $edumindFeeDTO    = null
+        ?AuthorFeeDto     $authorFeeDto     = null,
+        ?CommissionFeeDto $commissionFeeDto = null,
+        ?EdumindFeeDto    $edumindFeeDto    = null
     ) {
-        $this->courseItemDTO                = $courseItemDTO;
-        $this->studentDTO                   = $studentDTO;
+        $this->courseItemDto                = $courseItemDto;
+        $this->studentDto                   = $studentDto;
 
         $this->id                           = $id;
         //$this->uuid                         = $uuid;
@@ -51,9 +51,9 @@ class EnrollmentDto extends AbstractDto{
         $this->completeDate                 = $completeDate;
         $this->rating                       = $rating;
 
-        $this->authorFeeDTO                 = $authorFeeDTO;
-        $this->commissionFeeDTO             = $commissionFeeDTO;
-        $this->edumindFeeDTO                = $edumindFeeDTO;
+        $this->authorFeeDto                 = $authorFeeDto;
+        $this->commissionFeeDto             = $commissionFeeDto;
+        $this->edumindFeeDto                = $edumindFeeDto;
     }
 
     
@@ -80,25 +80,25 @@ class EnrollmentDto extends AbstractDto{
     }
 
     
-    public function getCourseItemDTO() : CourseItemDTO {
-        return $this->courseItemDTO;
+    public function getCourseItemDto() : CourseItemDto {
+        return $this->courseItemDto;
     }
 
-    public function getStudentDTO() : StudentDTO {
-        return $this->studentDTO;
+    public function getStudentDto() : UserDto {
+        return $this->studentDto;
     }
 
 
-    public function getAuthorFeeDTO() : ?AuthorFeeDTO {
-        return $this->authorFeeDTO;
+    public function getAuthorFeeDto() : ?AuthorFeeDto {
+        return $this->authorFeeDto;
     }
 
-    public function getCommissionFeeDTO() : ?CommissionFeeDTO {
-        return $this->commissionFeeDTO;
+    public function getCommissionFeeDto() : ?CommissionFeeDto {
+        return $this->commissionFeeDto;
     }
 
-    public function getEdumindFeeDTO() : ?EdumindFeeDTO {
-        return $this->edumindFeeDTO;
+    public function getEdumindFeeDto() : ?EdumindFeeDto {
+        return $this->edumindFeeDto;
     }
 
 
@@ -113,15 +113,15 @@ class EnrollmentDto extends AbstractDto{
             'completeDate'      => $this->completeDate,
             'rating'            => $this->rating,
             
-            'courseItemArr'     => $this->courseItemDTO->toArray(),
-            'courseItemId'      => $this->courseItemDTO->getId(),
+            'courseItemArr'     => $this->courseItemDto->toArray(),
+            'courseItemId'      => $this->courseItemDto->getId(),
             
-            'studentArr'        => $this->studentDTO->toArray(),
-            'studentId'         => $this->studentDTO->getId(),
+            'studentArr'        => $this->studentDto->toArray(),
+            'studentId'         => $this->studentDto->getId(),
             
-            'authorFeeArr'      => $this->authorFeeDTO->toArray(),
-            'commissionFeeArr'  => $this->commissionFeeDTO->toArray(),
-            'edumindFeeArr'     => $this->edumindFeeDTO->toArray(),
+            'authorFeeArr'      => $this->authorFeeDto->toArray(),
+            'commissionFeeArr'  => $this->commissionFeeDto->toArray(),
+            'edumindFeeArr'     => $this->edumindFeeDto->toArray(),
         ];
     }
 

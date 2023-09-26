@@ -85,7 +85,7 @@ class CouponFactory implements IFactory {
             $couponCodeEntity->setDiscountPercentage($couponData['discountPercentage']);
         }
         */
-
+        
         if (isset($couponData['commisionPercentageFromDiscount'])) {
             $couponCodeEntity->setCommisionPercentageFromDiscount(
                 //$couponData['commisionPercentageFromDiscount']
@@ -137,9 +137,9 @@ class CouponFactory implements IFactory {
         if(!is_float($couponData['discountPercentage']))
             throw new InvalidArgumentDomainException("Invalid discountPercentage parameter to create CouponCode entity");              
                 
-        if(isset($couponData['beneficiaryCommisionPercentageFromDiscount'])){
-            if(!is_float($couponData['beneficiaryCommisionPercentageFromDiscount']))
-                throw new InvalidArgumentDomainException("Invalid beneficiaryCommisionPercentageFromDiscount parameter for CouponCode entity");              
+        if(isset($couponData['commisionPercentageFromDiscount'])){
+            if(!is_float($couponData['commisionPercentageFromDiscount']))
+                throw new InvalidArgumentDomainException("Invalid commisionPercentageFromDiscount parameter for CouponCode entity");              
         }
 
         if(isset($couponData['totalCount'])){
@@ -186,10 +186,10 @@ class CouponFactory implements IFactory {
         }
         */
 
-        if (isset($couponData['beneficiaryCommisionPercentageFromDiscount'])) {
+        if (isset($couponData['commisionPercentageFromDiscount'])) {
             $couponCodeEntity->setCommisionPercentageFromDiscount(
                 new PercentageVO(
-                    $couponData['beneficiaryCommisionPercentageFromDiscount']
+                    $couponData['commisionPercentageFromDiscount']
                 )
             );
         }

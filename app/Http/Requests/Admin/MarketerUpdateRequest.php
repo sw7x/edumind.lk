@@ -43,9 +43,9 @@ class MarketerUpdateRequest extends FormRequest
         //userId
         //reset_pw_stat
         return [
-            'marketer-name'      => 'required|unique:users,full_name,'.$this->recordId,
-            'marketer-phone'     => 'required|unique:users,phone,'.$this->recordId,
-            'marketer-gender'    => 'required',
+            'marketer_name'      => 'required|unique:users,full_name,'.$this->recordId,
+            'marketer_phone'     => 'required|unique:users,phone,'.$this->recordId,
+            'marketer_gender'    => 'required',
         ];
     }
 
@@ -58,9 +58,9 @@ class MarketerUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'marketer-name.required' => 'Name field is required',
-            'marketer-name.unique'   => "{$this->get('marketer-name')} is already been used as a full name",
-            'marketer-phone.unique'  => "{$this->get('marketer-phone')} is already been used as a phone number",
+            'marketer_name.required' => 'Name field is required',
+            'marketer_name.unique'   => "{$this->get('marketer_name')} is already been used as a full name",
+            'marketer_phone.unique'  => "{$this->get('marketer_phone')} is already been used as a phone number",
         
         ];
     }
@@ -69,9 +69,9 @@ class MarketerUpdateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'marketer-name'      => 'name',
-            'marketer-phone'     => 'phone',
-            'marketer-gender'    => 'gender',
+            'marketer_name'      => 'name',
+            'marketer_phone'     => 'phone',
+            'marketer_gender'    => 'gender',
         ];
     }
 

@@ -11,6 +11,9 @@ use App\Domain\Exceptions\InvalidArgumentDomainException;
 use App\Domain\Factories\IFactory;
 //use App\Domain\IEntity;
 
+use \DateTime;
+use App\Domain\ValueObjects\DateTimeVO;
+
 class ContactUsFactory implements IFactory {
 
     //--------------> userArr, user_id
@@ -62,7 +65,19 @@ class ContactUsFactory implements IFactory {
 
         if (isset($contactUsMessageData['phone'])) {
             $contactUsMessageEntity->setPhone($contactUsMessageData['phone']);
-        }        
+        }
+
+        if (isset($contactUsMessageData['createdAt'])) {
+            if (!DateTime::createFromFormat("Y-m-d H:i:s", $contactUsMessageData['createdAt']))
+                throw new InvalidArgumentDomainException("Invalid createdAt parameter to create ContactUsMessage entity"); 
+
+            $contactUsMessageEntity->setCreatedAt(
+                new DateTimeVO(
+                    new DateTime($contactUsMessageData['createdAt'])
+                )
+            );
+        }
+
         //dd('ggg');
         $userArr = $contactUsMessageData['userArr'] ?? [];
         if(is_array($userArr) && !empty($userArr)){     
@@ -121,7 +136,19 @@ class ContactUsFactory implements IFactory {
 
         if (isset($contactUsMessageData['phone'])) {
             $contactUsMessageEntity->setPhone($contactUsMessageData['phone']);
-        }        
+        } 
+
+        if (isset($contactUsMessageData['createdAt'])) {
+            if (!DateTime::createFromFormat("Y-m-d H:i:s", $contactUsMessageData['createdAt']))
+                throw new InvalidArgumentDomainException("Invalid createdAt parameter to create AuthorSalary entity"); 
+
+            $contactUsMessageEntity->setCreatedAt(
+                new DateTimeVO(
+                    new DateTime($contactUsMessageData['createdAt'])
+                )
+            );
+        }  
+
         return $contactUsMessageEntity;
     }
 

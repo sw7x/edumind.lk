@@ -23,8 +23,9 @@ class CartComposer
         try {
 
             $user = Sentinel::getUser();
-            //dump();
-
+            
+            //dump('FF');
+            //dd($user->roles()->first());
             if($user && ($user->roles()->first()->slug == Role::STUDENT)){
 
 
@@ -104,7 +105,8 @@ class CartComposer
 
             }
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            //dd($e->getMessage());
+            //dd('e->getMessage()');
                 $cartCourses        = [];
                 $cartCourseCount    = 0;
                 $cartTotal          = 0;

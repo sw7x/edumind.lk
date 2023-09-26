@@ -31,3 +31,11 @@ if(! function_exists('arrKeysCamelToSnake')){
         return $result;
     }
 }
+
+
+if(! function_exists('isNotEmptyArray')){
+    function isNotEmptyArray($array) {
+        return is_array($array) && !empty($array);
+    }
+}
+

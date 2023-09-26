@@ -8,6 +8,8 @@ use App\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Repositories\Interfaces\IGetDtoDataRepository;
 use App\Mappers\UserMapper;
+use Illuminate\Database\Eloquent\Collection;
+use Sentinel;
 
 class UserRepository extends BaseRepository implements IGetDtoDataRepository{
     
@@ -15,9 +17,131 @@ class UserRepository extends BaseRepository implements IGetDtoDataRepository{
         parent::__construct(UserModel::make());        
     }
 
-    public function findUserByEmail(String $email) : ?UserModel{
-        return $this->model->where('email',$email)->first();
+    /**
+    * @param array $columns
+    * @param array $relations
+    * @return Collection
+    */
+    public function all(array $columns = ['*'], array $relations = []): Collection{
+        
+        return  $this->model->withoutGlobalScope('active')
+                    ->with($relations)
+                    ->orderBy('id')
+                    ->get($columns);
     }
+    
+    /**
+    * @param array $columns
+    * @param array $relations
+    * @return Collection
+    */
+    public function allWithGlobalScope(array $columns = ['*'], array $relations = []): Collection{
+        return parent::all($columns, $relations, $relations);        
+    }
+    
+
+    
+
+
+    /**
+    * Find model by id.
+    *
+    * @param int $modelId
+    * @param array $columns
+    * @param array $relations
+    * @param array $appends
+    * @return UserModel
+    */
+    public function findById(
+        int $modelId,
+        array $columns      = ['*'],
+        array $relations    = [],
+        array $appends      = []
+    ) : ?UserModel{
+        
+        $result =   $this->model->withoutGlobalScope('active')
+                        ->select($columns)->with($relations)->find($modelId);
+
+        if ($result) {
+            $result->append($appends);
+        }
+        return $result;
+    }
+
+
+    /**
+    * Find model by id.
+    *
+    * @param int $modelId
+    * @param array $columns
+    * @param array $relations
+    * @param array $appends
+    * @return UserModel
+    */
+    public function findByIdWithGlobalScope(
+        int $modelId,
+        array $columns      = ['*'],
+        array $relations    = [],
+        array $appends      = []
+    ) : ?UserModel{        
+        return parent::findById($modelId, $columns, $relations, $appends);
+    }
+
+
+    /**
+    * Find models by ids.
+    *
+    * @param array $modelIds
+    * @param array $columns
+    * @param array $relations
+    * @param array $appends
+    * @return Collection
+    */
+    public function findManyByIds(
+        array $modelIds     = [],
+        array $columns      = ['*'],
+        array $relations    = [],
+        array $appends      = []
+    ): ?Collection {
+        
+        return  $this->model->withoutGlobalScope('active')
+                    ->select($columns)->with($relations)->find($modelIds)->append($appends);
+    }
+    
+
+    /**
+    * Find models by ids.
+    *
+    * @param array $modelIds
+    * @param array $columns
+    * @param array $relations
+    * @param array $appends
+    * @return Collection
+    */
+    public function findManyByIdsWithGlobalScope(
+        array $modelIds     = [],
+        array $columns      = ['*'],
+        array $relations    = [],
+        array $appends      = []
+    ): ?Collection {
+        return parent::findManyByIds($modelIds, $columns, $relations, $appends);
+    }
+
+
+    
+    public function findUserByEmail(String $email) : ?UserModel{
+        return $this->model->withoutGlobalScope('active')->where('email',$email)->first();
+    }
+
+
+    public function findUserByUsername(String $username) : ?UserModel{
+        return $this->model->withoutGlobalScope('active')->where('username',$username)->first();
+    }    
+
+    public function findDuplicateCountByName(string $fullName, int $id) : int {
+        return $this->model->withoutGlobalScope('active')->where('id', '!=', $id)->where('full_name', '=', $fullName)->count();
+    }
+
 
     public function findDataArrById(int $userId): array {
         $userRec = $this->findById($userId); 
@@ -26,17 +150,24 @@ class UserRepository extends BaseRepository implements IGetDtoDataRepository{
         $tempuserArr = $userRec->toArray();
         $userArr     = $tempuserArr;
         
+        //$userArr['is_activated'] = $userRec->isactivated();
+        
         unset($userArr['created_at']);
         unset($userArr['updated_at']);
         unset($userArr['last_login']);
         
-        foreach ($userArr['roles'] as $key => $roleArr) {
-            unset($userArr['roles'][$key]['permissions']);
-            unset($userArr['roles'][$key]['pivot']);
-            unset($userArr['roles'][$key]['created_at']);
-            unset($userArr['roles'][$key]['updated_at']);
+        if($userArr['roles']){
+            foreach ($userArr['roles'] as $key => $roleArr) {
+                unset($userArr['roles'][$key]['permissions']);
+                unset($userArr['roles'][$key]['pivot']);
+                unset($userArr['roles'][$key]['created_at']);
+                unset($userArr['roles'][$key]['updated_at']);
+            }
+            $userArr['role_arr'] = $userArr['roles'][0];    
+        }else{
+            $userArr['role_arr'] = [];
         }
-        $userArr['role_arr'] = $userArr['roles'][0];
+
         unset($userArr['roles']);
         return $userArr;
     }
@@ -45,9 +176,104 @@ class UserRepository extends BaseRepository implements IGetDtoDataRepository{
         $data = $this->findDataArrById($userId);
         return UserMapper::dbRecConvertToEntityArr($data);
     }
+
+
+    public function findAllTeachers(): Collection {
+        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
+        return $teachers;
+    }
+    
+    public function findAllStudents(): Collection {
+        $students   =   Sentinel::findRoleBySlug('student')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
+        return $students;
+    }
+    
+    public function findAllMarketers(): Collection {
+        $marketers  =   Sentinel::findRoleBySlug('marketer')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
+        return $marketers;
+    }
+
+    public function findAllEditors(): Collection {
+        $editors    =   Sentinel::findRoleBySlug('editor')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();  
+        return $editors;
+    }     
+
+    public function findAllAvailableTeachers(): Collection {
+        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
+        return $teachers;
+    }
+    
+    public function findAllAvailableStudents(): Collection {
+        $students   =   Sentinel::findRoleBySlug('student')->users()->with('roles')->orderBy('id')->get();
+        return $students;
+    }
+    
+    public function findAllAvailableMarketers(): Collection {
+        $marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->orderBy('id')->get();
+        return $marketers;
+    }
+
+    public function findAllAvailableEditors(): Collection {
+        $editors    =   Sentinel::findRoleBySlug('editor')->users()->with('roles')->orderBy('id')->get();  
+        return $editors;
+    }  
+
+
+    public function findAvailableTeacherById(int $teacherId): Collection {
+        $teacher   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('id', $teacherId)->orderBy('id')->get();
+        return $teacher;
+    }    
+
+    public function findAvailableStudentById(int $studentId): Collection {
+        $student   =   Sentinel::findRoleBySlug('student')->users()->with('roles')->where('id', $studentId)->orderBy('id')->get();
+        return $student;
+    }    
+
+    public function findAvailableMarketerById(int $marketerId): Collection {
+        $marketer   =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->where('id', $marketerId)->orderBy('id')->get();
+        return $marketer;
+    }    
+
+    public function findAvailableEditorById(int $editorId): Collection {
+        $editor   =   Sentinel::findRoleBySlug('editor')->users()->with('roles')->where('id', $editorId)->orderBy('id')->get();
+        return $editor;
+    }
+
+
+
+
+
+
+
+
+
+    public function getUnApprovedTeachers(): Collection {
+        $unApprovedTeacher  =   Sentinel::findRoleBySlug('teacher')
+                                    ->users()
+                                    ->withoutGlobalScope('active')
+                                    ->with('roles')
+                                    ->where('users.status','0')
+                                    //->where('users.email','carroll.cydney@example.com')
+                                    ->orderBy('id')
+                                    ->get();
+        return $unApprovedTeacher;
+    }
+
+    public function getPopularTeachers(int $courseCount): ?Collection {
+        $popularTeachers    =   $this->model->withCount('getTeachingCourses')->orderBy('get_teaching_courses_count', 'desc')
+                                    ->skip(0)
+                                    ->take($courseCount)
+                                    ->get();
+        return $popularTeachers;      
+        /*
+        $popularTeachers = User::withCount('enrolled_courses')->orderBy('enrolled_courses_count', 'desc')->skip(0)->take(8)->get();;
+        dd($popularTeachers);
+        */
+    }
     
 
-    /*public function deleteUser(User $userEntity){
+    /*
+    public function deleteUser(User $userEntity){
 
         try{
             $userId = $userEntity->getId();
@@ -104,4 +330,4 @@ class UserRepository extends BaseRepository implements IGetDtoDataRepository{
 }
 
 
-  
+    

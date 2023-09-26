@@ -77,15 +77,15 @@
 	                            <tbody>
 
 	                            @foreach($data as $item)
-	                            <tr class="course_{{$item->id}}">
+	                            <tr class="course_{{$item['id']}}">
 
 	                                {{-- // todo add frontend link--}}
-	                                <td width="22%"><a href="" target="_blank">{{ $item->name}}</a></td>
+	                                <td width="22%"><a href="" target="_blank">{{ $item['name']}}</a></td>
 
 	                                {{-- // todo add frontend link--}}
-	                                <td><a href="" target="_blank">{{$item->subject->name}}</a></td>
+	                                <td><a href="" target="_blank">{{$item['subjectName']}}</a></td>
 
-	                                <td>{{$item->teacher->full_name}}<br>
+	                                <td>{{$item['teacherName']}}<br>
 	                                    {{--   todo
 	                                    123 <small>(Enrolled)</small><br>
 	                                    345 <small>(Completed)</small><br>
@@ -95,37 +95,37 @@
 
 	                                <!-- <td>12/04/2015</td>-->
 	                                <td>
-	                                    @if($item->price)
-	                                        Rs {{$item->price}}<br>
+	                                    @if(isset($item['price']))
+	                                        Rs {{$item['price']}}<br>
 	                                    @endif
 
-	                                    @if($item->duration)
-	                                    {{$item->duration}}<br>
+	                                    @if(isset($item['duration']))
+	                                    {{$item['duration']}}<br>
 	                                    @endif
 
-	                                    @if($item->video_count)
-	                                        {{$item->video_count}} <small>(videos)</small><br>
+	                                    @if(isset($item['videoCount']))
+	                                        {{$item['videoCount']}} <small>(videos)</small><br>
 	                                    @endif
 
-	                                    @if($item->updated_at)
-	                                    {{--$item->updated_at--}}
-	                                    {{$item->getLastUpdatedTime()}}
-	                                     @endif
+	                                    @if(isset($item['updatedAtAgo']))
+	                                    	{{--$item->updated_at--}}
+	                                    	{{$item['updatedAtAgo']}}
+	                                    @endif
 	                                </td>
 	                                <td>
 	                                    <input type="checkbox" class="js-switch-course"
-	                                           courseId="{{$item->id}}" {{($item->status === App\Models\Course::PUBLISHED)?'checked':''}}/>
+	                                           courseId="{{$item['id']}}" {{($item['status'] === App\Models\Course::PUBLISHED)?'checked':''}}/>
 	                                </td>
 
 	                                <td class="text-right">
 	                                    <div class="btn-group">
-	                                        <a href="{{route ('admin.course.show',$item->id)}}" class="btn-white btn btn-xs">View</a>
-	                                        <a href="{{route ('admin.course.edit',$item->id)}}" class="btn btn-blue btn-xs">Edit</a>
-	                                        <a href="javascript:void(0);" data-courseId="{{$item->id}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
+	                                        <a href="{{route ('admin.course.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+	                                        <a href="{{route ('admin.course.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+	                                        <a href="javascript:void(0);" data-courseId="{{$item['id']}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
 	                                    </div>
-	                                    <form class="course-destroy" action="{{ route('admin.course.destroy', $item->id) }}" method="POST">
+	                                    <form class="course-destroy" action="{{ route('admin.course.destroy', $item['id']) }}" method="POST">
 	                                        @method('DELETE')
-	                                        <input name="courseId" type="hidden" value="{{$item->id}}">
+	                                        <input name="courseId" type="hidden" value="{{$item['id']}}">
 	                                        @csrf
 	                                    </form>
 	                                </td>

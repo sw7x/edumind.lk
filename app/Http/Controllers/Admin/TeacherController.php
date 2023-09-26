@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 use Sentinel;
-use App\Services\TeacherService;
+use App\Services\Admin\TeacherService as AdminTeacherService;
 use App\Exceptions\CustomException;
+use App\Models\Role as RoleModel;
+
+use App\View\DataTransformers\Admin\TeacherDataTransformer as AdminTeacherDataTransformer;
 
 class TeacherController extends Controller
 {
@@ -17,38 +20,37 @@ class TeacherController extends Controller
     	try{
             $user = Sentinel::getUser();
 
-            if($user != null){
-                $role = isset($user->getUserRoles()[0]->name) ? $user->getUserRoles()[0]->name : null;
-                if($role=='teacher'){
-
-                    $teacherService     = new TeacherService();
-                    $teacher_courses    = $teacherService->getAllCoursesByTeacher($user);                        
-
-                }else{
-                    throw new CustomException('Wrong user type');
-                }
-            }else{
+            if(is_null($user))
                 throw new CustomException('Access denied');
-            }
 
-        }catch(CustomException $e){                
+            $role = is_null($user->roles()->first()) ? null : $user->roles()->first()->name;
+
+            if($role != RoleModel::TEACHER)
+                throw new CustomException('Wrong user type');
+
+            $teacherCourses    = (new AdminTeacherService())->getAllCoursesByTeacher($user);
+            $teacherCoursesArr = AdminTeacherDataTransformer::prepareMyCourseData($teacherCourses);
+
+        }catch(CustomException $e){
             session()->flash('message',$e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            unset($teacher_courses);
+            unset($teacherCoursesArr);
 
-        }catch(\Exception $e){                
-            session()->flash('message','Failed to show your courses');
+        }catch(\Exception $e){
+            //session()->flash('message','Failed to show your courses');
+            session()->flash('message',$e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            unset($teacher_courses);
+            unset($teacherCoursesArr);
         }
 
-        return view('admin-panel.teacher.my-courses')->with([            
-            'teacher_courses'   => $teacher_courses??null
+        return view('admin-panel.teacher.my-courses')->with([
+            'teacher_courses'   => $teacherCoursesArr ?? null
         ]);
     }
-            
+
+
     public function ViewEarnings(){
     	return view('admin-panel.teacher.my-earnings');
 
@@ -61,7 +63,7 @@ class TeacherController extends Controller
     public function myProfileEdit(){
     	return view('admin-panel.teacher.edit-profile');
 
-    }        
+    }
 
 
     // list-coupon-codes.blade
@@ -70,12 +72,12 @@ class TeacherController extends Controller
 
     public function viewCourseEnrollmentList(){
         return view('admin-panel.teacher.course-enrollments');
-    }   
+    }
 
 
     public function viewCourseCompleteList(){
         return view('admin-panel.teacher.course-completions');
-    } 
+    }
 
     public function viewMySalaries(){
         return view('admin-panel.teacher.my-salary');
@@ -84,3 +86,5 @@ class TeacherController extends Controller
 
 
 }
+
+

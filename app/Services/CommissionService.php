@@ -7,28 +7,28 @@ namespace App\Services;
 
 class CommissionService
 {
-	
-	function __construct(argument){
-		
+
+	function __construct(){
+
 	}
 
 	public function aaa(){
 
 	}
 
-	
 
 
 
 
 
-	
+
+
 }
 
 
 
 
-//service only methods - not in entity    
+//service only methods - not in entity
 	//view commission slip - with enroll
 	//view teacher Commissions
 	//view markere Commissions
@@ -36,4 +36,4 @@ class CommissionService
 
 
 //methods - also in entity
-	//pay markerer commission    
+	//pay markerer commission

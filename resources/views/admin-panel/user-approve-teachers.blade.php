@@ -36,99 +36,99 @@
                 </div>
             @endif
 
-            
-            <div class="ibox">
-                <div class="ibox-content">
-                   
-                    // todo - when approve record disappear from table
-                    <div class="table-responsive">                        
-                        <table id="user-list-teacher" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                            <thead>
-                                <tr>
-                                    {{--
-                                    full_name,email,username
-                                    phone, profile_pic, edu_qualifications |
-                                    profile_text ,gender, dob_year ==
-                                    status, activated
-                                    --}}
+            @isset($teachers)
+                <div class="ibox">
+                    <div class="ibox-content">
+                       
+                        // todo - when approve record disappear from table
+                        <div class="table-responsive">                        
+                            <table id="user-list-teacher" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        {{--
+                                        full_name,email,username
+                                        phone, profile_pic, edu_qualifications |
+                                        profile_text ,gender, dob_year ==
+                                        status, activated
+                                        --}}
 
-                                    <th>Name</th>
-                                    <th>Email<br>
-                                        phone</th>
-                                    <th>Username</th>
-                                    <th>Image</th>
-                                    <th>Gender</th>
-                                    <th>Activated</th>
-                                    <th>Approve /<br/> Reject<br/> <small>by admin</small></th>
-                                    <th class="text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($teachers as $item)
-                                <tr class="teacher_{{$item->id}}">
-                                    <td>{{$item->full_name}}</td>
-                                    <td>{{$item->email}}<br> {{$item->phone}}</td>
-                                    <td>{{$item->username}}</td>
+                                        <th>Name</th>
+                                        <th>Email<br>
+                                            phone</th>
+                                        <th>Username</th>
+                                        <th>Image</th>
+                                        <th>Gender</th>
+                                        <th>Activated</th>
+                                        <th>Approve /<br/> Reject<br/> <small>by admin</small></th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($teachers as $item)
+                                    <tr class="teacher_{{$item['id']}}">
+                                        <td>{{$item['fullName']}}</td>
+                                        <td>{{$item['email']}}<br> {{$item['phone']}}</td>
+                                        <td>{{$item['username']}}</td>
 
-                                    <td>
-                                        @if($item->profile_pic != '')
-                                            <a class="no-clickable popup-img effect" href="{{$item->profile_pic}}" data-effect="mfp-zoom-in">
-                                                <img src="{{$item->profile_pic}}" width="100px" alt="">
-                                            </a>
-                                        @endif
-                                    </td>
+                                        <td>
+                                            @if($item['profilePic'] != '')
+                                                <a class="no-clickable popup-img effect" href="{{$item['profilePic']}}" data-effect="mfp-zoom-in">
+                                                    <img src="{{$item['profilePic']}}" width="100px" alt="">
+                                                </a>
+                                            @endif
+                                        </td>
 
-                                    <td>{{$item->gender}}</td>
+                                        <td>{{$item['gender']}}</td>
 
-                                    <td>
-                                        @if($item->isactivated() === true)
-                                            <span class="label label-primary">Activated</span>
-                                        @elseif($item->isactivated() === false)
-                                            <span class="label label-warning">Not Activated</span>
-                                        @else
-                                            <span class="label">error</span>
-                                        @endif
-                                    </td>
+                                        <td>
+                                            @if($item['isActivated'] === true)
+                                                <span class="label label-primary">Activated</span>
+                                            @elseif($item['isActivated'] === false)
+                                                <span class="label label-warning">Not Activated</span>
+                                            @else
+                                                <span class="label">error</span>
+                                            @endif
+                                        </td>
 
-                                    <td>
-                                        <input type="checkbox" class="js-switch-teacher"
-                                               userId="{{$item->id}}" {{($item->status === 1)?'checked':''}}/>
-                                    </td>
+                                        <td>
+                                            <input type="checkbox" class="js-switch-teacher"
+                                                   userId="{{$item['id']}}" {{($item['status'] === true)?'checked':''}}/>
+                                        </td>
 
-                                    <td class="text-right">
-                                        <div class="btn-group">
-                                            <a href="{{route ('admin.user.view-un-approved-teacher',$item->id)}}" class="btn-white btn btn-xs">View</a>
-                                            <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
-                                        </div>
-                                        <form class="user-destroy" action="{{ route('admin.user.destroy', $item->id) }}" method="POST">
-                                            @method('DELETE')
-                                            <input name="userId" type="hidden" value="{{$item->id}}">
-                                            <input name="userType" type="hidden" value="approve.teacher">
+                                        <td class="text-right">
+                                            <div class="btn-group">
+                                                <a href="{{route ('admin.user.view-un-approved-teacher',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
+                                            </div>
+                                            <form class="user-destroy" action="{{ route('admin.user.destroy', $item['id']) }}" method="POST">
+                                                @method('DELETE')
+                                                <input name="userId" type="hidden" value="{{$item['id']}}">
+                                                <input name="userType" type="hidden" value="approve.teacher">
 
-                                            @csrf
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email<br>
-                                        phone</th>
-                                    <th>Username</th>
-                                    <th>Image</th>
-                                    <th>Gender</th>
-                                    <th>Activated</th>
-                                    <th>Approve /<br/> Reject<br/> <small>by admin</small></th>
-                                    <th class="text-right">Action</th>
-                                </tr>
-                            </tfoot>
-                        </table>                        
+                                                @csrf
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email<br>
+                                            phone</th>
+                                        <th>Username</th>
+                                        <th>Image</th>
+                                        <th>Gender</th>
+                                        <th>Activated</th>
+                                        <th>Approve /<br/> Reject<br/> <small>by admin</small></th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </tfoot>
+                            </table>                        
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            @endisset    
             
         </div>
     </div>

@@ -32,8 +32,8 @@ class TeacherStoreRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $email      = $this->get('teacher-email');
-        $username   = $this->get('teacher-uname');
+        $email      = $this->get('teacher_email');
+        $username   = $this->get('teacher_uname');
         //dd($email);
 
         if($username == null){
@@ -49,8 +49,8 @@ class TeacherStoreRequest extends FormRequest
 
         $username = strtolower($username);
         $this->merge([
-            'teacher-uname' => $username,
-            //'teacher-name' => '',
+            'teacher_uname' => $username,
+            //'teacher_name' => '',
         ]);
 
     }
@@ -68,14 +68,14 @@ class TeacherStoreRequest extends FormRequest
     {
 
         return [
-            'teacher-name'      => 'required|unique:users,full_name',
-            'teacher-email'     => 'required|email|unique:users,email',
-            //'teacher-uname'     => 'alpha_dash|unique:users,username',
-            'teacher-uname'     => 'alpha_dash',
-            'teacher-phone'     => 'required|unique:users,phone',
-            'teacher-password'  => 'required|min:6|max:12',
+            'teacher_name'      => 'required|unique:users,full_name',
+            'teacher_email'     => 'required|email|unique:users,email',
+            //'teacher_uname'     => 'alpha_dash|unique:users,username',
+            'teacher_uname'     => 'alpha_dash',
+            'teacher_phone'     => 'required|unique:users,phone',
+            'teacher_password'  => 'required|min:6|max:12',
             'teacher_birth_year'=> 'digits:4|integer|min:1922|max:'.(date('Y')+1),
-            'teacher-gender'    => 'required',
+            'teacher_gender'    => 'required',
         ];
     }
 
@@ -88,8 +88,8 @@ class TeacherStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'teacher-name.required' => 'Name field is required',
-            'teacher-email.required' => 'Email field is required',            
+            'teacher_name.required' => 'Name field is required',
+            'teacher_email.required' => 'Email field is required',            
         ];
     }
 
@@ -99,13 +99,13 @@ class TeacherStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'teacher-name'      => 'name',
-            'teacher-email'     => 'email',
-            'teacher-uname'     => 'username',
-            'teacher-phone'     => 'phone',
-            'teacher-password'  => 'password',
+            'teacher_name'      => 'name',
+            'teacher_email'     => 'email',
+            'teacher_uname'     => 'username',
+            'teacher_phone'     => 'phone',
+            'teacher_password'  => 'password',
             'teacher_birth_year'=> 'year of birth',
-            'teacher-gender'    => 'gender',
+            'teacher_gender'    => 'gender',
         ];
     }
 

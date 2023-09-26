@@ -38,11 +38,11 @@ class OrderDtoFactory extends AbstractDtoFactory
             $enrollments[]      = EnrollmentDtoFactory::fromArray($enrollmentDataArr);
         }
 
-        $customerDTO    =   (isset($data['studentArr']) && !empty($data['studentArr'])) ? 
+        $customerDto    =   (isset($data['studentArr']) && !empty($data['studentArr'])) ? 
                                 (UserDtoFactory::fromArray($data['studentArr'])) : 
                                 (new UserDtoFactory())->createDtoById($data['studentId']);
         
-        $invoiceDTO     =   (isset($data['invoiceArr']) && !empty($data['studentArr'])) ?
+        $invoiceDto     =   (isset($data['invoiceArr']) && !empty($data['studentArr'])) ?
                                 InvoiceDtoFactory::fromArray($data['invoiceArr']) : 
                                 (isset($data['invoiceId']) ? 
                                     (new InvoiceDtoFactory())->createDtoById($data['invoiceId']) : 
@@ -59,12 +59,12 @@ class OrderDtoFactory extends AbstractDtoFactory
 
         return new OrderDto(                               
             $enrollments,          
-            $customerDTO,
+            $customerDto,
 
             $checkoutDateString ?? null,                
             $data['id'] ?? null,
             //$data['uuid'] ?? null,               
-            $invoiceDTO
+            $invoiceDto
         );        
     }
 
@@ -88,23 +88,23 @@ class OrderDtoFactory extends AbstractDtoFactory
         
         
         if($request->has('student_id') && $request->filled('student_id')){
-            $customerDTO    = (new UserDtoFactory())->createDtoById($request->input('student_id'));
+            $customerDto    = (new UserDtoFactory())->createDtoById($request->input('student_id'));
         }else{
             $studentArr     = UserMapper::arrConvertToDtoArr($request->input('student_arr'));
-            $customerDTO    = UserDtoFactory::fromArray($studentArr);
+            $customerDto    = UserDtoFactory::fromArray($studentArr);
         }
 
 
-        $invoiceDTO = null;        
+        $invoiceDto = null;        
         if($request->has('invoice_id') && $request->filled('invoice_id')){
-            $invoiceDTO = (new InvoiceDtoFactory())->createDtoById($request->input('invoice_id'));
+            $invoiceDto = (new InvoiceDtoFactory())->createDtoById($request->input('invoice_id'));
         }elseif (
             $request->has('invoice_arr') && 
             $request->filled('invoice_arr') && 
             !empty($request->input('invoice_arr'))
         ) {
             $invoiceArr     = InvoiceMapper::arrConvertToDtoArr($request->input('invoice_arr'));
-            $invoiceDTO     = InvoiceDtoFactory::fromArray($invoiceArr);             
+            $invoiceDto     = InvoiceDtoFactory::fromArray($invoiceArr);             
         }
         
 
@@ -119,12 +119,12 @@ class OrderDtoFactory extends AbstractDtoFactory
 
         return new OrderDto(
             $enrollments,
-            $customerDTO,
+            $customerDto,
 
             $checkoutDateString ?? null,
             $request->input('invoice_id') ?? null,
             //$request->input('uuid') ?? '',
-            $invoiceDTO
+            $invoiceDto
         );   
     }
 

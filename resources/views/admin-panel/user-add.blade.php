@@ -65,10 +65,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="teacher-name" class="form-control" required value="{{ old('teacher-name') }}">
-                                                    @if ($errors->has('teacher-name'))
+                                                    <input type="text" name="teacher_name" class="form-control" required value="{{ old('teacher_name') }}">
+                                                    @if ($errors->has('teacher_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-name') as $error)
+                                                            @foreach ($errors->get('teacher_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -80,12 +80,12 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="teacher-uname" class="form-control" value="{{ old('teacher-uname') }}">
+                                                    <input type="text" name="teacher_uname" class="form-control" value="{{ old('teacher_uname') }}">
                                                     <small>Leave blank if you want to auto generate username</small><br>
                                                     <small>Only aplha numeric charaters allowed (no spaces, no special characters)</small>
-                                                    @if (Session::get('is_teacher_usernameFill')=='y' && $errors->has('teacher-uname'))
+                                                    @if (Session::get('is_teacher_usernameFill')=='y' && $errors->has('teacher_uname'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-uname') as $error)
+                                                            @foreach ($errors->get('teacher_uname') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -97,10 +97,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="qemail" name="teacher-email" class="form-control" required value="{{ old('teacher-email') }}">
-                                                    @if ($errors->has('teacher-email'))
+                                                    <input type="qemail" name="teacher_email" class="form-control" required value="{{ old('teacher_email') }}">
+                                                    @if ($errors->has('teacher_email'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-email') as $error)
+                                                            @foreach ($errors->get('teacher_email') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -112,10 +112,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="teacher-phone" class="form-control" required value="{{ old('teacher-phone') }}">
-                                                    @if ($errors->has('teacher-phone'))
+                                                    <input type="tel" name="teacher_phone" class="form-control" required value="{{ old('teacher_phone') }}">
+                                                    @if ($errors->has('teacher_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-phone') as $error)
+                                                            @foreach ($errors->get('teacher_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -128,13 +128,13 @@
                                                 <label class="col-sm-4 col-form-label">Password <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8 password-container">
                                                     <input type="password" class="password_field form-control" placeholder="Password (6 to 12 alpha numeric characters) *"
-                                                           name="teacher-password" maxlength="12" minlength="6" required value="{{ old('teacher-password') }}"/>
+                                                           name="teacher_password" maxlength="12" minlength="6" required value="{{ old('teacher_password') }}"/>
                                                     <button type="button" id="btnToggle" class="pw-toggle" style="right: 20px;">
                                                         <i id="eyeIcon" class="fa fa-eye"></i>
                                                     </button>
-                                                    @if ($errors->has('teacher-password'))
+                                                    @if ($errors->has('teacher_password'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-password') as $error)
+                                                            @foreach ($errors->get('teacher_password') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -187,15 +187,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" required id="teacher-gender" name="teacher-gender" value="{{ old('teacher-gender') }}">
+                                                    <select class="form-control m-b" required id="teacher_gender" name="teacher_gender" value="{{ old('teacher_gender') }}">
                                                         <option></option>
-                                                        <option {{ old("teacher-gender") == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ old("teacher-gender") == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ old("teacher-gender") == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ old("teacher_gender") == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ old("teacher_gender") == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ old("teacher_gender") == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('teacher-gender'))
+                                                    @if ($errors->has('teacher_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('teacher-gender') as $error)
+                                                            @foreach ($errors->get('teacher_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -250,10 +250,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="stud-name" class="form-control" required value="{{ old('stud-name')}}">
-                                                    @if ($errors->has('stud-name'))
+                                                    <input type="text" name="stud_name" class="form-control" required value="{{ old('stud_name')}}">
+                                                    @if ($errors->has('stud_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-name') as $error)
+                                                            @foreach ($errors->get('stud_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -266,12 +266,12 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="stud-uname" class="form-control" value="{{ old('stud-uname')}}">
+                                                    <input type="text" name="stud_uname" class="form-control" value="{{ old('stud_uname')}}">
                                                     <small>Leave blank if you want to auto generate username</small><br>
                                                     <small>Only aplha numeric charaters allowed (no spaces, no special characters)</small>
-                                                    @if (Session::get('is_student_usernameFill')=='y' && $errors->has('stud-uname'))
+                                                    @if (Session::get('is_student_usernameFill')=='y' && $errors->has('stud_uname'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-uname') as $error)
+                                                            @foreach ($errors->get('stud_uname') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -283,10 +283,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="email" name="stud-email" class="form-control" required value="{{ old('stud-email')}}">
-                                                    @if ($errors->has('stud-email'))
+                                                    <input type="email" name="stud_email" class="form-control" required value="{{ old('stud_email')}}">
+                                                    @if ($errors->has('stud_email'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-email') as $error)
+                                                            @foreach ($errors->get('stud_email') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -298,10 +298,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="stud-phone" class="form-control" required value="{{ old('stud-phone')}}">
-                                                    @if ($errors->has('stud-phone'))
+                                                    <input type="tel" name="stud_phone" class="form-control" required value="{{ old('stud_phone')}}">
+                                                    @if ($errors->has('stud_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-phone') as $error)
+                                                            @foreach ($errors->get('stud_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -314,13 +314,13 @@
                                                 <label class="col-sm-4 col-form-label">Password <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8 password-container">
                                                     <input type="password" class="password_field form-control" placeholder="Password (6 to 12 alpha numeric characters) *"
-                                                           name="stud-password" maxlength="12" minlength="6" required value="{{ old('stud-password')}}"/>
+                                                           name="stud_password" maxlength="12" minlength="6" required value="{{ old('stud_password')}}"/>
                                                     <button type="button" id="btnToggle" class="pw-toggle" style="right: 20px;">
                                                         <i id="eyeIcon" class="fa fa-eye"></i>
                                                     </button>
-                                                    @if ($errors->has('stud-password'))
+                                                    @if ($errors->has('stud_password'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-password') as $error)
+                                                            @foreach ($errors->get('stud_password') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -361,15 +361,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" id="stud-gender" name="stud-gender" >
+                                                    <select class="form-control m-b" id="stud_gender" name="stud_gender" >
                                                         <option></option>
-                                                        <option {{ old("stud-gender") == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ old("stud-gender") == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ old("stud-gender") == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ old("stud_gender") == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ old("stud_gender") == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ old("stud_gender") == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('stud-gender'))
+                                                    @if ($errors->has('stud_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('stud-gender') as $error)
+                                                            @foreach ($errors->get('stud_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -426,10 +426,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="marketer-name" class="form-control"  required value="{{ old('marketer-name')}}">
-                                                    @if ($errors->has('marketer-name'))
+                                                    <input type="text" name="marketer_name" class="form-control"  required value="{{ old('marketer_name')}}">
+                                                    @if ($errors->has('marketer_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-name') as $error)
+                                                            @foreach ($errors->get('marketer_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -441,12 +441,12 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="marketer-uname" class="form-control" value="{{ old('marketer-uname')}}">
+                                                    <input type="text" name="marketer_uname" class="form-control" value="{{ old('marketer_uname')}}">
                                                     <small>Leave blank if you want to auto generate username</small><br>
                                                     <small>Only aplha numeric charaters allowed (no spaces, no special characters)</small>
-                                                    @if (Session::get('is_marketer_usernameFill')=='y' && $errors->has('marketer-uname'))
+                                                    @if (Session::get('is_marketer_usernameFill')=='y' && $errors->has('marketer_uname'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-uname') as $error)
+                                                            @foreach ($errors->get('marketer_uname') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -458,10 +458,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="email" name="marketer-email" class="form-control" required value="{{ old('marketer-email')}}">
-                                                    @if ($errors->has('marketer-email'))
+                                                    <input type="email" name="marketer_email" class="form-control" required value="{{ old('marketer_email')}}">
+                                                    @if ($errors->has('marketer_email'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-email') as $error)
+                                                            @foreach ($errors->get('marketer_email') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -473,10 +473,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="marketer-phone" class="form-control" required value="{{ old('marketer-phone')}}">
-                                                    @if ($errors->has('marketer-phone'))
+                                                    <input type="tel" name="marketer_phone" class="form-control" required value="{{ old('marketer_phone')}}">
+                                                    @if ($errors->has('marketer_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-phone') as $error)
+                                                            @foreach ($errors->get('marketer_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -490,13 +490,13 @@
 
                                                 <div class="col-sm-8 password-container">
                                                     <input type="password" class="password_field form-control" placeholder="Password (6 to 12 alpha numeric characters) *"
-                                                           name="marketer-password" maxlength="12" minlength="6" required value="{{ old('marketer-password')}}"/>
+                                                           name="marketer_password" maxlength="12" minlength="6" required value="{{ old('marketer_password')}}"/>
                                                     <button type="button" id="btnToggle" class="pw-toggle" style="right: 20px;">
                                                         <i id="eyeIcon" class="fa fa-eye"></i>
                                                     </button>
-                                                    @if ($errors->has('marketer-password'))
+                                                    @if ($errors->has('marketer_password'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-password') as $error)
+                                                            @foreach ($errors->get('marketer_password') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -508,15 +508,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" id="marketer-gender" name="marketer-gender"  required>
+                                                    <select class="form-control m-b" id="marketer_gender" name="marketer_gender"  required>
                                                         <option></option>
-                                                        <option {{ old("marketer-gender") == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ old("marketer-gender") == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ old("marketer-gender") == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ old("marketer_gender") == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ old("marketer_gender") == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ old("marketer_gender") == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('marketer-gender'))
+                                                    @if ($errors->has('marketer_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('marketer-gender') as $error)
+                                                            @foreach ($errors->get('marketer_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -567,10 +567,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="editor-name" class="form-control" required value="{{ old('editor-name')}}">
-                                                    @if ($errors->has('editor-name'))
+                                                    <input type="text" name="editor_name" class="form-control" required value="{{ old('editor_name')}}">
+                                                    @if ($errors->has('editor_name'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-name') as $error)
+                                                            @foreach ($errors->get('editor_name') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -582,12 +582,12 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Username</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="editor-uname" class="form-control" value="{{ old('editor-uname')}}">
+                                                    <input type="text" name="editor_uname" class="form-control" value="{{ old('editor_uname')}}">
                                                     <small>Leave blank if you want to auto generate username</small><br>
                                                     <small>Only aplha numeric charaters allowed (no spaces, no special characters)</small>
-                                                    @if (Session::get('is_editor_usernameFill')=='y' && $errors->has('editor-uname'))
+                                                    @if (Session::get('is_editor_usernameFill')=='y' && $errors->has('editor_uname'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-uname') as $error)
+                                                            @foreach ($errors->get('editor_uname') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -599,10 +599,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Email <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="email" name="editor-email" class="form-control" required value="{{ old('editor-email')}}">
-                                                    @if ($errors->has('editor-email'))
+                                                    <input type="email" name="editor_email" class="form-control" required value="{{ old('editor_email')}}">
+                                                    @if ($errors->has('editor_email'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-email') as $error)
+                                                            @foreach ($errors->get('editor_email') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -614,10 +614,10 @@
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Phone <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="tel" name="editor-phone" class="form-control" required value="{{ old('editor-phone')}}">
-                                                    @if ($errors->has('editor-phone'))
+                                                    <input type="tel" name="editor_phone" class="form-control" required value="{{ old('editor_phone')}}">
+                                                    @if ($errors->has('editor_phone'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-phone') as $error)
+                                                            @foreach ($errors->get('editor_phone') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -630,13 +630,13 @@
                                                 <label class="col-sm-4 col-form-label">Password <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8 password-container">
                                                     <input type="password" class="password_field form-control" placeholder="Password (6 to 12 alpha numeric characters) *"
-                                                           name="editor-password" maxlength="12" minlength="6" required value="{{ old('editor-password')}}"/>
+                                                           name="editor_password" maxlength="12" minlength="6" required value="{{ old('editor_password')}}"/>
                                                     <button type="button" id="btnToggle" class="pw-toggle" style="right: 20px;">
                                                         <i id="eyeIcon" class="fa fa-eye"></i>
                                                     </button>
-                                                    @if ($errors->has('editor-password'))
+                                                    @if ($errors->has('editor_password'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-password') as $error)
+                                                            @foreach ($errors->get('editor_password') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -648,15 +648,15 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control m-b" id="editor-gender" name="editor-gender" required>
+                                                    <select class="form-control m-b" id="editor_gender" name="editor_gender" required>
                                                         <option></option>
-                                                        <option {{ old("editor-gender") == 'male' ? "selected":"" }} value="male">Male</option>
-                                                        <option {{ old("editor-gender") == 'female' ? "selected":"" }} value="female">Female</option>
-                                                        <option {{ old("editor-gender") == 'other' ? "selected":"" }} value="other">Other</option>
+                                                        <option {{ old("editor_gender") == 'male' ? "selected":"" }} value="male">Male</option>
+                                                        <option {{ old("editor_gender") == 'female' ? "selected":"" }} value="female">Female</option>
+                                                        <option {{ old("editor_gender") == 'other' ? "selected":"" }} value="other">Other</option>
                                                     </select>
-                                                    @if ($errors->has('editor-gender'))
+                                                    @if ($errors->has('editor_gender'))
                                                         <ul class="mt-1">
-                                                            @foreach ($errors->get('editor-gender') as $error)
+                                                            @foreach ($errors->get('editor_gender') as $error)
                                                                 <li class="text-red-600 text-xs font-bold">{{ $error }}</li>
                                                             @endforeach
                                                         </ul>
@@ -736,7 +736,8 @@
 @section('javascript')
 <script>
 
-	/*(function () {
+	/**/
+    (function () {
 		// We want to preview images, so we need to register the Image Preview plugin
 		FilePond.registerPlugin(
 
@@ -757,7 +758,7 @@
 		// Select the file input and use create() to turn it into a pond
 		const pond = FilePond.create(document.querySelector('.teacher_profile_img'));
 
-	})();*/
+	})();
 
 
 	jQuery(document).ready(function ($) {
@@ -782,7 +783,7 @@
 		//var elem = document.querySelector('.ccode-stat');
 		//var init = new Switchery(elem);
 
-		//$('[name="teacher-edu-details"]').summernote();
+		//$('[name="teacher_edu-details"]').summernote();
 
 		$('[name="teacher_edu_details"]').summernote({
 			//placeholder: 'Hello bootstrap 4',
@@ -890,22 +891,22 @@
 
 
 
-		$("#stud-gender").select2({
+		$("#stud_gender").select2({
 			placeholder: "Select student gender",
 			allowClear: true,
 			width: '100%'
 		});
-		$("#marketer-gender").select2({
+		$("#marketer_gender").select2({
 			placeholder: "Select marketer gender",
 			allowClear: true,
 			width: '100%'
 		});
-		$("#teacher-gender").select2({
+		$("#teacher_gender").select2({
 			placeholder: "Select teacher gender",
 			allowClear: true,
 			width: '100%'
 		});
-		$("#editor-gender").select2({
+		$("#editor_gender").select2({
 			placeholder: "Select editor gender",
 			allowClear: true,
 			width: '100%'

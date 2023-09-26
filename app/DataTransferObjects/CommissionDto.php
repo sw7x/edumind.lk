@@ -4,12 +4,12 @@
 namespace App\DataTransferObjects;
 
 use App\DataTransferObjects\AbstractDto;
-use App\DataTransferObjects\UserDTO;
+use App\DataTransferObjects\UserDto;
 
 class CommissionDto extends AbstractDto{
     
     //public read only
-    private UserDTO $beneficiaryDTO;
+    private UserDto $beneficiaryDto;
 
     private ?int      $id;
     //private ?string   $uuid;
@@ -22,7 +22,7 @@ class CommissionDto extends AbstractDto{
     private array    $commissionFees;
 
     public function __construct(
-        UserDTO $beneficiaryDTO,
+        UserDto $beneficiaryDto,
         
         ?int    $id             = null,
         //?string $uuid           = null,
@@ -34,7 +34,7 @@ class CommissionDto extends AbstractDto{
         string  $toDate         = null,        
         array   $commissionFees = []
     ) {
-        $this->beneficiaryDTO   = $beneficiaryDTO;
+        $this->beneficiaryDto   = $beneficiaryDto;
         
         $this->id               = $id;
         //$this->uuid             = $uuid;
@@ -81,8 +81,8 @@ class CommissionDto extends AbstractDto{
         return $this->toDate;
     }    
     
-    public function getBeneficiary() : UserDTO {
-        return $this->beneficiaryDTO;
+    public function getBeneficiaryDto() : UserDto {
+        return $this->beneficiaryDto;
     }
     
     public function getCommissionFees() : array {
@@ -93,8 +93,8 @@ class CommissionDto extends AbstractDto{
     public function toArray() : array {
         
 		$commissionFeeDtoArr = [];
-        foreach ($this->commissionFees as $commissionFeeDTO) {
-            $commissionFeeDtoArr[] = $commissionFeeDTO->toArray();
+        foreach ($this->commissionFees as $commissionFeeDto) {
+            $commissionFeeDtoArr[] = $commissionFeeDto->toArray();
         }
 
         return [            
@@ -107,8 +107,8 @@ class CommissionDto extends AbstractDto{
             'fromDate'          => $this->fromDate,
             'toDate'            => $this->toDate,
                         
-            'beneficiaryArr'    	=> $this->beneficiaryDTO ? $this->beneficiaryDTO->toArray() : null,
-            'beneficiaryId'    	    => $this->beneficiaryDTO ? $this->beneficiaryDTO->getId() : null,
+            'beneficiaryArr'    	=> $this->beneficiaryDto ? $this->beneficiaryDto->toArray() : null,
+            'beneficiaryId'    	    => $this->beneficiaryDto ? $this->beneficiaryDto->getId() : null,
             
             'fees'  	            => $commissionFeeDtoArr,
         ];

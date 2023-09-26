@@ -3,28 +3,63 @@
 
 namespace App\Services;
 
+use Sentinel;
+use Illuminate\Http\Request;
 
-use App\Repositories\Eloquent_impl\ContactUsRepository;
-
+use App\Repositories\ContactUsRepository;
+use App\Utils\RecaptchaUtil;
+use App\Models\ContactUs as ContactUsModel;
 class ContactUsService
 {
-    private $contactUsRepository;
+    private ContactUsRepository $contactUsRepository;
     
-    /*public function __construct(ContactUsRepository $contactUsRepository) {
+    public function __construct(ContactUsRepository $contactUsRepository) {
         $this->contactUsRepository = $contactUsRepository;
-    }*/
-
-    public function add($contactInfoArr){       
-        $insertedResult = $this->contactUsRepository->add($contactInfoArr);
-
-        if(!$insertedResult){
-            throw new \PDOException('Failed to insert into database',500);
-        }        
     }
 
 
+    public function getUserInfoArr() : array {
+        $user = Sentinel::getUser();
+        
+        if($user){
+            $userArr = [
+                'id'        => $user->id,
+                'full_name' => $user->full_name,
+                'email'     => $user->email,
+                'phone'     => $user->phone,
+            ];
+        }else{
+            $userArr = [];
+        }
+        return $userArr;
+    }
 
    
+    public function saveContactUsMsg(Request $request) : ContactUsModel {       
+        $g_recaptcha_response = $request->input('g-recaptcha-response');
+        $body = RecaptchaUtil::validate($g_recaptcha_response);  
+        
+        if($body->success !== true)
+            throw new CustomException('Recaptcha validation failed');    
+        
+        $userid     = (isset($request->user_id)) ? $request->user_id : null;
+        $full_name  = (isset($request->full_name)) ? $request->full_name : $request->full_name_hidden;
+        $email      = (isset($request->email)) ? $request->email : null;
+        $phone      = (isset($request->phone)) ? $request->phone : null;
+
+        $contactInfoArr = array(
+            'full_name' =>  $full_name,
+            'email'     =>  $email,
+            'phone'     =>  $phone,
+            'subject'   =>  $request->subject,
+            'message'   =>  $request->message,
+            'user_id'   =>  $userid
+        ); 
+
+        return $this->contactUsRepository->create($contactInfoArr);      
+    }
+
+
 
 
 }
@@ -34,10 +69,7 @@ class ContactUsService
 
 //service only methods - not in entity    
     //sumit msg
-    // view contact us messages - guest
-    // view contact us messages - stud
-    // view contact us messages - teacher
-    // view contact us messages - other
+    
 
 
 

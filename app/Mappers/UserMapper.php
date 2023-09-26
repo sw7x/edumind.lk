@@ -27,12 +27,14 @@ class UserMapper extends Mapper{
             ['status',             '<=>',     'status'],
 
             ['role_id',            '<=>',      'roleId'],
-            
+            ['is_activated',       '=>',       'isActivated'],
             '__ARRAY__' => [
                 [
                     "role_arr",    '<=>',     "roleArr",    RoleMapper::mapper['DATABSE_MAP']
                 ]
-            ]
+            ],
+
+            
         ],
         
 
@@ -61,7 +63,6 @@ class UserMapper extends Mapper{
                 ]
             ]
         ],
-
 
     ];
 

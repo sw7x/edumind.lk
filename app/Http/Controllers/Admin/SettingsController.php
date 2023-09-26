@@ -13,8 +13,6 @@ class SettingsController extends Controller
         ]);
     }
 
-
-
 	public function loadGeneralSettings(){
 		return view('admin-panel.admin.settings-general');
 	}

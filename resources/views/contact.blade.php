@@ -50,35 +50,27 @@
 
             <div class="bg-white rounded-md lg:shadow-md shadow col-span-2 lg:mx-4">
                 <form action="{{route('contact.store')}}" method="post" id="contact-form">
-
-
-                    @if (count($errors) > 0)
-                        <div class="flash-msg flash-danger rounded-none" style="margin-bottom:0px;">
-                            <a href="#" class="close">×</a>
-                            <div class="text-lg"><strong>Form submit error!</strong></div>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li class="text-sm ml-3">{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
+                    
                     @if(Session::has('message'))
                         <div class="flash-msg {{ Session::get('cls', 'flash-info')}}  rounded-none">
                             <a href="#" class="close">×</a>
                             <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
                             <p>{{ Session::get('message') ?? 'Info!' }}</p>
                             <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
+                            <br>
+                            @if (count($errors) > 0)
+                                <ul class="list-disc ml-2">
+                                    @foreach ($errors->all() as $error)
+                                        <li class="text-sm ml-3">{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         </div>
                     @endif
 
 
-
                     <div class="grid grid-cols-2 gap-0 lg:p-6 p-2">
-
                         <h3 class="text-xl mb-2 font-semibold">Contact Form</h3>
-
                         @if(isset($userArr['full_name']))
                             <input type="hidden" name="full_name_hidden" value="{{ $userArr['full_name'] }}">
                         @else
@@ -88,13 +80,12 @@
                             </div>
                         @endif
 
-
                         @if(isset($userArr['email']))
                             <input type="hidden" name="email" value="{{ $userArr['email'] }}">
                         @else
-                        <div class="col-span-2 mb-5">
-                            <input type="text" placeholder="Email" name="email" class="shadow-none with-border" value="{{old('email')}}">
-                        </div>
+                            <div class="col-span-2 mb-5">
+                                <input type="text" placeholder="Email" name="email" class="shadow-none with-border" value="{{old('email')}}">
+                            </div>
                         @endif
 
                         <div class="col-span-2">
@@ -105,9 +96,9 @@
                         @if(isset($userArr['phone']))
                             <input type="hidden" name="phone" value="{{ $userArr['phone'] }}">
                         @else
-                        <div class="col-span-2 mb-5">
-                            <input type="text" placeholder="Phone" name="phone" class="shadow-none with-border" value="{{old('phone')}}">
-                        </div>
+                            <div class="col-span-2 mb-5">
+                                <input type="text" placeholder="Phone" name="phone" class="shadow-none with-border" value="{{old('phone')}}">
+                            </div>
                         @endif
 
                         <div class="col-span-2">
@@ -140,6 +131,7 @@
                             </div>
                         </div>
                     </div>
+                    
                 </form>
             </div>
 
