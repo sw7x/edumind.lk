@@ -11,7 +11,7 @@ use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
 use App\Builders\UserBuilder;
 use App\Builders\CourseBuilder;
-
+use App\Models\Role as RoleModel;
 //use App\Mappers\CourseMapper;
 //use App\Domain\Factories\CourseFactory;
 //use App\DataTransferObjects\Factories\CourseDtoFactory;
@@ -34,7 +34,7 @@ class TeacherService
             throw new CustomException('Access denied');
 
         $role = optional($user->roles()->first())->name;
-        if($role != 'teacher')
+        if($role != RoleModel::TEACHER)
             throw new CustomException('Wrong user type');
 
         return array(

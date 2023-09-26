@@ -41,9 +41,9 @@
                                     <div class="vertical-timeline-icon p-1 grey-bg">
                                         
 
-                                        @if($comment['roleName'] == 'editor')
+                                        @if($comment['roleName']     == App\Models\Role::EDITOR)
                                             <img src="{{asset('admin/img/default-images/editor.png')}}" class="rounded-full" alt="image">
-                                        @elseif($comment['roleName'] == 'marketer')
+                                        @elseif($comment['roleName'] == App\Models\Role::MARKETER)
                                             <img src="{{asset('admin/img/default-images/marketer.png')}}" class="rounded-full" alt="image">
                                         @else
                                             <img src="{{asset('admin/img/default-images/user.png')}}" class="rounded-full" alt="image">

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 //use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use App\Models\Course;
-use App\Models\User;
-use App\Models\Coupon;
-use App\Models\Enrollment;
+use App\Models\Course as CourseModel;
+use App\Models\User as UserModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\Enrollment as EnrollmentModel;
 use Ramsey\Uuid\Uuid;
 
 
@@ -63,23 +63,23 @@ class CourseSelection extends Model
 
     public function course()
     {
-        return $this->belongsTo(Course::class,'course_id','id');        
+        return $this->belongsTo(CourseModel::class,'course_id','id');        
     }
 
     public function student()
     {
-        return $this->belongsTo(User::class,'student_id','id');        
+        return $this->belongsTo(UserModel::class,'student_id','id');        
     }
 
     public function enrollment()
     {
-        return $this->hasOne(Enrollment::class,'course_selection_id','id');
+        return $this->hasOne(EnrollmentModel::class,'course_selection_id','id');
     }
 
 
     public function coupon()
     {
-        return $this->belongsTo(Coupon::class,'used_coupon_code','code');
+        return $this->belongsTo(CouponModel::class,'used_coupon_code','code');
     }
 
 

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Course;
-use App\Models\Enrollment;
-use App\Models\User;
+use App\Models\Course as CourseModel;
+use App\Models\Enrollment as EnrollmentModel;
+use App\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Builder;
 
 use App\Casts\Percentage;
@@ -74,18 +74,18 @@ class Coupon extends Model
 
     public function course()
 	{
-	    return $this->belongsTo(Course::class, 'cc_course_id', 'id');
+	    return $this->belongsTo(CourseModel::class, 'cc_course_id', 'id');
 	}    
 
     public function paidCourse()
     {
-        return $this->belongsTo(Course::class, 'cc_course_id', 'id')
+        return $this->belongsTo(CourseModel::class, 'cc_course_id', 'id')
                     ->where('courses.price', '!=', 0);
     }
 
     public function beneficiary()
 	{
-	    return $this->belongsTo(User::class, 'beneficiary_id', 'id');
+	    return $this->belongsTo(UserModel::class, 'beneficiary_id', 'id');
 
 	}
 
@@ -96,15 +96,15 @@ class Coupon extends Model
 	
     public function course_selections()
     {
-        return $this->hasMany(CourseSelection::class,'used_coupon_code','code');        
+        return $this->hasMany(CourseSelectionModel::class,'used_coupon_code','code');        
     }
 
 
     public function enrollments()
     {
         return $this->hasManyThrough(
-            Enrollment::class,
-            CourseSelection::class,
+            EnrollmentModel::class,
+            CourseSelectionModel::class,
             'used_coupon_code', // Foreign key on the course_selections table...
             'course_selection_id', // Foreign key on the enrollments table...
             'code', // Local key on the coupons table...

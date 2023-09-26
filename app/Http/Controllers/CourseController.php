@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
-use App\Models\Course;
 use App\Utils\ColorUtil;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,14 +10,16 @@ use Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
-use App\Models\CourseSelection;
-use App\Models\enrollment;
-use App\Models\Role;
+
+use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\Enrollment as EnrollmentModel;
+use App\Models\Role as RoleModel;
+use App\Models\Course as CourseModel;
+
 use App\Services\CourseService;
 
 
 use DB;
-//use App\Models\Subject;
 
 class CourseController extends Controller
 {
@@ -33,7 +34,7 @@ class CourseController extends Controller
             }
 
             //$slug1 = 'non-qui-necessitatibus-magni';
-            $course = Course::where('slug', $slug)->first();
+            $course = CourseModel::where('slug', $slug)->first();
             //dd($course);
             if($course != null){
 
@@ -90,7 +91,7 @@ class CourseController extends Controller
                 throw new CustomException('Course id not provided');
             }
 
-            $course = Course::where('slug', $slug)->first();
+            $course = CourseModel::where('slug', $slug)->first();
             $currentUser = Sentinel::getUser();            
             $userRole = ($currentUser != null)? $currentUser->roles()->first()->slug : null;
             
@@ -98,7 +99,7 @@ class CourseController extends Controller
                 throw new CustomException('Course does not exist');
             }
 
-            if($course->status != Course::PUBLISHED){
+            if($course->status != CourseModel::PUBLISHED){
                 throw new CustomException('Course is temporary disabled');
             }
             
@@ -179,22 +180,22 @@ class CourseController extends Controller
                 throw new CustomException('First login before enrolling');
             }
 
-            if(Sentinel::getUser()->roles()->first()->slug != 'student'){
+            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT){
                 throw new CustomException('Invalid user');
             }
 
-            $course = Course::find($courseId);
+            $course = CourseModel::find($courseId);
 
             if($course != null){
                      
-                $rec = CourseSelection::create([
+                $rec = CourseSelectionModel::create([
                     'cart_added_date'   => null,
                     'is_checkout'       => false,
                     'course_id'         => $courseId,
                     'student_id'        => $user->id
                 ]);               
 
-                Enrollment::create([
+                EnrollmentModel::create([
                     'is_complete'           => 0,
                     'course_selection_id'   => $rec->id,
                 ]);
@@ -242,18 +243,18 @@ class CourseController extends Controller
                 throw new CustomException('First login before enrolling');
             }
 
-            if(Sentinel::getUser()->roles()->first()->slug != 'student'){
+            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT){
                 throw new CustomException('Invalid user');
             }
 
-            $course = Course::find($courseId);
+            $course = CourseModel::find($courseId);
 
             if($course != null){
 
                 
-                $CourseSelectionRecord = CourseSelection::where('course_id',$course->id)->where('student_id',$user->id)->get()->first();
+                $CourseSelectionRecord = CourseSelectionModel::where('course_id',$course->id)->where('student_id',$user->id)->get()->first();
                    
-                $enrollmentRecord   = Enrollment::where('course_selection_id', $CourseSelectionRecord->id)->get()->first();
+                $enrollmentRecord   = EnrollmentModel::where('course_selection_id', $CourseSelectionRecord->id)->get()->first();
                 $enrollmentRecord->is_complete      = True;
                 $enrollmentRecord->complete_date    = Carbon::now();
                 $enrollmentRecord->save();
@@ -307,7 +308,7 @@ class CourseController extends Controller
             }
 
             //$slug1 = 'non-qui-necessitatibus-magni';
-            $course = Course::where('slug', $slug)->first();
+            $course = CourseModel::where('slug', $slug)->first();
             //dd($course);
             if($course != null){
 
@@ -412,7 +413,7 @@ class CourseController extends Controller
                     
                      
 
-            $courses =  Course::join('subjects','courses.subject_id','=','subjects.id')                    
+            $courses =  CourseModel::join('subjects','courses.subject_id','=','subjects.id')                    
                         ->where(function ($query) use($courseType, $subjectId, $courseName) { 
                     
                             if($courseName){
@@ -491,12 +492,12 @@ class CourseController extends Controller
 
             $user = Sentinel::getUser();
             
-            if($user != null && ($user->roles()->first()->slug == Role::STUDENT)){
+            if($user != null && ($user->roles()->first()->slug == RoleModel::STUDENT)){
                                
                 $courses = (new CourseService())->loadAllCourses($user->id);
             }else{
 
-                $courses = Course::all();
+                $courses = CourseModel::all();
             }
            
             return view('all-courses')->with(['all_courses' => $courses]);

@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Casts\Json;
-use App\Models\CourseSelection;
-use App\Models\Coupon;
+
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
-    
+
+use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\Subject as SubjectModel;
+use App\Models\User as UserModel;
+use App\Models\Enrollment as EnrollmentModel;
+
 
 class Course extends Model
 {
@@ -138,26 +143,26 @@ class Course extends Model
 
 
     public function subject(){
-        return $this->belongsTo(Subject::class,'subject_id','id');
+        return $this->belongsTo(SubjectModel::class,'subject_id','id');
     }
 
     public function teacher(){
-        return $this->belongsTo(User::class,'teacher_id','id');
+        return $this->belongsTo(UserModel::class,'teacher_id','id');
     }
 
     public function course_selections()
     {
-        return $this->hasMany(CourseSelection::class,'course_id','id');        
+        return $this->hasMany(CourseSelectionModel::class,'course_id','id');        
     }
 
     public function coupons()
     {
-        return $this->hasMany(Coupon::class,'cc_course_id','id');
+        return $this->hasMany(CouponModel::class,'cc_course_id','id');
     }
 
     public function activeCoupons()
     {
-        return $this->hasMany(Coupon::class,'cc_course_id','id')
+        return $this->hasMany(CouponModel::class,'cc_course_id','id')
                     ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
                     ->where('coupons.discount_percentage','!=',0);
     }
@@ -166,8 +171,8 @@ class Course extends Model
     public function enrollments()
     {
         return $this->hasManyThrough(
-            Enrollment::class,
-            CourseSelection::class,
+            EnrollmentModel::class,
+            CourseSelectionModel::class,
             'course_id', // Foreign key on the course_selections table...
             'course_selection_id', // Foreign key on the enrollments table...
             'id', // Local key on the courses table...

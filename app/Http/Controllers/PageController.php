@@ -31,7 +31,7 @@ class PageController extends Controller
         }else{
 
             if(Sentinel::check()){
-                if(Sentinel::getUser()->roles()->first()->slug == 'student'){
+                if(Sentinel::getUser()->roles()->first()->slug == RoleModel::STUDENT){
                     $view = 'errors.404' ;
                 }else{
                     $view = $request->is('admin/*') ? 'admin-panel.errors.404' : 'errors.404' ;

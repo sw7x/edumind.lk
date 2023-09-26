@@ -4,10 +4,10 @@
 
 
 
-use App\Models\Subject;
-use App\Models\User;
+use App\Models\Subject as SubjectModel;
+use App\Models\User as UserModel;
 //use Sentinel;
-use App\Models\ContactUs;
+use App\Models\ContactUs as ContactUsModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\TestingController;
 
@@ -19,7 +19,7 @@ Route::get('/test123', function () {
 
 
     
-    $msg = ContactUs::find(1);
+    $msg = ContactUsModel::find(1);
     $user = Sentinel::getUser();
         
 
@@ -27,10 +27,10 @@ Route::get('/test123', function () {
 
 
 
-    $ff = Subject::find(1);
+    $ff = SubjectModel::find(1);
     dump($ff);
 
-	$ff = Subject::find(1)->courses;
+	$ff = SubjectModel::find(1)->courses;
     dump($ff);
 	
 	//$ff = Subject::find(1)->courses->where('name','ee')->get();
@@ -40,11 +40,11 @@ Route::get('/test123', function () {
 
 
 
-	$ff = Subject::find(1)->courses();
+	$ff = SubjectModel::find(1)->courses();
     dump($ff);
 
 
-	$ff = Subject::find(1)->courses()->where('name','like','%ee%')->get();
+	$ff = SubjectModel::find(1)->courses()->where('name','like','%ee%')->get();
     dump($ff);
 });
 

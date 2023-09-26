@@ -5,9 +5,12 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Sentinel;
-use App\Models\Course;
-use App\Models\CourseSelection;
+use App\Models\Course as CourseModel;
+use App\Models\CourseSelection as CourseSelectionModel;
 use Ramsey\Uuid\Uuid;
+use App\Models\Role as RoleModel;
+
+
 
 class InvCartItems_FreeCourses extends Seeder
 {
@@ -23,12 +26,12 @@ class InvCartItems_FreeCourses extends Seeder
             
             /*=== 1. courses that were previously charged  but now changed to free  ===*/
 
-            $stud1User      =   Sentinel::findRoleBySlug('student')->users()->with('roles')->oldest('id')->first();
+            $stud1User      =   Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->with('roles')->oldest('id')->first();
 
-            $stud1CoursesQuery  =   CourseSelection::where('course_selections.student_id', $stud1User->id);
+            $stud1CoursesQuery  =   CourseSelectionModel::where('course_selections.student_id', $stud1User->id);
             $stud1Courses       =   $stud1CoursesQuery->orderBy('course_id')->get()->pluck('course_id')->toArray();
 
-            $freeCourses        =   Course::where('courses.price', '=', 0)
+            $freeCourses        =   CourseModel::where('courses.price', '=', 0)
             ->whereNotIn('courses.id', $stud1Courses)
             ->get();
 
@@ -68,7 +71,7 @@ class InvCartItems_FreeCourses extends Seeder
 
 
             //dd($arr);
-            CourseSelection::insert($arr);
+            CourseSelectionModel::insert($arr);
 
 
 

@@ -16,10 +16,10 @@ use App\Utils\FileUploadUtil;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use GuzzleHttp\Client;
-use App\Models\User;
+use App\Models\User as UserModel;
 use App\Exceptions\CustomException;
 
-
+use App\Models\Role as RoleModel;
 
 
 
@@ -72,7 +72,7 @@ class RegistrationController extends Controller
                     $username = strstr($request->input('email'),'@',true);
                     
                     // username alredy used in DB
-                    if (User::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
+                    if (UserModel::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
                         throw new CustomException("username - {$username} not available to use");
                     }                
                 }
@@ -95,7 +95,7 @@ class RegistrationController extends Controller
                     $user = Sentinel::register($request->all());
                     $activation = Activation::create($user);
 
-                    $role = Sentinel::findRoleBySlug('student');
+                    $role = Sentinel::findRoleBySlug(RoleModel::STUDENT);
                     $role->users()->attach($user);
 
                     //dd($user->email);
@@ -180,7 +180,7 @@ class RegistrationController extends Controller
                     $username = strstr($request->input('email'),'@',true);
                     
                     // username alredy used in DB
-                    if (User::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
+                    if (UserModel::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
                         throw new CustomException("username - {$username} not available to use");
                     }                
                 }
@@ -219,7 +219,7 @@ class RegistrationController extends Controller
 
                     $activation = Activation::create($user);
 
-                    $role = Sentinel::findRoleBySlug('teacher');
+                    $role = Sentinel::findRoleBySlug(RoleModel::TEACHER);
                     $role->users()->attach($user);
 
 

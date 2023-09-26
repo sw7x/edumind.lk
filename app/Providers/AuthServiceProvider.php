@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate as GateFacade;
 
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use App\Models\User;
+use App\Models\User as UserModel;
 
 use Sentinel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -58,7 +58,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies($gate);
         //
         
-        GateFacade::define('is_admin', function(User $user) {
+        GateFacade::define('is_admin', function(UserModel $user) {
             return $user->isAdmin();
         });
 

@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 use App\Utils\FileUploadUtil;
 use Sentinel;
 use App\Exceptions\CustomException;
-
+use App\Models\Role as RoleModel;
 
 
 class UserService
@@ -245,7 +245,7 @@ class UserService
         ];
 
         $user_teacher = Sentinel::registerAndActivate($teacher);
-        $role_teacher = Sentinel::findRoleBySlug('teacher');
+        $role_teacher = Sentinel::findRoleBySlug(RoleModel::TEACHER);
         $role_teacher->users()->attach($user_teacher);        
         return array('usernameMsg' => $usernameMsg);
     }
@@ -272,7 +272,7 @@ class UserService
             ];
 
         $user_stud = Sentinel::registerAndActivate($student);
-        $role_stud = Sentinel::findRoleBySlug('student');
+        $role_stud = Sentinel::findRoleBySlug(RoleModel::STUDENT);
         $role_stud->users()->attach($user_stud);        
         return array('usernameMsg' => $usernameMsg);
     }
@@ -296,7 +296,7 @@ class UserService
         ];
 
         $user_marketer = Sentinel::registerAndActivate($marketer);
-        $role_marketer = Sentinel::findRoleBySlug('marketer');
+        $role_marketer = Sentinel::findRoleBySlug(RoleModel::MARKETER);
         $role_marketer->users()->attach($user_marketer);        
         return array('usernameMsg' => $usernameMsg);
     }    
@@ -320,7 +320,7 @@ class UserService
         ];
 
         $user_editor = Sentinel::registerAndActivate($editor);
-        $role_editor = Sentinel::findRoleBySlug('editor');
+        $role_editor = Sentinel::findRoleBySlug(RoleModel::EDITOR);
         $role_editor->users()->attach($user_editor);        
         return array('usernameMsg' => $usernameMsg);
     } 
@@ -379,7 +379,7 @@ class UserService
             'gender'               => $request->input('teacher_gender'),            
             'dob_year'             => $request->input('teacher_birth_year'),
             'edu_qualifications'   => $request->input('teacher_edu_details'),                
-            'role_id'              => Sentinel::findRoleBySlug('teacher')->id,
+            'role_id'              => Sentinel::findRoleBySlug(RoleModel::TEACHER)->id,
             'profile_pic'          => $imgDest            
         ]);
 
@@ -424,7 +424,7 @@ class UserService
             'gender'        => $request->input('stud_gender'),            
             'dob_year'      => $request->input('stud_birth_year'),
             'profile_text'  => $request->input('stud_details'),
-            'role_id'       => Sentinel::findRoleBySlug('student')->id
+            'role_id'       => Sentinel::findRoleBySlug(RoleModel::STUDENT)->id
         ]);
 
         $userDto         = UserDtoFactory::fromRequest($request);
@@ -466,7 +466,7 @@ class UserService
             'status'    => ($request->get('marketer_stat') == 'enable') ? true : false,
             
             'gender'    => $request->input('marketer_gender'),
-            'role_id'   => Sentinel::findRoleBySlug('marketer')->id
+            'role_id'   => Sentinel::findRoleBySlug(RoleModel::MARKETER)->id
         ]);
 
         $userDto         = UserDtoFactory::fromRequest($request);
@@ -507,7 +507,7 @@ class UserService
             'status'    => ($request->get('editor_stat') == 'enable') ? true : false,
             
             'gender'    => $request->input('editor_gender'),
-            'role_id'   => Sentinel::findRoleBySlug('editor')->id,           
+            'role_id'   => Sentinel::findRoleBySlug(RoleModel::EDITOR)->id,           
         ]);
 
         $userDto         = UserDtoFactory::fromRequest($request);

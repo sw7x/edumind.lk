@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Sentinel;
-use App\Models\CourseSelection;
+
 use App\Exceptions\CustomException;
-use App\Models\Course;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
-use App\Models\Role;
 use Illuminate\Support\Facades\DB;
-use App\Models\Invoice;
-use App\Models\Enrollment;
-use App\Models\Coupon;
-use App\Models\TempBillingInfo;
+
+use App\Models\Role as RoleModel;
+use App\Models\Invoice as InvoiceModel;
+use App\Models\Enrollment as EnrollmentModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\TempBillingInfo as TempBillingInfoModel;
+use App\Models\Course as CourseModel;
+use App\Models\CourseSelection as CourseSelectionModel;
+
+
 
 use App\Http\Requests\BillingInfoRequest;
 use App\Http\Requests\CreditCardDetailsRequest;
@@ -25,7 +30,7 @@ use Illuminate\Support\Facades\Crypt;
 
 use Cookie;
 
-//use App\Models\User;
+//use App\Models\User as UserModel;
 //use Illuminate\Support\Facades\URL;
 //use Illuminate\Validation\ValidationException;
 //use Illuminate\Http\Response;
@@ -41,11 +46,11 @@ class CartController extends Controller
             $user = Sentinel::getUser();
 
             //before load cart page view, resetting and remove invalid cart items in user's cart
-            if($user && ($user->roles()->first()->slug == Role::STUDENT)){
+            if($user && ($user->roles()->first()->slug == RoleModel::STUDENT)){
 
 
                 /*=== 1. Courses that were once paid but have now been made free of charge ===*/
-                $cartFreeCourses    =   Course::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
+                $cartFreeCourses    =   CourseModel::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
                                             ->where('course_selections.student_id', $user->id)
                                             ->where('course_selections.is_checkout', 0)
                                             ->where('course_selections.cart_added_date', '!=', null)
@@ -59,7 +64,7 @@ class CartController extends Controller
                     $msgArr['rlsCourses']['errArr']   =  $cartFreeCourses->map(function ($freeCourse) use ($user){
 
                         /* delete free cuses from cart */
-                        CourseSelection::where('course_selections.student_id', $user->id)
+                        CourseSelectionModel::where('course_selections.student_id', $user->id)
                             ->where('course_selections.is_checkout', 0)
                             ->where('course_selections.cart_added_date', '!=', null)
                             ->where('course_selections.course_id',$freeCourse->id)
@@ -78,7 +83,7 @@ class CartController extends Controller
 
 
                 /*=== 2. Coupon codes become invalid after apply - available count is over, disabled ===*/
-                $cartInvalidCc  =   CourseSelection::join('courses', 'course_selections.course_id', '=', 'courses.id')
+                $cartInvalidCc  =   CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
                                         ->where('course_selections.student_id', $user->id)
                                         ->where('course_selections.is_checkout', 0)
                                         ->where('course_selections.cart_added_date', '!=', null)
@@ -113,7 +118,7 @@ class CartController extends Controller
                     $msgArr['invoiceCc']['errArr']   =  $cartInvalidCc->map(function ($cartItem) use ($user){
 
                         $ccMsg  = '';
-                        $coupon = Coupon::withoutGlobalScope('enabled')->find($cartItem->used_coupon_code);
+                        $coupon = CouponModel::withoutGlobalScope('enabled')->find($cartItem->used_coupon_code);
 
                         $cartItemCourseId   = $cartItem->course_id;
                         $ccCourseId         = $coupon->cc_course_id;
@@ -154,7 +159,7 @@ class CartController extends Controller
 
 
                 /*=== 3. If the foreign key relationship fails due to the nonexistence of the Coupon record ===*/
-                $csWithoutCC    =   CourseSelection::whereNotExists(function ($query) {
+                $csWithoutCC    =   CourseSelectionModel::whereNotExists(function ($query) {
                                         $query->select('code')
                                             ->from('coupons')
                                             ->whereColumn('coupons.code', 'course_selections.used_coupon_code');
@@ -197,7 +202,7 @@ class CartController extends Controller
 
 
                 /*=== 4. check multiple (valid) coupon codes have used in user cart ===========================*/
-                $cartValidCc    =   CourseSelection::join('courses', 'course_selections.course_id', '=', 'courses.id')
+                $cartValidCc    =   CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
                                         ->where('course_selections.student_id', $user->id)
                                         ->where('course_selections.is_checkout', 0)
                                         ->where('course_selections.cart_added_date', '!=', null)
@@ -280,7 +285,7 @@ class CartController extends Controller
         //dump($id);
         //dump($user->id);
 
-        $isDelete = CourseSelection::Where('course_id',$id)
+        $isDelete = CourseSelectionModel::Where('course_id',$id)
                         ->where('student_id',$user->id)
                         ->where('is_checkout',0)
                         ->first()
@@ -318,10 +323,10 @@ class CartController extends Controller
         	$courseInfoArr 	= array();
         	$invoiceRec;
 
-	        if($user && ($user->roles()->first()->slug == Role::STUDENT)){
+	        if($user && ($user->roles()->first()->slug == RoleModel::STUDENT)){
 
 	        	DB::transaction(function () use ($user, &$courseInfoArr, &$invoiceRec) {
-				    $courseSelections = CourseSelection::join('courses', 'course_selections.course_id', '=', 'courses.id')
+				    $courseSelections = CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
 				        ->where('course_selections.is_checkout', 0)
 				        ->where('course_selections.student_id', $user->id)
 				        ->where('courses.price', '!=', 0)
@@ -329,7 +334,7 @@ class CartController extends Controller
 
 				    $now 		= Carbon::now();
 				    /**/
-				    $invoice   	= Invoice::create([
+				    $invoice   	= InvoiceModel::create([
 			            'checkout_date' => $now,
 			            'billing_info' 	=> 'mm',
 			        ]);
@@ -344,7 +349,7 @@ class CartController extends Controller
 				        $selection->cart_added_date = $now;
 				        $selection->save();
 
-				        Enrollment::create([
+				        EnrollmentModel::create([
 				            'course_selection_id' 	=> $selection->id,
 				            'is_complete' 			=> false,
 				            'invoice_id'			=> $invoiceRec->id
@@ -460,7 +465,7 @@ class CartController extends Controller
 
 
             // if user cart has no courses then
-            $courseInCart   =   CourseSelection::join('courses', 'course_selections.course_id', '=','courses.id')
+            $courseInCart   =   CourseSelectionModel::join('courses', 'course_selections.course_id', '=','courses.id')
                                     ->where('course_selections.student_id', $user->id)
                                     ->where('course_selections.is_checkout', 0)
                                     ->where('course_selections.cart_added_date', '!=', null)
@@ -482,7 +487,7 @@ class CartController extends Controller
 
             DB::beginTransaction ();
 
-            $TempBillingInfo = TempBillingInfo::Create([
+            $TempBillingInfo = TempBillingInfoModel::Create([
                 'user_id'       => $user->id,
                 'billing_info'  => $saveFormData,
                 'is_checkout'   => false
@@ -561,7 +566,7 @@ class CartController extends Controller
 
 
             //check in temp_billing_info table provided temporary record(order) exists
-            $rec = TempBillingInfo::find($orderId);
+            $rec = TempBillingInfoModel::find($orderId);
             if(!$rec || ($rec->is_checkout == true)) abort(403);
             //dump($rec->is_checkout);
 
@@ -630,7 +635,7 @@ class CartController extends Controller
 
 
             // if user cart has no courses then
-            $courseInCart   =   CourseSelection::join('courses', 'course_selections.course_id', '=','courses.id')
+            $courseInCart   =   CourseSelectionModel::join('courses', 'course_selections.course_id', '=','courses.id')
                                     ->where('course_selections.student_id', $user->id)
                                     ->where('course_selections.is_checkout', 0)
                                     ->where('course_selections.cart_added_date', '!=', null)
@@ -652,7 +657,7 @@ class CartController extends Controller
             DB::transaction(function () use ($orderId, $courseInCart, &$billingInfoArr, &$InvoiceId, &$courseArr){
 
                 //check in temp_billing_info table provided temporary record(order) exists
-                $tempRec = TempBillingInfo::find($orderId);
+                $tempRec = TempBillingInfoModel::find($orderId);
                 if(!$tempRec) throw new CustomException("Invalid order");
                 if($tempRec->is_checkout) throw new CustomException("This order is already expired");
 
@@ -660,7 +665,7 @@ class CartController extends Controller
                 $tempRec->save();
 
                 //create invoice
-                $invoice = Invoice::create([
+                $invoice = InvoiceModel::create([
                     'checkout_date' => now(),
                     'billing_info'  => $tempRec->billing_info,
                     'paid_amount'   => 0
@@ -671,7 +676,7 @@ class CartController extends Controller
                 foreach ($courseInCart as $courseRecord) {
 
                     //collect purchased informations of the purchased courses
-                    $course = Course::find($courseRecord->course_id);
+                    $course = CourseModel::find($courseRecord->course_id);
                     $courseArr[] = array(
                         'courseName' => $course->name,
                         'courseUrl'  => route('course-single',$course->slug)
@@ -680,7 +685,7 @@ class CartController extends Controller
                     //if coupon code is used then increase coupon used count by one
                     $usedCC = $courseRecord->used_coupon_code;
                     if($usedCC){
-                        $ccRecord = Coupon::find($usedCC);
+                        $ccRecord = CouponModel::find($usedCC);
                         if($ccRecord->is_enabled == true){
                             $ccRecord->used_count++;
                             $ccRecord->save();
@@ -691,7 +696,7 @@ class CartController extends Controller
                     $courseRecord->save();
 
                     // create enrollments for each course
-                    Enrollment::create([
+                    EnrollmentModel::create([
                         'course_selection_id'   => $courseRecord->id,
                         'invoice_id'            => $InvoiceId
                     ]);
@@ -760,11 +765,11 @@ class CartController extends Controller
                 throw new CustomException('First login before enrolling');
             }
 
-            if(Sentinel::getUser()->roles()->first()->slug != 'student'){
+            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT){
                 throw new CustomException('Invalid user');
             }
 
-            $course = Course::find($courseId);
+            $course = CourseModel::find($courseId);
 
             if($course != null){
 
@@ -772,7 +777,7 @@ class CartController extends Controller
             		throw new CustomException('This is free course cannot add to cart');
             	}
 
-                CourseSelection::create([
+                CourseSelectionModel::create([
                     'cart_added_date'   => Carbon::now(),
                     'is_checkout'       => false,
                     'course_id'         => $courseId,
@@ -837,7 +842,7 @@ class CartController extends Controller
                 throw new CustomException('Invalid coupon code');
             }
 
-	    	$csRec = CourseSelection::where('student_id',$user->id)->where('id',$courseSelId)->first();
+	    	$csRec = CourseSelectionModel::where('student_id',$user->id)->where('id',$courseSelId)->first();
 
 	    	if(!$csRec){
 	    		throw new CustomException('Invalid coupon code');
@@ -901,7 +906,7 @@ class CartController extends Controller
 				throw new CustomException('Invalid coupon code');
 			}
 
-			$ccRec = Coupon::find($couponCode);
+			$ccRec = CouponModel::find($couponCode);
 			if(!$ccRec){
 				throw new CustomException('Invalid coupon code');
 			}
@@ -920,7 +925,7 @@ class CartController extends Controller
 				throw new CustomException('Invalid coupon code');
 			}
 
-			$cartItemsQuery = 	CourseSelection::join('courses', 'course_selections.course_id', '=', 'courses.id')
+			$cartItemsQuery = 	CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
 							        ->where('course_selections.is_checkout', 0)
 							        ->where('course_selections.student_id', $user->id)
 							        ->where('course_selections.cart_added_date', '!=', null)

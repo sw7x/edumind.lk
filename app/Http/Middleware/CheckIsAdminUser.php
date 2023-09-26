@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentinel;
+use App\Models\Role as RoleModel;
 
 class CheckIsAdminUser
 {
@@ -25,7 +26,7 @@ class CheckIsAdminUser
         if(Sentinel::check()){
 
             $role = Sentinel::getUser()->roles()->first()->slug;
-            if($role == 'admin' || $role =='editor' || $role == 'marketer'){
+            if($role == RoleModel::ADMIN || $role == RoleModel::EDITOR || $role == RoleModel::MARKETER){
                 return $next($request);
             }else{
                 return redirect('/');

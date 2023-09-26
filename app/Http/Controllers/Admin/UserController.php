@@ -19,11 +19,12 @@ use App\Services\Admin\UserService as AdminUserService;
 
 use Sentinel;
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Models\Role as RoleModel;
+
 
 
 /*
-use App\Models\Subject;
-use App\Models\User as UserModel;
+
 use App\Utils\FileUploadUtil;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB as DB;
@@ -46,10 +47,7 @@ use App\Repositories\CouponRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\AuthorSalaryRepository;
 
-use App\Models\CourseSelection;
-use App\Models\Enrollment;
-use App\Models\Coupon;
-use App\Models\AuthorSalary;
+
 
 use App\Builders\CourseItemBuilder;
 use App\Builders\EnrollmentBuilder;
@@ -79,6 +77,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        
         try{
 
             $this->authorize('viewAny',User::class);
@@ -892,7 +891,7 @@ class UserController extends Controller
             if(empty($userData['dbRec']->getAllUserRoles()))
                 throw new CustomException('User have no role!');
 
-            if($userData['dbRec']->roles()->first()->name != 'teacher')
+            if($userData['dbRec']->roles()->first()->name != RoleModel::TEACHER)
                 throw new CustomException("Invalid User");
 
             if($userData['dbRec']->status == true)

@@ -7,10 +7,10 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Collection;
 
 use Sentinel;
-use App\Models\Course;
-use App\Models\CourseSelection;
+use App\Models\Course as CourseModel;
+use App\Models\CourseSelection as CourseSelectionModel;
 use Ramsey\Uuid\Uuid;
-
+use App\Models\Role as RoleModel;
 
 
 class CourseSelectionSeeder extends Seeder
@@ -29,7 +29,7 @@ class CourseSelectionSeeder extends Seeder
 
             $data = array();
             
-            $allStudIdArr  = Sentinel::findRoleBySlug('student')->users()->with('roles')->get()->pluck('id')->toArray();
+            $allStudIdArr  = Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->with('roles')->get()->pluck('id')->toArray();
             $studentsIdArr = collect($allStudIdArr)->filter(function ($value) {
                 return $value <= 40;
             })->toArray();
@@ -38,9 +38,9 @@ class CourseSelectionSeeder extends Seeder
             // exclude courses, then student can add these courses to cart
             //  if paid - 
             //  if free - then enroll 
-            //$excludeCourseIdArr = Course::inRandomOrder()->take(10)->get()->pluck('id')->toArray();
+            //$excludeCourseIdArr = CourseModel::inRandomOrder()->take(10)->get()->pluck('id')->toArray();
             
-            $courseIdArr    = Course::inRandomOrder()->get()->pluck('id')->toArray();
+            $courseIdArr    = CourseModel::inRandomOrder()->get()->pluck('id')->toArray();
             $courseCount    = count($courseIdArr);
             $breakCount     = 100;
 
@@ -75,7 +75,7 @@ class CourseSelectionSeeder extends Seeder
                     
 
 
-                    $course         = Course::find($courseId);
+                    $course         = CourseModel::find($courseId);
                     $isFreecourse   = ($course->price == 0)?true:false;
 
                     if(!$isFreecourse){
@@ -144,7 +144,7 @@ class CourseSelectionSeeder extends Seeder
                 }                     
             }
             //dd2($data);
-            CourseSelection::insert($data);
+            CourseSelectionModel::insert($data);
 
 
 

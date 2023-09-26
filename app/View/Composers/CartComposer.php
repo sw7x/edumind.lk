@@ -8,11 +8,11 @@ use Illuminate\View\View;
 
 
 
-use App\Models\Course;
-use App\Models\Enrollment;
-use App\Models\CourseSelection;
+use App\Models\Course as CourseModel;
+//use App\Models\Enrollment as EnrollmentModel;
+//use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\Role as RoleModel;
 use Sentinel;
-use App\Models\Role;
 
 
 
@@ -23,19 +23,19 @@ class CartComposer
         try {
 
             $user = Sentinel::getUser();
-            
+
             //dump('FF');
             //dd($user->roles()->first());
-            if($user && ($user->roles()->first()->slug == Role::STUDENT)){
+            if($user && ($user->roles()->first()->slug == RoleModel::STUDENT)){
 
 
-                $courseQuery    =  Course::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
+                $courseQuery    =  CourseModel::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
                                     ->where('course_selections.student_id', $user->id)
                                     ->where('course_selections.is_checkout', 0)
                                     ->where('course_selections.cart_added_date', '!=', null);
 
 
-                $cartAddedCoursesQuery  =   clone $courseQuery;               
+                $cartAddedCoursesQuery  =   clone $courseQuery;
                 $discountedCoursesQuery =   clone $courseQuery;
 
 
@@ -52,7 +52,7 @@ class CartComposer
                                                 'courses.*'
                                             ]);
                 //dd($cartAddedCourses);
-    
+
                 $discountedCourses  =   $discountedCoursesQuery
                                             ->where('courses.price', '!=', 0)
 
@@ -116,7 +116,7 @@ class CartComposer
         }
 
 
-        $view->with([                        
+        $view->with([
             'cartCourses'           => $cartCourses,
             'cartCourseCount'       => $cartCourseCount,
             'cartTotal'             => $cartTotal,

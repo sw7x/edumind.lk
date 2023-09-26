@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Coupon;
+use App\Models\Coupon as CouponModel;
 class CouponSeeder extends Seeder
 {
     /**
@@ -14,7 +14,7 @@ class CouponSeeder extends Seeder
     public function run()
     {        
         try {                        
-            Coupon::factory()->count(100)->create();
+            CouponModel::factory()->count(100)->create();
         } catch (\Exception $e) {
             $this->command->error('Failed to seed coupon to database !');
         }

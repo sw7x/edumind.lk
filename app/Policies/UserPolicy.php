@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
-use App\Models\Role;
+use App\Models\User as UserModel;
+use App\Models\Role as RoleModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -16,10 +16,10 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN || $userRole== Role::EDITOR);
+        return ($userRole == RoleModel::ADMIN || $userRole== RoleModel::EDITOR);
     }
 
     /**
@@ -29,24 +29,24 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, User $model)
+    public function view(UserModel $user, UserModel $model)
     {
         $currentUserRole   = $user->roles()->first()->slug;
         $givenUserRole     = $model->roles()->first() ? $model->roles()->first()->slug : null;
 
-        if($currentUserRole == Role::ADMIN){       
+        if($currentUserRole == RoleModel::ADMIN){       
             return true;
 
-        }elseif($currentUserRole == Role::EDITOR){        
-            return ($givenUserRole == Role::TEACHER);
+        }elseif($currentUserRole == RoleModel::EDITOR){        
+            return ($givenUserRole == RoleModel::TEACHER);
 
-        }elseif($currentUserRole == Role::TEACHER){        
+        }elseif($currentUserRole == RoleModel::TEACHER){        
             return false;
 
-        }elseif($currentUserRole == Role::STUDENT){        
+        }elseif($currentUserRole == RoleModel::STUDENT){        
             return false;
 
-        }elseif($currentUserRole == Role::MARKETER){        
+        }elseif($currentUserRole == RoleModel::MARKETER){        
             return false;
 
         }else{
@@ -60,10 +60,10 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;
-        return ($userRole == Role::ADMIN);
+        return ($userRole == RoleModel::ADMIN);
     }
 
     /**
@@ -73,10 +73,10 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, User $model)
+    public function update(UserModel $user, UserModel $model)
     {
         $userRole = $user->roles()->first()->slug;
-        return ($userRole == Role::ADMIN);
+        return ($userRole == RoleModel::ADMIN);
     }
 
     /**
@@ -86,10 +86,10 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, User $model)
+    public function delete(UserModel $user, UserModel $model)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);
+        return ($userRole == RoleModel::ADMIN);
     }
 
     /**
@@ -99,7 +99,7 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, User $model)
+    public function restore(UserModel $user, UserModel $model)
     {
         //
     }
@@ -111,103 +111,103 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(UserModel $user, UserModel $model)
     {
         //
     }
 
 
     
-    public function createTeachers(User $user)
+    public function createTeachers(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
     }
 
-    public function createStudents(User $user)
+    public function createStudents(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
     }
 
-    public function createEditors(User $user)
+    public function createEditors(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
-    }
-    
-    public function createMarketers(User $user)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
-    }
-
-
-
-
-
-    
-    public function updateTeachers(User $user, User $model)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
-    }
-
-    public function updateStudents(User $user, User $model)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
-    }
-
-    public function updateEditors(User $user, User $model)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
     }
     
-    public function updateMarketers(User $user, User $model)
+    public function createMarketers(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
+    }
+
+
+
+
+
+    
+    public function updateTeachers(UserModel $user, UserModel $model)
+    {
+        $userRole = $user->roles()->first()->slug;   
+        return ($userRole == RoleModel::ADMIN);        
+    }
+
+    public function updateStudents(UserModel $user, UserModel $model)
+    {
+        $userRole = $user->roles()->first()->slug;   
+        return ($userRole == RoleModel::ADMIN);        
+    }
+
+    public function updateEditors(UserModel $user, UserModel $model)
+    {
+        $userRole = $user->roles()->first()->slug;   
+        return ($userRole == RoleModel::ADMIN);        
+    }
+    
+    public function updateMarketers(UserModel $user, UserModel $model)
+    {
+        $userRole = $user->roles()->first()->slug;   
+        return ($userRole == RoleModel::ADMIN);        
     }
 
     
 
 
-    public function changeUserStatus(User $user, User $model)
+    public function changeUserStatus(UserModel $user, UserModel $model)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
     }
 
 
 
     /*
-    public function viewTeachers(User $user, User $model)
+    public function viewTeachers(UserModel $user, UserModel $model)
     {
         $currentUserRole   = $user->roles()->first()->slug;
         $givenUserRole     = $model->roles()->first()->slug;
            
-        return  ($currentUserRole == Role::ADMIN) || 
-                ($currentUserRole == Role::EDITOR && $givenUserRole == Role::TEACHER);        
+        return  ($currentUserRole == RoleModel::ADMIN) || 
+                ($currentUserRole == RoleModel::EDITOR && $givenUserRole == RoleModel::TEACHER);        
     }
 
-    public function viewStudents(User $user, User $model)
+    public function viewStudents(UserModel $user, UserModel $model)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
     }
 
-    public function viewEditors(User $user, User $model)
+    public function viewEditors(UserModel $user, UserModel $model)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
     }
     
-    public function viewMarketers(User $user, User $model)
+    public function viewMarketers(UserModel $user, UserModel $model)
     {
         $userRole = $user->roles()->first()->slug;   
-        return ($userRole == Role::ADMIN);        
+        return ($userRole == RoleModel::ADMIN);        
     }
     */
 

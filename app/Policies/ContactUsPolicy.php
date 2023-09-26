@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\ContactUs;
-use App\Models\User;
+use App\Models\ContactUs as ContactUsModel;
+use App\Models\User as UserModel;
 use Sentinel;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -14,10 +14,10 @@ class ContactUsPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User as UserModel  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(UserModel $user)
     {
         return $user->isAdmin();
     }
@@ -25,11 +25,11 @@ class ContactUsPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ContactUs  $contactUs
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\ContactUs as ContactUsModel  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, ContactUs $contactUs)
+    public function view(UserModel $user, ContactUsModel $contactUs)
     {
         
         //dd($user);
@@ -51,10 +51,10 @@ class ContactUsPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User as UserModel  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(UserModel $user)
     {
         //
         //dd('create');
@@ -63,11 +63,11 @@ class ContactUsPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ContactUs  $contactUs
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\ContactUs as ContactUsModel  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, ContactUs $contactUs)
+    public function update(UserModel $user, ContactUsModel $contactUs)
     {
         //
     }
@@ -75,11 +75,11 @@ class ContactUsPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ContactUs  $contactUs
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\ContactUs as ContactUsModel  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, ContactUs $contactUs)
+    public function delete(UserModel $user, ContactUsModel $contactUs)
     {
         return $user->isAdmin();
     }
@@ -87,11 +87,11 @@ class ContactUsPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ContactUs  $contactUs
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\ContactUs as ContactUsModel  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, ContactUs $contactUs)
+    public function restore(UserModel $user, ContactUsModel $contactUs)
     {
         //
     }
@@ -99,11 +99,11 @@ class ContactUsPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\ContactUs  $contactUs
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\ContactUs as ContactUsModel  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, ContactUs $contactUs)
+    public function forceDelete(UserModel $user, ContactUsModel $contactUs)
     {
         //
     }

@@ -7,10 +7,18 @@ namespace App\Services;
 use App\Repositories\CourseRepository;
 
 
-use App\Models\Course as CourseModel;
 use Illuminate\Support\Str;
-use App\Models\Role;
+
 use App\Builders\CourseBuilder;
+
+
+use App\Models\Course as CourseModel;
+use App\Models\Role as RoleModel;
+use App\Models\Subject as SubjectModel; 
+use App\Models\User as UserModel;         
+        
+        
+
 class CourseService
 {    
     
@@ -72,7 +80,7 @@ class CourseService
         $userRole = ($currentUser != null)? $currentUser->roles()->first()->slug : null;
         
         /* ==== teacher ====*/
-        if($userRole == Role::TEACHER){
+        if($userRole == RoleModel::TEACHER){
             $isAuthor = $course->teacher()->where('id', $currentUser->id)->first();                            
             $viewFile = ($isAuthor)? 'course-single-enrolled' : 'course-single-before-enrolled';            
         }
@@ -81,7 +89,7 @@ class CourseService
 
 
         /* ==== student ====*/
-        if($userRole == Role::STUDENT){
+        if($userRole == RoleModel::STUDENT){
             $courseSelection = $currentUser->course_selections()->where('course_id', $course->id)->first();                                
             //dd($courseSelection);
             if($courseSelection == null){ 
@@ -136,13 +144,13 @@ class CourseService
 
 
         /* ==== editor ====*/
-        if($userRole == Role::EDITOR){  $viewFile = 'course-single-enrolled';  }
+        if($userRole == RoleModel::EDITOR){  $viewFile = 'course-single-enrolled';  }
 
         /* ==== admin ====*/
-        if($userRole == Role::ADMIN){  $viewFile = 'course-single-enrolled';  }
+        if($userRole == RoleModel::ADMIN){  $viewFile = 'course-single-enrolled';  }
 
         /* ==== marketer ====*/
-        if($userRole == Role::MARKETER){  $viewFile = 'course-single-before-enrolled';  }
+        if($userRole == RoleModel::MARKETER){  $viewFile = 'course-single-before-enrolled';  }
                 
         /* ==== if unknown user role ====*/
         $viewFile = $viewFile ?? 'course-single-before-enrolled';                      
@@ -158,7 +166,7 @@ class CourseService
 
     public function loadAllCourses($userId){
 
-        $allCourses = Course::all();
+        $allCourses = CourseModel::all();
         $courseArr = array();        
         
         $allCourses->map(function ($item) use (&$courseArr, $userId){ 
@@ -204,7 +212,7 @@ class CourseService
             );            
         }); 
         
-        //dump(Course::all());
+        //dump(CourseModel::all());
         //dump($courseArr);
         //dump(collect($courseArr));
         //dd();
@@ -217,7 +225,7 @@ class CourseService
     public function dummyMethod(CourseDto $courseDto){
         
         //DB ===> entity
-        $courseModel = Course::findById(7);
+        $courseModel = CourseModel::findById(7);
         $courseEntityDataArr = (new CourseRepository())->getEntityStructuredDbData($courseModel);
         $courseEntity = $this->hydrateCourseData($courseEntityDataArr);
 
@@ -248,18 +256,17 @@ class CourseService
 
 
         //return new UserDto($user->id, $user->name, $user->email, $user->password);
-        
-        
 
-        $courseModel         = Course::find($courseDto->id);
+
+        $courseModel         = CourseModel::find($courseDto->id);
         $courseEntityDataArr = (new CourseRepository())->getEntityStructuredDbData($courseModel);
         $courseEntity        = (new CourseRepository())->hydrateCourseData($courseEntityDataArr);
 
-        $subjectModel          = Subject::find($courseDto->subjectId);
+        $subjectModel          = SubjectModel::find($courseDto->subjectId);
         $subjectEntityDataArr  = (new SubjectRepository())->getEntityStructuredDbData($subjectModel);
         $subjectEntity         = (new SubjectRepository())->hydrateSubjectData($subjectEntityDataArr);
 
-        $teacherModel           = User::find($courseDto->teacherId);
+        $teacherModel           = UserModel::find($courseDto->teacherId);
         $teacherEntityDataArr   = (new UserRepository())->getEntityStructuredDbData($teacherModel);
         $teacherEntity          = (new UserRepository())->createObjTree($teacherEntityDataArr);
 

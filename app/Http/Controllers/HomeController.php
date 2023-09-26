@@ -12,7 +12,6 @@ use Sentinel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Response;
-use App\Models\Enrollment as EnrollmentModel;
 use Illuminate\Support\Facades\App;
 */
 

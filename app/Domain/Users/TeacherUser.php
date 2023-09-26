@@ -85,7 +85,7 @@ class TeacherUser extends User {
 
     $userRole = $this->roles()->first()->slug;
 
-    if($userRole == Role::TEACHER){
+    if($userRole == RoleModel::TEACHER){
         return($this->getTeachingCourses()->where('status', Course::PUBLISHED)->count());
     }else{
         return null;

@@ -14,7 +14,7 @@
 [{{$page}}]
 
 @if(Sentinel::check())
-    @if(Sentinel::getUser()->roles()->first()->slug == 'student')
+    @if(Sentinel::getUser()->roles()->first()->slug == App\Models\Role::STUDENT)
 
         @if($data_arr->price != 0)                                 
             @if ($enroll_status == 'FRESH')

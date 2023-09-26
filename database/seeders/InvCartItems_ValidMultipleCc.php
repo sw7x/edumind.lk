@@ -5,10 +5,12 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Sentinel;
-use App\Models\Course;
-use App\Models\Coupon;
-use App\Models\CourseSelection;
 use Ramsey\Uuid\Uuid;
+
+use App\Models\Role as RoleModel;
+use App\Models\Course as CourseModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\CourseSelection as CourseSelectionModel;
 
 class InvCartItems_ValidMultipleCc extends Seeder
 {
@@ -28,9 +30,9 @@ class InvCartItems_ValidMultipleCc extends Seeder
             with their intended courses                                        
             ===*/
 
-            $stud1User      =   Sentinel::findRoleBySlug('student')->users()->with('roles')->oldest('id')->first();
+            $stud1User      =   Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->with('roles')->oldest('id')->first();
             
-            $stud1CoursesQuery  =   CourseSelection::where('course_selections.student_id', $stud1User->id);
+            $stud1CoursesQuery  =   CourseSelectionModel::where('course_selections.student_id', $stud1User->id);
             $stud1Courses       = $stud1CoursesQuery->orderBy('course_id')->get()->pluck('course_id')->toArray();
             $stud1Ccs           = $stud1CoursesQuery->whereNotNull('used_coupon_code')->get()->pluck('used_coupon_code')->toArray();
                                             
@@ -43,7 +45,7 @@ class InvCartItems_ValidMultipleCc extends Seeder
             $skipCcArr          = $stud1Ccs;
 
             
-            $courseAssignCc =   Coupon::Join('courses', 'coupons.cc_course_id', '=', 'courses.id')                
+            $courseAssignCc =   CouponModel::Join('courses', 'coupons.cc_course_id', '=', 'courses.id')                
                                     ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
                                     ->where('coupons.discount_percentage', '!=', 0)                        
                                     ->whereNotIn('coupons.code',$skipCcArr) 
@@ -54,7 +56,7 @@ class InvCartItems_ValidMultipleCc extends Seeder
 
             
 
-            $courseNotAssignCc  =   Coupon::WhereNull('coupons.cc_course_id')
+            $courseNotAssignCc  =   CouponModel::WhereNull('coupons.cc_course_id')
                                         ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
                                         ->where('coupons.discount_percentage', '!=', 0)                        
                                         ->whereNotIn('coupons.code',$skipCcArr)                     
@@ -85,7 +87,7 @@ class InvCartItems_ValidMultipleCc extends Seeder
             if(collect($courseNotAssignCc->first())->isNotEmpty()){
                 $cc3        =   $courseNotAssignCc->first();
 
-                $paidCourseArr      =   Course::inRandomOrder()->where('courses.price', '!=', 0)->get()->pluck('id')->toArray();
+                $paidCourseArr      =   CourseModel::inRandomOrder()->where('courses.price', '!=', 0)->get()->pluck('id')->toArray();
                 $availableCourses   =   array_diff($paidCourseArr, $skipCoursesIdArr);
                 $cId                =   collect($availableCourses)->random();
 
@@ -103,14 +105,14 @@ class InvCartItems_ValidMultipleCc extends Seeder
                 $ccRec          = $tempArrRecord['cc'];
                 $insertCourseId = $tempArrRecord['insert_course_id'];
 
-                $studCourseSelectedCount    =   CourseSelection::where('course_id',$insertCourseId)
+                $studCourseSelectedCount    =   CourseSelectionModel::where('course_id',$insertCourseId)
                                                     ->where('student_id',$stud1User->id)
                                                     ->count();
                 
                 // if the student has already enrolled or added the course to their cart, skip it.
                 if($studCourseSelectedCount > 0) continue;       
                 
-                $course = Course::find($insertCourseId);
+                $course = CourseModel::find($insertCourseId);
                 
                 $discountAmount      = $course->price * ($ccRec->discount_percentage/100);
                 $commisionPercentage = $ccRec->beneficiary_commision_percentage_from_discount;
@@ -139,7 +141,7 @@ class InvCartItems_ValidMultipleCc extends Seeder
             }
             
             //dump($arr);
-            CourseSelection::insert($arr);
+            CourseSelectionModel::insert($arr);
 
 
         } catch (\Exception $e) {

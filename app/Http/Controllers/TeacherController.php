@@ -7,7 +7,7 @@ use App\Services\TeacherService;
 //use Illuminate\Http\Request;
 use Sentinel;
 use App\View\DataTransformers\TeacherDataTransformer;
-
+use App\Models\Role as RoleModel;
 
 
 
@@ -104,7 +104,7 @@ class TeacherController extends Controller
                 throw new CustomException('Access denied');
             
             $role = optional($user->roles()->first())->name;
-            if($role != 'teacher')
+            if($role != RoleModel::TEACHER)
                 throw new CustomException('Wrong user type');
 
             $courses    = $this->teacherService->loadAllCoursesByTeacher($user);

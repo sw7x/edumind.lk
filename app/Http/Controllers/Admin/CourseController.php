@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
-use App\Models\Course;
+use App\Models\Course as CourseModel;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -20,8 +20,6 @@ use App\View\DataTransformers\Admin\CourseDataTransformer as AdminCourseDataTran
 use Illuminate\Support\Arr;
 
 //use Illuminate\Database\Eloquent\ModelNotFoundException;
-//use App\Models\Subject;
-//use App\Models\User;
 //use App\Services\TeacherService;
 //use App\Services\UserService;
 //use App\Utils\FileUploadUtil;
@@ -54,7 +52,7 @@ class CourseController extends Controller
     public function index()
     {
         try{
-            $this->authorize('viewAny',Course::class);
+            $this->authorize('viewAny',CourseModel::class);
 
             $courses = $this->adminCourseService->loadAllCourses();
 
@@ -92,7 +90,7 @@ class CourseController extends Controller
     {
         try{
 
-            $this->authorize('create',Course::class);
+            $this->authorize('create',CourseModel::class);
 
             $teachersData = $this->adminTeacherService->loadAllAvailableTeachers();
             $subjectsData = $this->adminSubjectService->loadAllAvailableSubjects();
@@ -143,7 +141,7 @@ class CourseController extends Controller
         //dd($request->all());
         try{
 
-            $this->authorize('create',Course::class);
+            $this->authorize('create',CourseModel::class);
 
             $dbValidCourseContent   = $this->adminCourseService->validateCourseContentForDb($request);
             $request->merge(Arr::only($dbValidCourseContent, ['contentInputStr', 'topicsString', 'contentString']));
@@ -596,13 +594,13 @@ class CourseController extends Controller
 
 
     public function viewCourseEnrollmentList(){
-        $data = Course::orderBy('id')->get();
+        $data = CourseModel::orderBy('id')->get();
         return view('admin-panel.admin.course-enrollments')->withData($data);
     }
 
 
     public function viewCourseCompleteList(){
-        $data = Course::orderBy('id')->get();
+        $data = CourseModel::orderBy('id')->get();
         return view('admin-panel.admin.course-completions')->withData($data);
     }
 

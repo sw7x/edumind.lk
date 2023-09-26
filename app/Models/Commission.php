@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Enrollment;
+use App\Models\Enrollment as EnrollmentModel;
 use Ramsey\Uuid\Uuid;
 
 
@@ -28,6 +28,6 @@ class Commission extends Model
 
     public function enrollments()
     {
-        return $this->hasMany(Enrollment::class,'commission_id','id');
+        return $this->hasMany(EnrollmentModel::class,'commission_id','id');
     }
 }

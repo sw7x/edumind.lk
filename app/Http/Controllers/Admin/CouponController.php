@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Coupon;
 use Sentinel;
 use App\Exceptions\CustomException;
 use App\Http\Requests\Admin\Coupon\CouponStoreRequest;
@@ -15,6 +14,7 @@ use App\View\DataTransformers\Admin\CouponCodeDataTransformer as AdminCouponCode
 use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 
+//use App\Models\Coupon;
 //use Illuminate\Support\Collection;
 //use App\Models\Course;
 class CouponController extends Controller

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentinel;
+use App\Models\Role as RoleModel;
 
 class CheckEditor
 {
@@ -21,7 +22,7 @@ class CheckEditor
 
         if(sentinel::check()){
             $role = Sentinel::getUser()->roles()->first()->slug;
-            if($role == 'editor'){
+            if($role == RoleModel::EDITOR){
                 return $next($request);
             }else{
                 return redirect('/');

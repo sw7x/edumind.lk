@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
-use App\Models\ContactUs;
+use App\Models\ContactUs as ContactUsModel;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Services\Admin\ContactUsService as AdminContactUsService;
 use App\View\DataTransformers\Admin\ContactUsDataTransformer as AdminContactUsDataTransformer;
 
-//use App\Models\User;
 //use App\Repositories\ContactUsRepository;
 
 class ContactUsMessagesController extends Controller
@@ -30,7 +29,7 @@ class ContactUsMessagesController extends Controller
     public function viewStudentMessages(){
 
         try{
-            $this->authorize('viewAny',ContactUs::class);
+            $this->authorize('viewAny',ContactUsModel::class);
 
             $studentCommentsDtoArr  = $this->adminContactUsService->loadStudentMessages();
             $studentCommentsArr     = AdminContactUsDataTransformer::prepareData($studentCommentsDtoArr);
@@ -64,7 +63,7 @@ class ContactUsMessagesController extends Controller
     public function viewTeacherMessages(){
 
         try{
-            $this->authorize('viewAny',ContactUs::class);
+            $this->authorize('viewAny',ContactUsModel::class);
 
             $teacherCommentsDtoArr  = $this->adminContactUsService->loadTeacherMessages();
             $teacherCommentsArr     = AdminContactUsDataTransformer::prepareData($teacherCommentsDtoArr);
@@ -97,7 +96,7 @@ class ContactUsMessagesController extends Controller
 
     public function viewOtherUserMessages(){
         try{
-            $this->authorize('viewAny',ContactUs::class);
+            $this->authorize('viewAny',ContactUsModel::class);
 
             $otherUserCommentsDtoArr  = $this->adminContactUsService->loadOtherUserMessages();
             $otherUserCommentsArr     = AdminContactUsDataTransformer::prepareData($otherUserCommentsDtoArr);
@@ -131,7 +130,7 @@ class ContactUsMessagesController extends Controller
 
     public function viewGuestMessages(){
         try{
-            $this->authorize('viewAny',ContactUs::class);
+            $this->authorize('viewAny',ContactUsModel::class);
 
             $guestCommentsDtoArr  = $this->adminContactUsService->loadGuestMessages();
             $guestCommentsArr     = AdminContactUsDataTransformer::prepareData($guestCommentsDtoArr);

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentinel;
+use App\Models\Role as RoleModel;
 
 class CheckStudent
 {
@@ -22,7 +23,7 @@ class CheckStudent
         if(sentinel::check()){
             $role = Sentinel::getUser()->roles()->first()->slug;
             
-            if($role == 'student'){
+            if($role == RoleModel::STUDENT){
                 return $next($request);
             }else{
                 
@@ -46,7 +47,7 @@ class CheckStudent
                 'title'   => 'Permission denied',
                 'cls'     => 'flash-danger',
                 'msgTitle'=> 'Error!',
-            ],200);
+            ], 200);
 
 
 

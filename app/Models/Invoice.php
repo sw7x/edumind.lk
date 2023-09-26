@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Enrollment;
+use App\Models\Enrollment as EnrollmentModel;
 use Ramsey\Uuid\Uuid;
 
 
@@ -37,7 +37,7 @@ class Invoice extends Model
     
     public function enrollments()
     {
-        return $this->hasMany(Enrollment::class,'invoice_id','id');        
+        return $this->hasMany(EnrollmentModel::class,'invoice_id','id');        
     }
 
 

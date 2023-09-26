@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\resetPasswordMail;
-use App\Models\User;
+use App\Models\User as UserModel;
 use Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -21,11 +21,11 @@ class ForgotPasswordController extends Controller
 
     public function postForgotPassword(Request $request){
 
-        $user = User::whereEmail($request->email)->first();
+        $user = UserModel::whereEmail($request->email)->first();
 
         if($user==null){
             
-            $userRec = User::withoutGlobalScope('active')->whereEmail($request->email)->first();          
+            $userRec = UserModel::withoutGlobalScope('active')->whereEmail($request->email)->first();          
             return redirect()->back()->with([
                'message' => ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
                'cls'     => 'flash-danger',
@@ -74,7 +74,7 @@ class ForgotPasswordController extends Controller
 
         try{
             $email = Crypt::decrypt($encryptedEmail);
-            $user = User::whereEmail($email)->first();
+            $user = UserModel::whereEmail($email)->first();
 
             $reminderModel = Reminder::createModel();
             $before4Hours  = \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
@@ -87,7 +87,7 @@ class ForgotPasswordController extends Controller
 
             if($user == null){
 
-                $userRec     = User::withoutGlobalScope('active')->whereEmail($email)->first();    
+                $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
                 $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
                 
                 session()->flash('message',$err_message);
@@ -138,10 +138,10 @@ class ForgotPasswordController extends Controller
 
         try{
             $email = Crypt::decrypt($encryptedEmail);
-            $user = User::whereEmail($email)->first();
+            $user = UserModel::whereEmail($email)->first();
 
             if($user == null){
-                $userRec     = User::withoutGlobalScope('active')->whereEmail($email)->first();    
+                $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
                 $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
                 
                 session()->flash('message',$err_message);

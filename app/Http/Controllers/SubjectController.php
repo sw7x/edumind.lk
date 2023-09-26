@@ -9,9 +9,10 @@ use App\Services\SubjectService;
 use App\View\DataTransformers\SubjectDataTransformer;
 
 
-use App\Models\Subject;
-use App\Utils\ColorUtil;
-use Illuminate\Http\Request;
+//use App\Utils\ColorUtil;
+//use Illuminate\Http\Request;
+
+
 class SubjectController extends Controller
 {
     private SubjectService $SubjectService;

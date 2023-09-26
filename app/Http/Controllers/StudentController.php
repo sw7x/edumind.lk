@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 use App\View\DataTransformers\StudentDataTransformer;
 
 //use Sentinel;
-//use App\Models\Course;
-//use App\Models\CourseSelection;
-//use App\Models\User;
+
 
 class StudentController extends Controller
 {

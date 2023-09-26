@@ -4,8 +4,8 @@
 namespace App\Utils;
 
 
-use App\Models\Subject;
-use App\Models\Course;
+use App\Models\Subject as SubjectModel;
+use App\Models\Course as CourseModel;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,13 +14,13 @@ class UrlUtil
 
     public static function generateSubjectUrl($urlString){
 
-        return SlugService::createSlug(Subject::class, 'slug', $urlString);
+        return SlugService::createSlug(SubjectModel::class, 'slug', $urlString);
 
     }
 	
 	public static function generateCourseUrl($urlString){
 
-        return SlugService::createSlug(Course::class, 'slug', $urlString);
+        return SlugService::createSlug(CourseModel::class, 'slug', $urlString);
 
     }
 

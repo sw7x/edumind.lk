@@ -12,7 +12,6 @@ use App\Exceptions\CustomException;
 
 //use GuzzleHttp\Client;
 //use Illuminate\Validation\ValidationException;
-//use App\Models\ContactUs;
 //use App\Utils\RecaptchaUtil;
 
 class ContactUsController extends Controller

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentinel;
+use App\Models\Role as RoleModel;
         
 class AccessAdminPanel
 {
@@ -20,7 +21,7 @@ class AccessAdminPanel
         if(sentinel::check()){
             $userRole = Sentinel::getUser()->roles()->first()->slug;
 
-            if($userRole != 'student'){
+            if($userRole != RoleModel::STUDENT){
                 return $next($request);
             }else{
                 

@@ -3,8 +3,8 @@
 
 namespace Database\Factories;
 
-use App\Models\ContactUs;
-use App\Models\User;
+use App\Models\ContactUs as ContactUsModel;
+use App\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ContactUsFactory extends Factory
@@ -14,7 +14,7 @@ class ContactUsFactory extends Factory
      *
      * @var string
      */
-    protected $model = ContactUs::class;
+    protected $model = ContactUsModel::class;
 
     /**
      * Define the model's default state.
@@ -24,7 +24,7 @@ class ContactUsFactory extends Factory
     public function definition()
     {
 
-        $randUser = User::withoutGlobalScope('active')->get()->random();
+        $randUser = UserModel::withoutGlobalScope('active')->get()->random();
 
         //var_dump($randUser->id);
         //var_dump($randUser->full_name);

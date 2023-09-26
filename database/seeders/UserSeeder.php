@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\User as UserModel;
 use Sentinel;
 use Illuminate\Database\Seeder;
 
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 $this->command->alert($teachersfolderPath.' - Folder created successfully.');
             }
 
-            $users = User::factory()->count(100)->make()->each(function ($userItem){
+            $users = UserModel::factory()->count(100)->make()->each(function ($userItem){
                 $faker              = \Faker\Factory::create();
                 $roleId             = $faker->randomElement([2,3,4,5]);
                 $user               = $userItem->toArray();

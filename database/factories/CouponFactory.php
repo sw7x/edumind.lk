@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Course;
+use App\Models\Course as CourseModel;
 use Sentinel;
-
+use App\Models\Role as RoleModel;
 
 
 
@@ -28,8 +28,8 @@ class CouponFactory extends Factory
         
 
 
-        $teachers       = Sentinel::findRoleBySlug('teacher')->users()->with('roles')->get();
-        $marketers      = Sentinel::findRoleBySlug('marketer')->users()->with('roles')->get();
+        $teachers       = Sentinel::findRoleBySlug(RoleModel::TEACHER)->users()->with('roles')->get();
+        $marketers      = Sentinel::findRoleBySlug(RoleModel::MARKETER)->users()->with('roles')->get();
         $beneficiaries  = collect([null])->merge($teachers)->merge($marketers)->merge([null,null])->shuffle();
 
         
@@ -44,8 +44,8 @@ class CouponFactory extends Factory
             'used_count'                                        => $usedCount, 
             'is_enabled'                                        => $this->faker->randomElement([true,false,true]),
             'cc_course_id'                                         => $this->faker->randomElement([
-                                                                        Course::inRandomOrder()->first()->id,
-                                                                        Course::inRandomOrder()->first()->id,
+                                                                        CourseModel::inRandomOrder()->first()->id,
+                                                                        CourseModel::inRandomOrder()->first()->id,
                                                                         null
                                                                     ]),
             'beneficiary_id'                                    => $beneficiaries->first(),////     

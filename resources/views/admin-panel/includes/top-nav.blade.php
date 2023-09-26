@@ -12,7 +12,7 @@
                     --> 
                 </div>
                 
-                @if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != 'student'))
+                @if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != App\Models\Role::STUDENT))
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
                         <span class="m-r-sm text-muted welcome-message">Welcome {{Sentinel::getUser()->username}}</span>

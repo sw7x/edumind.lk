@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Course;
+use App\Models\Course as CourseModel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 
@@ -28,7 +28,7 @@ class CourseSeeder extends Seeder
             //$this->command->info($folderPath.' - Folder already exists.');
             }
 
-            Course::factory()->count(150)->create();
+            CourseModel::factory()->count(150)->create();
 
         } catch (\Exception $e) {
             $this->command->error('Failed to seed courses to database !');

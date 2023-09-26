@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Subject;
+use App\Models\Subject as SubjectModel;
 use App\Utils\UrlUtil;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\User;
-use App\Models\Role;
+use App\Models\Role as RoleModel;
 use Sentinel;
 
 class SubjectFactory extends Factory
@@ -16,7 +15,7 @@ class SubjectFactory extends Factory
      *
      * @var string
      */
-    protected $model = Subject::class;
+    protected $model = SubjectModel::class;
 
     /**
      * Define the model's default state.
@@ -38,28 +37,28 @@ class SubjectFactory extends Factory
 
             'name'          => $subjectName,
             'description'   => $this->faker->text(),
-            
+
             //'image'         => $this->faker->imageUrl($width = 200, $height = 200),
             //'image'         => '',
             'image'           => $this->faker->randomElement([$imgSrc,$imgSrc,$imgSrc,null]),
-            
+
             //'status'        => $this->faker->randomElement(['published','draft']),
             'status'        => $this->faker->randomElement([
-                $this->model::PUBLISHED, 
-                $this->model::DRAFT, 
+                $this->model::PUBLISHED,
+                $this->model::DRAFT,
                 $this->model::PUBLISHED
             ]),
             'slug'          => $slug,
             'author_id'     => function () {
-                $teacherIdArr   = Sentinel::findRoleBySlug(Role::TEACHER)->users()->with('roles')->pluck('id')->toArray();
-                $adminIdArr     = Sentinel::findRoleBySlug(Role::ADMIN)->users()->with('roles')->pluck('id')->toArray();
-                $editorIdArr    = Sentinel::findRoleBySlug(Role::EDITOR)->users()->with('roles')->pluck('id')->toArray();
-                
-                $userArr = array_merge($teacherIdArr,$adminIdArr,$editorIdArr);        
+                $teacherIdArr   = Sentinel::findRoleBySlug(RoleModel::TEACHER)->users()->with('roles')->pluck('id')->toArray();
+                $adminIdArr     = Sentinel::findRoleBySlug(RoleModel::ADMIN)->users()->with('roles')->pluck('id')->toArray();
+                $editorIdArr    = Sentinel::findRoleBySlug(RoleModel::EDITOR)->users()->with('roles')->pluck('id')->toArray();
+
+                $userArr = array_merge($teacherIdArr,$adminIdArr,$editorIdArr);
                 shuffle($userArr);
                 return $userArr[0];
             },
-            
+
 
 
 

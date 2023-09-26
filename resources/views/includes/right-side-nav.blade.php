@@ -29,7 +29,7 @@
                     @if(Sentinel::check())
 
                         <!-- cart -->
-                        @if(optional(Sentinel::getUser()->roles()->first())->slug == 'student')
+                        @if(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
                         <a href="#" class="header_widgets">
                             <ion-icon name="cart-outline" class="is-icon"></ion-icon>
                             <span>{{$cartCourseCount}}</span>
@@ -127,15 +127,15 @@
                                             @if(Sentinel::getUser()->profile_pic)
                                                 <img src="{{Sentinel::getUser()->profile_pic}}" class="" alt="">
                                             @else
-                                                @if( optional(Sentinel::getUser()->roles()->first())->slug == 'student')
+                                                @if( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
                                                     <img src="{{asset('images/default-images/student.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'teacher')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::TEACHER)
                                                     <img src="{{asset('images/default-images/teacher.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'marketer')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::MARKETER)
                                                     <img src="{{asset('images/default-images/marketer.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'editor')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::EDITOR)
                                                     <img src="{{asset('images/default-images/editor.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == 'admin')
+                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::ADMIN)
                                                     <img src="{{asset('images/default-images/admin.png')}}" class="" alt="">
                                                 @else
                                                     <img src="{{asset('images/default-images/user.png')}}" class="" alt="">
@@ -155,7 +155,7 @@
                                 </li>
 
 
-                                @if(optional(Sentinel::getUser()->roles()->first())->slug == 'student')
+                                @if(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
                                     <li>
                                         <a href="{{route('student.my-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses</span></a>
                                     </li>
@@ -181,7 +181,7 @@
                                     </li>
                                     
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'teacher')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::TEACHER)
                                     
                                     <li>
                                         <a href="{{route('teacher.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></a>
@@ -208,7 +208,7 @@
                                         <a href="{{route('teacher.earnings')}}"><ion-icon name="cash" class="is-icon"></ion-icon> <span>My Earnings</span></a>
                                     </li>
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'marketer')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::MARKETER)
                                     {{--todo create routes for marketer dashboard, and other pages--}}
                                     <li>
                                         <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
@@ -219,7 +219,7 @@
                                         </a>
                                     </li>
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'editor')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::EDITOR)
                                     {{--todo create route for editor dashboard, and other pages--}}
                                     <li>
                                         <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
@@ -230,7 +230,7 @@
                                         </a>
                                     </li>
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == 'admin')
+                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::ADMIN)
                                     <li>
                                         <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
                                     </li><li><hr></li>

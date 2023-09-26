@@ -11,6 +11,7 @@ use App\Exceptions\WrongUserTypeException;
 use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Role as RoleModel;
 
 class LoginController extends Controller
 {
@@ -64,7 +65,7 @@ class LoginController extends Controller
                 }else{                  
 
                     $role = $user->roles()->first()->slug;
-                    if($role != 'teacher' && $role != 'student'){
+                    if($role != RoleModel::TEACHER && $role != RoleModel::STUDENT){
                         //throw new WrongUserTypeException('You dont have permission to login here');
                     }
                 }
@@ -76,9 +77,9 @@ class LoginController extends Controller
 
                     $role = Sentinel::getUser()->roles()->first()->slug;
                     
-                    if($role == 'teacher'){
+                    if($role == RoleModel::TEACHER){
                         return redirect()->route('teacher.my-profile', []);
-                    }else if($role == 'student'){
+                    }else if($role == RoleModel::STUDENT){
                         return redirect()->route('student.dashboard', []);
                     }else{
                         //throw new WrongUserTypeException('You dont have permission to login here');
@@ -155,7 +156,8 @@ class LoginController extends Controller
             //$role = Sentinel::getUser()->roles()->first()->slug;
             Sentinel::logout();
             /*
-            if($role == 'admin' || $role == 'editor' || $role == 'marketer'){
+            //if($role == 'admin' || $role == 'editor' || $role == RoleModel::MARKETER){
+            if($role == RoleModel::ADMIN || $role == RoleModel::EDITOR || $role == RoleModel::MARKETER){
                 return redirect()->route('admin.login');
             }else{
                 return redirect()->route('home');

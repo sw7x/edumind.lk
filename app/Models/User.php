@@ -11,15 +11,20 @@ use Laravel\Sanctum\HasApiTokens;
 use Carbon\Carbon;
 use Sentinel;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use App\Models\Role;
-use App\Models\Subject;
+
 //use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Course;
-use App\Models\CourseSelection;
-use App\Models\Coupon;
+
 use Illuminate\Database\Eloquent\Builder;
 use Ramsey\Uuid\Uuid;
 
+
+use App\Models\Course as CourseModel;
+use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\Role as RoleModel;
+use App\Models\Subject as SubjectModel;
+use App\Models\Enrollment as EnrollmentModel;
+use App\Models\ContactUs as ContactUsModel;
 
 use Cartalyst\Sentinel\Users\EloquentUser as CartalystUser;
 class User extends CartalystUser
@@ -153,22 +158,22 @@ class User extends CartalystUser
                 $userRole = $this->getUserRoles()->first()->slug;                
                 switch ($userRole) {
                     case "admin":
-                    $imagePath = asset('images/default-images/admin.png');
+                        $imagePath = asset('images/default-images/admin.png');
                     break;
                     case "editor":
-                    $imagePath = asset('images/default-images/editor.png');
+                        $imagePath = asset('images/default-images/editor.png');
                     break;
                     case "marketer":
-                    $imagePath  = asset('images/default-images/marketer.png');
+                        $imagePath  = asset('images/default-images/marketer.png');
                     break;
                     case "teacher":
-                    $imagePath = asset('images/default-images/teacher.png');
+                        $imagePath = asset('images/default-images/teacher.png');
                     break;
                     case "student":
-                    $imagePath = asset('images/default-images/student.png');
+                        $imagePath = asset('images/default-images/student.png');
                     break;
                     default:
-                    $imagePath = asset('images/default-images/user.png');
+                        $imagePath = asset('images/default-images/user.png');
                 }                    
             }
         }        
@@ -185,36 +190,36 @@ class User extends CartalystUser
 
     public function course_selections()
     {
-        return $this->hasMany(CourseSelection::class,'student_id');        
+        return $this->hasMany(CourseSelectionModel::class,'student_id');        
     }
 
 
 
     public function getTeachingCourses(){
-        return $this->hasMany(Course::class,'teacher_id','id');
+        return $this->hasMany(CourseModel::class,'teacher_id','id');
     }
 
     public function getContactMessages(){
-        return $this->hasMany(ContactUs::class,'user_id','id');
+        return $this->hasMany(ContactUsModel::class,'user_id','id');
     }
 
 
 
     public function subjects(){
-        return $this->hasMany(Subject::class,'author_id','id');
+        return $this->hasMany(SubjectModel::class,'author_id','id');
     }
 
     
     public function coupons()
     {
-        return $this->hasMany(Coupon::class,'beneficiary_id','id');
+        return $this->hasMany(CouponModel::class,'beneficiary_id','id');
     }
 
     public function enrollments()
     {
         return $this->hasManyThrough(
-            Enrollment::class,
-            CourseSelection::class,
+            EnrollmentModel::class,
+            CourseSelectionModel::class,
             'student_id', // Foreign key on the course_selections table...
             'course_selection_id', // Foreign key on the enrollments table...
             'id', // Local key on the users table...
@@ -226,8 +231,8 @@ class User extends CartalystUser
     public function enrollmentsToUserCreatedCourses()
     {
         return $this->hasManyDeep(
-            Enrollment::class,
-            [Course::class, CourseSelection::class], // Intermediate models, beginning at the far parent (User).
+            EnrollmentModel::class,
+            [CourseModel::class, CourseSelectionModel::class], // Intermediate models, beginning at the far parent (User).
             [
                'teacher_id', // Foreign key on the "courses" table.
                'course_id',    // Foreign key on the "course_selections" table.
@@ -257,8 +262,8 @@ class User extends CartalystUser
     {
         /* todo - filter free courses */
         return $this->hasManyDeep(
-            Enrollment::class,
-            [Coupon::class, CourseSelection::class], // Intermediate models, beginning at the far parent (User).
+            EnrollmentModel::class,
+            [CouponModel::class, CourseSelectionModel::class], // Intermediate models, beginning at the far parent (User).
             [
                'beneficiary_id', // Foreign key on the "coupons" table.
                'used_coupon_code',    // Foreign key on the "course_selections" table.
@@ -362,8 +367,8 @@ class User extends CartalystUser
 
         $userRole = $this->roles()->first()->slug;
 
-        if($userRole == Role::TEACHER){
-            return($this->getTeachingCourses()->where('status', Course::PUBLISHED)->count());
+        if($userRole == RoleModel::TEACHER){
+            return($this->getTeachingCourses()->where('status', CourseModel::PUBLISHED)->count());
         }else{
             return null;
         }
@@ -373,23 +378,23 @@ class User extends CartalystUser
 
     public function isUserCanAccessAdminPanel(){
         $userRole = optional($this->roles()->first())->slug;
-        return in_array($userRole, [Role::ADMIN, Role::EDITOR, Role::MARKETER, Role::TEACHER]);
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER]);
     }
 
     public function isAdmin(){
         $userRole = $this->roles()->first()->slug;    
-        return ($userRole == Role::ADMIN);
+        return ($userRole == RoleModel::ADMIN);
     }
 
 
-    public function isSubjectCreator(Subject $subject){        
+    public function isSubjectCreator(SubjectModel $subject){        
         if(is_null($subject->creator))
             return false;
 
         return ($this->id == $subject->creator->id);        
     }
     
-    public function isCourseAuthor(Course $course){
+    public function isCourseAuthor(CourseModel $course){
         return ($this->id == $course->teacher->id);  
     } 
     

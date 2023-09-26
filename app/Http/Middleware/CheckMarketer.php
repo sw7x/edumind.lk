@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentinel;
+use App\Models\Role as RoleModel;
 
 class CheckMarketer
 {
@@ -21,7 +22,7 @@ class CheckMarketer
 
         if(sentinel::check()){
             $role = Sentinel::getUser()->roles()->first()->slug;
-            if($role == 'marketer'){
+            if($role == RoleModel::MARKETER){
                 return $next($request);
             }else{
                 return redirect('/');

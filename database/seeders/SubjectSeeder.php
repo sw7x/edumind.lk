@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Subject;
+use App\Models\Subject as SubjectModel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 
@@ -36,7 +36,7 @@ class SubjectSeeder extends Seeder
                 //$this->command->info($folderPath.' - Folder already exists.');
             }
             
-            Subject::factory()->count(12)->create();        
+            SubjectModel::factory()->count(12)->create();        
         } catch (\Exception $e) {
             $this->command->error('Failed to seed subjects to database !');
         }

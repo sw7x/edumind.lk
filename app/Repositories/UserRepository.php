@@ -3,8 +3,9 @@ namespace App\Repositories;
 
 
 use App\Repositories\BaseRepository;
-
+use App\Models\Role as RoleModel;
 use App\Models\User as UserModel;
+
 use Illuminate\Database\Eloquent\Model;
 use App\Repositories\Interfaces\IGetDtoDataRepository;
 use App\Mappers\UserMapper;
@@ -179,63 +180,63 @@ class UserRepository extends BaseRepository implements IGetDtoDataRepository{
 
 
     public function findAllTeachers(): Collection {
-        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
+        $teachers   =   Sentinel::findRoleBySlug(RoleModel::TEACHER)->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
         return $teachers;
     }
     
     public function findAllStudents(): Collection {
-        $students   =   Sentinel::findRoleBySlug('student')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
+        $students   =   Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
         return $students;
     }
     
     public function findAllMarketers(): Collection {
-        $marketers  =   Sentinel::findRoleBySlug('marketer')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
+        $marketers  =   Sentinel::findRoleBySlug(RoleModel::MARKETER)->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();
         return $marketers;
     }
 
     public function findAllEditors(): Collection {
-        $editors    =   Sentinel::findRoleBySlug('editor')->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();  
+        $editors    =   Sentinel::findRoleBySlug(RoleModel::EDITOR)->users()->withoutGlobalScope('active')->with('roles')->orderBy('id')->get();  
         return $editors;
     }     
 
     public function findAllAvailableTeachers(): Collection {
-        $teachers   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->orderBy('id')->get();
+        $teachers   =   Sentinel::findRoleBySlug(RoleModel::TEACHER)->users()->with('roles')->orderBy('id')->get();
         return $teachers;
     }
     
     public function findAllAvailableStudents(): Collection {
-        $students   =   Sentinel::findRoleBySlug('student')->users()->with('roles')->orderBy('id')->get();
+        $students   =   Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->with('roles')->orderBy('id')->get();
         return $students;
     }
     
     public function findAllAvailableMarketers(): Collection {
-        $marketers  =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->orderBy('id')->get();
+        $marketers  =   Sentinel::findRoleBySlug(RoleModel::MARKETER)->users()->with('roles')->orderBy('id')->get();
         return $marketers;
     }
 
     public function findAllAvailableEditors(): Collection {
-        $editors    =   Sentinel::findRoleBySlug('editor')->users()->with('roles')->orderBy('id')->get();  
+        $editors    =   Sentinel::findRoleBySlug(RoleModel::EDITOR)->users()->with('roles')->orderBy('id')->get();  
         return $editors;
     }  
 
 
     public function findAvailableTeacherById(int $teacherId): Collection {
-        $teacher   =   Sentinel::findRoleBySlug('teacher')->users()->with('roles')->where('id', $teacherId)->orderBy('id')->get();
+        $teacher   =   Sentinel::findRoleBySlug(RoleModel::TEACHER)->users()->with('roles')->where('id', $teacherId)->orderBy('id')->get();
         return $teacher;
     }    
 
     public function findAvailableStudentById(int $studentId): Collection {
-        $student   =   Sentinel::findRoleBySlug('student')->users()->with('roles')->where('id', $studentId)->orderBy('id')->get();
+        $student   =   Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->with('roles')->where('id', $studentId)->orderBy('id')->get();
         return $student;
     }    
 
     public function findAvailableMarketerById(int $marketerId): Collection {
-        $marketer   =   Sentinel::findRoleBySlug('marketer')->users()->with('roles')->where('id', $marketerId)->orderBy('id')->get();
+        $marketer   =   Sentinel::findRoleBySlug(RoleModel::MARKETER)->users()->with('roles')->where('id', $marketerId)->orderBy('id')->get();
         return $marketer;
     }    
 
     public function findAvailableEditorById(int $editorId): Collection {
-        $editor   =   Sentinel::findRoleBySlug('editor')->users()->with('roles')->where('id', $editorId)->orderBy('id')->get();
+        $editor   =   Sentinel::findRoleBySlug(RoleModel::EDITOR)->users()->with('roles')->where('id', $editorId)->orderBy('id')->get();
         return $editor;
     }
 
@@ -248,7 +249,7 @@ class UserRepository extends BaseRepository implements IGetDtoDataRepository{
 
 
     public function getUnApprovedTeachers(): Collection {
-        $unApprovedTeacher  =   Sentinel::findRoleBySlug('teacher')
+        $unApprovedTeacher  =   Sentinel::findRoleBySlug(RoleModel::TEACHER)
                                     ->users()
                                     ->withoutGlobalScope('active')
                                     ->with('roles')

@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use App\Scopes\CheckoutScope;
 
 
-use App\Models\Invoice;
-use App\Models\Coupon;
-use App\Models\salary;
-use App\Models\commission;
-use App\Models\CourseSelection;
-use App\Models\Course;
+use App\Models\Invoice as InvoiceModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\salary as salaryModel;
+use App\Models\commission as commissionModel;
+use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\Course as CourseModel;
+use App\Models\AuthorSalary as AuthorSalaryModel;
+use App\Models\Commission as CommissionModel;
+use App\Models\User as UserModel;
+
 use Ramsey\Uuid\Uuid;
 
 
@@ -60,39 +64,35 @@ class Enrollment extends Model
 
     public function invoice()
     {
-        return $this->belongsTo(Invoice::class,'invoice_id','id');        
+        return $this->belongsTo(InvoiceModel::class,'invoice_id','id');        
     }
 
     public function courseSelection()
     {
-        return $this->belongsTo(CourseSelection::class,'course_selection_id','id');
+        return $this->belongsTo(CourseSelectionModel::class,'course_selection_id','id');
     }
     
 
     public function salary()
     {
-        return $this->belongsTo(AuthorSalary::class,'salary_id','id');
+        return $this->belongsTo(AuthorSalaryModel::class,'salary_id','id');
     }
 
 
     public function commission()
     {
-        return $this->belongsTo(Commission::class,'commission_id','id');
+        return $this->belongsTo(CommissionModel::class,'commission_id','id');
     }
 
 
 
 
 
-    public function carOwner()
-    {
-        return $this->hasOneThrough(Owner::class, Car::class);
-    }
-
+    
     
     public function involvedCourse(){
         //return $this->courseSelection();
-        return $this->belongsTo(CourseSelection::class,'course_selection_id','id');
+        return $this->belongsTo(CourseSelectionModel::class,'course_selection_id','id');
     }
 
 
@@ -101,14 +101,14 @@ class Enrollment extends Model
     public function ownCourse()
     {
         return $this->belongsToThrough(
-            Course::class,
-            [CourseSelection::class], 
+            CourseModel::class,
+            [CourseSelectionModel::class], 
             null,
             '',
             [
-                //Enrollment::class => 'dd',
-                Course::class => 'course_id'
-                //Course::class => 'xstudent_id'
+                //EnrollmentModel::class => 'dd',
+                CourseModel::class => 'course_id'
+                //CourseModel::class => 'xstudent_id'
             ]            
         );
     }
@@ -117,14 +117,14 @@ class Enrollment extends Model
     public function usedCoupon()
     {
         return $this->belongsToThrough(
-            Coupon::class,
-            [CourseSelection::class], 
+            CouponModel::class,
+            [CourseSelectionModel::class], 
             null,
             '',
             [
-                //Enrollment::class => 'dd',
-                Coupon::class => 'used_coupon_code'
-                //Course::class => 'xstudent_id'
+                //EnrollmentModel::class => 'dd',
+                CouponModel::class => 'used_coupon_code'
+                //CourseModel::class => 'xstudent_id'
             ]            
         );
     }    
@@ -133,14 +133,14 @@ class Enrollment extends Model
     public function customerStudent()
     {
         return $this->belongsToThrough(
-            User::class,
-            [CourseSelection::class], 
+            UserModel::class,
+            [CourseSelectionModel::class], 
             null,
             '',
             [
-                //Enrollment::class => 'dd',
-                User::class => 'student_id'
-                //Course::class => 'xstudent_id'
+                //EnrollmentModel::class => 'dd',
+                UserModel::class => 'student_id'
+                //CourseModel::class => 'xstudent_id'
             ]            
         );
     }
@@ -149,15 +149,15 @@ class Enrollment extends Model
     public function courseAuthor()
     {
         return $this->belongsToThrough(
-            User::class,
-            [Course::class, CourseSelection::class], 
+            UserModel::class,
+            [CourseModel::class, CourseSelectionModel::class], 
             null,
             '',
             [
                 // db table   => foreign key of other table
-                User::class => 'teacher_id',
-                Course::class => 'course_id',
-                CourseSelection::class => 'course_selection_id',
+                UserModel::class => 'teacher_id',
+                CourseModel::class => 'course_id',
+                CourseSelectionModel::class => 'course_selection_id',
 
             ]           
         );
@@ -166,15 +166,15 @@ class Enrollment extends Model
     public function beneficiary()
     {
         return $this->belongsToThrough(
-            User::class,
-            [Coupon::class, CourseSelection::class ], 
+            UserModel::class,
+            [CouponModel::class, CourseSelectionModel::class ], 
             null,
             '',
             [
                 // db table   => foreign key of other table
-                User::class => 'beneficiary_id',
-                Coupon::class => 'used_coupon_code',
-                CourseSelection::class => 'course_selection_id',
+                UserModel::class => 'beneficiary_id',
+                CouponModel::class => 'used_coupon_code',
+                CourseSelectionModel::class => 'course_selection_id',
             ]            
         );
         //no need

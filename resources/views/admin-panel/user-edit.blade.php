@@ -52,16 +52,16 @@
                             {{--userData--}}
                             {{--$userData['userType']--}}
                             <ul class="nav nav-tabs" role="tablist">
-                                <li><a class="nav-link {{ ($userData['userType'] == 'teacher') ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-teachers">Edit teacher</a></li>
-                                <li><a class="nav-link {{ ($userData['userType'] == 'student') ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-students">Edit student</a></li>
-                                <li><a class="nav-link {{ ($userData['userType'] == 'marketer') ? 'active' : 'disabled' }}" data-toggle="tab" href="#tab-marketers">Edit marketer</a></li>
-                                <li><a class="nav-link {{ ($userData['userType'] == 'editor') ? 'active' : 'disabled' }}" data-toggle="tab"   href="#tab-editor">Edit editor</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == App\Models\Role::TEACHER)  ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-teachers">Edit teacher</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == App\Models\Role::STUDENT)  ? 'active' : 'disabled' }}" data-toggle="tab"  href="#tab-students">Edit student</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == App\Models\Role::MARKETER) ? 'active' : 'disabled' }}" data-toggle="tab" href="#tab-marketers">Edit marketer</a></li>
+                                <li><a class="nav-link {{ ($userData['userType'] == App\Models\Role::EDITOR)   ? 'active' : 'disabled' }}" data-toggle="tab"   href="#tab-editor">Edit editor</a></li>
                             </ul>
 
                             <div class="tab-content mb-3">
 
-                                @if($userData['userType'] == 'teacher')
-                                <div role="tabpanel" id="tab-teachers" class="tab-pane {{ ($userData['userType'] == 'teacher') ? 'active' : '' }}">
+                                @if($userData['userType'] == App\Models\Role::TEACHER)
+                                <div role="tabpanel" id="tab-teachers" class="tab-pane {{ ($userData['userType'] == App\Models\Role::TEACHER) ? 'active' : '' }}">
                                     <div class="panel-body">
 
                                         <form class="" id="" action="{{route('admin.user.update-teacher',['id' => $userData['id']])}}" method="post">
@@ -241,8 +241,8 @@
                                 </div>
                                 @endif
 
-                                @if($userData['userType'] == 'student')
-                                <div role="tabpanel" id="tab-students" class="tab-pane {{ ($userData['userType'] == 'student') ? 'active' : '' }}">
+                                @if($userData['userType'] == App\Models\Role::STUDENT)
+                                <div role="tabpanel" id="tab-students" class="tab-pane {{ ($userData['userType'] == App\Models\Role::STUDENT) ? 'active' : '' }}">
                                     <div class="panel-body">
                                         @foreach ($errors->all() as $error)
                                             {{-- $error --}}
@@ -388,8 +388,8 @@
                                 </div>
                                 @endif
 
-                                @if($userData['userType'] == 'marketer')
-                                <div role="tabpanel" id="tab-marketers" class="tab-pane {{ ($userData['userType'] == 'marketer') ? 'active' : '' }}">
+                                @if($userData['userType'] == App\Models\Role::MARKETER)
+                                <div role="tabpanel" id="tab-marketers" class="tab-pane {{ ($userData['userType'] == App\Models\Role::MARKETER) ? 'active' : '' }}">
                                     <div class="panel-body">
                                         @foreach ($errors->all() as $error)
                                             {{-- $error --}}
@@ -503,8 +503,8 @@
                                 </div>
                                 @endif
 
-                                @if($userData['userType'] == 'editor')
-                                <div role="tabpanel" id="tab-editor" class="tab-pane {{ ($userData['userType'] == 'editor') ? 'active' : '' }}">
+                                @if($userData['userType'] == App\Models\Role::EDITOR)
+                                <div role="tabpanel" id="tab-editor" class="tab-pane {{ ($userData['userType'] == App\Models\Role::EDITOR) ? 'active' : '' }}">
                                     <div class="panel-body">
                                          @foreach ($errors->all() as $error)
                                             {{-- $error --}}
@@ -857,7 +857,7 @@
 			endDate: '+0d',
 			startDate: '-99y',
 		});
-        @if(isset($userData['dobYear']) && $userData['userType'] == 'student')
+        @if(isset($userData['dobYear']) && $userData['userType'] == App\Models\Role::STUDENT)
 		  $("[name='stud_birth_year']").datepicker("update", '{{$userData['dobYear']}}');
         @endif
 
@@ -871,7 +871,7 @@
             startDate: '-99y',
 		});
 
-        @if(isset($userData['dobYear']) && $userData['userType'] == 'teacher')
+        @if(isset($userData['dobYear']) && $userData['userType'] == App\Models\Role::TEACHER)
 		    $("[name='teacher_birth_year']").datepicker("update", '{{$userData['dobYear']}}');
         @endif
 

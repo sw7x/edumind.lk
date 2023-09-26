@@ -5,11 +5,11 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Sentinel;
-use App\Models\Course;
-use App\Models\Coupon;
-use App\Models\CourseSelection;
+use App\Models\Course as CourseModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\CourseSelection as CourseSelectionModel;
 use Ramsey\Uuid\Uuid;
-
+use App\Models\Role as RoleModel;
 class InvCartItems_InvalidCc extends Seeder
 {
     /**
@@ -22,12 +22,12 @@ class InvCartItems_InvalidCc extends Seeder
         
         try {                        
             
-            //$paidCourseArr  =   Course::inRandomOrder()->where('courses.price', '!=', 0)->get()->pluck('id');
-            $stud1User      =   Sentinel::findRoleBySlug('student')->users()->with('roles')->oldest('id')->first();
+            //$paidCourseArr    =   CourseModel::inRandomOrder()->where('courses.price', '!=', 0)->get()->pluck('id');
+            $stud1User          =   Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->with('roles')->oldest('id')->first();
             
-            $stud1CoursesQuery  =   CourseSelection::where('course_selections.student_id', $stud1User->id);
-            $stud1Courses       = $stud1CoursesQuery->orderBy('course_id')->get()->pluck('course_id')->toArray();
-            $stud1Ccs           = $stud1CoursesQuery->whereNotNull('used_coupon_code')->get()->pluck('used_coupon_code')->toArray();
+            $stud1CoursesQuery  =   CourseSelectionModel::where('course_selections.student_id', $stud1User->id);
+            $stud1Courses       =   $stud1CoursesQuery->orderBy('course_id')->get()->pluck('course_id')->toArray();
+            $stud1Ccs           =   $stud1CoursesQuery->whereNotNull('used_coupon_code')->get()->pluck('used_coupon_code')->toArray();
                                             
             
 
@@ -48,7 +48,7 @@ class InvCartItems_InvalidCc extends Seeder
             
 
             /* (2.1--1) === not intended coupon use === */        
-            $RandCc1    =   Coupon::where('coupons.cc_course_id', '!=', null)
+            $RandCc1    =   CouponModel::where('coupons.cc_course_id', '!=', null)
                                 ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
                                 ->where('coupons.discount_percentage', '!=', 0)
                                 ->whereNotIn('coupons.code',$skipCc)
@@ -58,7 +58,7 @@ class InvCartItems_InvalidCc extends Seeder
             if(!is_null($RandCc1)){
                 
                 // get courses except course belongs to $RandCc1
-                $courses1   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                $courses1   =   CourseModel::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
                                     ->where('coupons.cc_course_id', '!=', $RandCc1->cc_course_id)
                                     ->where('coupons.is_enabled', 1)
                                     ->where('courses.price', '!=', 0)
@@ -80,7 +80,7 @@ class InvCartItems_InvalidCc extends Seeder
             
 
             /* (2.1--2) === not intended coupon use and used coupon available count is over === */
-            $RandCc2    =   Coupon::where('coupons.cc_course_id', '!=', null)
+            $RandCc2    =   CouponModel::where('coupons.cc_course_id', '!=', null)
                                 ->whereColumn('coupons.total_count', '<=', 'coupons.used_count')
                                 ->where('coupons.discount_percentage', '!=', 0)
                                 ->whereNotIn('coupons.code',$skipCc)
@@ -90,7 +90,7 @@ class InvCartItems_InvalidCc extends Seeder
             if(!is_null($RandCc2)){                    
                 
                 // get courses except $courseId1, and course belongs to $RandCc2  
-                $courses2   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                $courses2   =   CourseModel::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
                                     ->where('coupons.is_enabled', '=', 1)
                                     ->where('coupons.cc_course_id', '!=', $RandCc2->cc_course_id)
                                     ->whereNotIn('courses.id', $skipCoursesIdArr)
@@ -109,7 +109,7 @@ class InvCartItems_InvalidCc extends Seeder
 
 
             /* (2.1--3) === not intended coupon use and used coupon is disabled === */
-            $RandCc3    =   Coupon::withoutGlobalScope('enabled')
+            $RandCc3    =   CouponModel::withoutGlobalScope('enabled')
                                 ->where('coupons.cc_course_id', '!=', null)
                                 ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
                                 ->where('coupons.discount_percentage', '!=', 0)
@@ -121,7 +121,7 @@ class InvCartItems_InvalidCc extends Seeder
             if(!is_null($RandCc3)){                    
                 
                 // get courses except $courseId1, $courseId2 and course belongs to $RandCc3  
-                $courses3   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                $courses3   =   CourseModel::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
                                     ->where('coupons.is_enabled', '!=', 1)
                                     ->where('coupons.cc_course_id', '!=', $RandCc3->cc_course_id)
                                     ->whereNotIn('courses.id', $skipCoursesIdArr)
@@ -140,7 +140,7 @@ class InvCartItems_InvalidCc extends Seeder
 
 
             /* (2.1--4) === not intended coupon use, used coupon is disabled and available count is over  === */
-            $RandCc4    =   Coupon::withoutGlobalScope('enabled')
+            $RandCc4    =   CouponModel::withoutGlobalScope('enabled')
                                 ->where('coupons.cc_course_id', '!=', null)
                                 ->whereColumn('coupons.total_count', '<=', 'coupons.used_count')
                                 ->where('coupons.discount_percentage', '!=', 0)
@@ -152,7 +152,7 @@ class InvCartItems_InvalidCc extends Seeder
             if(!is_null($RandCc4)){
                 
                 // courses except $courseId1, $courseId2, $courseId3 and course belongs to $RandCc4 are skip 
-                $courses4   =   Course::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
+                $courses4   =   CourseModel::Join('coupons', 'courses.id', '=', 'coupons.cc_course_id')
                                     ->where('coupons.is_enabled', '!=', 1)
                                     ->where('coupons.cc_course_id', '!=', $RandCc4->cc_course_id)
                                     ->whereNotIn('courses.id', $skipCoursesIdArr)
@@ -179,7 +179,7 @@ class InvCartItems_InvalidCc extends Seeder
 
 
             // (2.2) disabled coupon codes, use to intended course
-            $cc1    =   Coupon::withoutGlobalScope('enabled')
+            $cc1    =   CouponModel::withoutGlobalScope('enabled')
                                     ->join('courses', 'coupons.cc_course_id', '=', 'courses.id')
                                     ->whereNotIn('coupons.code',$skipCc)
                                     ->where('coupons.is_enabled', '!=', 1)
@@ -198,7 +198,7 @@ class InvCartItems_InvalidCc extends Seeder
 
 
             // (2.3) available count over coupon codes, use to intended course
-            $cc2    =   Coupon::whereColumn('coupons.total_count', '<=', 'coupons.used_count')
+            $cc2    =   CouponModel::whereColumn('coupons.total_count', '<=', 'coupons.used_count')
                             ->join('courses', 'coupons.cc_course_id', '=', 'courses.id')
                             ->whereNotIn('coupons.code',$skipCc)
                             ->where('coupons.cc_course_id', '!=', null)
@@ -213,7 +213,7 @@ class InvCartItems_InvalidCc extends Seeder
 
             
             // (2.4) coupon codes that disabled and available count is over, use to intended course
-            $cc3    =   Coupon::withoutGlobalScope('enabled')
+            $cc3    =   CouponModel::withoutGlobalScope('enabled')
                             ->join('courses', 'coupons.cc_course_id', '=', 'courses.id')
                             ->where('coupons.is_enabled', '!=', 1)
                             ->whereColumn('coupons.total_count', '<=', 'coupons.used_count')
@@ -240,7 +240,7 @@ class InvCartItems_InvalidCc extends Seeder
                 if(collect($ccRec)->isEmpty()) continue;
                 if(is_null($insertCourseId)) continue;
 
-                $course = Course::find($insertCourseId);
+                $course = CourseModel::find($insertCourseId);
                 
                 $discountAmount      = $course->price * ($ccRec->discount_percentage/100);
                 $commisionPercentage = $ccRec->beneficiary_commision_percentage_from_discount;
@@ -268,7 +268,7 @@ class InvCartItems_InvalidCc extends Seeder
                 );
             }
 
-            CourseSelection::insert($arr);
+            CourseSelectionModel::insert($arr);
             //dd($arr);
 
         } catch (\Exception $e) {

@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Models\Course as CourseModel;
-
+use App\Models\Role as RoleModel;
 use App\Exceptions\CustomException;
 
 use Sentinel;
@@ -13,8 +13,7 @@ use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
 
 //use App\DataTransferObjects\UserDto;
-//use App\Models\CourseSelection;
-//use App\Models\User;
+
 
 class StudentService
 {
@@ -26,7 +25,7 @@ class StudentService
 			throw new CustomException('Access denied');
 
         $role = optional($user->roles()->first())->name;
-        if($role != 'student')
+        if($role != RoleModel::STUDENT)
 			throw new CustomException('Wrong user type');
 
 		return array(
@@ -42,7 +41,7 @@ class StudentService
 			throw new CustomException('Access denied');
 
 		$role = optional($user->roles()->first())->name;
-		if($role !='student')
+		if($role !=RoleModel::STUDENT)
 			throw new CustomException('Wrong user type');
 
 		$studentCourses = (new CourseRepository())->getEnrolledCoursesByStudent($user);

@@ -6,7 +6,7 @@ namespace App\Services;
 
 
 
-use App\Models\User;
+use App\Models\User as UserModel;
 
 class CourseThreadService
 {

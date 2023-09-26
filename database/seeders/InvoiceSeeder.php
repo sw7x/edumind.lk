@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Invoice;
+use App\Models\Invoice as InvoiceModel;
 
 class InvoiceSeeder extends Seeder
 {
@@ -15,7 +15,7 @@ class InvoiceSeeder extends Seeder
     public function run()
     {
         try {                        
-            Invoice::factory()->count(10)->create();        
+            InvoiceModel::factory()->count(10)->create();        
         } catch (\Exception $e) {
             $this->command->error('Failed to seed invoices to database !');
         }

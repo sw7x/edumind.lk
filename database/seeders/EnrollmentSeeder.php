@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\CourseSelection;
-use App\Models\Enrollment;
-use App\Models\Invoice;
-use App\Models\AuthorSalary;
-use App\Models\Commission;
-use App\Models\Coupon;
-use App\Models\Course;
+use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\Enrollment as EnrollmentModel;
+use App\Models\Invoice as InvoiceModel;
+use App\Models\AuthorSalary as AuthorSalaryModel;
+use App\Models\Commission as CommissionModel;
+use App\Models\Coupon as CouponModel;
+use App\Models\Course as CourseModel;
 use Ramsey\Uuid\Uuid;
 
 use Faker\Generator as Faker;
@@ -37,7 +37,7 @@ class EnrollmentSeeder extends Seeder
             $faker = \Faker\Factory::create();
         
             // to eliminate paid courses that are still not checkout (cart added courses)
-            $enrolledRecs   =   CourseSelection::join('courses','course_selections.course_id','=','courses.id')
+            $enrolledRecs   =   CourseSelectionModel::join('courses','course_selections.course_id','=','courses.id')
                                     ->where(function ($query){ 
                                         $query->where('course_selections.is_checkout', 1)
                                             ->where('courses.price', '!=' , 0);
@@ -49,13 +49,13 @@ class EnrollmentSeeder extends Seeder
                                     //->toSql();
                                     ->get(['course_selections.*','courses.price as courses_price']);     
         
-            $invoicesIdArr  = Invoice::inRandomOrder()->get()->pluck('id')->toArray();           
+            $invoicesIdArr  = InvoiceModel::inRandomOrder()->get()->pluck('id')->toArray();           
             $ccArr          = array();
             $salArr         = array();
             $enrollmentArr  = array();
             $invoicdArr     = array();
 
-            $courseSelStudArr   =   CourseSelection::groupBy('student_id')
+            $courseSelStudArr   =   CourseSelectionModel::groupBy('student_id')
                                         ->pluck('student_id')
                                         ->toArray();
                                 
@@ -64,7 +64,7 @@ class EnrollmentSeeder extends Seeder
                 //foreign key for course_selections table
                 $courseSelectionId  = $checkoutCourseSelection->id; 
                 
-                $course        = Course::find($checkoutCourseSelection->course_id);
+                $course        = CourseModel::find($checkoutCourseSelection->course_id);
                 $isFreecourse  = ($course->price == 0)?true:false;                   
                 
                 $isComplete    = $faker->randomElement([true,false,false]);
@@ -89,14 +89,14 @@ class EnrollmentSeeder extends Seeder
                     $ccArr[] = array(
                         'code'                      => $checkoutCourseSelection->used_coupon_code,
                         'beneficiary_earn_amount'   => $checkoutCourseSelection->beneficiary_earn_amount,
-                        'used_date'                 => Invoice::find($invoiceId)->checkout_date
+                        'used_date'                 => InvoiceModel::find($invoiceId)->checkout_date
                     );
 
                     //to generate salaries table records
                     $salArr[] = array(
                         'author_amount' => $checkoutCourseSelection->author_amount,
                         'courseId'      => $course->id,
-                        'checkout_date' => Invoice::find($invoiceId)->checkout_date,
+                        'checkout_date' => InvoiceModel::find($invoiceId)->checkout_date,
                         'teacherId'     => $course->teacher->id
                     );
                 }
@@ -115,8 +115,8 @@ class EnrollmentSeeder extends Seeder
                     'commission_id'     => null,
 
                     //for temporary use - later remove this 
-                    'teacher'       => CourseSelection::find($courseSelectionId)->course->teacher_id,
-                    'beneficiary'   => Coupon::find($checkoutCourseSelection->used_coupon_code)->beneficiary_id ?? null,
+                    'teacher'       => CourseSelectionModel::find($courseSelectionId)->course->teacher_id,
+                    'beneficiary'   => CouponModel::find($checkoutCourseSelection->used_coupon_code)->beneficiary_id ?? null,
                     'isFreecourse'  => $isFreecourse                
                 );          
             }        
@@ -184,7 +184,7 @@ class EnrollmentSeeder extends Seeder
             //filter coupon codes that has no beneficiary
 
             $cCodesForCommissions = collect($ccArr)->filter(function($value, $key) {            
-                $ccRecord      = Coupon::Where('code',$value["code"])->first();
+                $ccRecord      = CouponModel::Where('code',$value["code"])->first();
                 return  ($ccRecord != null) && ($ccRecord->beneficiary_id != null);             
             });     
             
@@ -204,7 +204,7 @@ class EnrollmentSeeder extends Seeder
                 $ccodeUsageArr[$item['code']] = array(
                     'code'                      => $item['code'],
                     'beneficiary_earn_amount'   => $amount,
-                    'beneficiary_id'            => Coupon::Where('code',$item['code'])->first()->beneficiary_id,
+                    'beneficiary_id'            => CouponModel::Where('code',$item['code'])->first()->beneficiary_id,
                     'used_count'                => $count,
                     'used_dates'                => $usedDates
                 );     
@@ -291,7 +291,7 @@ class EnrollmentSeeder extends Seeder
                 // for update invoice table records
                 if(!$value['isFreecourse']){
                     $invoiceId  = $value['invoice_id'];
-                    $csRec      = CourseSelection::find($value['course_selection_id']);                
+                    $csRec      = CourseSelectionModel::find($value['course_selection_id']);                
                     $amount     = $invoiceTblRecordsArr[$invoiceId] ?? 0;
                     $amount    += $csRec->revised_price;
                     $invoiceTblRecordsArr[$invoiceId] = $amount;
@@ -322,17 +322,17 @@ class EnrollmentSeeder extends Seeder
             
             
             //batch insert records to DB
-            AuthorSalary::insert($salTblRecords);
-            Commission::insert($commissionTblRecords);
-            Enrollment::insert($enrollmentRecords);
+            AuthorSalaryModel::insert($salTblRecords);
+            CommissionModel::insert($commissionTblRecords);
+            EnrollmentModel::insert($enrollmentRecords);
 
             
             foreach ($invoiceTblRecordsArr as $key => $paidAmount) {
-               Invoice::find($key)->update(['paid_amount' => $paidAmount]);
+               InvoiceModel::find($key)->update(['paid_amount' => $paidAmount]);
             }
 
             
-            foreach (Invoice::all() as $invoice) {
+            foreach (InvoiceModel::all() as $invoice) {
                 if($invoice->enrollments->isEmpty()){
                     
                     // remove un used invoice records (invoices that have no enrollemnts) 

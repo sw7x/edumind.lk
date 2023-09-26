@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentinel;
+use App\Models\Role as RoleModel;
 
 class NoStudent
 {
@@ -21,7 +22,7 @@ class NoStudent
 
         if(sentinel::check()){
             $role = Sentinel::getUser()->roles()->first()->slug;
-            if($role != 'student'){
+            if($role != RoleModel::STUDENT){
                 return $next($request);
             }else{
                 return redirect('/');

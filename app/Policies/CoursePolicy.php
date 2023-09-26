@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\Course;
-use App\Models\User;
+use App\Models\Course as CourseModel;
+use App\Models\User as UserModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use App\Models\Role;
+use App\Models\Role as RoleModel;
 
 class CoursePolicy
 {
@@ -14,76 +14,76 @@ class CoursePolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User as UserModel  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [Role::ADMIN, Role::EDITOR, Role::TEACHER, Role::MARKETER]);
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER, RoleModel::MARKETER]);
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\Course as CourseModel  $course
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Course $course)
+    public function view(UserModel $user, CourseModel $course)
     {
         $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [Role::ADMIN, Role::EDITOR, Role::TEACHER, Role::MARKETER]);
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER, RoleModel::MARKETER]);
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User as UserModel  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(UserModel $user)
     {
         $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [Role::ADMIN, Role::EDITOR, Role::TEACHER]);
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER]);
     }
 
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\Course as CourseModel  $course
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Course $course)
+    public function update(UserModel $user, CourseModel $course)
     {
         $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [Role::ADMIN, Role::EDITOR]) || 
-                ($userRole == Role::TEACHER && $user->isCourseAuthor($course));
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
+                ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\Course as CourseModel  $course
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Course $course)
+    public function delete(UserModel $user, CourseModel $course)
     {
         $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [Role::ADMIN, Role::EDITOR]) || 
-                ($userRole == Role::TEACHER && $user->isCourseAuthor($course));
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
+                ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));
     }
 
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\Course as CourseModel  $course
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Course $course)
+    public function restore(UserModel $user, CourseModel $course)
     {
         //
     }
@@ -91,21 +91,21 @@ class CoursePolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User as UserModel  $user
+     * @param  \App\Models\Course as CourseModel  $course
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Course $course)
+    public function forceDelete(UserModel $user, CourseModel $course)
     {
         //
     }
 
     
 
-    public function changeStatus(User $user, Course $course)
+    public function changeStatus(UserModel $user, CourseModel $course)
     {
         $userRole = $user->roles()->first()->slug;
-        return in_array($userRole, [Role::ADMIN, Role::EDITOR]) || 
-                ($userRole == Role::TEACHER && $user->isCourseAuthor($course));        
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
+                ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));        
     }
 }

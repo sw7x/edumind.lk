@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
 
-use App\Models\Subject;
+use App\Models\Subject as SubjectModel;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Sentinel;
@@ -43,7 +43,7 @@ class SubjectController extends Controller
     {
         //dd('f');
         try{
-            $this->authorize('viewAny',Subject::class);
+            $this->authorize('viewAny',SubjectModel::class);
             $subjectsData   = $this->adminSubjectService->loadAllDbRecs();
 
             $filteredDataArr = AdminSubjectDataTransformer::prepareSubjectDataList($subjectsData);
@@ -73,7 +73,7 @@ class SubjectController extends Controller
     public function create()
     {
         try{
-            $this->authorize('create',Subject::class);
+            $this->authorize('create',SubjectModel::class);
             return view('admin-panel.subject-add');
 
         }catch(AuthorizationException $e){
@@ -102,7 +102,7 @@ class SubjectController extends Controller
     {
         try{
 
-            $this->authorize('create',Subject::class);
+            $this->authorize('create',SubjectModel::class);
             if(!$request->get('name'))
                 throw new CustomException('Subject name cannot be empty');
 

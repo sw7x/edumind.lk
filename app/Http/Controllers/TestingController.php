@@ -34,7 +34,7 @@ use App\Domain\Factories\EdumindFeeFactory;
 
 
 use App\DataTransferObjects\Factories\UserDtoFactory;
-use App\DataTransferObjects\Factories\SubjectDtoFactory;    
+use App\DataTransferObjects\Factories\SubjectDtoFactory;
 use App\DataTransferObjects\Factories\InvoiceDtoFactory;
 use App\DataTransferObjects\Factories\CourseDtoFactory;
 use App\DataTransferObjects\Factories\CouponDtoFactory;
@@ -64,6 +64,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 
+/*
 use App\Models\Invoice as InvoiceModel;
 use App\Models\Course as CourseModel;
 use App\Models\ContactUs as ContactUsModel;
@@ -75,13 +76,14 @@ use App\Models\Role;
 use App\Models\CourseSelection;
 use App\Models\User;
 use App\Models\Enrollment as EnrollmentModel;
+*/
 
 
 
 
 class TestingController extends Controller
 {
-    
+
     //coupon
     public function coupon(Request $request){
 
@@ -126,13 +128,13 @@ class TestingController extends Controller
         $cs13 = $cs3;
         $cs14 = $cs3;
         unset($cs11['beneficiary_arr']);
-        echo 'Request array<br>';dump($cs11);echo '<hr><br>'; 
+        echo 'Request array<br>';dump($cs11);echo '<hr><br>';
 
         unset($cs12['beneficiary_id']);
-        echo 'Request2 array<br>';dump($cs12);echo '<hr><br>';        
+        echo 'Request2 array<br>';dump($cs12);echo '<hr><br>';
 
         unset($cs13['assigned_course_id']);
-        echo 'Request3 array<br>';dump($cs13);echo '<hr><br>';        
+        echo 'Request3 array<br>';dump($cs13);echo '<hr><br>';
 
         unset($cs14['assigned_course_arr']);
         echo 'Request4 array<br>';dump($cs14);echo '<hr><br>';
@@ -141,18 +143,18 @@ class TestingController extends Controller
         $cs12['commision_percentage_from_discount'] = $cs12['beneficiary_commision_percentage_from_discount'];
         $cs13['commision_percentage_from_discount'] = $cs13['beneficiary_commision_percentage_from_discount'];
         $cs14['commision_percentage_from_discount'] = $cs14['beneficiary_commision_percentage_from_discount'];
-        
+
         $request1 = new \Illuminate\Http\Request($cs11);
         //echo 'Request1 obj<br>';dump($request1);echo '<hr><br>';
-        echo 'Request1 array<br>';dump($request1->toArray());echo '<hr><br>';        
+        echo 'Request1 array<br>';dump($request1->toArray());echo '<hr><br>';
 
         $request2 = new \Illuminate\Http\Request($cs12);
         //echo 'Request2 obj<br>';dump($request2);echo '<hr><br>';
-        echo 'Request2 array<br>';dump($request2->toArray());echo '<hr><br>';        
+        echo 'Request2 array<br>';dump($request2->toArray());echo '<hr><br>';
 
         $request3 = new \Illuminate\Http\Request($cs13);
         //echo 'Request3 obj<br>';dump($request3);echo '<hr><br>';
-        echo 'Request3 array<br>';dump($request3->toArray());echo '<hr><br>';        
+        echo 'Request3 array<br>';dump($request3->toArray());echo '<hr><br>';
 
         $request4 = new \Illuminate\Http\Request($cs14);
         //echo 'Request4 obj<br>';dump($request4);echo '<hr><br>';
@@ -160,13 +162,13 @@ class TestingController extends Controller
 
 
         $cs15 = CouponDtoFactory::fromRequest($request1);
-        echo 'CouponDtoFactory::fromRequest1<br>';dump($cs15);echo '<hr><br>';        
+        echo 'CouponDtoFactory::fromRequest1<br>';dump($cs15);echo '<hr><br>';
 
         $cs16 = CouponDtoFactory::fromRequest($request2);
-        echo 'CouponDtoFactory::fromRequest2<br>';dump($cs16);echo '<hr><br>';        
+        echo 'CouponDtoFactory::fromRequest2<br>';dump($cs16);echo '<hr><br>';
 
         $cs17 = CouponDtoFactory::fromRequest($request3);
-        echo 'CouponDtoFactory::fromRequest3<br>';dump($cs17);echo '<hr><br>';        
+        echo 'CouponDtoFactory::fromRequest3<br>';dump($cs17);echo '<hr><br>';
 
         $cs18 = CouponDtoFactory::fromRequest($request4);
         echo 'CouponDtoFactory::fromRequest4<br>';dump($cs18);echo '<hr><br>';
@@ -176,7 +178,7 @@ class TestingController extends Controller
         dd('__');
 
     }
-    
+
     //commission
     public function commission(Request $request){
 
@@ -228,13 +230,13 @@ class TestingController extends Controller
 
 
     }
-    
+
     //authorSalary
     public function authorSalary(Request $request){
 
 
 
-        $cs3 = (new AuthorSalaryRepository())->findDataArrById(7);       
+        $cs3 = (new AuthorSalaryRepository())->findDataArrById(7);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = AuthorSalaryMapper::dbRecConvertToEntityArr($cs3);
@@ -284,14 +286,14 @@ class TestingController extends Controller
         dd('__');
 
     }
-    
+
     //course
     public function course(Request $request){
 
-        $cs3 = (new CourseRepository())->findDataArrById(5);       
+        $cs3 = (new CourseRepository())->findDataArrById(5);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
-       
+
         $cs4 = CourseMapper::dbRecConvertToEntityArr($cs3);
         echo 'dbRec => EntityArr<br>';dump($cs4);echo '<hr><br>';
 
@@ -309,7 +311,7 @@ class TestingController extends Controller
         echo 'Course(Dto)<br>';dump($cs7);echo '<hr><br>';
         echo 'Course(Dto) toArray<br>';dump($cs7->toArray());echo '<hr><br>';
 
-        
+
         $cs8 = CourseDtoFactory::fromArray($cs7->toArray());
         echo 'Course(Dto) --> toArray --> Course(Dto)<br>';dump($cs8);echo '<hr><br>';
 
@@ -324,7 +326,7 @@ class TestingController extends Controller
         unset($cs11['creator_id']);
         $cs11['aa'] = 0;
         $cs11['bb'] = false;
-        $cs11['cc'] = [];        
+        $cs11['cc'] = [];
         $cs11['dd'] = '';
         $cs11['ee'] = null;
 
@@ -342,7 +344,7 @@ class TestingController extends Controller
 
 
     }
-    
+
     //contactUs
     public function contactUs(Request $request){
 
@@ -455,7 +457,7 @@ class TestingController extends Controller
         $cs4 = CourseItemMapper::dbRecConvertToEntityArr($cs3);
         echo 'dbRec => EntityArr<br>';dump($cs4);echo '<hr><br>';
         //dd();
-        
+
         $cs5 = (new CourseItemFactory())->createObjTree($cs4);
         echo 'CourseItem(Entity)<br>';dump($cs5);echo '<hr><br>';
 
@@ -479,8 +481,8 @@ class TestingController extends Controller
         $cs10 = (new CourseItemRepository())->findDtoDataById(20);
         echo 'CourseItemRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
-        
-        $cs11 = $cs3;        
+
+        $cs11 = $cs3;
         $cs11['course_arr']['subject'] = $cs11['course_arr']['subject_id'];
         $cs11['course_arr']['teacher'] = $cs11['course_arr']['teacher_id'];
         unset($cs11['course_id']);
@@ -512,7 +514,7 @@ class TestingController extends Controller
 
         $cs4 = EnrollmentMapper::dbRecConvertToEntityArr($cs3);
         echo 'dbRec => EntityArr<br>';dump($cs4);echo '<hr><br>';
-        
+
 
         $cs5 = (new EnrollmentFactory())->createObjTree($cs4);
         echo 'Enrollment(Entity)<br>';dump($cs5);echo '<hr><br>';
@@ -567,16 +569,16 @@ class TestingController extends Controller
         $cs5 = (new OrderFactory())->createObjTree($cs4);
         echo 'Order(Entity)<br>';dump($cs5);echo '<hr><br>';
         echo 'Order(Entity)->toArray $cs5->toArray()<br>';dump($cs5->toArray());echo '<hr><br>';
-        
+
 
         $cs6 = (new OrderFactory())->createObjTree($cs5->toArray());
         echo 'Order(Entity) --> toArray --> Order(Entity)<br>';dump($cs6);echo '<hr><br>';
-        
+
 
         $cs7 = OrderDtoFactory::fromArray($cs4);
         echo 'Order(Dto)<br>';dump($cs7);echo '<hr><br>';
         echo 'Order(Dto) toArray<br>';dump($cs7->toArray());echo '<hr><br>';
-        
+
 
         $cs8 = OrderDtoFactory::fromArray($cs7->toArray());
         echo 'Order(Dto) --> toArray --> Order(Dto)<br>';dump($cs8);echo '<hr><br>';
@@ -587,7 +589,7 @@ class TestingController extends Controller
         $cs10 = (new OrderRepository())->findDtoDataById(1205);
         echo 'OrderRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
-        
+
         $cs11 = $cs3;
         //unset($cs11['user_id']);
         //unset($cs11['user_arr']);
@@ -604,8 +606,8 @@ class TestingController extends Controller
         dd('__');
 
     }
-    
-    
+
+
 
     public function user(Request $request){
 
@@ -658,7 +660,7 @@ class TestingController extends Controller
 
     }
 
-    
+
 
 
 
@@ -927,11 +929,11 @@ class TestingController extends Controller
         dump(Str::uuid()->toString());
     }
 
-    
+
     public function etc(){
         $string = 'Some text to be encrypted';
         $encrypted = \Illuminate\Support\Facades\Crypt::encrypt($string);
-        $decrypted_string = \Illuminate\Support\Facades\Crypt::decrypt($encrypted);                    
+        $decrypted_string = \Illuminate\Support\Facades\Crypt::decrypt($encrypted);
     }
 
 
@@ -951,7 +953,7 @@ class TestingController extends Controller
         $html .= '<a href="'.route('test.enrollment').'">enrollment</a><br>';
         $html .= '<a href="'.route('test.order').'">order</a><br>';
         $html .= '<hr>';
-        
+
 
         $html .= '<a href="'.route('test.user').'">user</a><br>';
         $html .= '<a href="'.route('test.user-admin').'">Admin user</a><br>';

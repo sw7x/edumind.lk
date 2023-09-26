@@ -33,7 +33,7 @@
                                 <div class="mr-5">
                                     <a href="{{route('home')}}" title="" class="btn bg-green-500 hover:bg-green-600 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Go to Home</a>
                                 </div>
-								@if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != 'student'))
+								@if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != App\Models\Role::STUDENT))
 								<div>
 									<a href="{{route('admin.dashboard')}}" title="" class="btn bg-red-500 hover:bg-red-600 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Admin Panel</a>
 								</div>

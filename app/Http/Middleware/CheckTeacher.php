@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentinel;
+use App\Models\Role as RoleModel;
 
 class CheckTeacher
 {
@@ -21,7 +22,7 @@ class CheckTeacher
 
         if(sentinel::check()){
 
-            if($role == 'teacher'){
+            if($role == RoleModel::TEACHER){
                 return $next($request);
             }else{
                 return redirect('/');

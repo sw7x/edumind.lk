@@ -6,7 +6,7 @@
                 <li class="nav-header">
                     <div class="dropdown profile-element">
                         <img alt="image" class="_bg-white _rounded-circle" src="{{asset('admin/img/3logo.png')}}"/>                        
-                        @if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != 'student'))
+                        @if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != App\Models\Role::STUDENT))
                         <a class="dropdown-toggle" href="#">
                             <span class="mt-1 text-white text-center text-lg __text-muted text-xs block">{{Sentinel::getUser()->username}}</span>
                         </a>

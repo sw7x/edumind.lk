@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\User as UserModel;
 use Cartalyst\Sentinel\Sentinel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +20,7 @@ class UserFactory extends Factory
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = UserModel::class;
 
     /**
      * Define the model's default state.
@@ -56,7 +56,7 @@ class UserFactory extends Factory
 
         //$user = User->registerAndActivate($user);
         //$user_admin->makeRoot();
-        //$role = User::findRoleById($roleId);
+        //$role = UserModel::findRoleById($roleId);
         //$role->users()->attach($user);
     }
 
