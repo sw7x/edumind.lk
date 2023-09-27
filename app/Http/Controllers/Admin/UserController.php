@@ -516,8 +516,7 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => $e->getMessage(),
                 'user_edit_cls'     => 'flash-danger',
@@ -525,7 +524,7 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect(route('admin.user.index'))->with([
             //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update teacher user accounts !',
@@ -534,7 +533,7 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => 'Add User Failed !',
                 'user_edit_cls'     => 'flash-danger',
@@ -572,8 +571,7 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => $e->getMessage(),
                 'user_edit_cls'     => 'flash-danger',
@@ -581,7 +579,7 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect(route('admin.user.index'))->with([
             //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update student user accounts !',
@@ -590,7 +588,7 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => 'User update Failed!',
                 'user_edit_cls'     => 'flash-danger',
@@ -627,8 +625,7 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => $e->getMessage(),
                 'user_edit_cls'     => 'flash-danger',
@@ -636,7 +633,7 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect(route('admin.user.index'))->with([
             //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update student user accounts !',
@@ -645,7 +642,7 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => 'User update Failed!',
                 'user_edit_cls'     => 'flash-danger',
@@ -682,7 +679,7 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => $e->getMessage(),
                 'user_edit_cls'     => 'flash-danger',
@@ -698,7 +695,7 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->back()->with([
                 'user_edit_message'  => 'User update Failed!',
                 'user_edit_cls'     => 'flash-danger',

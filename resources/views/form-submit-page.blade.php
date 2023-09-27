@@ -12,20 +12,23 @@
 
                     <div>
                         @if(Session::has('message'))
-                            <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                                <a href="#" class="close">×</a>
-                                <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                                <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                                <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                            </div>
+                            <x-flash-message  
+                                :class="Session::get('cls', 'flash-info')"  
+                                :title="Session::get('msgTitle') ?? 'Info!'" 
+                                :message="Session::get('message') ?? ''"  
+                                :message2="Session::get('message2') ?? ''"  
+                                :canClose="true" />
                         @else
                             <h2 class="font-semibold mb-3 text-xl lg:text-3xl">{{$title ?? 'Form submit'}}</h2>
                             <hr class="mb-5">
 
-                            <div class="flash-msg {{$cls ?? 'flash-info'}}">
-                                <div class="text-lg"><strong>{{$msgTitle ?? 'Info!'}}</strong></div>
-                                <p>{{$message ?? 'This alert box could indicate a neutral informative change or action.'}}</p>
-                            </div>                            
+                            <x-flash-message  
+                                :class="$cls ?? 'flash-info'"  
+                                :title="$msgTitle ?? 'Info!'" 
+                                :message="$message ?? 'This alert box could indicate a neutral informative change or action.'"  
+                                message2=""  
+                                :canClose="false" />
+                            
                         @endif
                             <p>Go back to <a href="{{route('home')}}" class="text-blue-500" >Home</a></p>
                     </div>

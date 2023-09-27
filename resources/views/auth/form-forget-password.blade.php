@@ -21,11 +21,12 @@
                     <h1 class="lg:text-2xl text-xl font-semibold mb-6">Forget password </h1>
 
                     @if(Session::has('message'))
-                        <div class="flash-msg {{ Session::get('cls', 'alert-info')}}">
-                            <a href="#" class="close">×</a>
-                            <div class="text-lg"><strong>{{ Session::get('msgTitle')}}</strong></div>
-                            <p>{{ Session::get('message') }}</p>
-                        </div>
+                        <x-flash-message  
+                            :class="Session::get('cls', 'flash-info')"  
+                            :title="Session::get('msgTitle') ?? 'Info!'" 
+                            :message="Session::get('message') ?? ''"  
+                            :message2="Session::get('message2') ?? ''"  
+                            :canClose="true" />
                     @endif
 
                     <p>Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.</p>

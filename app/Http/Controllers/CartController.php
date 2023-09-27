@@ -404,6 +404,9 @@ class CartController extends Controller
 
 
 	public function loadBillingInfoPage(Request $request){
+        
+        // todo ----------------add custom exception
+
         try {
 
             //dump('loadBillingInfoPage');

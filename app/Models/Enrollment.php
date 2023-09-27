@@ -9,8 +9,7 @@ use App\Scopes\CheckoutScope;
 
 use App\Models\Invoice as InvoiceModel;
 use App\Models\Coupon as CouponModel;
-use App\Models\salary as salaryModel;
-use App\Models\commission as commissionModel;
+use App\Models\Salary as salaryModel;
 use App\Models\CourseSelection as CourseSelectionModel;
 use App\Models\Course as CourseModel;
 use App\Models\AuthorSalary as AuthorSalaryModel;

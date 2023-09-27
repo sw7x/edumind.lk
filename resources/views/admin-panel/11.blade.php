@@ -9,15 +9,20 @@
                 <div class="ibox-content">
 
 
-                    <div class="flash-msg flash-danger">
-                        <a href="#" class="close">×</a>
-                        <div class="text-lg"><strong>Form submit Error!</strong></div>
-                        <ul>
-                            <li>One</li>
-                            <li>Two</li>
-                        </ul>
-                        <p>Course does not exist!</p>
-                    </div>
+                    <x-flash-message  
+                        class="flash-danger"  
+                        title="Form submit Error!" 
+                        message=""  
+                        message2=""  
+                        :canClose="false" >
+                        <x-slot name="insideContent">
+                        	<ul>
+                        		<li>One</li>
+                        		<li>Two</li>
+                        	</ul>
+                        	<p>Course does not exist!</p>
+                        </x-slot>
+                    </x-flash-message>
 
                 </div>
             </div>

@@ -27,36 +27,42 @@
         <div class="col-lg-12">
 
             @if(Session::has('message'))
-                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
+                <x-flash-message  
+                    :class="Session::get('cls', 'flash-info')"  
+                    :title="Session::get('msgTitle') ?? 'Info!'" 
+                    :message="Session::get('message') ?? ''"  
+                    :message2="Session::get('message2') ?? ''"  
+                    :canClose="true" />
             @endif
 
             <div class="ibox">
                 <div class="ibox-content">
                     <form class="general-settings" method="post" action="">                        
                         @if (count($errors) > 0)
-                            <div class="flash-msg flash-danger rounded-none" style="margin-bottom:0px;">
-                                <a href="#" class="close">×</a>
-                                <div class="text-lg"><strong>Form submit error!</strong></div>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li class="text-sm ml-3">{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                            <x-flash-message 
+                                style="margin-bottom:0px;"
+                                class="flash-danger rounded-none"  
+                                title="Form submit error!" 
+                                message=""  
+                                message2=""  
+                                :canClose="true" >
+                                <x-slot name="insideContent">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li class="text-sm ml-3">{{ $error }}</li>
+                                        @endforeach
+                                    </ul>    
+                                </x-slot>    
+                            </x-flash-message>
                         @endif
 
                         @if(Session::has('message'))
-                            <div class="flash-msg {{ Session::get('cls', 'flash-info')}}  rounded-none">
-                                <a href="#" class="close">×</a>
-                                <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                                <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                                <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                            </div>
+                            <x-flash-message  
+                                :class="Session::get('cls', 'flash-info').' rounded-none'"  
+                                :title="Session::get('msgTitle') ?? 'Info!'" 
+                                :message="Session::get('message') ?? ''"  
+                                :message2="Session::get('message2') ?? ''"  
+                                :canClose="true" />
                         @endif
 
                         <div class="text-right mb-4"><span class="font-bold text-red-500 text-sm">*</span> - Required Information </div>

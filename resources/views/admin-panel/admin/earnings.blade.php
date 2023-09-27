@@ -43,12 +43,12 @@
             
             
             @if(isset($message))
-                <div class="flash-msg {{$cls ?? 'flash-info'}}">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{$msgTitle ?? 'Info!'}}</strong></div>
-                    <p>{{ $message ?? 'Info!' }}</p>
-                    <div class="text-base">{!! $message2 ?? '' !!}</div>
-                </div>            
+                <x-flash-message  
+                    :class="$cls ?? 'flash-info'"  
+                    :title="$msgTitle ?? 'Info!'" 
+                    :message="$message ?? ''"  
+                    :message2="$message2 ?? ''"  
+                    :canClose="true" />
             @else                    
                 @isset($data)
                     <div class="ibox">

@@ -24,6 +24,14 @@ use DB;
 class CourseController extends Controller
 {
 
+    private CourseService $courseService;
+
+
+    function __construct(CourseService $courseService){
+        $this->courseService  = $courseService;
+    }
+    
+
     /*
     public function ViewEnrolledCourse($slug=null){
 
@@ -492,14 +500,13 @@ class CourseController extends Controller
 
             $user = Sentinel::getUser();
             
-            if($user != null && ($user->roles()->first()->slug == RoleModel::STUDENT)){
-                               
-                $courses = (new CourseService())->loadAllCourses($user->id);
+            if($user != null && ($user->roles()->first()->slug == RoleModel::STUDENT)){                               
+                $courses = $this->courseService->loadAllCourses($user->id);
             }else{
-
                 $courses = CourseModel::all();
             }
-           
+            //$courses = $this->courseService->loadAllCourses($user->id);
+            //dd($courses);
             return view('all-courses')->with(['all_courses' => $courses]);
 
         }catch(CustomException $e){
@@ -509,7 +516,7 @@ class CourseController extends Controller
             return view('all-courses');
 
         }catch(\Exception $e){
-            //dd($e->getMessage());
+            dd($e->getMessage());
             session()->flash('message', 'Failed to load your courses');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');

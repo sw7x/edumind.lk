@@ -52,20 +52,23 @@
                 <form action="{{route('contact.store')}}" method="post" id="contact-form">
                     
                     @if(Session::has('message'))
-                        <div class="flash-msg {{ Session::get('cls', 'flash-info')}}  rounded-none">
-                            <a href="#" class="close">×</a>
-                            <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                            <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                            <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                            <br>
-                            @if (count($errors) > 0)
-                                <ul class="list-disc ml-2">
-                                    @foreach ($errors->all() as $error)
-                                        <li class="text-sm ml-3">{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </div>
+                        <x-flash-message  
+                            :class="Session::get('cls', 'flash-info')"  
+                            :title="Session::get('msgTitle') ?? 'Info!'" 
+                            :message="Session::get('message') ?? ''"  
+                            :message2="Session::get('message2') ?? ''"  
+                            :canClose="true" >
+                            <x-slot name="insideContent">
+                                @if (count($errors) > 0)
+                                    <br>
+                                    <ul class="list-disc ml-2">
+                                        @foreach ($errors as $error)
+                                            <li class="text-sm ml-3">{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </x-slot>
+                        </x-flash-message>
                     @endif
 
 

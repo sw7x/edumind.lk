@@ -12,16 +12,14 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-
                 @if(Session::has('message'))
-                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
-                @endif
-                
+                    <x-flash-message  
+                        :class="Session::get('cls', 'flash-info')"  
+                        :title="Session::get('msgTitle') ?? 'Info!'" 
+                        :message="Session::get('message') ?? ''"  
+                        :message2="Session::get('message2') ?? ''"  
+                        :canClose="true" />
+                @endif                
             </div>
         </div>
     </div>

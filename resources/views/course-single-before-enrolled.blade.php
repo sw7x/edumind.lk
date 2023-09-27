@@ -85,12 +85,12 @@
 
         <div class="main-container container p-0">
             @if(Session::get('message') !== null)
-                <div class="flash-msg {{Session::get('cls') ?? 'flash-info'}} rounded-none">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
+                <x-flash-message  
+                    :class="Session::get('cls', 'flash-info')"  
+                    :title="Session::get('msgTitle') ?? 'Info!'" 
+                    :message="Session::get('message') ?? ''"  
+                    :message2="Session::get('message2') ?? ''"  
+                    :canClose="true" />
             @endif
 
             <div class="lg:flex lg:space-x-4 mt-4">
@@ -652,12 +652,12 @@
     @else        
         <div class="main-container container p-0">
             @if(Session::get('message') !== null)
-                <div class="flash-msg {{Session::get('cls') ?? 'flash-info'}} rounded-none">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
+                <x-flash-message  
+                    :class="Session::get('cls', 'flash-info')"  
+                    :title="Session::get('msgTitle') ?? 'Info!'" 
+                    :message="Session::get('message') ?? ''"  
+                    :message2="Session::get('message2') ?? ''"  
+                    :canClose="true" />
             @endif
         </div>
     @endif

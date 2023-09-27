@@ -25,12 +25,12 @@
         <div class="col-lg-12">
 
             @if(Session::has('message'))
-                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
+                <x-flash-message  
+                    :class="Session::get('cls', 'flash-info')"  
+                    :title="Session::get('msgTitle') ?? 'Info!'" 
+                    :message="Session::get('message') ?? ''"  
+                    :message2="Session::get('message2') ?? ''"  
+                    :canClose="true" />
             @else
                                          
                 <div class="ibox">
@@ -53,12 +53,12 @@
                                         @endforeach                                    
 
                                         @if(Session::has('teacher_submit_message'))
-                                            <div class="flash-msg {{ Session::get('teacher_submit_cls', 'flash-info')}}">
-                                                <a href="#" class="close">×</a>
-                                                <div class="text-lg"><strong>{{ Session::get('teacher_submit_msgTitle') ?? 'Info!'}}</strong></div>
-                                                <p class="text-sm mb-0">{{ Session::get('teacher_submit_message') ?? 'Info!' }}</p>
-                                                <div class="text-xs">{!! Session::get('teacher_submit_message2') ?? '' !!}</div>
-                                            </div>
+                                            <x-flash-message  
+                                                :class="Session::get('teacher_submit_cls', 'flash-info')"  
+                                                :title="Session::get('teacher_submit_msgTitle') ?? 'Info!'" 
+                                                :message="Session::get('teacher_submit_message') ?? 'Info!'"  
+                                                :message2="Session::get('teacher_submit_message2') ?? ''"  
+                                                :canClose="true" />
                                         @endif
 
                                         <form class="" id="" action="{{route('admin.user.store-teacher')}}" method="post">
@@ -238,12 +238,12 @@
                                         @endforeach
 
                                         @if(Session::has('student_submit_message'))
-                                            <div class="flash-msg {{ Session::get('student_submit_cls', 'flash-info')}}">
-                                                <a href="#" class="close">×</a>
-                                                <div class="text-lg"><strong>{{ Session::get('student_submit_msgTitle') ?? 'Info!'}}</strong></div>
-                                                <p class="text-sm mb-0">{{ Session::get('student_submit_message') ?? 'Info!' }}</p>
-                                                <div class="text-xs">{!! Session::get('student_submit_message2') ?? '' !!}</div>
-                                            </div>
+                                            <x-flash-message  
+                                                :class="Session::get('student_submit_cls', 'flash-info')"  
+                                                :title="Session::get('student_submit_msgTitle') ?? 'Info!'" 
+                                                :message="Session::get('student_submit_message') ?? 'Info!'"  
+                                                :message2="Session::get('student_submit_message2') ?? ''"  
+                                                :canClose="true" />
                                         @endif
 
                                         <form class="" id="" action="{{route('admin.user.store-student')}}" method="post">
@@ -414,12 +414,12 @@
                                         @endforeach
 
                                         @if(Session::has('marketer_submit_message'))
-                                            <div class="flash-msg {{ Session::get('marketer_submit_cls', 'flash-info')}}">
-                                                <a href="#" class="close">×</a>
-                                                <div class="text-lg"><strong>{{ Session::get('marketer_submit_msgTitle') ?? 'Info!'}}</strong></div>
-                                                <p class="text-sm mb-0">{{ Session::get('marketer_submit_message') ?? 'Info!' }}</p>
-                                                <div class="text-xs">{!! Session::get('marketer_submit_message2') ?? '' !!}</div>
-                                            </div>
+                                            <x-flash-message  
+                                                :class="Session::get('marketer_submit_cls', 'flash-info')"  
+                                                :title="Session::get('marketer_submit_msgTitle') ?? 'Info!'" 
+                                                :message="Session::get('marketer_submit_message') ?? 'Info!'"  
+                                                :message2="Session::get('marketer_submit_message2') ?? ''"  
+                                                :canClose="true" />
                                         @endif
 
                                         <form class="" id="" action="{{route('admin.user.store-marketer')}}" method="post">
@@ -555,12 +555,12 @@
                                 <div role="tabpanel" id="tab-editor" class="tab-pane">
                                     <div class="panel-body">
                                         @if(Session::has('editor_submit_message'))
-                                            <div class="flash-msg {{ Session::get('editor_submit_cls', 'flash-info')}}">
-                                                <a href="#" class="close">×</a>
-                                                <div class="text-lg"><strong>{{ Session::get('editor_submit_msgTitle') ?? 'Info!'}}</strong></div>
-                                                <p class="text-sm mb-0">{{ Session::get('editor_submit_message') ?? 'Info!' }}</p>
-                                                <div class="text-xs">{!! Session::get('editor_submit_message2') ?? '' !!}</div>
-                                            </div>
+                                            <x-flash-message  
+                                                :class="Session::get('editor_submit_cls', 'flash-info')"  
+                                                :title="Session::get('editor_submit_msgTitle') ?? 'Info!'" 
+                                                :message="Session::get('editor_submit_message') ?? 'Info!'"  
+                                                :message2="Session::get('editor_submit_message2') ?? ''"  
+                                                :canClose="true" />
                                         @endif
 
                                         <form class="" id="" action="{{route('admin.user.store-editor')}}" method="post">

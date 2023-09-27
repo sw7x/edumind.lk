@@ -27,12 +27,12 @@
         <div class="col-lg-12">
 
             @if(Session::has('message'))
-                <div class="flash-msg {{ Session::get('cls', 'flash-info')}}">
-                    <a href="#" class="close">×</a>
-                    <div class="text-lg"><strong>{{ Session::get('msgTitle') ?? 'Info!'}}</strong></div>
-                    <p>{{ Session::get('message') ?? 'Info!' }}</p>
-                    <div class="text-base">{!! Session::get('message2') ?? '' !!}</div>
-                </div>
+                <x-flash-message  
+                    :class="Session::get('cls', 'flash-info')"  
+                    :title="Session::get('msgTitle') ?? 'Info!'" 
+                    :message="Session::get('message') ?? ''"  
+                    :message2="Session::get('message2') ?? ''"  
+                    :canClose="true" />
             @endif
             
             <div class="ibox">
@@ -312,12 +312,19 @@
                                                 </table>
                                             </div>                                            
                                         @else
-                                            <x-flash-message class="flash-danger mt-3"  title="Permission Denied!" 
-                                                message="You dont have Permissions view marketers" :canClose="false"/>
+                                            <x-flash-message 
+                                                class="flash-danger mt-3"  
+                                                title="Permission Denied!" 
+                                                message="You dont have Permissions view marketers"
+                                                message="" 
+                                                :canClose="false" />
                                         @endif
                                     @else
-                                        <x-flash-message class="flash-danger mt-3" title="Error!"
-                                            message="No marketers records" :canClose="false"/>
+                                        <x-flash-message 
+                                            class="flash-danger mt-3" 
+                                            title="Error!"
+                                            message="No marketers records" 
+                                            :canClose="false" />
                                     @endif
                                 </div>
                             </div>

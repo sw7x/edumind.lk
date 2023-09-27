@@ -370,22 +370,29 @@
                                     </div>
                                                                         
                                 @else
-                                    <div class="flash-msg flash-info">
-                                        <p>Your cart is currently empty.</p>
-                                    </div>
+                                    <x-flash-message  
+                                        class="flash-info"  
+                                        title="" 
+                                        message="Your cart is currently empty."  
+                                        message2=""  
+                                        :canClose="false" />
                                 @endif
 
                             @elseif($cartStatus == 'error')
-                                <div class="flash-msg flash-danger">
-                                    <div class="text-lg"><strong>Error</strong></div>                    
-                                    <p>Unable to retrieve your cart</p>
-                                </div>                               
+                                <x-flash-message  
+                                    class="flash-danger"  
+                                    title="Error !" 
+                                    message="Unable to retrieve your cart"  
+                                    message2=""  
+                                    :canClose="false" />                               
                             @else
                                 <!-- invalid  -->                                
-                                <div class="flash-msg flash-warning">
-                                    <div class="text-lg"><strong>Access denied</strong></div>
-                                    <p>You do not have permission to view this page.</p>
-                                </div>
+                                <x-flash-message  
+                                    class="flash-warning"  
+                                    title="Access denied !" 
+                                    message="You do not have permission to view this page."  
+                                    message2=""  
+                                    :canClose="false" />  
                             @endif
 
                             //todo - after checkout cc used_count ++
