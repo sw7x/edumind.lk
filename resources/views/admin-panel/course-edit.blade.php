@@ -461,19 +461,23 @@
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         --}}
-
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-                                            <div class="col-sm-8">
-                                                <div class="text-2xl text-center font-bold output"></div><br>
-                                                <input type="range" name="author_share_percentage" value="{{$course['authorSharePercentage']}}" min="0" max="100" step="1">
-                                                @if (old('author_share_percentage'))
-                                                    <span class="block mt-1 @if($errors->infoErrMsgArr->has('author_share_percentage')) text-red-600 @else text-green-600 @endif
-                                                        text-xs font-bold">Previously you entered - {{ old('author_share_percentage') }}%</span>
-                                                @endif
+                                        <div id="author_share_percentage_wrapper">
+                                            <div class="form-group row">
+                                                <label class="col-sm-4 col-form-label">
+                                                    Author share <small>(percentage)</small><br>
+                                                    <span class="text-red-600 text-xs">For paid courses only</span>
+                                                </label>
+                                                <div class="col-sm-8">
+                                                    <div class="text-2xl text-center font-bold output"></div><br>
+                                                    <input type="range" name="author_share_percentage" value="{{$course['authorSharePercentage']}}" min="0" max="100" step="1">
+                                                    @if (old('author_share_percentage'))
+                                                        <span class="block mt-1 @if($errors->infoErrMsgArr->has('author_share_percentage')) text-red-600 @else text-green-600 @endif
+                                                            text-xs font-bold">Previously you entered - {{ old('author_share_percentage') }}%</span>
+                                                    @endif
+                                                </div>
                                             </div>
+                                            <div class="hr-line-dashed"></div>
                                         </div>
-                                        <div class="hr-line-dashed"></div>
 
 
 
@@ -832,6 +836,12 @@
             var courseContentFromOld    = {{ Js::from(old('contentInputStr','')) }};        
             
             
+            @isset($course['price'])
+                var coursePrice = {{ Js::from($course['price']) }};
+                coursePrice     = parseInt(coursePrice);               
+            @endisset
+
+
             /* to restored Previously enterd course content */
             $('#restroreLinks').click(function(event){
                 if(courseContentFromOld != ''){
@@ -859,6 +869,9 @@
 
 
             $(document).ready(function(){
+
+                
+
 
                 toastr.options = {
                     "closeButton": true,
@@ -986,6 +999,32 @@
                         $('input').iCheck({
                             checkboxClass: 'icheckbox_square-green',
                             radioClass: 'iradio_square-green',
+                        });
+
+                        
+                        // hide author share percentage indicator for free courses when page loads
+                        if(!isNaN(coursePrice) && (coursePrice == 0))
+                            $('#author_share_percentage_wrapper').hide();                            
+                        
+
+                        // hide author share percentage indicator for free courses with throttle
+                        var time_out;
+                        $('input[name="course-price"]').on("input", function(event){
+                            clearTimeout(time_out);                        
+                            time_out = setTimeout(function(){
+                                //let price1   =   $(this);
+                                let price   =   $('input[name="course-price"]').val();
+                                console.log(price);
+                                if(price == 0){
+                                    $('#author_share_percentage_wrapper').fadeOut(1000, function(){ 
+                                        $(this).hide();
+                                    });
+                                }else{
+                                    $('#author_share_percentage_wrapper').fadeIn(1000, function(){ 
+                                        $(this).show();
+                                    });
+                                }
+                            }, 1000);
                         });
 
 

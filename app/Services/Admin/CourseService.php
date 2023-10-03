@@ -196,6 +196,7 @@ class CourseService
         $minutes    = $request->get('course-duration-minutes');
         $duration   = $this->prepareCourseDurationText($hours, $minutes);
 
+        $defaultAuthorSharePercentage   =   CourseModel::AUTHOR_SHARE_PERCENTAGE_DEFAULT ?? 60.00;
 
         $request->merge([
             'name'                    => $request->get('course-name'),
@@ -205,7 +206,7 @@ class CourseService
             'description'             => $request->get('course-description'),
             'duration'                => $duration,
             'video_count'             => $request->get('video-count'),
-            'author_share_percentage' => $request->get('author_share_percentage'),
+            'author_share_percentage' => ($request->get('course-price') == 0) ? $defaultAuthorSharePercentage : $request->get('author_share_percentage'),
             'price'                   => $request->get('course-price'),
             'status'                  => ($request->get('course_stat') == CourseModel::PUBLISHED) ? CourseModel::PUBLISHED : CourseModel::DRAFT,
             'image'                   => $destination,
@@ -273,6 +274,7 @@ class CourseService
         $minutes    = $request->get('course-duration-minutes');
         $duration   = $this->prepareCourseDurationText($hours, $minutes);
 
+        $defaultAuthorSharePercentage   =   CourseModel::AUTHOR_SHARE_PERCENTAGE_DEFAULT ?? 60.00;
 
         $request->merge([
             'name'                    => $request->get('course-name'),
@@ -282,7 +284,7 @@ class CourseService
             'description'             => $request->get('course-description'),
             'duration'                => $duration,
             'video_count'             => $request->get('video-count'),
-            'author_share_percentage' => $request->get('author_share_percentage'),
+            'author_share_percentage' => ($request->get('course-price') == 0) ? $defaultAuthorSharePercentage : $request->get('author_share_percentage'),
             'price'                   => $request->get('course-price'),
             'status'                  => ($request->get('course_stat') == CourseModel::PUBLISHED) ? CourseModel::PUBLISHED : CourseModel::DRAFT,
             'image'                   => $imgDest,

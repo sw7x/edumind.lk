@@ -367,15 +367,19 @@
     									</div>
     									<div class="hr-line-dashed"></div>
                                         --}}
-
-    									<div class="form-group row">
-    										<label class="col-sm-4 col-form-label">Author share <small>(percentage)</small></label>
-    										<div class="col-sm-8">
-    											<div class="text-2xl text-center font-bold output"></div><br>
-    											<input type="range" name="author_share_percentage" value="{{old('author_share_percentage',60)}}" min="0" max="100" step="1">
-    										</div>
-    									</div>
-    									<div class="hr-line-dashed"></div>
+                                        <div id="author_share_percentage_wrapper">
+        									<div class="form-group row">
+        										<label class="col-sm-4 col-form-label">
+                                                    Author share <small>(percentage)</small><br>
+                                                    <span class="text-red-600 text-xs">For paid courses only</span>
+                                                </label>
+        										<div class="col-sm-8">
+        											<div class="text-2xl text-center font-bold output"></div><br>
+        											<input type="range" name="author_share_percentage" value="{{old('author_share_percentage',60)}}" min="0" max="100" step="1">
+        										</div>
+        									</div>
+        									<div class="hr-line-dashed"></div>
+                                        </div>
 
                                         <div class="form-group  row">
                                             <label class="col-sm-4 col-form-label">Price</label>
@@ -736,11 +740,11 @@
 			let value  = $(element).val();
 			$(element).parent().find('.output').html(value + '%');
 		}		
-		/***************************/
+		
 
 
 
-		$(document).ready(function(){
+		$(document).ready(function(){          
 
             toastr.options = {
                 "closeButton": true,
@@ -835,6 +839,32 @@
 						checkboxClass: 'icheckbox_square-green',
 						radioClass: 'iradio_square-green',
 					});
+
+                    
+
+
+
+                    // hide author share percentage indicator for free courses with throttle
+                    var time_out;
+                    $('input[name="course-price"]').on("input", function(event){
+                        clearTimeout(time_out);                        
+                        time_out = setTimeout(function(){
+                            //let price1   =   $(this);
+                            let price   =   $('input[name="course-price"]').val();
+                            console.log(price);
+                            if(price == 0){
+                                $('#author_share_percentage_wrapper').fadeOut(1000, function(){ 
+                                    $(this).hide();
+                                });
+                            }else{
+                                $('#author_share_percentage_wrapper').fadeIn(1000, function(){ 
+                                    $(this).show();
+                                });
+                            }
+                        }, 1000);
+                    });
+
+
 
 
 					/***** precentage range slider *******/

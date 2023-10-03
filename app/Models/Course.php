@@ -27,7 +27,7 @@ class Course extends Model
 
     const PUBLISHED = 'published';
     const DRAFT     = 'draft';
-    
+    const AUTHOR_SHARE_PERCENTAGE_DEFAULT = 60.00;
     
     protected $casts = [
         //'topics'  => 'array',
