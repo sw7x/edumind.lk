@@ -52,7 +52,6 @@ class CourseController extends Controller
      */
     public function index()
     {
-        
         try{
             $this->authorize('viewAny',CourseModel::class);
 
@@ -382,7 +381,7 @@ class CourseController extends Controller
 
 
             /* if have validation errors create text to display */
-            $valErrMsg = $dbValidCourseContent['validationErrMsg'];
+            $valErrMsg = $dbValidCourseContent['validationErrMsg'];            
             if ( isset($request->validator) && $request->validator->fails())
                 $valErrMsg  .= (($valErrMsg != '') ? ' and ': '') . 'Form validation has failed';
 
@@ -394,8 +393,8 @@ class CourseController extends Controller
             $isSaved = $this->adminCourseService->updateDbRec($request, $courseData['dbRec']);
             if (!$isSaved)
                 throw new CustomException("Course create failed");
-
-            return redirect()->route('admin.courses.create')->with([
+            
+            return redirect()->route('admin.courses.index')->with([
                 'message' => 'Course created successfully',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -527,7 +526,7 @@ class CourseController extends Controller
             ]);
         }catch(\Exception $e){
             return response()->json([
-                //'message'  => '----'.$e->getMessage(),
+                //'message' => $e->getMessage(),
                 'message'   => 'Course status check failed!',
                 'status'    => 'error',
             ]);

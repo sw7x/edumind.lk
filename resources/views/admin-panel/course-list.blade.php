@@ -35,8 +35,9 @@
                     :message="Session::get('message') ?? ''"  
                     :message2="Session::get('message2') ?? ''"  
                     :canClose="true" />
-            @else     
+			@endif     
 
+			@if(isset($data) && isNotEmptyArray($data))			
             	<div class="ibox">
 	                <div class="ibox-content">
 	                    <div class="px-3 row mb-3">
@@ -156,7 +157,6 @@
 	                </div>
 	            </div>
             @endif
-
 
         </div>
     </div>
