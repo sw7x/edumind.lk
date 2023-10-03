@@ -81,7 +81,7 @@ class MarketerUpdateRequest extends FormRequest
         $this->validator = $validator;
         //dd()
         return redirect()
-            ->route('admin.user.update-marketer',$this->recordId)
+            ->route('admin.users.update-marketer',$this->recordId)
             ->withErrors($validator)
             ->withInput();
            //->with(['is_teacher_usernameFill' => $this->is_usernameFill]);

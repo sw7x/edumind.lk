@@ -1082,7 +1082,7 @@ table.smitty-table th {
 }
 .tabs-section .nav-link:not(.active) {
 
-    padding: 11px 15px;
+    padding: 11px 5px;
     transition: 0.3s;
     color: #000;
     border-radius: 0;
@@ -1098,7 +1098,7 @@ table.smitty-table th {
     color: #000;
 }
 .tabs-section .nav-link.active {
-    padding: 11px 15px;
+    padding: 11px 10px;
     transition: 0.3s;
     color: #ffffff;
     background: #2b6cb0;
@@ -2106,5 +2106,10 @@ ul#video_tabs li{display: none;}
 
 
 
-
-
+.header_dropdown.profile_dropdown ul .user .user_avatar img {
+     border-radius: 0px; 
+}
+.header_dropdown.profile_dropdown ul .user .user_avatar {
+    width: 80px;
+    height: 80px;
+}

@@ -54,7 +54,7 @@
                                     <h4 class="footer-widget-title">Popular Subjects</h4>
                                     <ul>
                                         @foreach($subject_info as $subArr)
-                                            <li><a href="{{route('viewTopic',$subArr['url'])}}">{{$subArr['name']}}</a></li>
+                                            <li><a href="{{route('subjects.show',$subArr['url'])}}">{{$subArr['name']}}</a></li>
                                             @if($loop->index >= 4)
                                             {{--
                                             @break
@@ -75,8 +75,8 @@
                                     <h4 class="footer-widget-title">Our Company</h4>
                                     <ul>
                                         <li><a href="{{route('home')}}">Home</a></li>
-                                        <li><a href="{{route('viewAllTopic')}}">Subject List</a></li>
-                                        <li><a href="{{route('search2')}}">Search</a></li>
+                                        <li><a href="{{route('subjects.index')}}">Subject List</a></li>
+                                        <li><a href="{{route('courses.search')}}">Search</a></li>
                                         <li> <a href="{{route('view-cart')}}">cart</a></li>
                                     </ul>
                                 </div>
@@ -95,8 +95,8 @@
                                         {{--todo <li><a href="{{route('privacy-policy')}}">Privacy policy</a></li>--}}
                                         <li><a href="{{route('terms-and-services')}}">ලබාගත හැකි ආදායම</a></li>
                                         <li><a href="{{route('why-choose-us')}}">ප්රතිලාභ</a></li>
-                                        <li><a href="{{route('teacher.instructions')}}">Teach on Udemy</a></li>
-                                        <li><a href="{{route('contact.index')}}">Contact</a></li>
+                                        <li><a href="{{route('instructions')}}">Teach on Udemy</a></li>
+                                        <li><a href="{{route('contact-us.view')}}">Contact</a></li>
                                     </ul>
                                 </div>
                                 <!-- end /.footer-menu -->

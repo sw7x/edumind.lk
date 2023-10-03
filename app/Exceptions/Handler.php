@@ -9,6 +9,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Sentinel;
+use App\Models\Role as RoleModel;
 
 
 class Handler extends ExceptionHandler
@@ -46,31 +47,50 @@ class Handler extends ExceptionHandler
     }
 
 
-    /**/
-    public function render($request, Throwable $exception)
-    {
-        //dd('77');
-
+    public function render($request, Throwable $exception){
+        
         //dd(sentinel::check());
         if ($this->isHttpException($exception)) {
-            //HTTP - 404
-            if ($exception->getStatusCode() == 404) {
-                if ($request->ajax() || $request->wantsJson()) {
-                    return response()->json([], 404);
-                }else{
-                    $view = $request->is('admin/*') ? 'admin-panel.errors.404' : 'errors.404' ;
-                    return response()->view($view, [], 404);
-                }
-            }
-           // if ($exception->getStatusCode() == 403) {
-           //     //return response()->view('errors.' . '403', [], 403);
-           //     dd('http-403');
-           // }
+                       
+            $statuCode  =   $exception->getStatusCode();
+            if ($exception->getStatusCode() == 404)
+                $errorPage  =   'errors.404';
 
-           // if ($exception->getStatusCode() == 500) {
-           //     return response()->view('errors.' . '500', [], 500);
-           // }
+            if ($exception->getStatusCode() == 403)
+                $errorPage  =   'errors.403';
+
+            if ($exception->getStatusCode() == 500)
+                $errorPage  =   'errors.500';
+                        
+            $errMsg  =  $exception->getMessage() ?? '';
+            
+            if (isset($errorPage)) {
+            
+                // if  ajax request
+                if ($request->ajax() || $request->wantsJson())
+                    return response()->json([], $statuCode);
+                        
+                // for guests
+                if(!Sentinel::check())
+                    return response()->view($errorPage, [], $statuCode);
+
+                
+                $user       = sentinel::getUser();                    
+                $userRole   = optional($user->roles()->first())->name;   
+                $allRoles   = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+                if(!in_array($userRole, $allRoles))
+                    return response()->view($errorPage, [], $statuCode);     
+                
+                
+                $view   =   ($userRole == RoleModel::STUDENT) ? 
+                                $errorPage :
+                                ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+
+                return response()->view($view, ['errMsg' => $errMsg], $statuCode);    
+                //$view = $request->is('admin/*') ? 'admin-panel.errors.404' : 'errors.404' ;                                       
+            }
         }
+        
         return parent::render($request, $exception);
     }
 

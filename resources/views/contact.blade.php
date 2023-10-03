@@ -49,7 +49,7 @@
             </div>
 
             <div class="bg-white rounded-md lg:shadow-md shadow col-span-2 lg:mx-4">
-                <form action="{{route('contact.store')}}" method="post" id="contact-form">
+                <form action="{{route('contact-us.submit')}}" method="post" id="contact-form">
                     
                     @if(Session::has('message'))
                         <x-flash-message  

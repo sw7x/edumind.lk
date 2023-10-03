@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Sentinel;
 use App\Services\ContactUsService;
 use App\Exceptions\CustomException;
-
+use App\Models\Role as RoleModel;
+use App\Models\ContactUs as ContactUsModel;
 
 //use GuzzleHttp\Client;
 //use Illuminate\Validation\ValidationException;
@@ -32,29 +33,42 @@ class ContactUsController extends Controller
 
 
 
-    public function index(){
+    public function viewPage(){               
+        if(Sentinel::check()){
+            $user            = Sentinel::getUser();
+            $currentUserRole = optional($user->roles()->first())->name; 
+            if($currentUserRole == RoleModel::ADMIN)
+                abort(404,'This page is not available for your user role');            
+        }    
+                          
         $userArr = $this->contactUsService->getUserInfoArr();
         return view('contact')->with('userArr', $userArr);
     }
 
 
-    public function store(Request $request){
+    public function submitForm(Request $request){
 
         try{
             $validator = Validator::make($request->all(), [
                 'full_name'             =>'sometimes|required',
-                'subject'               =>'required|min:13|max:50',
+                'subject'               =>'required|min:3|max:50',
                 'message'               =>'required',
                 'g-recaptcha-response'  =>'required',
             ],[
                 'full_name.required'            => 'Full name field is required.',
+
                 'subject.required'              => 'Subject field is required.',
+                'subject.min'                   => 'Subject should have minimum 3 characters.',
+                'subject.max'                   => 'Subject should not exceed 50 characters.',
+
                 'message.required'              => 'Message field is required.',
                 'g-recaptcha-response.required' => 'Recaptcha is required.',
             ]);
 
             if ($validator->fails())
                 throw new CustomException('Form validation failed');
+
+            $this->authorize('create', ContactUsModel::class);
 
             $insertedRec = $this->contactUsService->saveContactUsMsg($request);
             if(!$insertedRec)
@@ -81,8 +95,8 @@ class ContactUsController extends Controller
             ->withErrors($validator)
             ->withInput()
             ->with([
-                //'message'   => $e->getMessage(),
-                'message'     => 'Form submit failed',
+                'message'   => $e->getMessage(),
+                //'message'     => 'Form submit failed',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Error!'
             ]);

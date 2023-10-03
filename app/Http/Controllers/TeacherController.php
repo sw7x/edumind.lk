@@ -50,15 +50,9 @@ class TeacherController extends Controller
 
 
 
-    public function viewInstruction()
-    {
-        return view('teacher.teacher-instruction');
-    }
 
-    public function viewTeacherProfileHelp()
-    {
-        return view('teacher.teacher-profile-help');
-    }
+
+    
 
     public function viewTeacher($username = null){
         
@@ -96,6 +90,8 @@ class TeacherController extends Controller
 
 
 
+    /*
+    //use later if need
     public function viewMyCourses()
     {
         try{
@@ -110,8 +106,8 @@ class TeacherController extends Controller
             $courses    = $this->teacherService->loadAllCoursesByTeacher($user);
             $coursesArr = TeacherDataTransformer::prepareCourseData($courses);
 
-            return view('teacher.teacher-my-courses-full-width')->with([
-            //return view('teacher-my-courses')->with([
+            //return view('teacher.teacher-my-courses-full-width')->with([
+            return view('teacher.teacher-my-courses')->with([
                 //'userData'          => $user,
                 'teacher_courses'   => $coursesArr
             ]);
@@ -133,26 +129,13 @@ class TeacherController extends Controller
 
     }
 
+    */
 
-    public function profileEdit(){
-        return view('teacher.teacher-profile-edit');
-    }
 
-    public function createCourse(){
-        return view('teacher.teacher-profile-course-create');
-    }
 
-    public function courseAddContent(){
-        return view('teacher.teacher-profile-course-add-content');
-    }
-    
-    public function ViewEarnings(){
-        return view('teacher.teacher-profile-earnings');
-    }
 
-    public function viewDashboard(){
-        return view('teacher.teacher-profile-dashboard');
-    }
+   
+
 
     
 }

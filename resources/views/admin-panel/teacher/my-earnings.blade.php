@@ -1,4 +1,3 @@
-
 @extends('admin-panel.layouts.master',['title' => 'My earnings(t)'])
 @section('title','My earnings')
 

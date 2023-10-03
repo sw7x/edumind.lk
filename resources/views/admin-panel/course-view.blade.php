@@ -152,8 +152,8 @@
 
                                             <div class="form-group row">
                                                 <div class="col-sm-4 offset-sm-4">
-                                                    <a class="btn btn-danger btn-sm mr-2" href="{{route('admin.course.index')}}">Go back</a>
-                                                    <a class="btn btn-info btn-sm" target="_blank" href="{{route('course-single',$course['slug'])}}">Open course in new tab</a>
+                                                    <a class="btn btn-danger btn-sm mr-2" href="{{route('admin.courses.index')}}">Go back</a>
+                                                    <a class="btn btn-info btn-sm" target="_blank" href="{{route('courses.show',$course['slug'])}}">Open course in new tab</a>
                                                 </div>                                                
                                             </div>
 

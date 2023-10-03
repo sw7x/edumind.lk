@@ -80,7 +80,7 @@ class LoginController extends Controller
                     if($role == RoleModel::TEACHER){
                         return redirect()->route('teacher.my-profile', []);
                     }else if($role == RoleModel::STUDENT){
-                        return redirect()->route('student.dashboard', []);
+                        return redirect()->route('dashboard', []);
                     }else{
                         //throw new WrongUserTypeException('You dont have permission to login here');
                         //return redirect('/student-profile-dashboard');

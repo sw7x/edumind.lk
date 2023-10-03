@@ -14,6 +14,13 @@ use App\View\DataTransformers\Admin\TeacherDataTransformer as AdminTeacherDataTr
 class TeacherController extends Controller
 {
 
+    private AdminTeacherService $adminTeacherService;
+
+    public function __construct(AdminTeacherService $adminTeacherService){
+        $this->adminTeacherService = $adminTeacherService;
+    }
+
+
 
     public function viewMyCourses(){
         //dd('hh');
@@ -21,14 +28,14 @@ class TeacherController extends Controller
             $user = Sentinel::getUser();
 
             if(is_null($user))
-                throw new CustomException('Access denied');
+                throw new CustomException('Invalid page');
 
             $role = is_null($user->roles()->first()) ? null : $user->roles()->first()->name;
 
             if($role != RoleModel::TEACHER)
                 throw new CustomException('Wrong user type');
 
-            $teacherCourses    = (new AdminTeacherService())->getAllCoursesByTeacher($user);
+            $teacherCourses    = $this->adminTeacherService->getAllCoursesByTeacher($user);
             $teacherCoursesArr = AdminTeacherDataTransformer::prepareMyCourseData($teacherCourses);
 
         }catch(CustomException $e){
@@ -51,40 +58,83 @@ class TeacherController extends Controller
     }
 
 
-    public function ViewEarnings(){
-    	return view('admin-panel.teacher.my-earnings');
 
-    }
 
-    /*public function viewDashboard(){
+    /*
+    public function viewDashboard(){
     	return view('admin-panel.teacher.dashboard');
-    }*/
-
-    public function myProfileEdit(){
-    	return view('admin-panel.teacher.edit-profile');
-
     }
+    */
 
+    
 
     // list-coupon-codes.blade
     // my-courses.blade
     // my-earnings.blade
 
+
     public function viewCourseEnrollmentList(){
+        if(!Sentinel::check())
+            abort(403);
+            
+        $user            = Sentinel::getUser();            
+        $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+        $currentUserRole = optional($user->roles()->first())->name;        
+        if(!in_array($currentUserRole, $allRoles))
+            abort(403);
+           
+
+        // redirect users that have TEACHER, STUDENT roles
+        $allowedRoles   =   [RoleModel::TEACHER];
+        if(!in_array($currentUserRole, $allowedRoles))
+            abort(404);
+                    
         return view('admin-panel.teacher.course-enrollments');
     }
 
 
     public function viewCourseCompleteList(){
+        if(!Sentinel::check())
+            abort(403);
+            
+        $user            = Sentinel::getUser();            
+        $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+        $currentUserRole = optional($user->roles()->first())->name;        
+        if(!in_array($currentUserRole, $allRoles))
+            abort(403);
+           
+        // redirect users that have TEACHER, STUDENT roles
+        $allowedRoles   =   [RoleModel::TEACHER];
+        if(!in_array($currentUserRole, $allowedRoles))
+            abort(404);
+                    
         return view('admin-panel.teacher.course-completions');
     }
 
+    
+
+
     public function viewMySalaries(){
+            
+        if(!Sentinel::check())
+            abort(403);
+            
+        $user            = Sentinel::getUser();            
+        $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+        $currentUserRole = optional($user->roles()->first())->name;        
+        if(!in_array($currentUserRole, $allRoles))
+            abort(403);
+           
+
+        // redirect users that have TEACHER, STUDENT roles
+        $allowedRoles   =   [RoleModel::TEACHER];
+        if(!in_array($currentUserRole, $allowedRoles))
+            abort(404);
+                    
         return view('admin-panel.teacher.my-salary');
     }
 
-
-
+    
 }
 
 

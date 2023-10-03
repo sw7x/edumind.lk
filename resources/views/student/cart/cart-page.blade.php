@@ -164,22 +164,16 @@
                                                     @foreach($cartCourses as $course)                                          
                                                         <tr data-course_selections_id="{{$course['courseSel_id']}}">
                                                             <td class="w-3/12 course-img">
-                                                                <a href="{{route('course-single',$course['slug'])}}" title="{{$course['name']}}">
+                                                                <a href="{{route('courses.show',$course['slug'])}}" title="{{$course['name']}}">
                                                                     <img src="{{$course['image']}}" class="img-fluid img-thumbnail" alt="{{$course['name']}}">
                                                                 </a>
                                                             </td>
-                                                            <td><a href="{{route('course-single',$course['slug'])}}" title="{{$course['name']}}">{{$course['name']}}</a></td>
+                                                            <td><a href="{{route('courses.show',$course['slug'])}}" title="{{$course['name']}}">{{$course['name']}}</a></td>
                                                             <td>                                                           
-                                                                
-
                                                                 @if( $course['used_coupon_code'])
                                                                     <div class="line-through">{{$course['price']}}</div>                                                            
                                                                 @endif
                                                                 <div class="">{{$course['revised_price']}}</div>
-
-
-
-                                                               
                                                             </td>
                                                             <td>                                                        
                                                                 <form action="{{route('remove-cart',$course['id'])}}" method="post" class='course-enroll-form'>
@@ -322,7 +316,7 @@
                                                         </li>
                                                         <li class="py-1 flex justify-between border-b">
                                                             <div>Coupon applied course</div>
-                                                            <a href="{{route('course-single',$discountedCourse->course_slug)}}" class="text-blue-600">
+                                                            <a href="{{route('courses.show',$discountedCourse->course_slug)}}" class="text-blue-600">
                                                                 {{$discountedCourse->course_name}}
                                                             </a>
                                                         </li>
@@ -363,7 +357,7 @@
                                                     Continue to checkout
                                                 </a>
                                                 <div class="flex items-center justify-center mt-4 space-x-1.5">
-                                                    <p class="font-medium"> or </p> <a href="{{route('all-courses')}}" class="text-blue-600 font-semibold text-center">Continue Shopping</a>
+                                                    <p class="font-medium"> or </p> <a href="{{route('courses.index')}}" class="text-blue-600 font-semibold text-center">Continue Shopping</a>
                                                 </div>
                                             </div>
                                         </div>

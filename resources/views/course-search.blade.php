@@ -9,7 +9,7 @@
 
             <!-- Spacer -->
             <div class="page-spacer"></div>
-            <form action="{{route('course-search-submit')}}" method="POST">
+            <form action="{{route('courses.search-submit')}}" method="POST">
                 @csrf
                 <div class="lg:flex lg:space-x-10">
 
@@ -262,11 +262,11 @@
 
                                     @foreach(Session::get('courses') as $course)                                      
                                         <div class="flex md:space-x-6 space-x-3 md:p-5 p-2 relative">
-                                            <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
+                                            <a href="{{route('courses.show',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
                                                 <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                             </a>
                                             <div class="flex-1 md:space-y-2 space-y-1">
-                                                <a href="{{route('course-single',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
+                                                <a href="{{route('courses.show',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
                                                 <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course->heading_text}}</p>
                                                 <a href="#" class="md:font-semibold block text-sm">{{$course->teacher->full_name}}</a>
                                                 <div class="flex items-center justify-between">

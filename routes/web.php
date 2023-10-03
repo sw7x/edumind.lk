@@ -13,142 +13,116 @@
 |
 */
 
-
-use App\Http\Controllers\Admin\ContactUsMessagesController;
-use App\Http\Controllers\Admin\SettingsController;
-use App\Http\Controllers\Admin\SubjectController as Admin_SubjectController;
-
-use App\Http\Controllers\Admin\CourseController as Admin_CourseController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\Admin\TeacherController as Admin_TeacherController;
-use App\Http\Controllers\Admin\MarketerController as Admin_MarketerController;
-use App\Http\Controllers\Admin\EditorController as Admin_EditorController;
-use App\Http\Controllers\Admin\AdminPanelController;
 use App\Http\Controllers\SubjectController as User_SubjectController;
 use App\Http\Controllers\CourseController as User_CourseController;
 use App\Http\Controllers\CartController;
 
+
+use App\Http\Controllers\Admin\ContactUsMessagesController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\SubjectController as Admin_SubjectController;
+use App\Http\Controllers\Admin\CourseController as Admin_CourseController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\TeacherController as Admin_TeacherController;
+use App\Http\Controllers\Admin\MarketerController as Admin_MarketerController;
+use App\Http\Controllers\Admin\EditorController as Admin_EditorController;
+use App\Http\Controllers\Admin\AdminPanelController;
 use App\Http\Controllers\Admin\EdumindRevenueController;
-
-
-
-
 
 
 
 
 /*  ======  Artisan routes  -  /routes/web-includes/artisan-commands.php   ============== */
 
-
 /*  ======  Auth routes     -  /routes/web-includes/auth.php               ============== */
-
 
 /*  ======  Test routes     -  /routes/web-includes/test.php               ============== */
 
 
 
 
-
-
-Route::get('/form-submit-page', function () {    return view('form-submit-page');})->name('form-submit-page');
-Route::get('/coming-soon', function () {    return view('coming-soon');})->name('coming-soon');
-
-Route::get ('/', [HomeController::class,'index'])
-->name ('home');
-//->middleware('can:view-any,App\Models\ContactUs');
-//->middleware('can:viewAny');
-
-
-
-
-
-Route::get ('/no-permission', [PageController::class,'pageNoPermission'])->name ('no-permission');
-Route::get('/search2',function(){    return view('search-2');})->name('search2');
-Route::get('/404',function(){    return view('errors.404');})->name('404');
-Route::get('/403',function(){    return view('errors.403');})->name('403');
-Route::get('/courses-list',function(){    return view('courses-list');})->name('courses-list');
-Route::get('/about-us',function(){    return view('about-us');})->name('about-us');
-Route::get('/why-choose-us',function(){    return view('why-edumind');})->name('why-choose-us');
-//Route::get('/page-privacy',function(){ return view('privacy-policy-page');})->name('privacy-policy');
-Route::get('/default-page',function(){ return view('default-page');})->name('default-page');
-Route::get('/faq',function(){ return view('faq-page');})->name('faq');
-
-Route::get('/empty',function(){ return view('empty');})->name('empty');
-Route::get('/help',function(){ return view('help-page');})->name('help');
-
-
-Route::get ('/all-courses', [User_CourseController::class,'viewAllCourses'])->name ('all-courses');
+/*
+//====== need later =====
+Route::get('/courses-list',             function(){ return view('courses-list');})->name('courses-list');
+Route::get('/search2',                  function(){ return view('search-2');})->name('search2');
+Route::get('/page-privacy',             function(){ return view('privacy-policy-page');})->name('privacy-policy');
+Route::get('/faq',                      function(){ return view('faq-page');})->name('faq');
+Route::get('/0-course-watch',           function(){ return view('0-course-watch');})->name('0-course-watch');
+Route::get('/admin/course-add-backup1', function(){ return view('admin-panel.course-add-backup1');})->name('admin.course-add-backup1');
+Route::get('/admin/11',                 function(){ return view('admin-panel.11');})->name('admin.admin11');
+Route::get('/admin/empty',              function(){ return view('admin-panel.empty');})->name('admin.empty');
+Route::get('/admin/login-page',         function(){ return view('admin-panel.auth.-login-page');})->name('admin.login-page');
+Route::get('/admin/sss',                function(){ return view('admin-panel.teacher.approve-account');})->name('admin.sss');
+Route::get('/coursesx',                 function(){ return view('courses');})->name('coursesx');
+*/
 
 
 
+/*
+//===== dev ============
+Route::get('/form-submit-page', function(){ return view('form-submit-page');})->name('form-submit-page');
+Route::get('/empty',            function(){ return view('empty');})->name('empty');
+Route::get('/404',              function(){ return view('errors.404');})->name('404');
+Route::get('/403',              function(){ return view('errors.403');})->name('403');
+Route::get('/default-page',     function(){ return view('default-page');})->name('default-page');
+*/
+
+
+
+/*
+Route::get('/', [HomeController::class,'index'])->name('home');
+->middleware('can:view-any,App\Models\ContactUs');
+->middleware('can:viewAny');
+*/
+
+
+
+//Route::get('/coming-soon', [PageController::class,'viewComingSoonPage'])->name('coming-soon');
+Route::get('/', [HomeController::class,'index'])->name('home');
+Route::get('/about-us', [PageController::class,'viewAboutUsPage'])->name('about-us');
+Route::get('/why-choose-us', [PageController::class,'viewWhyChooseUsPage'])->name('why-choose-us');
+Route::get('/terms-and-services', [PageController::class,'viewTermsAndServicesPage'])->name('terms-and-services');
+Route::get('/instructions', [PageController::class,'viewInstruction'])->name('instructions');
+Route::get('/help', [PageController::class,'viewHelpPage'])->name('help');
+
+
+
+/* ========== common routes for users ============*/
+Route::get('/profile', [PageController::class,'viewProfile'])->name('profile');
+Route::get('/dashboard', [PageController::class,'viewDashboardPage'])->name('dashboard');
+Route::get('/profile-edit', [PageController::class,'viewProfileEditPage'])->name('profile-edit');
+Route::get('/enrolled-courses', [StudentController::class,'viewEnrolledCoursesPage'])->name('enrolled-courses');
+
+
+
+
+
+//------------>>>>>>>>>>>>>>>>>>>>>>>>>>
 /* =========== cart =================*/
-
-Route::get ('/cart', [CartController::class,'viewCart'])
-->middleware('checkStudent')
-->name('view-cart');
-
-
-
-
-Route::get ('/billing-info', [CartController::class,'loadBillingInfoPage'])
-->middleware('checkStudent')
-->name('billing-info');
-
-Route::post ('/submit-billing-info', [CartController::class,'submitBillingInfo'])
-->middleware('checkStudent')
-->name('submit-billing-info');
-
-
-Route::get('/checkout', [CartController::class,'loadCheckout'])
-->middleware('checkStudent')
-->name('load-checkout');
-
-Route::post('/checkout', [CartController::class,'checkout'])
-->middleware('checkStudent')
-->name('checkout');
-
-Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})
-->middleware('checkStudent')
-->name('checkout-complete');
-
-Route::get('/payment-failed',function(){ return view('student.cart.payment-failed');})
-->middleware('checkStudent')
-->name('payment-failed');
+Route::get('/cart', [CartController::class,'viewCart'])->middleware('checkStudent')->name('view-cart');
+Route::get('/billing-info', [CartController::class,'loadBillingInfoPage'])->middleware('checkStudent')->name('billing-info');
+Route::post('/submit-billing-info', [CartController::class,'submitBillingInfo'])->middleware('checkStudent')->name('submit-billing-info');
+Route::get('/checkout', [CartController::class,'loadCheckout'])->middleware('checkStudent')->name('load-checkout');
+Route::post('/checkout', [CartController::class,'checkout'])->middleware('checkStudent')->name('checkout');
+Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})->middleware('checkStudent')->name('checkout-complete');
+Route::get('/payment-failed',function(){ return view('student.cart.payment-failed');})->middleware('checkStudent')->name('payment-failed');
 
 
 
 
-
-
-
-
-Route::post('/apply-coupon', [CartController::class,'applyCoupon'])
-->middleware('checkStudent')
-->name('apply-coupon');
-
-
-Route::post('/remove-coupon', [CartController::class,'removeCoupon'])
-->middleware('checkStudent')
-->name('remove-coupon');
-
-
-
-Route::post ('/cart/remove/{id}', [CartController::class,'removeFromCart'])->middleware('checkStudent')->name('remove-cart');
-
-Route::post ('/course/add-to-cart', [CartController::class,'addToCart'])->name ('course.addToCart');
-
-
+Route::post('/apply-coupon', [CartController::class,'applyCoupon'])->middleware('checkStudent')->name('apply-coupon');
+Route::post('/remove-coupon', [CartController::class,'removeCoupon'])->middleware('checkStudent')->name('remove-coupon');
+Route::post('/cart/remove/{id}', [CartController::class,'removeFromCart'])->middleware('checkStudent')->name('remove-cart');
+Route::post('/course/add-to-cart', [CartController::class,'addToCart'])->name('course.addToCart');
 
 //Route::get('/credit-pay',function(){ return view('student.cart.pay-with-credit-card');})->name('credit-pay');
 //Route::get('/bill-info',function(){ return view('student.cart.bill-info');})->name('bill-info');
-
-
 /*======================================================*/
 
 
@@ -160,184 +134,121 @@ Route::post ('/course/add-to-cart', [CartController::class,'addToCart'])->name (
 
 
 
-Route::get('/terms-and-services',function(){ return view('terms-and-services');})->name('terms-and-services');
-Route::get('/courses',function(){ return view('courses');})->name('courses');
 
 
+Route::group(['prefix'=>'courses','as'=>'courses.'], function(){
+    Route::get('/', [User_CourseController::class,'index'])->name('index');
+    Route::get('/guest-enroll', [User_CourseController::class,'guestEnroll'])->name('guest-enroll');
+    Route::post('/free-enroll', [User_CourseController::class,'freeEnroll'])->name('free-enroll');
+    Route::post('/complete', [User_CourseController::class,'complete'])->name('complete');
 
+    Route::get('/search', [User_CourseController::class,'viewSearchPage'])->name('search');
+    Route::post('/search', [User_CourseController::class,'SearchCourse'])->name('search-submit');
 
-Route::get('/test',function(){ return view('test');})->name('test');
-
-//Route::get('/course-watch', function () {     return view('course-watch'); })->name('course-watch');
-Route::get ('/course/guest-enroll', [User_CourseController::class,'guestEnroll'])->name ('course-guest-enroll');
-Route::post ('/course/free-enroll', [User_CourseController::class,'freeEnroll'])->name ('course.free-enroll');
-
-
-
-
-Route::post ('/course/complete', [User_CourseController::class,'complete'])->name ('course.complete');
-
-
-
-
-
-
-
-Route::get('/course/search', [User_CourseController::class,'viewSearchPage'])->name ('course-search');
-Route::post('/course/search', [User_CourseController::class,'SearchCourse'])->name ('course-search-submit');
-
-
-Route::get ('/course/{slug?}', [User_CourseController::class,'ViewCourse'])->name('course-single');
-Route::get ('/course/watch/{slug?}/{videoId?}', [User_CourseController::class,'watchCourse'])->name ('course-watch');
-//Route::get ('/course-single-enrolled/{slug?}', [User_CourseController::class,'ViewEnrolledCourse'])->name ('course-single-enrolled');
+    Route::get('/{slug?}', [User_CourseController::class,'show'])->name('show');
+    Route::get('/watch/{slug?}/{videoId?}', [User_CourseController::class,'watchCourse'])->name('watch');
+    //Route::get('/course-single-enrolled/{slug?}', [User_CourseController::class,'ViewEnrolledCourse'])->name('course-single-enrolled');
+});
 
 
 
 
 
 
+Route::group(['prefix'=>'subjects','as'=>'subjects.'], function(){
+    Route::get('/', [User_SubjectController::class,'index'])->name('index');
+    Route::get('/{slug?}', [User_SubjectController::class,'show'])->name('show');
+});
 
-
-
-
-
-
-
-Route::get ('/profile', [PageController::class,'viewProfile'])->name ('profile');
-
-Route::get ('/subjects', [User_SubjectController::class,'ViewAll'])->name ('viewAllTopic');
-Route::get ('/subject/{slug?}', [User_SubjectController::class,'ViewSubject'])->name ('viewTopic');
 
 
 
 /*==== student ===*/
+//for testing later remove
 Route::group(['middleware'=> 'checkStudent'], function(){
     //block to other users than students
-    Route::get ('/student-profile-dashboard', [StudentController::class,'loadDashboard'])->name('student-profile-dashboard');
+    Route::get('/student-profile-dashboard', [StudentController::class,'loadDashboard'])->name('student-profile-dashboard');
 });
 
 
-Route::group(['prefix'=>'student','as'=>'student.'], function(){
-    Route::get ('/my-courses', [StudentController::class,'viewMyCourses'])->name ('my-courses');
-
-    Route::get ('/help', [StudentController::class,'viewHelp'])->name ('help');
-    Route::get ('/dashboard', [StudentController::class,'viewDashboard'])->name ('dashboard');
-    
-    Route::get ('/profile-edit', [StudentController::class,'profileEdit'])->name ('profile-edit');
-    Route::get ('/{slug?}', [StudentController::class,'viewStudent'])->name ('view-profile');
-    Route::get ('/{slug?}/courses', [StudentController::class,'viewEnrolledCourses'])->name('courses');
+Route::group(['prefix'=>'students','as'=>'students.'], function(){
+    Route::get('/{slug?}', [StudentController::class,'viewStudent'])->name('show');
+    Route::get('/{slug?}/courses', [StudentController::class,'viewEnrolledCourses'])->name('courses');
 });
 
 
 /*==== teacher ===*/
-Route::group(['prefix'=>'teacher','as'=>'teacher.'], function(){
-    Route::get ('/view-all', [TeacherController::class,'viewAllTeachers'])->name ('view-all');
-    Route::get ('/my-courses', [TeacherController::class,'viewMyCourses'])->name ('my-courses');
-
-    Route::get ('/earnings', [TeacherController::class,'ViewEarnings'])->name ('earnings');
-    
-    //todo-delete
-    Route::get ('/dashboard', [TeacherController::class,'viewDashboard'])->name ('dashboard');
-    
-
-    Route::get ('/course-edit', [TeacherController::class,'courseAddContent'])->name ('course-add-content');
-    Route::get ('/course-create', [TeacherController::class,'createCourse'])->name ('course-create');
-    Route::get ('/profile-edit', [TeacherController::class,'profileEdit'])->name ('profile-edit');
-    Route::get ('/instructions', [TeacherController::class,'viewInstruction'])->name ('instructions');
-    Route::get ('/help', [TeacherController::class,'viewTeacherProfileHelp'])->name ('help');
-
-    Route::get ('/{username?}', [TeacherController::class,'viewTeacher'])->name ('view-profile');
-    //Route::get ('/{slug?}/courses', [TeacherController::class,'viewCourses'])->name('courses');
-
+Route::group(['prefix'=>'teachers','as'=>'teachers.'], function(){
+    Route::get('/', [TeacherController::class,'viewAllTeachers'])->name('index');
+    //Route::get('/my-courses', [TeacherController::class,'viewMyCourses'])->name('my-courses');
+    Route::get('/{username?}', [TeacherController::class,'viewTeacher'])->name('show');
+    //Route::get('/{slug?}/courses', [TeacherController::class,'viewCourses'])->name('courses');
 });
 
 
+Route::group(['prefix'=>'contact-us','as'=>'contact-us.','namespace' =>''], function(){
+    Route::get('/', [ContactUsController::class,'viewPage'])->name('view');    
+    Route::post('/submit', [ContactUsController::class,'submitForm'])->name('submit');
+});
+//->can('create', ContactUs::class);;
+            
 
 /*
-Route::get ('/teacher/profile', [TeacherController::class,'viewProfile'])->name ('teacher-profile');
-Route::get ('/teacher/earnings', [TeacherController::class,'ViewEarnings'])->name ('teacher-profile-earnings');
-Route::get ('/teacher/dashboard', [TeacherController::class,'viewDashboard'])->name ('teacher-profile-dashboard');
-Route::get ('/teacher/course-edit', [TeacherController::class,'courseAddContent'])->name ('teacher-profile-course-add-content');
-Route::get ('/teacher/course-create', [TeacherController::class,'createCourse'])->name ('teacher-profile-course-create');
-Route::get ('/teacher/profile-edit', [TeacherController::class,'profileEdit'])->name ('teacher-profile-edit');
-Route::get ('/teacher-instruction', [TeacherController::class,'viewInstruction'])->name ('teacher-instruction');
-Route::get ('/teacher-profile-help', [TeacherController::class,'viewTeacherProfileHelp'])->name ('teacher-profile-help');
-Route::get ('/teacher/{username?}', [TeacherController::class,'viewTeacher'])->name ('teacher-profile-view');
-Route::get ('/teacher/{slug?}/courses', [TeacherController::class,'viewCourses'])->name('teacher-profile-courses');
+Route::group(['middleware' => ['CheckIsAdminUser', 'CheckMarketer']], function() {
+
+});
 */
 
 
 
-Route::group(['prefix'=>'contact','as'=>'contact.','namespace' =>''], function(){
-    Route::get ('/', [ContactUsController::class,'index'])->name ('index');
-    Route::post('/store', [ContactUsController::class,'store'])->name ('store');
-});
-
-
-
-
-//Route::group(['middleware' => ['CheckIsAdminUser', 'CheckMarketer']], function() {
-//
-//});
 
 //todo - apply adminpanelaccess middle ware to all pages(except admin.login,admin.login-submit)
 Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
     Route::group(['namespace'=>'Admin'], function(){
-
-                
-        Route::group(['prefix'=>'settings','as'=>'settings.'], function(){
-            Route::get('/general', [SettingsController::class,'loadGeneralSettings'])->name ('general');
-            Route::get('/advanced', [SettingsController::class,'loadAdvancedSettings'])->name ('advanced');
-        });
-              
-
-
+           
         //todo---
-        Route::group(['middleware'=> 'adminPanelAccess'], function(){});
-            
+        Route::group(['middleware' => 'adminPanelAccess'], function(){});
+        Route::group(['middleware' => ['canAccess:admin,editor']], function() {
+            Route::get('/404', function(){ return view('admin-panel.errors.404');})->name('404');
+            Route::get('/500', function(){ return view('admin-panel.errors.500');})->name('500');
+        });
+
+
         Route::get('/dashboard',[AdminPanelController::class,'viewDashboard'])->name('dashboard');
+        Route::get('/profile', [AdminPanelController::class,'viewProfile'])->name('profile');
+        Route::get('profile-edit', [AdminPanelController::class,'viewProfileEditPage'])->name('profile-edit');
+        Route::get('/my-courses', [Admin_TeacherController::class,'viewMyCourses'])->name('my-courses');
+        Route::get('/my-earnings', [AdminPanelController::class,'ViewMyEarnings'])->name('my-earnings');
+        Route::get('/my-commissions', [Admin_MarketerController::class,'viewMyCommissions'])->name('my-commissions');
+        Route::get('/my-salaries', [Admin_TeacherController::class,'viewMySalaries'])->name('my-salaries');
+        Route::get('/enrollments', [Admin_TeacherController::class,'viewCourseEnrollmentList'])->name('enrollments');
+        Route::get('/course-completions', [Admin_TeacherController::class,'viewCourseCompleteList'])->name('course-completions');
+            
         
 
-
-        Route::group(['middleware' => ['canAccess:admin,editor']], function() {
-            Route::get('/404', function () {
-                return view('admin-panel.errors.404');
-            })->name('404');
-
-            Route::get('/500', function () {
-                return view('admin-panel.errors.500');
-            })->name('500');
-        });
+        Route::get('teacher/my-earnings', [Admin_TeacherController::class,'ViewEarnings'])->name('teacher.my-earnings');
+        Route::get('marketer/my-earnings', [Admin_MarketerController::class,'ViewMyEarnings'])->name('marketer.my-earnings');
 
 
 
-        /* testing routes*/
-        Route::get('/11', function () {return view('admin-panel.11');})->name('admin11');
-        Route::get('/empty', function () {return view('admin-panel.empty');})->name('empty');
-        //Route::get('/profile', function () {return view('admin-panel.profile');})->name('profile');
-        Route::get('/profile', [AdminPanelController::class,'viewProfile'])->name('profile');
-
-
-
-        Route::group(['prefix'=>'user','as'=>'user.'], function(){
-            Route::get ('/approve-teachers', [UserController::class,'viewUnApprovedTeachersList'])->name ('un-approved-teachers-list');
-            Route::get ('/approve-teachers/{id}', [UserController::class,'viewUnApprovedTeacher'])->name ('view-un-approved-teacher');
+        Route::group(['prefix'=>'users','as'=>'users.'], function(){
+            Route::get('/approve-teachers', [UserController::class,'viewUnApprovedTeachersList'])->name('un-approved-teachers-list');
+            Route::get('/approve-teachers/{id}', [UserController::class,'viewUnApprovedTeacher'])->name('view-un-approved-teacher');
             
+            Route::get('/changes-approve', [UserController::class,'changesApprove'])->name('changes-approve');
 
-            Route::get ('/changes-approve', [UserController::class,'changesApprove'])->name ('changes-approve');
+            Route::post('/store-teacher', [UserController::class,'storeTeacher'])->name('store-teacher');
+            Route::post('/store-student', [UserController::class,'storeStudent'])->name('store-student');
+            Route::post('/store-marketer', [UserController::class,'storeMarketer'])->name('store-marketer');
+            Route::post('/store-editor', [UserController::class,'storeEditor'])->name('store-editor');
 
-            Route::post ('/store-teacher', [UserController::class,'storeTeacher'])->name ('store-teacher');
-            Route::post ('/store-student', [UserController::class,'storeStudent'])->name ('store-student');
-            Route::post ('/store-marketer', [UserController::class,'storeMarketer'])->name ('store-marketer');
-            Route::post ('/store-editor', [UserController::class,'storeEditor'])->name ('store-editor');
+            Route::patch('/update-teacher/{id}', [UserController::class,'updateTeacher'])->name('update-teacher');
+            Route::patch('/update-student/{id}', [UserController::class,'updateStudent'])->name('update-student');
+            Route::patch('/update-marketer/{id}', [UserController::class,'updateMarketer'])->name('update-marketer');
+            Route::patch('/update-editor/{id}', [UserController::class,'updateEditor'])->name('update-editor');
 
-            Route::patch('/update-teacher/{id}', [UserController::class,'updateTeacher'])->name ('update-teacher');
-            Route::patch('/update-student/{id}', [UserController::class,'updateStudent'])->name ('update-student');
-            Route::patch('/update-marketer/{id}', [UserController::class,'updateMarketer'])->name ('update-marketer');
-            Route::patch('/update-editor/{id}', [UserController::class,'updateEditor'])->name ('update-editor');
-
-            Route::post('/change-status', [UserController::class,'changeStatus'])->name ('change-status');
+            Route::post('/change-status', [UserController::class,'changeStatus'])->name('change-status');
         });
 
 
@@ -348,31 +259,26 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::get('/earnings',[EdumindRevenueController::class,'loadEarnings'])->name('all-earnings');
             Route::post('/123earnings',[EdumindRevenueController::class,'loadEarningsRecords'])->name('all-earnings-records');
 
-
-
-
             Route::get('/course-earnings',function(){return view('admin-panel.admin.earnings-course');})->name('course-earnings');
             Route::get('/teacher-earnings',function(){return view('admin-panel.admin.earnings-teacher');})->name('teacher-earnings');
             Route::get('/teacher-salary',function(){return view('admin-panel.admin.teacher-salary');})->name('teacher-salary');
         
             //Route::get('/xxx',[EdumindRevenueController::class,'loadEarnings'])->name('xxx');
-
-
         });
 
+        
         Route::group(['prefix'=>'salary','as'=>'salary.'], function(){
             Route::get('/pay-teacher',function(){return view('admin-panel.admin.salary-pay-teacher');})->name('pay-teacher');
             Route::get('/pay-marketer',function(){return view('admin-panel.admin.salary-pay-marketer');})->name('pay-marketer');
             Route::get('/teacher-salary-slip',function(){return view('admin-panel.salary-slip-teacher');})->name('teacher-salary-slip');
             Route::get('/marketer-salary-slip',function(){return view('admin-panel.salary-slip-marketer');})->name('marketer-salary-slip');
-        
         });
 
 
-        Route::group(['prefix'=>'coupon-code','as'=>'coupon-code.'], function(){
+        Route::group(['prefix'=>'coupon-codes','as'=>'coupon-codes.'], function(){
            
-            Route::post ('/generate-code', [CouponController::class,'generateCode'])->name('generate-code');
-            Route::post ('/beneficiaries', [CouponController::class,'fillBeneficiaries'])->name('load-beneficiaries');
+            Route::post('/generate-code', [CouponController::class,'generateCode'])->name('generate-code');
+            Route::post('/beneficiaries', [CouponController::class,'fillBeneficiaries'])->name('load-beneficiaries');
 
             Route::get('/marketers',[CouponController::class,'loadMarketerCoupons'])->name('marketers');            
             Route::get('/teachers',[CouponController::class,'loadTeacherCoupons'])->name('teachers');
@@ -384,82 +290,65 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::get('/usage',[CouponController::class,'usageOfCoupons'])->name('usage'); 
             //Route::get('/dashboard',function(){return view('admin-panel.marketer.dashboard');})->name('dashboard');
 
-            Route::get('/my-coupons--t',[CouponController::class,'myCoupons__t'])->name('my-coupons--t');//TODO
-            Route::get('/my-coupons--m',[CouponController::class,'myCoupons__m'])->name('my-coupons--m');//TODO
+            
+            Route::get('/my-coupons',[CouponController::class,'myCoupons'])->name('my-coupons');//TODO
         });
         
 
-        Route::group(['prefix'=>'feedback','as'=>'feedback.'], function(){
-            Route::get ('/students', [ContactUsMessagesController::class,'viewStudentMessages'])
-            ->name ('students');
+        Route::group(['prefix'=>'feedbacks','as'=>'feedbacks.'], function(){
+            Route::get('/student', [ContactUsMessagesController::class,'viewStudentMessages'])->name('student');
             //->middleware('can:viewAny,App\Models\ContactUs');
             //->can('viewAny', ContactUs::class);
-
  
-            Route::get ('/teachers', [ContactUsMessagesController::class,'viewTeacherMessages'])->name ('teachers');
-            Route::get ('/other-users', [ContactUsMessagesController::class,'viewOtherUserMessages'])->name ('other-users');
-            Route::get ('/guests', [ContactUsMessagesController::class,'viewGuestMessages'])->name ('guests');
-            Route::delete ('/{id}', [ContactUsMessagesController::class,'deleteComment'])->name ('delete-comment');
+            Route::get('/teacher', [ContactUsMessagesController::class,'viewTeacherMessages'])->name('teacher');
+            Route::get('/other-user', [ContactUsMessagesController::class,'viewOtherUserMessages'])->name('other-user');
+            Route::get('/guest', [ContactUsMessagesController::class,'viewGuestMessages'])->name('guest');
+            Route::delete('/{id}', [ContactUsMessagesController::class,'deleteComment'])->name('delete-comment');
         });
 
 
-        Route::group(['prefix'=>'teacher','as'=>'teacher.'], function(){            
-            Route::get ('/my-courses', [Admin_TeacherController::class,'viewMyCourses'])->name ('my-courses');
-            Route::get ('/my-earnings', [Admin_TeacherController::class,'ViewEarnings'])->name ('my-earnings');
-            //Route::get ('/dashboard', [Admin_TeacherController::class,'viewDashboard'])->name ('dashboard');
-            Route::get ('/my-profile-edit', [Admin_TeacherController::class,'myProfileEdit'])->name ('my-profile-edit');
-            
-            Route::get ('/enrollments', [Admin_TeacherController::class,'viewCourseEnrollmentList'])->name ('enrollments');
-            Route::get ('/course-completions', [Admin_TeacherController::class,'viewCourseCompleteList'])->name ('completions');
-            
-            Route::get ('/my-salaries', [Admin_TeacherController::class,'viewMySalaries'])->name ('my-salaries');
-
-        });
+        Route::group(['prefix'=>'teacher','as'=>'teacher.'], function(){  
+            //Route::get('/dashboard', [Admin_TeacherController::class,'viewDashboard'])->name('dashboard');
+            //Route::get('/enrollments', [Admin_TeacherController::class,'viewCourseEnrollmentList'])->name('enrollments');
+            //Route::get('/course-completions', [Admin_TeacherController::class,'viewCourseCompleteList'])->name('course-completions');
+        });       
 
 
-        Route::group(['prefix'=>'marketer','as'=>'marketer.'], function(){
-            Route::get ('/my-commissions', [Admin_MarketerController::class,'viewMyCommissions'])->name ('my-commissions');
-            Route::get ('/my-earnings', [Admin_MarketerController::class,'ViewMyEarnings'])->name ('my-earnings');
+        Route::group(['prefix'=>'settings','as'=>'settings.'], function(){
+            Route::get('/general', [SettingsController::class,'loadGeneralSettings'])->name('general');
+            Route::get('/advanced', [SettingsController::class,'loadAdvancedSettings'])->name('advanced');
         });    
-
-
 
     });
 
     
 
     //Route::group(['middleware' => ['canAccess:admin,editor']], function() {
-        Route::resource ('/subject', Admin_SubjectController::class);
+        Route::resource('/subjects', Admin_SubjectController::class);
     //});
     
     
 
-    /*Route::group(['prefix'=>'editor','as'=>'editor.'], function(){
-        Route::get ('/dashboard', [Admin_EditorController::class,'viewDashboard'])->name ('dashboard');
-    });*/
-
-    
-
-    /**/
-    Route::group(['prefix'=>'course','as'=>'course.'], function(){
-        //Route::get ('/content', [Admin_CourseController::class,'courseContent'])->name ('content');
-        
-        Route::get ('/add-2', [Admin_CourseController::class,'addCourseCopy'])->name ('add-2');
-        Route::post('/change-status', [Admin_CourseController::class,'changeStatus'])->name ('change-status');
-        Route::get('/add0', function(){return view('admin-panel.course-add-backup1');})->name ('add0');
-        Route::post('/check-empty', [Admin_CourseController::class,'checkEmpty'])->name ('check-empty');
-        
-        Route::get('/enrollments', [Admin_CourseController::class,'viewCourseEnrollmentList'])->name ('enrollement-list');
-        Route::get('/completions', [Admin_CourseController::class,'viewCourseCompleteList'])->name ('complete-list');       
-    
+    /*
+    Route::group(['prefix'=>'editor','as'=>'editor.'], function(){
+        Route::get('/dashboard', [Admin_EditorController::class,'viewDashboard'])->name('dashboard');
     });
-    Route::resource('/course', Admin_CourseController::class);   
+    */
+    
+
+    Route::group(['prefix'=>'courses','as'=>'courses.'], function(){
+        Route::post('/change-status', [Admin_CourseController::class,'changeStatus'])->name('change-status');
+        Route::post('/check-empty', [Admin_CourseController::class,'checkEmpty'])->name('check-empty');
         
-    Route::resource('/user', UserController::class)->except(['store','update']);
+        Route::get('/enrollments', [Admin_CourseController::class,'viewCourseEnrollmentList'])->name('enrollement-list');
+        Route::get('/completions', [Admin_CourseController::class,'viewCourseCompleteList'])->name('complete-list');       
+    });
 
-    Route::resource('/coupon-code', CouponController::class)->except(['index', 'edit', 'update', 'destroy']);
+    Route::resource('/courses', Admin_CourseController::class);   
+        
+    Route::resource('/users', UserController::class)->except(['store','update']);
 
-
+    Route::resource('/coupon-codes', CouponController::class)->except(['index', 'edit', 'update', 'destroy']);
 });
 
 

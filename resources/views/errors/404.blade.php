@@ -17,7 +17,15 @@
 
                         <div class="content centered">
                          	<img style="width:500px;" class="m-auto mb-3" src="{{asset('images/404.svg')}}">
-                            <h1 class="text-center font-semibold mb-2 text-xl">Oops, looks like the page is lost.</h1>
+                            @php
+                                //dump($errMsg);
+                            @endphp
+                            
+                            @if(isset($errMsg) && $errMsg)
+                                <h1 class="text-center font-semibold mb-2 text-xl">{{$errMsg}}</h1>
+                            @else
+                                <h1 class="text-center font-semibold mb-2 text-xl">Oops, looks like the page is lost.</h1>
+                            @endif
 
 							<div class="flex mt-5 justify-center">
 								<div class="mr-5">

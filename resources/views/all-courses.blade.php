@@ -66,13 +66,17 @@
                                             ?> 
                                             
                                                 <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
-                                                    <a href="{{route('course-single',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
+                                                    <a href="{{route('courses.show',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
                                                         <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                                        
                                                     </a>
                                                     <div class="flex-1 md:space-y-2 space-y-1">
-                                                        <a href="{{route('course-single',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
+                                                        <a href="{{route('courses.show',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
                                                         <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course->heading_text}}</p>
-                                                        <a href="{{route('teacher.view-profile',$course->teacher_username ?? $course->teacher->username)}}" class="md:font-semibold block text-sm">{{$course->teacher_fullname ?? $course->teacher->full_name}}</a>
+                                                        
+                                                        @if($course->teacher)
+                                                            <a href="{{route('teachers.show',$course->teacher->username ?? $course->teacher->username)}}" class="md:font-semibold block text-sm">{{$course->teacher_fullname ?? $course->teacher->full_name}}</a>
+                                                        @endif
+
                                                         <div class="flex items-center justify-between">
                                                             <div class="flex __space-x-2 items-center text-sm">
                                                                 <div class="font-semibold">

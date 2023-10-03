@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Validator;
 use App\View\DataTransformers\Admin\CouponCodeDataTransformer as AdminCouponCodeDataTransformer;
 use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
+use App\Models\Role as RoleModel;
+
+
 
 //use App\Models\Coupon;
 //use Illuminate\Support\Collection;
@@ -80,7 +83,7 @@ class CouponController extends Controller
             if (!$isSaved)
                 throw new CustomException("Coupon create failed");
 
-            return redirect()->route('admin.coupon-code.create')->with([
+            return redirect()->route('admin.coupon-codes.create')->with([
                 'message' => 'Coupon created successfully',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -88,7 +91,7 @@ class CouponController extends Controller
 
         }catch(CustomException $e){
 
-            return redirect(route('admin.coupon-code.create'))
+            return redirect(route('admin.coupon-codes.create'))
                 ->withErrors($couponCreateValErrors ?? [],'couponCreateError')
                 ->withInput($request->input())
                 ->with([
@@ -99,7 +102,7 @@ class CouponController extends Controller
                 ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.coupon-code.create'))
+            return redirect(route('admin.coupon-codes.create'))
                 ->with([
                     'message'   => 'You dont have Permissions to create Coupons !',
                     //'message' => $e->getMessage(),
@@ -108,7 +111,7 @@ class CouponController extends Controller
                 ]);
 
         }catch(\Exception $e){
-            return redirect(route('admin.coupon-code.create'))
+            return redirect(route('admin.coupon-codes.create'))
                 ->withErrors($couponCreateValErrors ?? [],'couponCreateError')
                 ->withInput($request->input())
                 ->with([
@@ -150,7 +153,7 @@ class CouponController extends Controller
 
             $couponDataArr = AdminCouponCodeDataTransformer::prepareCouponData($couponCodeData);
 
-            return view('admin-panel.marketer.coupon-code-view')->with([
+            return view('admin-panel.coupon-code-view')->with([
                 'coupon'   => $couponDataArr,
             ]);
 
@@ -158,10 +161,10 @@ class CouponController extends Controller
             session()->flash('message',$e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('admin-panel.marketer.coupon-code-view');
+            return view('admin-panel.coupon-code-view');
 
         }catch(AuthorizationException $e){
-            /*return redirect(route('admin.user.index'))->with([
+            /*return redirect(route('admin.users.index'))->with([
                 'message'     => 'You dont have Permissions to view the user !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
@@ -172,7 +175,7 @@ class CouponController extends Controller
             //session()->flash('message',$e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('admin-panel.marketer.coupon-code-view');
+            return view('admin-panel.coupon-code-view');
         }
 
     }
@@ -273,18 +276,40 @@ class CouponController extends Controller
     public function usageOfCoupons(){
         return view('admin-panel.marketer.usage-coupon-codes');
     }
+    
 
-    //TODO
-    public function myCoupons__m(){
 
-        return view('admin-panel.marketer.list-coupon-codes');
+    public function myCoupons(){
+
+            
+        if(!Sentinel::check())
+            abort(403);
+            
+        $user            = Sentinel::getUser();            
+        $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+        $currentUserRole = optional($user->roles()->first())->name;        
+        if(!in_array($currentUserRole, $allRoles))
+            abort(403);
+           
+
+        // redirect users that have TEACHER, STUDENT roles
+        $adminPanelAllowedRoles = [RoleModel::MARKETER, RoleModel::TEACHER];
+        if(!in_array($currentUserRole, $adminPanelAllowedRoles))
+            abort(404);
+            
+        
+        $view   =   ($currentUserRole == RoleModel::TEACHER) ? 
+                        'admin-panel.teacher.list-coupon-codes' : // TEACHER
+                        'admin-panel.marketer.list-coupon-codes'; // MARKETER
+
+        // load page with data for EDITOR / MARKETER user roles
+        return view($view);      
     }
+    
 
-    //TODO
-    public function myCoupons__t(){
 
-        return view('admin-panel.teacher.list-coupon-codes');
-    }
+
+    
 
 
 

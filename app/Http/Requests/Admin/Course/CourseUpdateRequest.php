@@ -282,7 +282,7 @@ class CourseUpdateRequest extends FormRequest
         $this->validator = $validator;
         
         return redirect()
-            ->route('admin.course.update',$this->recordId)
+            ->route('admin.courses.update',$this->recordId)
             ->withErrors($validator,'courseUpdate')
             ->withInput()
             ->with(['isValidContentJson' => $this->isValidContentJson]);        

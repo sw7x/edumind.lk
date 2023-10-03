@@ -110,11 +110,11 @@
 
                                                             <td class="text-right">
                                                                 <div class="btn-group">
-                                                                    <a href="{{route ('admin.user.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
-                                                                    <a href="{{route ('admin.user.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                    <a href="{{route ('admin.users.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                                    <a href="{{route ('admin.users.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                                     <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                 </div>
-                                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item['id']) }}" method="POST">
+                                                                <form class="user-destroy" action="{{ route('admin.users.destroy', $item['id']) }}" method="POST">
                                                                     @method('DELETE')
                                                                     <input name="userId" type="hidden" value="{{$item['id']}}">
                                                                     <input name="userType" type="hidden" value="teacher">
@@ -197,11 +197,11 @@
 
                                                                 <td class="text-right">
                                                                     <div class="btn-group">
-                                                                        <a href="{{route ('admin.user.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
-                                                                        <a href="{{route ('admin.user.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                        <a href="{{route ('admin.users.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                                        <a href="{{route ('admin.users.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                                         <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                     </div>
-                                                                    <form class="user-destroy" action="{{ route('admin.user.destroy', $item['id']) }}" method="POST">
+                                                                    <form class="user-destroy" action="{{ route('admin.users.destroy', $item['id']) }}" method="POST">
                                                                         @method('DELETE')
                                                                         <input name="userId" type="hidden" value="{{$item['id']}}">
                                                                         <input name="userType" type="hidden" value="student">
@@ -283,11 +283,11 @@
 
                                                             <td class="text-right">
                                                                 <div class="btn-group">
-                                                                    <a href="{{route ('admin.user.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
-                                                                    <a href="{{route ('admin.user.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                    <a href="{{route ('admin.users.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                                    <a href="{{route ('admin.users.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                                     <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                 </div>
-                                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item['id']) }}" method="POST">
+                                                                <form class="user-destroy" action="{{ route('admin.users.destroy', $item['id']) }}" method="POST">
                                                                     @method('DELETE')
                                                                     <input name="userId" type="hidden" value="{{$item['id']}}">
                                                                     <input name="userType" type="hidden" value="marketer">
@@ -376,11 +376,11 @@
 
                                                             <td class="text-right">
                                                                 <div class="btn-group">
-                                                                    <a href="{{route ('admin.user.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
-                                                                    <a href="{{route ('admin.user.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+                                                                    <a href="{{route ('admin.users.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                                    <a href="{{route ('admin.users.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                                     <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                 </div>
-                                                                <form class="user-destroy" action="{{ route('admin.user.destroy', $item['id']) }}" method="POST">
+                                                                <form class="user-destroy" action="{{ route('admin.users.destroy', $item['id']) }}" method="POST">
                                                                     @method('DELETE')
                                                                     <input name="userId" type="hidden" value="{{$item['id']}}">
                                                                     <input name="userType" type="hidden" value="editor">
@@ -570,7 +570,7 @@
         				action: function ( e, dt, node, config ) {
         					//$('#addProjectModal').modal('show');
         					//$('#add-modal').modal('show');
-        					window.location = '{{route('admin.user.create').'#tab-teachers'}}';
+        					window.location = '{{route('admin.users.create').'#tab-teachers'}}';
         					//  alert( 'Button activated' );
         				},
         				className: 'add-ct mb-3 btn-green '
@@ -620,7 +620,7 @@
         				action: function ( e, dt, node, config ) {
         					//$('#addProjectModal').modal('show');
         					//$('#add-modal').modal('show');
-        					window.location = '{{route('admin.user.create').'#tab-students'}}';
+        					window.location = '{{route('admin.users.create').'#tab-students'}}';
         					//  alert( 'Button activated' );
         				},
         				className: 'add-ct mb-3 btn-green '
@@ -671,7 +671,7 @@
         				action: function ( e, dt, node, config ) {
         					//$('#addProjectModal').modal('show');
         					//$('#add-modal').modal('show');
-        					window.location = '{{route('admin.user.create').'#tab-marketers'}}';
+        					window.location = '{{route('admin.users.create').'#tab-marketers'}}';
         					//  alert( 'Button activated' );
         				},
         				className: 'add-ct mb-3 btn-green '
@@ -722,7 +722,7 @@
         				action: function ( e, dt, node, config ) {
         					//$('#addProjectModal').modal('show');
         					//$('#add-modal').modal('show');
-        					window.location = '{{route('admin.user.create').'#tab-editors'}}';
+        					window.location = '{{route('admin.users.create').'#tab-editors'}}';
         					//  alert( 'Button activated' );
         				},
         				className: 'add-ct mb-3 btn-green '
@@ -775,7 +775,7 @@
             }
 
 			$.ajax({
-				url: "{{route('admin.user.change-status')}}",
+				url: "{{route('admin.users.change-status')}}",
 				type: "post",
 				async:true,
 				dataType:'json',

@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
 use App\Models\Course as CourseModel;
-
+use App\Models\Role as RoleModel;
+use Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -51,6 +52,7 @@ class CourseController extends Controller
      */
     public function index()
     {
+        
         try{
             $this->authorize('viewAny',CourseModel::class);
 
@@ -113,7 +115,7 @@ class CourseController extends Controller
             return view('admin-panel.course-add');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.course.index'))->with([
+            return redirect(route('admin.courses.index'))->with([
                 'message'   =>'You dont have Permissions to create courses',
                 'cls'       =>'flash-danger',
                 'msgTitle'  =>'Permission Denied!'
@@ -166,7 +168,7 @@ class CourseController extends Controller
             if (!$isSaved)
                 throw new CustomException("Course create failed");
 
-            return redirect()->route('admin.course.create')->with([
+            return redirect()->route('admin.courses.create')->with([
                 'message' => 'Course created successfully',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -178,7 +180,7 @@ class CourseController extends Controller
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
             then laravel automatically remove all duplicated message in one key element in array */
 
-            return redirect(route('admin.course.create'))
+            return redirect(route('admin.courses.create'))
                 ->withErrors($courseValErrors['contentMsg'] ?? [],'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [],'infoErrMsgArr')
                 ->withInput($request->input())
@@ -191,7 +193,7 @@ class CourseController extends Controller
                 ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.course.create'))
+            return redirect(route('admin.courses.create'))
                 ->with([
                     'message'       => 'You dont have Permissions to create Teachers !',
                     //'message2'    => $pwResetTxt,
@@ -204,7 +206,7 @@ class CourseController extends Controller
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
             then laravel automatically remove all duplicated message in one key element in array */
 
-            return redirect(route('admin.course.create'))
+            return redirect(route('admin.courses.create'))
                 ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
                 ->withInput($request->input())
@@ -260,7 +262,7 @@ class CourseController extends Controller
             return view('admin-panel.course-view');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.course.index'))->with([
+            return redirect(route('admin.courses.index'))->with([
                 'message'     => 'You dont have Permissions to view the course !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
@@ -332,7 +334,7 @@ class CourseController extends Controller
             return view('admin-panel.course-edit');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.course.index'))->with([
+            return redirect(route('admin.courses.index'))->with([
                 'message'     => 'You dont have Permissions to edit the course',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
@@ -393,7 +395,7 @@ class CourseController extends Controller
             if (!$isSaved)
                 throw new CustomException("Course create failed");
 
-            return redirect()->route('admin.course.create')->with([
+            return redirect()->route('admin.courses.create')->with([
                 'message' => 'Course created successfully',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -406,7 +408,7 @@ class CourseController extends Controller
             /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
             then laravel automatically remove all duplicated message in one key element in array */
-            return redirect(route('admin.course.edit',$id))
+            return redirect(route('admin.courses.edit',$id))
                 ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
                 ->withInput($request->input())
@@ -419,7 +421,7 @@ class CourseController extends Controller
                 ]);
 
         }catch(AuthorizationException $e){
-            return redirect()->route('admin.course.index')
+            return redirect()->route('admin.courses.index')
                 ->with([
                     'message'     => 'You dont have Permissions to update the course!',
                     'cls'         => 'flash-danger',
@@ -428,7 +430,7 @@ class CourseController extends Controller
 
         }catch(\Exception $e){
             //dd($e->getMessage());
-            return redirect(route('admin.course.edit',$id))
+            return redirect(route('admin.courses.edit',$id))
                 ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
                 ->withInput($request->input())
@@ -466,7 +468,7 @@ class CourseController extends Controller
             if (!$isDelete)
                 throw new CustomException("Course delete failed");
 
-            return redirect(route('admin.course.index'))->with([
+            return redirect(route('admin.courses.index'))->with([
                 'message'  => 'successfully deleted the course',
                 'cls'      => 'flash-success',
                 'msgTitle' => 'Success!',
@@ -475,14 +477,14 @@ class CourseController extends Controller
         }catch(CustomException $e){
             //dd('CustomException');
             $exData = $e->getData();
-            return redirect(route('admin.course.index'))->with([
+            return redirect(route('admin.courses.index'))->with([
                 'message'     => $e->getMessage(),
                 'cls'         => $exData['cls'] ?? "flash-danger",
                 'msgTitle'    => $exData['msgTitle']  ?? 'Error!',
             ]);
 
         }catch(\Exception $e){
-            return redirect(route('admin.course.index'))->with([
+            return redirect(route('admin.courses.index'))->with([
                 'message'     => 'Course delete failed!',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Error !',
@@ -534,16 +536,11 @@ class CourseController extends Controller
 
 
 
-    /*
-    public function courseContent(){
-        return view('admin-panel.course-content');
-    }
-    */
+    
+    
 
 
-    public function addCourseCopy(){
-        return view('admin-panel.course-add-copy');
-    }
+    
 
 
     public function changeStatus(Request $request){
@@ -594,12 +591,43 @@ class CourseController extends Controller
 
 
     public function viewCourseEnrollmentList(){
+        if(!Sentinel::check())
+            abort(403);
+            
+        $user            = Sentinel::getUser();            
+        $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+        $currentUserRole = optional($user->roles()->first())->name;        
+        if(!in_array($currentUserRole, $allRoles))
+            abort(403);
+           
+
+        // redirect users that have TEACHER, STUDENT roles
+        $allowedRoles   = [RoleModel::ADMIN];
+        if(!in_array($currentUserRole, $allowedRoles))
+            abort(404);
+                    
         $data = CourseModel::orderBy('id')->get();
         return view('admin-panel.admin.course-enrollments')->withData($data);
     }
 
 
     public function viewCourseCompleteList(){
+        
+        if(!Sentinel::check())
+            abort(403);
+            
+        $user            = Sentinel::getUser();            
+        $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+        $currentUserRole = optional($user->roles()->first())->name;        
+        if(!in_array($currentUserRole, $allRoles))
+            abort(403);
+           
+
+        // redirect users that have TEACHER, STUDENT roles
+        $allowedRoles   = [RoleModel::ADMIN];
+        if(!in_array($currentUserRole, $allowedRoles))
+            abort(404);
+                    
         $data = CourseModel::orderBy('id')->get();
         return view('admin-panel.admin.course-completions')->withData($data);
     }

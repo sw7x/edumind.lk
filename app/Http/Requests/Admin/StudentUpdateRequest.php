@@ -84,7 +84,7 @@ class StudentUpdateRequest extends FormRequest
     {
         $this->validator = $validator;
         return redirect()
-            ->route('admin.user.update-student',$this->recordId)
+            ->route('admin.users.update-student',$this->recordId)
             ->withErrors($validator)
             ->withInput();
 

@@ -97,10 +97,10 @@
 
                                         <td class="text-right">
                                             <div class="btn-group">
-                                                <a href="{{route ('admin.user.view-un-approved-teacher',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                <a href="{{route ('admin.users.view-un-approved-teacher',$item['id'])}}" class="btn-white btn btn-xs">View</a>
                                                 <a href="javascript:void(0);" class="delete-user-btn btn-danger btn btn-xs">Delete</a>
                                             </div>
-                                            <form class="user-destroy" action="{{ route('admin.user.destroy', $item['id']) }}" method="POST">
+                                            <form class="user-destroy" action="{{ route('admin.users.destroy', $item['id']) }}" method="POST">
                                                 @method('DELETE')
                                                 <input name="userId" type="hidden" value="{{$item['id']}}">
                                                 <input name="userType" type="hidden" value="approve.teacher">

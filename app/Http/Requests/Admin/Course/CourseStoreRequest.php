@@ -278,7 +278,7 @@ class CourseStoreRequest extends FormRequest
         $this->validator = $validator;
         
         return redirect()
-            ->route('admin.course.create')
+            ->route('admin.courses.create')
             //->withErrors($this->isValidContentJson)
             ->withErrors($validator,'courseCreate')
             ->withInput()

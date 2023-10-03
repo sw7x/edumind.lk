@@ -43,7 +43,7 @@
                     <div class="lg:w-8/12 text-white" style="color:{{$txtColor ?? '#fff'}}">
                         @if($courseData->subject)
                             <div class="capitalize mb-2 font-semibold">
-                                <a class="__hover:text-white invHover" href="{{route('viewTopic',$courseData->subject->slug)}}">{{$courseData->subject->name}}</a>
+                                <a class="__hover:text-white invHover" href="{{route('subjects.show',$courseData->subject->slug)}}">{{$courseData->subject->name}}</a>
                             </div>
                         @endif
 
@@ -68,7 +68,7 @@
                         --}}
                         <ul class="lg:flex items-center">
                             @if($courseData->teacher)
-                                <li> Teacher : <a href="{{route('teacher.view-profile',$courseData->teacher->username)}}" class="fond-bold invHover">{{$courseData->teacher->full_name}}</a> </li>
+                                <li> Teacher : <a href="{{route('teachers.show',$courseData->teacher->username)}}" class="fond-bold invHover">{{$courseData->teacher->full_name}}</a> </li>
                                 <li> <span class="lg:block hidden mx-3 text-2xl">·</span> </li>
                             @endif
 
@@ -258,7 +258,7 @@
                                 </div>
 
                                 <div class="w-3/4 md:text-justify">
-                                    <h4 class="text-base m-0 font-semibold"><a href="{{route('teacher.view-profile',$courseData->teacher->username)}}">{{$courseData->teacher->full_name}}</a></h4>
+                                    <h4 class="text-base m-0 font-semibold"><a href="{{route('teachers.show',$courseData->teacher->username)}}">{{$courseData->teacher->full_name}}</a></h4>
                                     {!! $courseData->teacher->edu_qualifications !!}
                                     {{--
                                     <p class="mt-2 md:ml-0 -ml-16  text-sm">
@@ -561,7 +561,7 @@
 
                                 
                                 @if($enroll_status =='ENROLLED')
-                                    <form action="{{route('course.complete')}}" method="post" class='course-complete-form'>
+                                    <form action="{{route('courses.complete')}}" method="post" class='course-complete-form'>
                                         {{csrf_field ()}}
                                         <div class="mt-4">
                                             <button type="submit" class="w-full h-9 px-6 rounded-md bg-green-600 hover:bg-green-400 hover:text-white text-white">E-Complete course</button>
@@ -581,14 +581,14 @@
                         @else                                                       
 
                             @if($courseData->price != 0)                               
-                                <form action="{{route('course-guest-enroll')}}" method="get" class='course-enroll-form'>
+                                <form action="{{route('courses.guest-enroll')}}" method="get" class='course-enroll-form'>
                                     {{csrf_field ()}}
                                     <div class="mt-4">
                                         <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">BE-Add to Cart</button>
                                     </div>
                                 </form>
                             @else                                
-                                <form action="{{route('course-guest-enroll')}}" method="get" class='course-enroll-form'>
+                                <form action="{{route('courses.guest-enroll)}}" method="get" class='course-enroll-form'>
                                     {{csrf_field ()}}
                                     <div class="mt-4">
                                         <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">BE- Enroll Now</button>

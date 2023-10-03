@@ -27,31 +27,59 @@
 
                                                 <div class="col-lg-12">
                                                     <div class="tube-card p-3 lg:p-6">
-                                                        <h2 class="font-semibold mb-3 text-base">Learn The Basic Of VUE JS .</h2>
-                                                        <hr class="mb-5">
-                                                        <h4 class="font-semibold mb-2 text-base"> Description </h4>
-                                                        <div class="space-y-2">
+                                                    
+                                                        <x-flash-message
+                                                            class="flash-success" 
+                                                            title=""
+                                                            message="" 
+                                                            :canClose="false">
+                                                            <x-slot name="insideContent">
+                                                                <a href="{{route('about-us')}}" class="_hover:underline hover:text-blue-500">
+                                                                    <div class="text-lg"><strong>EDUMIND අපි</strong></div>
+                                                                    <p class="text-base">ඔබත් යමක් පැහැදිලිව විස්තර කර දීමට හැකියාව ඇති, තමන් සතු දැනුමෙන් අන් අයට ප්රයෝජනයක් ගෙන දීමට කැමැත්තක්...</p>
+                                                                </a>
+                                                            </x-slot>        
+                                                        </x-flash-message>
 
-                                                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                                                                tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
-                                                            quis nostrud exerci tation ullamcorper</p>
-                                                            <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod
-                                                                mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing
-                                                                elit, sed diam nonummy nibh euismod quis nostrud exerci tation ullamcorper tincidunt ut
-                                                                laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud
-                                                            exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
-                                                            <p>mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing
-                                                                elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                                                volutpat. Ut wisi enim ad minim veniam,suscipit lobortis nisl ut aliquip ex ea commodo
-                                                            consequat</p>
-                                                            <b> Assum consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt</b>
-                                                            <p>Diam nonummy nibh euismod erat volutpat. Ut wisi enim ad minim veniam, quis nostrud
-                                                            exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat</p>
-                                                            <p>laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam</p>
-                                                            <h4>Book Information</h4>
-                                                            <p class="mb-0"><strong>Page Count</strong>: 118</p>
-                                                            <p class="mt-0"><strong>Word Count</strong>: 15872</p>
-                                                        </div>
+                                                        <x-flash-message
+                                                            class="flash-success" 
+                                                            title=""
+                                                            message="" 
+                                                            :canClose="false">
+                                                            <x-slot name="insideContent">
+                                                                <a href="{{route('terms-and-services')}}" class="_hover:underline hover:text-blue-500">
+                                                                    <div class="text-lg"><strong>EDUMIND වෙතින් ඔබට ලබාගත හැකි ආදායම</strong></div>
+                                                                    <p class="text-base">Edumind වෙතින් ඔබට ලබාගත හැකි ආදායම් පිළිබඳව අදහසක් ලබාගැනීම පිණිස මෙම කොටස හොඳින් අධ්යයන කරන මෙන්...</p>
+                                                                </a>
+                                                            </x-slot>        
+                                                        </x-flash-message>
+
+                                                        <x-flash-message
+                                                            class="flash-success" 
+                                                            title=""
+                                                            message="" 
+                                                            :canClose="false">
+                                                            <x-slot name="insideContent">
+                                                                <a href="{{route('why-choose-us')}}" class="_hover:underline hover:text-blue-500">
+                                                                    <div class="text-lg"><strong>EDUMIND වෙතින් ඔබට ලැබෙන ප්රතිලාභ</strong></div>
+                                                                    <p class="text-base">ඔබ සාම්ප්රදායික tution ගුරුවරයෙක් නම් ඔබේ ශිෂ්යයන් හා සම්බන්ධ වීමේ හැකියාව සිමිත විය හැකිය. ඊට ප්රධාන හේතුව වන්නේ..</p>
+                                                                </a>
+                                                            </x-slot>        
+                                                        </x-flash-message>
+
+                                                        <x-flash-message
+                                                            class="flash-success" 
+                                                            title=""
+                                                            message="" 
+                                                            :canClose="false">
+                                                            <x-slot name="insideContent">
+                                                                <a href="{{route('instructions')}}" class="_hover:underline hover:text-blue-500">
+                                                                    <div class="text-lg"><strong>EDUMIND වෙත පාඨමාලාවක් සම්පාදනය කිරීම</strong></div>
+                                                                    <p class="text-base">ඔබට online courses නිර්මාණය කිරීමට කිසිඳු මූලික දැනුමක් නොමැති වුවත් Edumind සමග සම්බන්ධ වීමට හැකියාව ඇති බව...</p>
+                                                                </a>
+                                                            </x-slot>        
+                                                        </x-flash-message>
+
                                                     </div>
                                                 </div>
 

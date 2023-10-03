@@ -67,17 +67,17 @@
 
                                     <td class="text-right">
                                         <div class="btn-group">
-                                            <a href="{{route ('admin.subject.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
+                                            <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                             
                                             @can('update',$item['dbRec'])
-                                            <a href="{{route ('admin.subject.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+                                            <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                             @endcan
                                             
                                             @can('delete',$item['dbRec'])
                                             <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a>
                                             @endcan
                                         </div>
-                                        <form class="subject-destroy" action="{{ route('admin.subject.destroy', $item['data']['id']) }}" method="POST">
+                                        <form class="subject-destroy" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
                                             @method('DELETE')
                                             @csrf
                                         </form>
@@ -220,7 +220,7 @@
 					action: function ( e, dt, node, config ) {
 						//$('#addProjectModal').modal('show');
 						//$('#add-modal').modal('show');
-						window.location = '{{route('admin.subject.create')}}';
+						window.location = '{{route('admin.subjects.create')}}';
 						//  alert( 'Button activated' );
 					},
 					className: 'add-ct mb-3 btn-green '

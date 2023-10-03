@@ -5,8 +5,8 @@ use App\Exceptions\CustomException;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
 use App\View\DataTransformers\StudentDataTransformer;
-
-//use Sentinel;
+use Sentinel;
+use App\Models\Role as RoleModel;
 
 
 class StudentController extends Controller
@@ -19,15 +19,31 @@ class StudentController extends Controller
         $this->studentService    = $studentService;
     }
 
-    public function viewMyCourses(Request $request)
+    //public function viewMyCourses(Request $request)
+    public function viewEnrolledCoursesPage(Request $request)
     {
         try{
+
+            $user = Sentinel::getUser();
+            if(is_null($user))
+                throw new CustomException('Invalid page');
+            
+            $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+            $currentUserRole = optional($user->roles()->first())->name;        
+            if(!in_array($currentUserRole, $allRoles))
+                throw new CustomException('Invalid user type');
+
+            
+            // redirect users that have ADMIN, EDITOR, MARKETER, TEACHER roles
+            $allowedRoles = [RoleModel::STUDENT];
+            if(!in_array($currentUserRole, $allowedRoles))
+                throw new CustomException('Invalid page');
 
             $enrolledCourses = $this->studentService->getLoggedInUserEnrolledCourses();
             $coursesArr      = StudentDataTransformer::prepareEnrolledCourseData($enrolledCourses);
 
-            //return view('student-my-courses')->with([
-            return view('student.student-my-courses-full-width')->with([
+            return view('student.student-my-courses')->with([
+            //return view('student.student-my-courses-full-width')->with([
                 //'userData'          => $user,
                 'student_courses'   => $coursesArr
             ]);
@@ -86,9 +102,8 @@ class StudentController extends Controller
 
 
 
-    public function profileEdit(){
-        return view('student.student-profile-edit');
-    }
+
+    
 
 
     public function viewEnrolledCourses(){
@@ -96,15 +111,11 @@ class StudentController extends Controller
     }
 
 
-    public function viewDashboard(){
-        return view('student.student-profile-dashboard');
-    }
 
 
 
-    public function viewHelp(){
-        return view('student.student-profile-help');
-    }
+
+    
 
 
 

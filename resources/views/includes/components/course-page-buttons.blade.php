@@ -34,7 +34,7 @@
             @endif
         @else
             @if($enroll_status =='FRESH')
-                <form action="{{route('course.free-enroll')}}" method="post" class='course-enroll-form'>
+                <form action="{{route('courses.free-enroll')}}" method="post" class='course-enroll-form'>
                     {{csrf_field ()}}
                     <div class="mt-4">
                         <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Enroll Now</button>
@@ -46,7 +46,7 @@
 
         
         @if($enroll_status =='ENROLLED')
-            <form action="{{route('course.complete')}}" method="post" class='course-complete-form'>
+            <form action="{{route('courses.complete')}}" method="post" class='course-complete-form'>
                 {{csrf_field ()}}
                 <div class="mt-4">
                     <button type="submit" class="w-full h-9 px-6 rounded-md bg-green-600 hover:bg-green-400 hover:text-white text-white">Complete course</button>
@@ -65,14 +65,14 @@
     @endif
 @else
     @if($data_arr->price != 0)                               
-        <form action="{{route('course-guest-enroll')}}" method="get" class='course-enroll-form'>
+        <form action="{{route('courses.guest-enroll')}}" method="get" class='course-enroll-form'>
             {{csrf_field ()}}
             <div class="mt-4">
                 <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
             </div>
         </form>
     @else                                
-        <form action="{{route('course-guest-enroll')}}" method="get" class='course-enroll-form'>
+        <form action="{{route('courses.guest-enroll')}}" method="get" class='course-enroll-form'>
             {{csrf_field ()}}
             <div class="mt-4">
                 <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Enroll Now</button>

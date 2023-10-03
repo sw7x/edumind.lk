@@ -76,7 +76,7 @@ class EdumindRevenueController extends Controller
 
 /*
 catch(AuthorizationException $e){
-    return redirect(route('admin.subject.create'))->with([
+    return redirect(route('admin.subjects.create'))->with([
         'message'     => 'You dont have Permissions view earnings !',
         'cls'         => 'flash-danger',
         'msgTitle'    => 'Permission Denied !',

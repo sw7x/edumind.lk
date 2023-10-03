@@ -174,16 +174,16 @@ class ContactUsMessagesController extends Controller
             $userType = (isset($request->userType)?$request->userType:null);
             switch ($userType) {
                 case "teacher":
-                    $redirectRoute = 'admin.feedback.teachers';
+                    $redirectRoute = 'admin.feedbacks.teacher';
                     break;
                 case "student":
-                    $redirectRoute = 'admin.feedback.students';
+                    $redirectRoute = 'admin.feedbacks.student';
                     break;
                 case "other":
-                    $redirectRoute = 'admin.feedback.other-users';
+                    $redirectRoute = 'admin.feedbacks.other-user';
                     break;
                 case "guest":
-                    $redirectRoute = 'admin.feedback.guests';
+                    $redirectRoute = 'admin.feedbacks.guest';
                     break;
                 default:
                     $redirectRoute = 'admin.dashboard';

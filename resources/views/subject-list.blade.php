@@ -19,7 +19,7 @@
                 @isset($subjects)
                 <div class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-3">
                     @forelse($subjects as $item)
-                        <a href="{{URL('/')}}/subject/{{$item['slug']}}" class="rounded-md overflow-hidden relative w-full lg:h-56 h-40">
+                        <a href="{{route('subjects.show', $item['slug'])}}" class="rounded-md overflow-hidden relative w-full lg:h-56 h-40">
                             <div class="absolute w-full h-3/4 -bottom-12 bg-gradient-to-b from-transparent to-gray-800 z-10">
                             </div>
                             <img src="{{$item['image']}}" class="absolute w-full h-full object-cover" alt="">                       

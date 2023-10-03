@@ -87,7 +87,7 @@ class EditorUpdateRequest extends FormRequest
         $this->validator = $validator;
         //dd()
         return redirect()
-            ->route('admin.user.update-editor',$this->recordId)
+            ->route('admin.users.update-editor',$this->recordId)
             ->withErrors($validator)
             ->withInput();
            //->with(['is_teacher_usernameFill' => $this->is_usernameFill]);

@@ -555,7 +555,7 @@
 						action: function ( e, dt, node, config ) {
 							//$('#addProjectModal').modal('show');
 							//$('#add-modal').modal('show');
-							window.location = '{{route('admin.subject.create')}}';
+							window.location = '{{route('admin.subjects.create')}}';
 							//  alert( 'Button activated' );
 						},
 						className: 'add-ct mb-3 btn-green '

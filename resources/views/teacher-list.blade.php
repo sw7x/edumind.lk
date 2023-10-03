@@ -30,12 +30,14 @@
                         <div class="_space-y-7 mt-6 flex flex-row justify-between flex-wrap">     
                             @forelse ($teachers as $teacher)                        
                                 <div class="relative p-3 bg-white shadow rounded-md flex items-center space-x-3 mb-10 teacher-card">
-                                    <a href="{{route('teacher.view-profile',$teacher['username'])}}" class="profile-image rounded-lg shadow-md">
+                                    <a href="{{route('teachers.show',$teacher['username'])}}" class="profile-image rounded-lg shadow-md">
                                         <img src="{{$teacher['profilePic']}}" class="w-40 h-48  __-mt-7" alt="">
                                     </a>
 
                                     <div class="flex-1">
-                                        <div class="font-semibold"><a href="">{{$teacher['fullName']}}</a></div>
+                                        <div class="font-semibold">
+                                            <a href="{{route('teachers.show',$teacher['username'])}}">{{$teacher['fullName']}}</a>
+                                        </div>
 
                                         <hr class="my-2">
                                         {{--<div class="text-sm"><strong>Subjects</strong>: Science, Maths, Ai</div>--}}
@@ -51,7 +53,7 @@
                                     </div>
 
                                     <div class="absolute top-4 right-2 cursor-pointer">
-                                        <a href="{{route('teacher.view-profile',$teacher['username'])}}">
+                                        <a href="{{route('teachers.show',$teacher['username'])}}">
                                             <ion-icon class="text-4xl text-blue-400 hover:text-blue-700" name="link"></ion-icon>
                                         </a>
                                     </div>

@@ -61,7 +61,7 @@
                                                 :canClose="true" />
                                         @endif
 
-                                        <form class="" id="" action="{{route('admin.user.store-teacher')}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.store-teacher')}}" method="post">
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
@@ -246,7 +246,7 @@
                                                 :canClose="true" />
                                         @endif
 
-                                        <form class="" id="" action="{{route('admin.user.store-student')}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.store-student')}}" method="post">
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
@@ -422,7 +422,7 @@
                                                 :canClose="true" />
                                         @endif
 
-                                        <form class="" id="" action="{{route('admin.user.store-marketer')}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.store-marketer')}}" method="post">
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">
@@ -563,7 +563,7 @@
                                                 :canClose="true" />
                                         @endif
 
-                                        <form class="" id="" action="{{route('admin.user.store-editor')}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.store-editor')}}" method="post">
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                                 <div class="col-sm-8">

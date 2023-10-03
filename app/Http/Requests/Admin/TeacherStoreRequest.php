@@ -116,7 +116,7 @@ class TeacherStoreRequest extends FormRequest
     {
         $this->validator = $validator;
 
-        return redirect()->route('admin.user.create')
+        return redirect()->route('admin.users.create')
            ->withErrors($validator)
            ->withInput()
            ->with(['is_teacher_usernameFill' => $this->is_usernameFill]);

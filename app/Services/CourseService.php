@@ -169,9 +169,7 @@ class CourseService
         $allCourses = CourseModel::all();
         $courseArr = array();        
         
-        $allCourses->map(function ($item) use (&$courseArr, $userId){ 
-            
-                   
+        $allCourses->map(function ($item) use (&$courseArr, $userId){             
             $courseSelRec = $item->course_selections()->where('student_id',$userId)->first();
             
             if($courseSelRec){

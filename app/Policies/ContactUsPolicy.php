@@ -48,6 +48,7 @@ class ContactUsPolicy
         //return false;
     }
 
+    
     /**
      * Determine whether the user can create models.
      *
@@ -56,8 +57,8 @@ class ContactUsPolicy
      */
     public function create(UserModel $user)
     {
-        //
-        //dd('create');
+        return !$user->isAdmin();
+
     }
 
     /**
@@ -69,7 +70,7 @@ class ContactUsPolicy
      */
     public function update(UserModel $user, ContactUsModel $contactUs)
     {
-        //
+        return false;
     }
 
     /**
@@ -107,4 +108,7 @@ class ContactUsPolicy
     {
         //
     }
+
+
+
 }

@@ -207,7 +207,7 @@
                 <div class="ibox">
                     <div class="ibox-content">
 
-                        <form id="course-edit-form" method="post" action="{{route('admin.course.update',$course['id'])}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
+                        <form id="course-edit-form" method="post" action="{{route('admin.courses.update',$course['id'])}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="id" value="{{$course['id']}}">                      

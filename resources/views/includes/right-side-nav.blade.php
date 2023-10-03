@@ -1,7 +1,7 @@
                 <div class="right-side">
 
 
-                    <a href="{{route('search2')}}" class="-mr-2 text-2xl header_widgets text-blue-700" title="search">
+                    <a href="{{route('courses.search')}}" class="-mr-2 text-2xl header_widgets text-blue-700" title="search">
                         <i class="icon-feather-search font-semibold" aria-hidden="true"></i>
                     </a>
                     
@@ -70,7 +70,7 @@
                                     </div>
                                     <div class="cart_text">
                                         <!-- <h4>{{$course['name']}}</h4> -->
-                                        <a href="{{route('course-single',$course['slug'])}}">{{$course['name']}}</a>
+                                        <a href="{{route('courses.show',$course['slug'])}}">{{$course['name']}}</a>
                                     </div>
                                     <div class="cart_price">
                                         <span class="text-base">{{$course['revised_price']}}</span>
@@ -157,41 +157,38 @@
 
                                 @if(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
                                     <li>
-                                        <a href="{{route('student.my-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses</span></a>
+                                        <a href="{{route('enrolled-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>Enrolled Courses</span></a>
                                     </li>
 
                                     {{-- todo-undo--}}
                                     <li>
-                                        <a href="{{route('student.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span>Dashboard</span></a>
+                                        <a href="{{route('dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span>Dashboard</span></a>
                                     </li>
                                     <li><hr></li>
-                                    <li>
-                                        <a href="{{route('student.my-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses(full-width)</span></a>
-                                    </li>
                                     <li>
                                         <a href="{{route('profile')}}">
                                             <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{route('student.profile-edit')}}"><ion-icon name="settings" class="is-icon"></ion-icon> <span>Account Settings</span></a>
+                                        <a href="{{route('profile-edit')}}"><ion-icon name="settings" class="is-icon"></ion-icon> <span>Edit profile</span></a>
                                     </li>
                                     <li>
-                                        <a href="{{route('student.help')}}"><ion-icon name="help-circle" class="is-icon"></ion-icon> <span>Help</span></a>
+                                        <a href="{{route('help')}}"><ion-icon name="help-circle" class="is-icon"></ion-icon> <span>Help</span></a>
                                     </li>
                                     
 
                                 @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::TEACHER)
                                     
                                     <li>
-                                        <a href="{{route('teacher.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></a>
+                                        <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></a>
                                     </li><li><hr></li>
                                     {{-- todo-undo--}}
                                     <li>
-                                        <a href="{{route('teacher.my-courses',Sentinel::getUser()->username)}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses</span></a>
+                                        <a href="{{route('admin.my-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses</span></a>
                                     </li>
                                     <li>
-                                        <a href="{{route('teacher.course-create')}}"><ion-icon name="duplicate" class="is-icon"></ion-icon> <span>Add Course</span></a>
+                                        <a href="{{route('admin.courses.create')}}"><ion-icon name="duplicate" class="is-icon"></ion-icon> <span>Add Course</span></a>
                                     </li>
                                     <li>
                                         <a href="{{route('profile')}}">
@@ -199,14 +196,14 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{route('teacher.profile-edit')}}"><ion-icon name="settings" class="is-icon"></ion-icon> <span>Account Settings</span></a>
+                                        <a href="{{route('admin.profile-edit')}}"><ion-icon name="settings" class="is-icon"></ion-icon> <span>Edit profile</span></a>
                                     </li>
                                     <li>
-                                        <a href="{{route('teacher.help')}}"><ion-icon name="help-circle" class="is-icon"></ion-icon> <span>Help</span></a>
+                                        <a href="{{route('help')}}"><ion-icon name="help-circle" class="is-icon"></ion-icon> <span>Help</span></a>
                                     </li>
                                     <li>
-                                        <a href="{{route('teacher.earnings')}}"><ion-icon name="cash" class="is-icon"></ion-icon> <span>My Earnings</span></a>
-                                    </li>
+                                        <a href="{{route('admin.my-earnings')}}"><ion-icon name="cash" class="is-icon"></ion-icon> <span>My Earnings</span></a>
+                                    </li>                                    
 
                                 @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::MARKETER)
                                     {{--todo create routes for marketer dashboard, and other pages--}}

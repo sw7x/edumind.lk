@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Services\CourseService;
 use App\Services\TeacherService;
 use App\View\DataTransformers\HomePageDataTransformer;
+use Sentinel;
 
 /*
 use Illuminate\Http\Request;
-use Sentinel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Response;
@@ -43,6 +43,9 @@ class HomeController extends Controller
 
 
     public function index(){
+
+        //$rr     =   optional(Sentinel::getUser())->roles()->first()->slug;
+        //dd($rr);
 
 
 

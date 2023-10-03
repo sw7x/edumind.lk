@@ -52,7 +52,7 @@
             <div class="ibox ">
                 <div class="ibox-content px-3">
 
-                    <form class="edit-user-form" id="add-subject" action="{{route('admin.subject.store')}}" method="POST">
+                    <form class="edit-user-form" id="add-subject" action="{{route('admin.subjects.store')}}" method="POST">
 
 
 

@@ -91,7 +91,7 @@ class CourseController extends Controller
 
 
 
-    public function ViewCourse($slug=null){
+    public function show(?string $slug = null){
         
         try{
 
@@ -114,7 +114,7 @@ class CourseController extends Controller
             $bannerColors = ColorUtil::generateBannerColors($course->image);
 
                        
-            $pageResult     = (new CourseService())->loadCoursePage($currentUser, $course);
+            $pageResult     = $this->courseService->loadCoursePage($currentUser, $course);
             $viewFile       = $pageResult['view'];
             $enroll_status  = $pageResult['status'];
 
@@ -402,7 +402,7 @@ class CourseController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('course-search')->with([
+            return redirect()->route('courses.search')->with([
                 'message'       => 'Search failed!',
                 //'message'     => $e->getMessage(),                    
                 'cls'           => 'flash-danger',
@@ -484,7 +484,7 @@ class CourseController extends Controller
           
         }
  
-        return redirect(route('course-search'))
+        return redirect(route('courses.search'))
             ->withInput($request->all())
             ->with([
                 //'subjectData'   =>  $arr,
@@ -494,7 +494,7 @@ class CourseController extends Controller
     }
 
 
-    public function viewAllCourses(){    
+    public function index(){    
 
         try{
 
@@ -505,6 +505,26 @@ class CourseController extends Controller
             }else{
                 $courses = CourseModel::all();
             }
+
+            /*
+            dump($courses);
+
+            foreach ($courses as $course) {
+                $id = optional($course->teacher)->id;
+                
+                //dump($course);
+                dump($id);
+                if(is_null($id))
+                    dump($course);
+
+                dump('===========');
+
+
+                //dump($course->teacher->username);
+            }
+            dd('__');
+            */
+
             //$courses = $this->courseService->loadAllCourses($user->id);
             //dd($courses);
             return view('all-courses')->with(['all_courses' => $courses]);

@@ -63,7 +63,7 @@
                                         <a href="#" data-id="{{$comment['id']}}" class="absolute top-0.5 right-1 rounded text-danger text-lg delete-feedback">
                                             <i class="text-3xl fa fa-times-circle-o"></i>
                                         </a>
-                                        <form class="comment-destroy" action="{{ route('admin.feedback.delete-comment', $comment['id']) }}" method="POST">
+                                        <form class="comment-destroy" action="{{ route('admin.feedbacks.delete-comment', $comment['id']) }}" method="POST">
                                             @method('DELETE')
                                             <input name="commentId" type="hidden" value="{{$comment['id']}}">
                                             <input name="userType" type="hidden" value="student">

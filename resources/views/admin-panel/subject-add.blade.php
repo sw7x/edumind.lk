@@ -30,7 +30,7 @@
             <div class="ibox ">
                 <div class="ibox-content px-3">                    
                     <h3>Add New Subject</h3>
-                    <form class="edit-user-form" id="add-subject" action="{{route('admin.subject.store')}}" method="POST" enctype='multipart/form-data'>
+                    <form class="edit-user-form" id="add-subject" action="{{route('admin.subjects.store')}}" method="POST" enctype='multipart/form-data'>
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Name</label>
                             <div class="col-sm-8"><input type="text" name="name" class="form-control" required="required"></div>

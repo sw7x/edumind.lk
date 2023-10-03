@@ -147,26 +147,26 @@
                         <div class="horizontal-course-item bg-white md:flex shadow-sm rounded-lg uk-transition-toggle mb-5">
 
                             <div class="md:w-5/12 md:h-60 h-40 overflow-hidden rounded-l-lg relative">
-                                <a href="{{route('course-single',$course['slug'])}}" alt="" title="">
+                                <a href="{{route('courses.show',$course['slug'])}}" alt="" title="">
                                     <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                 </a>
                             </div>
 
                             <div class="flex-1 md:p-6 p-4">
                                 <div class="font-semibold line-clamp-2 md:text-xl md:leading-relaxed">
-                                    <a href="{{route('course-single',$course['slug'])}}" alt="" title="">
+                                    <a href="{{route('courses.show',$course['slug'])}}" alt="" title="">
                                     {{$course['name']}}
                                     </a>
                                 </div>
 
                                 <div class="line-clamp-2 mt-2 md:block hidden">
-                                    <a href="{{route('course-single',$course['slug'])}}" alt="" title="">
+                                    <a href="{{route('courses.show',$course['slug'])}}" alt="" title="">
                                         {{$course['headingText']}}
                                     </a>
                                 </div>
 
                                 <div class="font-semibold mt-3">
-                                    <a href="{{route('teacher.view-profile',$course['creatorArr']['username'])}}" alt="" title="">
+                                    <a href="{{route('teachers.show',$course['creatorArr']['username'])}}" alt="" title="">
                                     {{$course['creatorArr']['fullName']}}
                                     </a>
                                 </div>

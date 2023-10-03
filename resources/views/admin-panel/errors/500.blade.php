@@ -12,8 +12,20 @@
                         <h3 class="font-bold">Internal Server Error</h3>
 
                         <div class="error-desc">
-                            The server encountered something unexpected that didn't allow it to complete the request. We apologize.<br/>
-                            You can go back to main page: <br/><a href="index.html" class="btn btn-primary m-t">Dashboard</a>
+                            @if(isset($errMsg) && $errMsg)
+                                {{$errMsg}}
+                            @else
+                                The server encountered something unexpected that didn't allow it to complete 
+                                the request. We apologize.
+                            @endif
+                            <br/>                            
+                            <div>
+                                <a class="btn btn-danger mb-2" href="{{ url()->previous() }}">Go back</a>
+                            </div>                                              
+                            <div>
+                                <a class="btn btn-primary" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                                <a class="btn btn-info" href="{{ route('admin.dashboard') }}">Admin Panel</a>
+                            </div>                           
                         </div>
                     </div>
                 </div>

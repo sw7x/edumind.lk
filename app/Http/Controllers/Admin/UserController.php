@@ -140,7 +140,7 @@ class UserController extends Controller
             return view('admin-panel.user-add');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
                 'message'   =>'You dont have Permissions to create users',
                 'cls'       =>'flash-danger',
                 'msgTitle'  =>'Permission Denied!'
@@ -166,7 +166,7 @@ class UserController extends Controller
 
             $result = $this->adminUserService->saveTeacherRec($request);
 
-            return redirect(route('admin.user.create'))->with([
+            return redirect(route('admin.users.create'))->with([
                 'teacher_submit_message'  => 'Add Teacher success',
                 'teacher_submit_message2' => $result['usernameMsg'],
                 //'teacher_submit_title'   => 'Student Registration submit page',
@@ -175,7 +175,7 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-            return redirect(route('admin.user.create'))
+            return redirect(route('admin.users.create'))
             ->withErrors($request->validator)
             ->withInput()
             ->with([
@@ -188,7 +188,7 @@ class UserController extends Controller
 
         }catch(AuthorizationException $e){
             //return redirect(url()->previous().'#tab-teachers')->with([
-            return redirect(route('admin.user.create').'#tab-teachers')
+            return redirect(route('admin.users.create').'#tab-teachers')
             ->withErrors($request->validator)
             ->withInput()
             ->with([
@@ -200,7 +200,7 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            return redirect(route('admin.user.create'))
+            return redirect(route('admin.users.create'))
             ->withErrors($request->validator)
             ->withInput()
             ->with([
@@ -227,7 +227,7 @@ class UserController extends Controller
 
             $result = $this->adminUserService->saveStudentRec($request);
 
-            return redirect(route('admin.user.create', []). '#tab-students')->with([
+            return redirect(route('admin.users.create', []). '#tab-students')->with([
                 'student_submit_message'    => 'Add Student success',
                 'student_submit_message2'   => $result['usernameMsg'],
                 //'student_submit_title'    => 'Student Registration submit page',
@@ -237,7 +237,7 @@ class UserController extends Controller
 
         }catch(CustomException $e){
 
-            return redirect(route('admin.user.create', []). '#tab-students')
+            return redirect(route('admin.users.create', []). '#tab-students')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -250,7 +250,7 @@ class UserController extends Controller
 
         }catch(AuthorizationException $e){
 
-            return redirect(route('admin.user.create', []). '#tab-students')
+            return redirect(route('admin.users.create', []). '#tab-students')
             //return redirect(url()->previous().'#tab-students')
                 ->withErrors($request->validator)
                 ->withInput()
@@ -263,7 +263,7 @@ class UserController extends Controller
                 ]);
 
         }catch(\Exception $e){
-            return redirect(route('admin.user.create', []). '#tab-students')
+            return redirect(route('admin.users.create', []). '#tab-students')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -290,7 +290,7 @@ class UserController extends Controller
 
             $result = $this->adminUserService->saveMarketerRec($request);
 
-            return redirect(route('admin.user.create', []). '#tab-marketers')->with([
+            return redirect(route('admin.users.create', []). '#tab-marketers')->with([
                 'marketer_submit_message'   => 'Add Marketer success',
                 'marketer_submit_cls'       => 'flash-success',
                 'marketer_submit_msgTitle'  => 'Success',
@@ -299,7 +299,7 @@ class UserController extends Controller
 
         }catch(CustomException $e){
 
-            return redirect(route('admin.user.create', []). '#tab-marketers')
+            return redirect(route('admin.users.create', []). '#tab-marketers')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -309,7 +309,7 @@ class UserController extends Controller
                 ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.create', []). '#tab-marketers')
+            return redirect(route('admin.users.create', []). '#tab-marketers')
             //return redirect(url()->previous().'#tab-marketers')
                 ->withErrors($request->validator)
                 ->withInput()
@@ -322,7 +322,7 @@ class UserController extends Controller
                 ]);
 
         }catch(\Exception $e){
-            return redirect(route('admin.user.create', []). '#tab-marketers')
+            return redirect(route('admin.users.create', []). '#tab-marketers')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -344,7 +344,7 @@ class UserController extends Controller
 
             $result = $this->adminUserService->saveEditorRec($request);
 
-            return redirect(route('admin.user.create', []). '#tab-editor')->with([
+            return redirect(route('admin.users.create', []). '#tab-editor')->with([
                 'editor_submit_message'   => 'Add editor success',
                 'editor_submit_cls'       => 'flash-success',
                 'editor_submit_msgTitle'  => 'Success',
@@ -353,7 +353,7 @@ class UserController extends Controller
 
         }catch(CustomException $e){
 
-            return redirect(route('admin.user.create', []). '#tab-editor')
+            return redirect(route('admin.users.create', []). '#tab-editor')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -363,7 +363,7 @@ class UserController extends Controller
                 ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.create', []). '#tab-editor')
+            return redirect(route('admin.users.create', []). '#tab-editor')
             //return redirect(url()->previous().'#tab-editor')
                 ->withErrors($request->validator)
                 ->withInput()
@@ -376,7 +376,7 @@ class UserController extends Controller
                 ]);
 
         }catch(\Exception $e){
-            return redirect(route('admin.user.create', []). '#tab-editor')
+            return redirect(route('admin.users.create', []). '#tab-editor')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
@@ -422,7 +422,7 @@ class UserController extends Controller
             return view('admin-panel.user-view');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
                 'message'     => 'You dont have Permissions to view the user !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
@@ -472,7 +472,7 @@ class UserController extends Controller
             return view('admin-panel.user-edit');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
                 'message'     => 'You dont have Permissions to edit the user',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
@@ -509,7 +509,7 @@ class UserController extends Controller
                 throw new CustomException("User update failed");
 
 
-            return redirect()->route('admin.user.index')->with([
+            return redirect()->route('admin.users.index')->with([
                 'message' => 'Teacher update success',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -525,7 +525,7 @@ class UserController extends Controller
 
         }catch(AuthorizationException $e){
             //dd($e->getMessage());
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
             //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update teacher user accounts !',
                 'user_edit_cls'         => 'flash-danger',
@@ -564,7 +564,7 @@ class UserController extends Controller
             if (!$isUpdated)
                 throw new CustomException("User update failed");
 
-            return redirect()->route('admin.user.index')->with([
+            return redirect()->route('admin.users.index')->with([
                 'message' => 'Student update success',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -580,7 +580,7 @@ class UserController extends Controller
 
         }catch(AuthorizationException $e){
             //dd($e->getMessage());
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
             //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update student user accounts !',
                 'user_edit_cls'         => 'flash-danger',
@@ -618,7 +618,7 @@ class UserController extends Controller
             if (!$isUpdated)
                 throw new CustomException("User update failed");
 
-            return redirect()->route('admin.user.index')->with([
+            return redirect()->route('admin.users.index')->with([
                 'message' => 'Student update success',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -634,7 +634,7 @@ class UserController extends Controller
 
         }catch(AuthorizationException $e){
             //dd($e->getMessage());
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
             //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update student user accounts !',
                 'user_edit_cls'         => 'flash-danger',
@@ -672,7 +672,7 @@ class UserController extends Controller
             if (!$isUpdated)
                 throw new CustomException("User update failed");
 
-            return redirect()->route('admin.user.index')->with([
+            return redirect()->route('admin.users.index')->with([
                 'message'  => 'Editor update success',
                 'cls'     => 'flash-success',
                 'msgTitle'=> 'Success',
@@ -687,7 +687,7 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
             //return redirect()->back()->with([
                 'user_edit_message'     => 'You dont have Permissions to update editor user accounts !',
                 'user_edit_cls'         => 'flash-danger',
@@ -809,20 +809,20 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-            return redirect(route('admin.user.index',[]).$hash)->with([
+            return redirect(route('admin.users.index',[]).$hash)->with([
                 'message'     => $e->getMessage(),
                 'cls'         => "flash-danger",
                 'msgTitle'    => 'Error !',
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
                 'message'     => 'You dont have Permissions to delete the user !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
             ]);
         }catch(\Exception $e){
-            return redirect(route('admin.user.index',[]).$hash)->with([
+            return redirect(route('admin.users.index',[]).$hash)->with([
                 'message'     => 'User delete failed!',
                 //'message'     => $e->getMessage(),
                 'cls'         => 'flash-danger',
@@ -855,7 +855,7 @@ class UserController extends Controller
             return view('admin-panel.user-approve-teachers');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
                 'message'     => 'You dont have Permissions to view the user !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',
@@ -908,7 +908,7 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.user.index'))->with([
+            return redirect(route('admin.users.index'))->with([
                 'message'     => 'You dont have Permissions to view the user !',
                 'cls'         => 'flash-danger',
                 'msgTitle'    => 'Permission Denied !',

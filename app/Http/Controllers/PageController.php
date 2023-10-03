@@ -22,7 +22,10 @@ class PageController extends Controller
     function __construct(UserService $userService){
         $this->userService  = $userService;
     }
-
+    
+    public function viewInstruction(){
+        return view('instruction');
+    }
 
     public function page404(Request $request){
 
@@ -62,12 +65,9 @@ class PageController extends Controller
         ]);*/
     }
     
-    public function viewProfile(Request $request){
-        
-        //dump('viewProfile');
-        
+    public function viewProfileEditPage(Request $request){
         try{
-
+            
             $user = Sentinel::getUser();
             if(is_null($user))
                 throw new CustomException('Access denied');
@@ -81,35 +81,139 @@ class PageController extends Controller
             // redirect users that have ADMIN, EDITOR, MARKETER roles
             $allowedRoles = [RoleModel::TEACHER, RoleModel::STUDENT];
             if(!in_array($currentUserRole, $allowedRoles))
-                return redirect()->route('admin.profile', []);
+                abort(403);
 
+            if($currentUserRole == RoleModel::STUDENT)
+                return view('student.student-profile-edit');
 
-            $viewFile   =   ($currentUserRole == RoleModel::TEACHER) ? 
-                                'teacher.teacher-my-profile-full-width' : 
-                                'student.student-my-profile-full-width';            
-            /*
-            $viewFile   =   ($currentUserRole == RoleModel::TEACHER) ? 
-                                'teacher.teacher-my-profile' : 
-                                'student.student-my-profile';
-            */
+            
+            if($currentUserRole == RoleModel::TEACHER)
+                return redirect()->route('admin.profile-edit', []);
 
-            $userData   =   $this->userService->findDbRec($user->id);
-            $userArr    = ProfileDataTransformer::prepareUserData($userData);
-            return view($viewFile)->with(['userData' => $userArr]);
-                 
+            
+            
+
+            //$userData   =   $this->userService->findDbRec($user->id);
+            //$userArr    = ProfileDataTransformer::prepareUserData($userData);
+            //return view('student.student-my-profile')->with(['userData' => $userArr]);
+                             
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('teacher.teacher-my-profile'); 
+            return view('student.student-my-profile'); 
+
+        }catch(\Exception $e){
+            //dd($e->getMessage());
+            session()->flash('message', $e->getMessage());
+            //session()->flash('message', 'Failed to load your profile');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-my-profile');  
+        }
+    }
+
+    public function viewProfile(Request $request){
+        
+        //dump('viewProfile');
+        
+        try{
+            
+            $user = Sentinel::getUser();
+            if(is_null($user))
+                throw new CustomException('Access denied');
+            
+            $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+            $currentUserRole = optional($user->roles()->first())->name;        
+            if(!in_array($currentUserRole, $allRoles))
+                throw new CustomException('Invalid user type');
+
+            
+            // redirect users that have ADMIN, EDITOR, MARKETER roles
+            $allowedRoles = [RoleModel::STUDENT];
+            if(!in_array($currentUserRole, $allowedRoles))
+                return redirect()->route('admin.profile', []);
+            
+
+            $userData   =   $this->userService->findDbRec($user->id);
+            $userArr    = ProfileDataTransformer::prepareUserData($userData);
+            return view('student.student-my-profile')->with(['userData' => $userArr]);
+                             
+        }catch(CustomException $e){
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-my-profile'); 
 
         }catch(\Exception $e){
             session()->flash('message', $e->getMessage());
             //session()->flash('message', 'Failed to load your profile');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('teacher.teacher-my-profile');  
+            return view('student.student-my-profile');  
         }
+    }
+
+    public function viewHelpPage(Request $request){
+        return view('help');        
+    }
+
+    public function viewDashboardPage(Request $request){
+        
+        //dump('viewDashboardPage');
+        
+        try{
+            $user = Sentinel::getUser();
+            if(is_null($user))
+                throw new CustomException('Access denied');
+            
+            $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+            $currentUserRole = optional($user->roles()->first())->name;        
+            if(!in_array($currentUserRole, $allRoles))
+                throw new CustomException('Invalid user type');
+
+            
+            // redirect users that have ADMIN, EDITOR, MARKETER roles
+            $allowedRoles = [RoleModel::STUDENT];
+            if(!in_array($currentUserRole, $allowedRoles))
+                return redirect()->route('admin.dashboard', []);
+            
+
+            //$userData   =   $this->userService->findDbRec($user->id);
+            //$userArr    =   ProfileDataTransformer::prepareUserData($userData);
+            //return view('student.student-my-profile')->with(['userData' => $userArr]);
+            return view('student.student-profile-dashboard');
+                             
+        }catch(CustomException $e){
+            session()->flash('message', $e->getMessage());
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-profile-dashboard'); 
+
+        }catch(\Exception $e){
+            session()->flash('message', $e->getMessage());
+            //session()->flash('message', 'Failed to load your profile');
+            session()->flash('cls','flash-danger');
+            session()->flash('msgTitle','Error!');
+            return view('student.student-profile-dashboard');  
+        }
+    }
+
+
+    public function viewComingSoonPage(Request $request){
+        return view('coming-soon');
+    }
+
+    public function viewAboutUsPage(Request $request){
+        return view('about-us');
+    }
+
+    public function viewWhyChooseUsPage(Request $request){
+        return view('why-edumind');
+    }
+
+    public function viewTermsAndServicesPage(Request $request){
+        return view('terms-and-services');
     }
 
 }

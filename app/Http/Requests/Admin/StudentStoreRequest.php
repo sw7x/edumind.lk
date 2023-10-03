@@ -117,18 +117,18 @@ class StudentStoreRequest extends FormRequest
     {
         $this->validator = $validator;
 
-        return redirect(route('admin.user.create', []). '#tab-add-students')
+        return redirect(route('admin.users.create', []). '#tab-add-students')
         ->with(['is_student_usernameFill' => $this->is_usernameFill]);
 
 
-        //return redirect(route('admin.user.create', []). '#tab-add-students')
+        //return redirect(route('admin.users.create', []). '#tab-add-students')
         //->withErrors($validator)
         //->withInput()
         //->with(['is_student_usernameFill' => $this->is_usernameFill]);
 
 
         /*
-        return redirect()->route('admin.user.create',['','#tab-add-students'])
+        return redirect()->route('admin.users.create',['','#tab-add-students'])
             ->withErrors($validator)
             ->withInput()
             ->with(['is_student_usernameFill' => $this->is_usernameFill]);

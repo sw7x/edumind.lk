@@ -52,91 +52,89 @@
                         <div class="tab-content">
                             <div class="tab-pane active show" id="tab-1">
 
+                                @if(isset($student_courses))
+                                    @if(count($student_courses) > 0)
+                                        <div class="col-lg-12">
+                                            <div class="tube-card p-3 lg:p-6 divide-y">
+                                            <div class="mt-1 text-base font-semibold mb-3">{{count($student_courses)}} Courses</div>
+                                                
+                                                @foreach ($student_courses as $course)
 
-                                @if(isset($student_courses) && count($student_courses))
-                                    <div class="col-lg-12">
-                                        <div class="tube-card p-3 lg:p-6 divide-y">
-                                           <div class="mt-1 text-base font-semibold mb-3">{{count($student_courses)}} Courses</div>
-                                            
-                                            @foreach ($student_courses as $course)
+                                                <?php 
+                                                //dd($userData->id); 
+                                                //dd($userData->id); 
+                                                ?> 
+                                                {{--@forelse ([] as $course)--}}
+                                                    <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
+                                                        <a href="{{route('courses.show',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
+                                                            <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                                        
+                                                        </a>
+                                                        <div class="flex-1 md:space-y-2 space-y-1">
+                                                            <a href="{{route('courses.show',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
+                                                            <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course['headingText']}}</p>
+                                                            <a href="{{route('teachers.show',$course['teacherUserName'])}}" class="md:font-semibold block text-sm">{{$course['teacherName']}}</a>
+                                                            <div class="flex items-center justify-between">
+                                                                <div class="flex __space-x-2 items-center text-sm">
+                                                                    <div class="font-semibold">
+                                                                        <span class="">
+                                                                            <i class="align-middle icon-feather-youtube" style="font-size: 1.20rem;"></i> {{$course['videoCount']}} lectures
+                                                                        </span>
+                                                                    </div>
 
-                                            <?php 
-                                            //dd($userData->id); 
-                                            //dd($userData->id); 
-                                            ?> 
-                                            {{--@forelse ([] as $course)--}}
-                                                <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
-                                                    <a href="{{route('course-single',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
-                                                        <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                                        
-                                                    </a>
-                                                    <div class="flex-1 md:space-y-2 space-y-1">
-                                                        <a href="{{route('course-single',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
-                                                        <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course['headingText']}}</p>
-                                                        <a href="{{route('teacher.view-profile',$course['teacherUserName'])}}" class="md:font-semibold block text-sm">{{$course['teacherName']}}</a>
-                                                        <div class="flex items-center justify-between">
-                                                            <div class="flex __space-x-2 items-center text-sm">
-                                                                <div class="font-semibold">
-                                                                    <span class="">
-                                                                        <i class="align-middle icon-feather-youtube" style="font-size: 1.20rem;"></i> {{$course['videoCount']}} lectures
-                                                                    </span>
+                                                                    <div class="font-semibold ml-3">
+                                                                        <span class="">
+                                                                            <i class="align-middle icon icon-feather-clock" style="font-size: 1.20rem;"></i> {{$course['duration']}}
+                                                                        </span>
+                                                                    </div>
+
+                                                                    {{--
+                                                                    <div class="flex items-center space-x-1 text-yellow-500 ml-5">
+                                                                        <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
+                                                                        <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
+                                                                        <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
+                                                                        <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
+                                                                        <ion-icon name="star" class="text-gray-300 md hydrated" role="img" aria-label="star"></ion-icon>
+                                                                        <div class="font-semibold ml-5 mt-1">4.0</div>
+                                                                    </div>
+                                                                    --}}
+                                                                    <div></div>
                                                                 </div>
+                                                                
+                                                                @php
+                                                                    //dump($course); 
+                                                                @endphp
 
-                                                                <div class="font-semibold ml-3">
-                                                                    <span class="">
-                                                                        <i class="align-middle icon icon-feather-clock" style="font-size: 1.20rem;"></i> {{$course['duration']}}
-                                                                    </span>
-                                                                </div>
-
-                                                                {{--
-                                                                <div class="flex items-center space-x-1 text-yellow-500 ml-5">
-                                                                    <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
-                                                                    <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
-                                                                    <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
-                                                                    <ion-icon name="star" role="img" class="md hydrated" aria-label="star"></ion-icon>
-                                                                    <ion-icon name="star" class="text-gray-300 md hydrated" role="img" aria-label="star"></ion-icon>
-                                                                    <div class="font-semibold ml-5 mt-1">4.0</div>
-                                                                </div>
-                                                                --}}
-                                                                <div></div>
+                                                                
+                                                                
+                                                                @if(isset($course['price']))
+                                                                    <div class="text-lg font-semibold">
+                                                                        {{  $course['price'] != 0 ? ('Rs '.$course['price']) : "Free"   }}
+                                                                    </div>
+                                                                @endif
+                                                            
                                                             </div>
-                                                            
-                                                            @php
-                                                                //dump($course); 
-                                                            @endphp
-
-                                                            
-                                                            
-                                                            @if(isset($course['price']))
-                                                                <div class="text-lg font-semibold">
-                                                                    {{  $course['price'] != 0 ? ('Rs '.$course['price']) : "Free"   }}
-                                                                </div>
-                                                            @endif
-                                                        
+                                                        </div>
+                                                        <div class="absolute top-4 -right-1 cursor-pointer">                                                       
+                                                            @isset($course['isComplete'])
+                                                                @if($course['isComplete'])
+                                                                    <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="Completed"></ion-icon>
+                                                                @else
+                                                                    <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="Enrolled"></ion-icon>
+                                                                @endif
+                                                            @endisset
                                                         </div>
                                                     </div>
-                                                    <div class="absolute top-4 -right-1 cursor-pointer">                                                       
-                                                        @isset($course['isComplete'])
-                                                            @if($course['isComplete'])
-                                                                <ion-icon name="checkmark-done-circle-sharp" class="text-2xl text-green-500 course-status" title="Completed"></ion-icon>
-                                                            @else
-                                                                <ion-icon name="checkmark-circle-outline" class="text-2xl text-green-500 course-status" title="Enrolled"></ion-icon>
-                                                            @endif
-                                                        @endisset
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
 
+                                            </div>
                                         </div>
-                                    </div>
-                                @else
-                                    <div class="md:text-xl font-semibold line-clamp-2">No Courses</div>
+                                    @else
+                                        <div class="md:text-xl font-semibold line-clamp-2">No Courses</div>
+                                    @endif
                                 @endif
 
                             </div>
                         </div>
-
-
-
                     </section>
 
                 </div>

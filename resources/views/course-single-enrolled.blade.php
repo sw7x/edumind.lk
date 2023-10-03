@@ -24,7 +24,7 @@
                     </div>
                     <div class="lg:w-8/12">
                         <div class="capitalize text-gray-200 mb-2 font-semibold">
-                            <a class="hover:text-white" href="{{route('viewTopic',$courseData->subject->slug)}}">{{$courseData->subject->name}}</a>
+                            <a class="hover:text-white" href="{{route('subjects.show',$courseData->subject->slug)}}">{{$courseData->subject->name}}</a>
                         </div>
                         <h1 class="lg:leading-10 lg:text-3xl text-white text-xl leading-8 font-bold">{{$courseData->name}}</h1>
                         <p class="lg:w-4/5 mt-2 md:text-lg md:block hidden">{{$courseData->heading_text}}</p>
@@ -46,7 +46,7 @@
                         </ul>
                         --}}
                         <ul class="lg:flex items-center text-gray-200">
-                            <li> Teacher : <a href="{{route('teacher.view-profile',$courseData->teacher->username)}}" class="text-white fond-bold hover:underline hover:text-white">{{$courseData->teacher->full_name}}</a> </li>
+                            <li> Teacher : <a href="{{route('teachers.show',$courseData->teacher->username)}}" class="text-white fond-bold hover:underline hover:text-white">{{$courseData->teacher->full_name}}</a> </li>
                             <li> <span class="lg:block hidden mx-3 text-2xl">·</span> </li>
                             <li> Posted {{$courseData->created_at->diffForHumans()}}</li>
                         </ul>
@@ -182,7 +182,7 @@
                                                         @endif
 
                                                         <div class="link_div mr-2 text-justify">
-                                                            <a class="_underline link" href="{{route('course-watch',['slug'=>$courseData->slug, 'videoId'=>$liCount])}}">{{$arr['inputText']}}</a>
+                                                            <a class="_underline link" href="{{route('courses.watch',['slug'=>$courseData->slug, 'videoId'=>$liCount])}}">{{$arr['inputText']}}</a>
                                                         </div>
 
                                                         @if($arr['linkParam'] !='')
@@ -219,7 +219,7 @@
                                 </div>
 
                                 <div class="w-3/4 md:text-justify">
-                                    <h4 class="text-base m-0 font-semibold"><a href="{{route('teacher.view-profile',$courseData->teacher->username)}}">{{$courseData->teacher->full_name}}</a></h4>
+                                    <h4 class="text-base m-0 font-semibold"><a href="{{route('teachers.show',$courseData->teacher->username)}}">{{$courseData->teacher->full_name}}</a></h4>
                                     {!! $courseData->teacher->edu_qualifications !!}
                                     {{--
                                     <p class="mt-2 md:ml-0 -ml-16  text-sm">

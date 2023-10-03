@@ -64,7 +64,7 @@
                                 <div role="tabpanel" id="tab-teachers" class="tab-pane {{ ($userData['userType'] == App\Models\Role::TEACHER) ? 'active' : '' }}">
                                     <div class="panel-body">
 
-                                        <form class="" id="" action="{{route('admin.user.update-teacher',['id' => $userData['id']])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.update-teacher',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
                                             <input type="hidden" name="teacher_id" value="{{$userData['id']}}">
 
@@ -233,7 +233,7 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-4 offset-sm-4">
                                                     <button class="btn btn-primary btn-sm" type="submit">Update user</button>
-                                                    <a href="{{route('admin.user.index')}}#tab-teachers" class="btn btn-danger btn-sm">Cancel</a>
+                                                    <a href="{{route('admin.users.index')}}#tab-teachers" class="btn btn-danger btn-sm">Cancel</a>
                                                 </div>
                                             </div>
                                         </form>
@@ -248,7 +248,7 @@
                                             {{-- $error --}}
                                         @endforeach
 
-                                        <form class="" id="" action="{{route('admin.user.update-student',['id' => $userData['id']])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.update-student',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
@@ -380,7 +380,7 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-4 offset-sm-4">
                                                     <button class="btn btn-primary btn-sm" type="submit">Update user</button>
-                                                    <a href="{{route('admin.user.index')}}#tab-students" class="btn btn-danger btn-sm">Cancel</a>
+                                                    <a href="{{route('admin.users.index')}}#tab-students" class="btn btn-danger btn-sm">Cancel</a>
                                                 </div>
                                             </div>
                                         </form>
@@ -395,7 +395,7 @@
                                             {{-- $error --}}
                                         @endforeach
 
-                                        <form class="" id="" action="{{route('admin.user.update-marketer',['id' => $userData['id']])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.update-marketer',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
@@ -495,7 +495,7 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-4 offset-sm-4">
                                                     <button class="btn btn-primary btn-sm" type="submit">Update user</button>
-                                                    <a href="{{route('admin.user.index')}}#tab-marketers" class="btn btn-danger btn-sm">Cancel</a>
+                                                    <a href="{{route('admin.users.index')}}#tab-marketers" class="btn btn-danger btn-sm">Cancel</a>
                                                 </div>
                                             </div>
                                         </form>
@@ -510,7 +510,7 @@
                                             {{-- $error --}}
                                         @endforeach
                                         
-                                        <form class="" id="" action="{{route('admin.user.update-editor',['id' => $userData['id']])}}" method="post">
+                                        <form class="" id="" action="{{route('admin.users.update-editor',['id' => $userData['id']])}}" method="post">
                                             {{ method_field('PATCH') }}
                                             <div class="form-group  row">
                                                 <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
@@ -610,7 +610,7 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-4 offset-sm-4">
                                                     <button class="btn btn-primary btn-sm" type="submit">Update user</button>
-                                                    <a href="{{route('admin.user.index')}}#tab-editors" class="btn btn-danger btn-sm">Cancel</a>
+                                                    <a href="{{route('admin.users.index')}}#tab-editors" class="btn btn-danger btn-sm">Cancel</a>
                                                 </div>
                                             </div>
                                         </form>

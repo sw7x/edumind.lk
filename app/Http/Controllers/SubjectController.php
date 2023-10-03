@@ -23,7 +23,7 @@ class SubjectController extends Controller
 
 
 
-    public function ViewAll(){
+    public function index(){
 
         try{
             $subjectDtoArr  = $this->SubjectService->loadAllSubjects();
@@ -48,7 +48,7 @@ class SubjectController extends Controller
     }
 
 
-    public function ViewSubject($slug=null){
+    public function show($slug=null){
 
         try{
             //$this->authorize('viewSingleInSiteFrontend',$subjectData);

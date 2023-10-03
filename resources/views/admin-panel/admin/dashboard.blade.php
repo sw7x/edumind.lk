@@ -1,5 +1,5 @@
 @extends('admin-panel.layouts.master',['title' => 'Dashboard'])
-@section('title','Dashboard')
+@section('title','Dashboard(A)')
 
 @section('css-files')
 @stop
@@ -32,9 +32,7 @@
 
             {{route('admin.404')}}<br />
             {{route('admin.500')}}<br />
-
-            {{route('admin.course.add-2')}}<br />
-
+            
 			<h1 class="font-bold my-1">editor dashboard</h1>
             <h2 class="font-bold my-1">Total users</h2>
 			[{{Sentinel::check()}}]

@@ -84,14 +84,14 @@
 
                             @foreach ($teacher_courses as $course)
                                 <div class="flex md:space-x-6 space-x-3 md:p-5 p-2 relative">
-                                    <a href="{{route('course-single',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
+                                    <a href="{{route('courses.show',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
                                         <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                     </a>
                                     <div class="flex-1 md:space-y-2 space-y-1">
-                                        <a href="{{route('course-single',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
+                                        <a href="{{route('courses.show',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
                                         <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course['headingText']}}</p>
 
-                                        <a href="{{route('viewTopic',$course['subjectSlug'])}}" class="md:font-semibold block text-base">
+                                        <a href="{{route('subjects.show',$course['subjectSlug'])}}" class="md:font-semibold block text-base">
                                             {{$course['subjectName']}}
                                         </a>
 

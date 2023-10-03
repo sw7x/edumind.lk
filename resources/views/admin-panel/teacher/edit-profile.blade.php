@@ -10,6 +10,9 @@
 
     <!-- bootstrap datapicker -->
     <link href="{{asset('admin/css/plugins/datapicker/datepicker3.css')}}" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{asset('admin/plugins/summernote-0.8.18/summernote-bs4.css')}}">
+    <!-- <link href="css/plugins/summernote/summernote-bs4.css" rel="stylesheet">-->
 
     <link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond-plugin-image-preview.min.css')}}">
     <link rel='stylesheet' href="{{asset('admin/plugins/filepond/css/filepond.min.css')}}">
@@ -111,8 +114,9 @@
                             <div class="col-sm-8">
                                 <select class="selectpicker form-control" name="gender" id="gender">
                                     <option></option>
-                                    <option value="male">Male</option>
-                                    <option {{ old('gender') == 'female' ? "selected" : "" }} value="female">Female</option>                                    
+                                    <option {{ old('gender') == 'male' ? "selected" : "" }} value="male">Male</option>
+                                    <option {{ old('gender') == 'female' ? "selected" : "" }} value="female">Female</option>
+                                    <option {{ old('gender') == 'other' ? "selected" : "" }} value="other">Other</option>
                                 </select>
                                 <div class="error-msg"></div>
                             </div>
@@ -142,13 +146,15 @@
                         <div class="hr-line-dashed"></div>   
 
 
-                        <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Education Details</label>
+                        <div class="form-group row"><label class="col-sm-4 col-form-label">Education qualifications</label>
                             <div class="col-sm-8">
-                                <textarea name="edu_qualifications" cols="30" rows="7" class="form-control" placeholder="" autocomplete="off">{{old('edu_qualifications')}}</textarea>
+                                <div class="border border-edu">
+                                    <textarea rows="3" class="form-control" name="edu_qualifications"></textarea>
+                                </div>
                             </div>
                         </div>
-                        
+                        <div class="hr-line-dashed"></div>
+    
 
                         <div class="form-group row">
                             <div class="col-sm-4 offset-sm-4">
@@ -180,6 +186,10 @@
 
     <!-- Data picker -->
     <script src="{{asset('admin/js/plugins/datapicker/bootstrap-datepicker.js')}}"></script>
+
+    <!-- SUMMERNOTE -->
+    <!-- <script src="../assets/summernote-0.8.18/summernote-lite.js"></script> -->
+    <script src="{{asset('admin/plugins/summernote-0.8.18/summernote-bs4.js')}}"></script>
 
     <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-encode.min.js')}}"></script>
     <script src="{{asset('admin/plugins/filepond/js/filepond-plugin-file-validate-size.min.js')}}"></script>
@@ -232,6 +242,44 @@
             allowClear: true,
             width: '100%'
         });
+
+
+        $('[name="edu_qualifications"]').summernote({
+            //placeholder: 'Hello bootstrap 4',
+            tabsize: 2,
+            height: 250,
+            width: '100%',
+            toolbar: [
+
+                ['style', ['style']],
+                //['font', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['table', ['table']],
+                ['insert', [
+                    'link',
+                    //'picture',
+                    //'video',
+                    'hr'
+                ]
+                ],
+                ['view', [
+                    //'fullscreen',
+                    'codeview',
+                    'help']
+                ]
+            ],
+        });
+        @if(old('edu_qualifications'))
+            $('[name="edu_qualifications"]').summernote('code', '{{old('edu_qualifications')}}');
+        @endif
+
+
+
 
     })();
 

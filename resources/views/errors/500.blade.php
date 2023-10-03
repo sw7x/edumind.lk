@@ -20,8 +20,8 @@
                         <div class="content centered">
                          	<img class="align-center m-auto mb-10" style="width:250px;" src="{{asset('images/server-error.png')}}">
                             
-                            @if(Session::get('message'))
-                                <h1 class="font-semibold mb-2 text-xl text-center">{{Session::get('message')}}</h1>                                
+                            @if(isset($errMsg) && $errMsg)
+                                <h1 class="font-semibold mb-2 text-xl text-center">{{$errMsg}}</h1>                                
                             @else
                                 <h1 class="font-semibold mb-2 text-xl text-center">It appears there is a error in server.</h1>
                             @endif

@@ -25,62 +25,62 @@
                 </li>
 
                 @canany(['viewAny', 'create'], App\Models\Subject::class)
-                <li class="{{ \Str::is('admin.subject.*', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="#" class="" aria-expanded="{{ \Str::is('admin.subject.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                <li class="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                    <a href="#" class="" aria-expanded="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-book"></i><span class="nav-label">Subject</span> <span class="fa arrow"></span>
                     </a>
-                    <ul class="nav nav-second-level" aria-expanded="{{ \Str::is('admin.subject.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                    <ul class="nav nav-second-level" aria-expanded="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         @can('viewAny',App\Models\Subject::class)
-                            <li class="{{ Route::is('admin.subject.index') ? 'current' : '' }}"><a href="{{route('admin.subject.index')}}">Subject list</a></li>
+                            <li class="{{ Route::is('admin.subjects.index') ? 'current' : '' }}"><a href="{{route('admin.subjects.index')}}">Subject list</a></li>
                         @endcan                       
                         
                         @can('create',App\Models\Subject::class)
-                            <li class="{{ Route::is('admin.subject.create') ? 'current' : '' }}"><a href="{{route('admin.subject.create')}}">Create subject</a></li>
+                            <li class="{{ Route::is('admin.subjects.create') ? 'current' : '' }}"><a href="{{route('admin.subjects.create')}}">Create subject</a></li>
                         @endcan
                         
-                        <li class=""><a href="{{route('admin.subject.create')}}">#Approve subject</a></li>
-                        <li class=""><a href="{{route('admin.subject.create')}}">#Approve subject changes</a></li>
+                        <li class=""><a href="{{route('admin.subjects.create')}}">#Approve subject</a></li>
+                        <li class=""><a href="{{route('admin.subjects.create')}}">#Approve subject changes</a></li>
                     </ul>
                 </li>
                 @endcanany
 
                 @canany(['viewAny', 'create'], App\Models\User::class)
-                <li class="{{ \Str::is('admin.user.*', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="" aria-expanded="{{ \Str::is('admin.user.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                <li class="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                    <a href="" aria-expanded="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-user-circle-o"></i><span class="nav-label">Users</span> <span class="fa arrow"></span>
                     </a>
-                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.user.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         @can('viewAny',App\Models\User::class)
-                            <li class="{{ Route::is('admin.user.index') ? 'current' : '' }}"><a href="{{route('admin.user.index')}}">User list</a></li>
+                            <li class="{{ Route::is('admin.users.index') ? 'current' : '' }}"><a href="{{route('admin.users.index')}}">User list</a></li>
                         @endcan
 
                         @can('create',App\Models\User::class)
-                            <li class="{{ Route::is('admin.user.create') ? 'current' : '' }}"><a href="{{route('admin.user.create')}}">Add user</a></li>
+                            <li class="{{ Route::is('admin.users.create') ? 'current' : '' }}"><a href="{{route('admin.users.create')}}">Add user</a></li>
                         @endcan
 
-                        <li class="{{ Route::is('admin.user.un-approved-teachers-list') ? 'current' : '' }}"><a href="{{route('admin.user.un-approved-teachers-list')}}">Approve teachers</a></li>
-                        <li class="{{ Route::is('admin.user.changes-approve') ? 'current' : '' }}"><a href="{{route('admin.user.changes-approve')}}"># Approve user changes</a></li>
+                        <li class="{{ Route::is('admin.users.un-approved-teachers-list') ? 'current' : '' }}"><a href="{{route('admin.users.un-approved-teachers-list')}}">Approve teachers</a></li>
+                        <li class="{{ Route::is('admin.users.changes-approve') ? 'current' : '' }}"><a href="{{route('admin.users.changes-approve')}}"># Approve user changes</a></li>
                     </ul>
                 </li>
                 @endcanany
 
 
-                <li class="{{ \Str::is('admin.course.*', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="" aria-expanded="{{ \Str::is('admin.course.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                <li class="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                    <a href="" aria-expanded="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-graduation-cap"></i><span class="nav-label">Course</span> <span class="fa arrow"></span>
                     </a>
-                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.course.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.course.index') ? 'current' : '' }}"><a href="{{route('admin.course.index')}}">Course list</a></li>
-                        <li class="{{ Route::is('admin.course.create') ? 'current' : '' }}"><a href="{{route('admin.course.create')}}">Add course</a></li>
+                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                        <li class="{{ Route::is('admin.courses.index') ? 'current' : '' }}"><a href="{{route('admin.courses.index')}}">Course list</a></li>
+                        <li class="{{ Route::is('admin.courses.create') ? 'current' : '' }}"><a href="{{route('admin.courses.create')}}">Add course</a></li>
                         
                         {{--                        
-                        <li class="{{ Route::is('admin.course.content') ? 'current' : '' }}"><a href="{{route('admin.course.content')}}">Course content (Add/Edit)</a></li>
+                        <li class="{{ Route::is('admin.courses.content') ? 'current' : '' }}"><a href="{{route('admin.courses.content')}}">Course content (Add/Edit)</a></li>
                         --}}
 
                         <li><a href="">#Approve course</a></li>
                         <li><a href="">#Approve course changes</a></li>
-                        <li class="{{ Route::is('admin.course.enrollement-list') ? 'current' : '' }}"><a href="{{route('admin.course.enrollement-list')}}">Enrollments</a></li>
-                        <li class="{{ Route::is('admin.course.complete-list') ? 'current' : '' }}"><a href="{{route('admin.course.complete-list')}}">Completions</a></li>
+                        <li class="{{ Route::is('admin.courses.enrollement-list') ? 'current' : '' }}"><a href="{{route('admin.courses.enrollement-list')}}">Enrollments</a></li>
+                        <li class="{{ Route::is('admin.courses.complete-list') ? 'current' : '' }}"><a href="{{route('admin.courses.complete-list')}}">Completions</a></li>
                     </ul>
                 </li>
 
@@ -110,35 +110,35 @@
 				</li>
 
 
-                <li class="{{ \Str::is('admin.coupon-code.*', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="" aria-expanded="{{ \Str::is('admin.coupon-code.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                <li class="{{ \Str::is('admin.coupon-codes.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                    <a href="" aria-expanded="{{ \Str::is('admin.coupon-codes.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-credit-card"></i> <span class="nav-label">Coupon code</span> <span class="fa arrow"></span>
                     </a>
-                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.coupon-code.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.coupon-code.create') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.create')}}">Add coupon code</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.marketers') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.marketers')}}">Coupon code list - (Marketer)</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.teachers') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.teachers')}}">Coupon code list - (Teacher)</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.show','0NY27X') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.show','0NY27X')}}">Single coupon Code</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.new') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.new')}}">New Coupon Codes</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.usage') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.usage')}}">Used coupon Code</a></li>
+                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.coupon-codes.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                        <li class="{{ Route::is('admin.coupon-codes.create') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.create')}}">Add coupon code</a></li>
+                        <li class="{{ Route::is('admin.coupon-codes.marketers') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.marketers')}}">Coupon code list - (Marketer)</a></li>
+                        <li class="{{ Route::is('admin.coupon-codes.teachers') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.teachers')}}">Coupon code list - (Teacher)</a></li>
+                        <li class="{{ Route::is('admin.coupon-codes.show','0NY27X') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.show','0NY27X')}}">Single coupon Code</a></li>
+                        <li class="{{ Route::is('admin.coupon-codes.new') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.new')}}">New Coupon Codes</a></li>
+                        <li class="{{ Route::is('admin.coupon-codes.usage') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.usage')}}">Used coupon Code</a></li>
                         {{--
-                        <li class="{{ Route::is('admin.coupon-code.marketers') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.marketers')}}">Coupon code - marketers</a></li>
-                        <li class="{{ Route::is('admin.coupon-code.courses') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.courses')}}">Coupon code - courses</a></li>
+                        <li class="{{ Route::is('admin.coupon-codes.marketers') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.marketers')}}">Coupon code - marketers</a></li>
+                        <li class="{{ Route::is('admin.coupon-codes.courses') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.courses')}}">Coupon code - courses</a></li>
                         --}}
                     </ul>
                 </li>
 
                 
                 @can('viewAny',App\Models\ContactUs::class)
-                <li class="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="#" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                <li class="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                    <a href="#" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
                     </a>
-                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedback.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.feedback.guests') ? 'current' : '' }}"><a href="{{route('admin.feedback.guests')}}">Guest - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedback.students') ? 'current' : '' }}"><a href="{{route('admin.feedback.students')}}">Student - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedback.teachers') ? 'current' : '' }}"><a href="{{route('admin.feedback.teachers')}}">Teacher - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedback.other-users') ? 'current' : '' }}"><a href="{{route('admin.feedback.other-users')}}">Other User Messages</a></li>
+                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                        <li class="{{ Route::is('admin.feedbacks.guest') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.guest')}}">Guest - Messages</a></li>
+                        <li class="{{ Route::is('admin.feedbacks.student') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.student')}}">Student - Messages</a></li>
+                        <li class="{{ Route::is('admin.feedbacks.teacher') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.teacher')}}">Teacher - Messages</a></li>
+                        <li class="{{ Route::is('admin.feedbacks.other-user') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.other-user')}}">Other User Messages</a></li>
                     </ul>
                 </li>
                 @endcan
@@ -162,27 +162,26 @@
 						<span class="nav-label">Teacher</span> <span class="fa arrow"></span>
 					</a>
 					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.teacher.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-						<li class="{{ Route::is('admin.teacher.my-profile-edit') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-profile-edit')}}">Edit My Profile</a></li>
-						<li class="{{ Route::is('admin.teacher.my-earnings') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-earnings')}}">My Earnings</a></li>
-						<li class="{{ Route::is('admin.teacher.my-courses') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-courses')}}">My Courses</a></li>
-						<li class="{{ Route::is('admin.teacher.enrollments') ? 'current' : '' }}"><a href="{{route('admin.teacher.enrollments')}}">My Courses enrollments</a></li>
-                        <li class="{{ Route::is('admin.teacher.completions') ? 'current' : '' }}"><a href="{{route('admin.teacher.completions')}}">My Courses completions</a></li>
-						<li class="{{ Route::is('admin.coupon-code.my-coupons--t') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.my-coupons--t')}}">My coupon codes</a></li>
+						<li class="{{ Route::is('admin.profile-edit') ? 'current' : '' }}"><a href="{{route('admin.profile-edit')}}">Edit My Profile</a></li>
+						<li class="{{ Route::is('admin.my-earnings') ? 'current' : '' }}"><a href="{{route('admin.my-earnings')}}">My Earnings</a></li>
+						<li class="{{ Route::is('admin.my-courses') ? 'current' : '' }}"><a href="{{route('admin.my-courses')}}">My Courses</a></li>
+						<li class="{{ Route::is('admin.enrollments') ? 'current' : '' }}"><a href="{{route('admin.enrollments')}}">Enrollements for my courses</a></li>
+                        <li class="{{ Route::is('admin.course-completions') ? 'current' : '' }}"><a href="{{route('admin.course-completions')}}">Completions of my courses</a></li>
+						<li class="{{ Route::is('admin.coupon-codes.my-coupons') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.my-coupons')}}">My coupon codes</a></li>
+                        <li class="{{ Route::is('admin.my-salaries') ? 'current' : '' }}"><a href="{{route('admin.my-salaries')}}">My salaries</a></li>
+                    </ul>
+                </li>
 
-                        <li class="{{ Route::is('admin.teacher.my-salaries') ? 'current' : '' }}"><a href="{{route('admin.teacher.my-salaries')}}">My salaries</a></li>
-					</ul>
-				</li>
 
-
-				<li class="{{ \Str::is('admin.coupon-code.*', Route::currentRouteName()) ? 'active current' : '' }}">
-					<a href="#" aria-expanded="{{ \Str::is('admin.coupon-code.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+				<li class="{{ \Str::is('admin.coupon-codes.*', Route::currentRouteName()) ? 'active current' : '' }}">
+					<a href="#" aria-expanded="{{ \Str::is('admin.coupon-codes.*', Route::currentRouteName()) ? 'true' : 'false' }}">
 						<span class="nav-label">Marketer</span> <span class="fa arrow"></span>
 					</a>
-					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.coupon-code.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-						<li class="{{ Route::is('admin.coupon-code.my-coupons--m') ? 'current' : '' }}"><a href="{{route('admin.coupon-code.my-coupons--m')}}">My Coupon Codes</a></li>
-                        <li class="{{ Route::is('admin.marketer.my-earnings') ? 'current' : '' }}"><a href="{{route('admin.marketer.my-earnings')}}">My Earnings</a></li>
+					<ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.coupon-codes.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+						<li class="{{ Route::is('admin.coupon-codes.my-coupons') ? 'current' : '' }}"><a href="{{route('admin.coupon-codes.my-coupons')}}">My Coupon Codes</a></li>
+                        <li class="{{ Route::is('admin.my-earnings') ? 'current' : '' }}"><a href="{{route('admin.my-earnings')}}">My Earnings</a></li>
 						
-                        <li class="{{ Route::is('admin.marketer.my-commissions') ? 'current' : '' }}"><a href="{{route('admin.marketer.my-commissions')}}">My commissions</a></li>   
+                        <li class="{{ Route::is('admin.my-commissions') ? 'current' : '' }}"><a href="{{route('admin.my-commissions')}}">My commissions</a></li>   
                     </ul>
 				</li>
 

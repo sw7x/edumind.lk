@@ -10,18 +10,18 @@
                 <div class="">
 
                     <div>
-                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">403 Access Denied </h2>
+                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">403 Access Denied</h2>
                         <hr class="mb-5">
                         <!-- <h4 class="font-semibold mb-2 text-base"> 403 page </h4> -->
 
-
+                        
                             
                         
                         <div class="content centered">
                          	<img class="align-center m-auto" style="width:500px;" src="{{asset('images/access-denied.png')}}">
                             
-                            @if(Session::get('message'))
-                                <h1 class="font-semibold mb-2 text-xl text-center">{{Session::get('message')}}</h1>                                
+                            @if(isset($errMsg) && $errMsg)
+                                <h1 class="font-semibold mb-2 text-xl text-center">{{$errMsg}}</h1>
                             @else
                                 <h1 class="font-semibold mb-2 text-xl text-center">It appears you don't have permission to access this page.</h1>
                             @endif
@@ -33,10 +33,11 @@
                                 <div class="mr-5">
                                     <a href="{{route('home')}}" title="" class="btn bg-green-500 hover:bg-green-600 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Go to Home</a>
                                 </div>
-								@if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != App\Models\Role::STUDENT))
-								<div>
-									<a href="{{route('admin.dashboard')}}" title="" class="btn bg-red-500 hover:bg-red-600 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Admin Panel</a>
-								</div>
+								
+                                @if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != App\Models\Role::STUDENT))
+                                    <div>
+                                        <a href="{{route('admin.dashboard')}}" title="" class="btn bg-red-500 hover:bg-red-600 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Admin Panel</a>
+                                    </div>
 								@endif
                             </div>
                         </div>

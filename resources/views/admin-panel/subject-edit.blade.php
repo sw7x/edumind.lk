@@ -27,7 +27,7 @@
             <div class="ibox ">
                 <div class="ibox-content">
                     <h3>Update Subject</h3>
-                    <form class="edit-subject-form" id="edit-subject" action="{{route('admin.subject.update',$subject['id'])}}" method="POST">
+                    <form class="edit-subject-form" id="edit-subject" action="{{route('admin.subjects.update',$subject['id'])}}" method="POST">
 
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Name</label>
@@ -84,7 +84,7 @@
                         <div class="form-group row">
                             <div class="col-sm-4 offset-sm-4">
                                 <button class="btn btn-primary btn-sm" type="submit">Update changes</button>
-                                <a href="{{route('admin.subject.index')}}" class="btn btn-danger btn-sm" type="reset">Cancel</a>
+                                <a href="{{route('admin.subjects.index')}}" class="btn btn-danger btn-sm" type="reset">Cancel</a>
                             </div>
                         </div>
                         {{csrf_field ()}}

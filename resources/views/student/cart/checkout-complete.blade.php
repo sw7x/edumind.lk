@@ -87,7 +87,7 @@
                                     <a href="{{route('home')}}" title="" class="btn bg-blue-500 hover:bg-blue-600 font-semibold px-5 py-2 hover:text-white rounded-md text-center text-white w-full">Continue shopping</a>
                                 </div>
                                 <div class="mr-5">
-                                    <a href="{{route('student.my-courses')}}" title="" class="btn bg-green-500 hover:bg-green-600 font-semibold px-5 py-2 hover:text-white rounded-md text-center text-white w-full">My courses</a>
+                                    <a href="{{route('enrolled-courses')}}" title="" class="btn bg-green-500 hover:bg-green-600 font-semibold px-5 py-2 hover:text-white rounded-md text-center text-white w-full">Enrolled courses</a>
                                 </div>
                             </div>
                         </div>

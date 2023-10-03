@@ -25,7 +25,7 @@ class TeacherService
         $this->userRepository = $userRepository;
     }
 
-    public function getAllCoursesByTeacher(User $teacher){
+    public function getAllCoursesByTeacher(UserModel $teacher){
         $teacherCourses = $teacher->getTeachingCourses()->withoutGlobalScope('published')->get();
         
         $dataArr = array();

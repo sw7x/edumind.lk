@@ -73,7 +73,7 @@ class CartController extends Controller
                         //dump($freeCourse->id);
 
                         // generate message for the user to tell about deleted courses
-                        return '<a href="'.route('course-single',$freeCourse->slug).'">'.$freeCourse->name.'</a>';
+                        return '<a href="'.route('courses.show',$freeCourse->slug).'">'.$freeCourse->name.'</a>';
                     });
                 }
                 //dump('1.cartFreeCourses');
@@ -358,7 +358,7 @@ class CartController extends Controller
 
 				        $courseInfoArr[] = array(
 				        	'name' => $selection->course->name,
-							'url' => route('course-single',$selection->course->slug)
+							'url' => route('courses.show',$selection->course->slug)
 				        );
 
 
@@ -682,7 +682,7 @@ class CartController extends Controller
                     $course = CourseModel::find($courseRecord->course_id);
                     $courseArr[] = array(
                         'courseName' => $course->name,
-                        'courseUrl'  => route('course-single',$course->slug)
+                        'courseUrl'  => route('courses.show',$course->slug)
                     );
 
                     //if coupon code is used then increase coupon used count by one

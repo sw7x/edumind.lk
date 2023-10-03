@@ -56,7 +56,7 @@
                 <div class="ibox-content">
                     <h3>Add coupon code</h3>
 
-                    <form class="cc-add-form" id="cc-add-form" action="{{route('admin.coupon-code.store')}}" method="POST">
+                    <form class="cc-add-form" id="cc-add-form" action="{{route('admin.coupon-codes.store')}}" method="POST">
                         @csrf
                         <div class="form-group  row">
                             <label class="col-sm-4 col-form-label">Coupon code</label>
@@ -444,7 +444,7 @@
         
         $(document).on('click', '#generate-code', function(e) {            
             $.ajax({
-                url: "{{route('admin.coupon-code.generate-code')}}",
+                url: "{{route('admin.coupon-codes.generate-code')}}",
                 type: "post",
                 async:true,
                 dataType:'json',
@@ -555,7 +555,7 @@
         return new Promise(function(resolve, reject) {
             
             $.ajax({
-                url: "{{route('admin.coupon-code.load-beneficiaries')}}",
+                url: "{{route('admin.coupon-codes.load-beneficiaries')}}",
                 type: "post",
                 async:true,
                 dataType:'json',

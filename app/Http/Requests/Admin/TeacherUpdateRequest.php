@@ -91,7 +91,7 @@ class TeacherUpdateRequest extends FormRequest
         $this->validator = $validator;
         //dd()
         return redirect()
-            ->route('admin.user.update-teacher',$this->recordId)
+            ->route('admin.users.update-teacher',$this->recordId)
             ->withErrors($validator)
             ->withInput();
            //->with(['is_teacher_usernameFill' => $this->is_usernameFill]);

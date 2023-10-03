@@ -112,6 +112,15 @@
 
 
         <div class="main-container container mx-auto max-w-5xl __p-4">
+            @if(Session::has('message'))
+                <x-flash-message  
+                    :class="Session::get('cls', 'flash-info')"  
+                    :title="Session::get('msgTitle') ?? 'Info!'" 
+                    :message="Session::get('message') ?? ''"  
+                    :message2="Session::get('message2') ?? ''"  
+                    :canClose="true" />
+            @endif
+        
             @php
                 //dd($popular_courses);
             @endphp
@@ -122,7 +131,7 @@
                 </div>
 
                 @foreach ($popular_courses as $course)
-                    <a href="{{route('course-single',$course['slug'])}}" class="uk-link-reset">
+                    <a href="{{route('courses.show',$course['slug'])}}" class="uk-link-reset">
                         <div class="horizontal-course-item bg-white md:flex shadow-sm rounded-lg uk-transition-toggle mb-5">
                             <div class="md:w-5/12 md:h-60 h-40 overflow-hidden rounded-l-lg relative">
                                 <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                
@@ -251,7 +260,7 @@
             <!--  slider courses -->
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
                 <h2 class="text-2xl font-semibold">New Courses</h2>
-                <a href="{{route('course-search')}}" class="text-blue-500 sm:block hidden"> Search Courses </a>
+                <a href="{{route('courses.search')}}" class="text-blue-500 sm:block hidden"> Search Courses </a>
             </div>
 
             <div class="mt-3">
@@ -263,7 +272,7 @@
                         <ul class="uk-slider-items uk-child-width-1-4@m uk-child-width-1-2@s uk-grid-small uk-grid">
                             @foreach ($new_courses as $course)
                                 <li>
-                                    <a href="{{route('course-single',$course['slug'])}}" class="uk-link-reset">
+                                    <a href="{{route('courses.show',$course['slug'])}}" class="uk-link-reset">
                                         <div class="bg-white shadow-sm rounded-lg uk-transition-toggle">
                                             <div class="w-full h-40 overflow-hidden rounded-t-lg relative">
                                                 <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                               
@@ -370,7 +379,7 @@
             @if(!empty($teachers))
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
                 <h2 class="text-2xl font-semibold">Teachers</h2>
-                <a href="{{route('teacher.view-all')}}" class="text-blue-500 sm:block hidden"> See all </a>
+                <a href="{{route('teachers.index')}}" class="text-blue-500 sm:block hidden"> See all </a>
             </div>
 
             <div class="relative" uk-slider="finite: true">
@@ -381,7 +390,7 @@
                         @foreach ($teachers as $teacher)
                             <li>
                                 <div class="relative overflow-hidden bg-white shadow-sm md:rounded-lg rounded-md">
-                                    <a href="{{route('teacher.view-profile',$teacher['username'])}}">
+                                    <a href="{{route('teachers.show',$teacher['username'])}}">
                                         <img src="{{$teacher['profilePic']}}" class="w-full h-52 object-cover" alt="">                                        
                                         <div class="p-3 truncate">{{$teacher['fullName']}}</div>
                                     </a>
@@ -471,12 +480,12 @@
             <!--  Subjects section  -->
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
                 <h2 class="text-2xl font-semibold">Subjects</h2>
-                <a href="{{route('viewAllTopic')}}" class="text-blue-500 sm:block hidden"> See all </a>
+                <a href="{{route('subjects.index')}}" class="text-blue-500 sm:block hidden"> See all </a>
             </div>
 
             <div class="grid lg:grid-cols-4 md:grid-cols-3 md:gap-4 grid-cols-1 gap-8 mt-3 mb-3">
                 @forelse ($subject_info as $subject_Item)
-                    <a href="{{route('viewTopic',$subject_Item['slug'])}}" class="rounded-md overflow-hidden relative w-full lg:h-56 h-40">
+                    <a href="{{route('subjects.show',$subject_Item['slug'])}}" class="rounded-md overflow-hidden relative w-full lg:h-56 h-40">
                         <div class="absolute w-full h-3/4 -bottom-12 bg-gradient-to-b from-transparent to-gray-800 z-10">
                         </div>
                         <img src="{{$subject_Item['image']}}" class="absolute w-full h-full object-cover" alt="">                       
@@ -518,7 +527,7 @@
                     <div class="space-y-3 lg:ml-4">
                         <h1 class="text-xl font-semibold  text-blue-600"> Getting started </h1>
                         <p class="text-blue-900 text-sm">ඔබට online courses නිර්මාණය කිරීමට කිසිඳු මූලික දැනුමක් නොමැති වුවත් Edumind සමග සම්බන්ධ වීමට හැකියාව ඇති බව අපි සතුටින් දැනුම් දෙන්නෙමු. ඒ සඳහා ...</p>
-                        <a href="{{route('teacher.instructions')}}" class="text-blue-500 text-sm sm:block hidden"> See all </a>
+                        <a href="{{route('instructions')}}" class="text-blue-500 text-sm sm:block hidden"> See all </a>
                     </div>
                 </div>
 

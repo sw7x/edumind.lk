@@ -119,11 +119,11 @@
 
 	                                <td class="text-right">
 	                                    <div class="btn-group">
-	                                        <a href="{{route ('admin.course.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
-	                                        <a href="{{route ('admin.course.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+	                                        <a href="{{route ('admin.courses.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
+	                                        <a href="{{route ('admin.courses.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
 	                                        <a href="javascript:void(0);" data-courseId="{{$item['id']}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
 	                                    </div>
-	                                    <form class="course-destroy" action="{{ route('admin.course.destroy', $item['id']) }}" method="POST">
+	                                    <form class="course-destroy" action="{{ route('admin.courses.destroy', $item['id']) }}" method="POST">
 	                                        @method('DELETE')
 	                                        <input name="courseId" type="hidden" value="{{$item['id']}}">
 	                                        @csrf
@@ -218,7 +218,7 @@
 			if (result.isConfirmed) {
 
 				$.ajax({
-					url: "{{route('admin.course.check-empty')}}",
+					url: "{{route('admin.courses.check-empty')}}",
 					type: "post",
 					async:true,
 					dataType:'json',
@@ -302,7 +302,7 @@
 				action: function ( e, dt, node, config ) {
 					//$('#addProjectModal').modal('show');
 					//$('#add-modal').modal('show');
-					window.location = '{{route ('admin.course.create')}}';
+					window.location = '{{route ('admin.courses.create')}}';
 					//  alert( 'Button activated' );
 				},
 				className: 'add-ct mb-3 btn-green '
@@ -354,7 +354,7 @@
 		}
 
 		$.ajax({
-			url: "{{route('admin.course.change-status')}}",
+			url: "{{route('admin.courses.change-status')}}",
 			type: "post",
 			async:true,
 			dataType:'json',

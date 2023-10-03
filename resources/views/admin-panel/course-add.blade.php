@@ -190,7 +190,7 @@
             )
                 <div class="ibox">
                     <div class="ibox-content">                    
-                        <form id="course-add-form" method="post" action="{{route('admin.course.store')}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
+                        <form id="course-add-form" method="post" action="{{route('admin.courses.store')}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
                             {{csrf_field ()}}
                             <h1>Details</h1>
                             <fieldset>

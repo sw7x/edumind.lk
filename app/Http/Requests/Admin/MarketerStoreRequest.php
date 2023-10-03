@@ -111,7 +111,7 @@ class MarketerStoreRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         $this->validator = $validator;
-        return redirect(route('admin.user.create', []))
+        return redirect(route('admin.users.create', []))
             ->with(['is_marketer_usernameFill' => $this->is_usernameFill]);
     }
 

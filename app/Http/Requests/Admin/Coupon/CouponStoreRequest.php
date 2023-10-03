@@ -116,7 +116,7 @@ class CouponStoreRequest extends FormRequest
         $this->validator = $validator;
         //dd('ggg');
         return redirect()
-            ->route('admin.coupon-code.create')
+            ->route('admin.coupon-codes.create')
             //->withErrors($this->isValidContentJson)
             ->withErrors($validator,'couponCreate')
             ->withInput();
