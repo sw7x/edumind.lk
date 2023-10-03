@@ -72,9 +72,13 @@ class RegistrationController extends Controller
                     $username = strstr($request->input('email'),'@',true);
                     
                     // username alredy used in DB
-                    if (UserModel::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
+                    $unameCount =   UserModel::withoutGlobalScope('active')
+                                        ->where('username', '=', $username)->count();
+
+                    if ($unameCount > 0)                   
                         throw new CustomException("username - {$username} not available to use");
-                    }                
+
+                    $request->merge(['username'  =>  $username]);
                 }
 
                 // validate recaptcha
@@ -92,19 +96,19 @@ class RegistrationController extends Controller
                 if($body->success){
                     
                     //throw new \Exception("error sending student");
-                    $user = Sentinel::register($request->all());
+                    $user       = Sentinel::register($request->all());
                     $activation = Activation::create($user);
 
                     $role = Sentinel::findRoleBySlug(RoleModel::STUDENT);
                     $role->users()->attach($user);
 
                     //dd($user->email);
-                    $email = $user->email;
+                    $email          = $user->email;
                     $encryptedEmail = Crypt::encrypt($email);
                     $activationCode = $activation->code;
-                    $siteAddress = url('/');
-                    $link = "{$siteAddress}/activate/{$encryptedEmail}/{$activationCode}";
-                    $username = $request->input('username');
+                    $siteAddress    = url('/');
+                    $link           = "{$siteAddress}/activate/{$encryptedEmail}/{$activationCode}";
+                    $username       = $request->input('username');
                     //send mail
                     Mail::to($email)->send(new StudentRegMail($link,$username));
 
@@ -117,8 +121,7 @@ class RegistrationController extends Controller
                     return back()->with([
                         'message'     => 'Recaptcha validation failed',
                         'cls'         => 'flash-danger',
-                        'msgTitle'    => 'Form submit error !',
-
+                        'msgTitle'    => 'Form submit error !'
                     ]);
                 }
 
@@ -180,9 +183,14 @@ class RegistrationController extends Controller
                     $username = strstr($request->input('email'),'@',true);
                     
                     // username alredy used in DB
-                    if (UserModel::withoutGlobalScope('active')->where('username', '=', $username)->count() > 0) {                   
+                    $unameCount =   UserModel::withoutGlobalScope('active')
+                                        ->where('username', '=', $username)->count();
+
+                    if ($unameCount > 0)                   
                         throw new CustomException("username - {$username} not available to use");
-                    }                
+                    
+                    $request->merge(['username'  =>  $username]);
+
                 }
 
                 // validate recaptcha
@@ -216,19 +224,17 @@ class RegistrationController extends Controller
                     $user = Sentinel::register($reqData);
                     //$user = Sentinel::register($request->all());
 
-
                     $activation = Activation::create($user);
 
                     $role = Sentinel::findRoleBySlug(RoleModel::TEACHER);
                     $role->users()->attach($user);
 
-
-                    $email = $user->email;
+                    $email          = $user->email;
                     $encryptedEmail = Crypt::encrypt($email);
                     $activationCode = $activation->code;
-                    $siteAddress = url('/');
-                    $link = "{$siteAddress}/activate/{$encryptedEmail}/{$activationCode}";
-                    $username = $request->input('username');
+                    $siteAddress    = url('/');
+                    $link           = "{$siteAddress}/activate/{$encryptedEmail}/{$activationCode}";
+                    $username       = $request->input('username');
                     
                     //send mail
                     Mail::to($email)->send(new TeacherRegMail($link,$username));

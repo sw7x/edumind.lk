@@ -35,14 +35,12 @@ class ForgotPasswordController extends Controller
 
             if(Reminder::exists($user)){
 
-                $reminderModel = Reminder::createModel();
-                $before4Hours  = \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
-                $reminder = $reminderModel::where('user_id', '=', $user->id)
-                    ->where('updated_at', '>', $before4Hours)
-                    ->where('completed', 0)
-                    ->get()->last();
-
-
+                $reminderModel  =   Reminder::createModel();
+                $before4Hours   =   \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
+                $reminder       =   reminderModel::where('user_id', '=', $user->id)
+                                        ->where('updated_at', '>', $before4Hours)
+                                        ->where('completed', 0)
+                                        ->get()->last();
 
                 if($reminder == null)
                     $reminder = Reminder::create($user);
@@ -54,8 +52,8 @@ class ForgotPasswordController extends Controller
             $email          = $user->email;
             $encryptedEmail = Crypt::encrypt($email);
 
-            $siteAddress = url('/');
-            $pwResetTxt = "{$siteAddress}/reset/{$encryptedEmail}/{$reminder->code}";
+            $siteAddress    = url('/');
+            $pwResetTxt     = "{$siteAddress}/reset/{$encryptedEmail}/{$reminder->code}";
             //send mail
             Mail::to($email)->send(new resetPasswordMail($pwResetTxt));
 
@@ -73,20 +71,19 @@ class ForgotPasswordController extends Controller
     public function resetPassword($encryptedEmail,$resetCode){
 
         try{
-            $email = Crypt::decrypt($encryptedEmail);
-            $user = UserModel::whereEmail($email)->first();
+            $email  =   Crypt::decrypt($encryptedEmail);
+            $user   =   UserModel::whereEmail($email)->first();
 
-            $reminderModel = Reminder::createModel();
-            $before4Hours  = \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
-            $reminder = $reminderModel::where('user_id', '=', $user->id)
-                ->where('updated_at', '>', $before4Hours)
-                ->where('completed', 0)
-                ->get()->last();
+            $reminderModel  =   Reminder::createModel();
+            $before4Hours   =   \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
+            $reminder       =   $reminderModel::where('user_id', '=', $user->id)
+                                    ->where('updated_at', '>', $before4Hours)
+                                    ->where('completed', 0)
+                                    ->get()->last();
 
             $code = $reminder->code;
 
             if($user == null){
-
                 $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
                 $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
                 

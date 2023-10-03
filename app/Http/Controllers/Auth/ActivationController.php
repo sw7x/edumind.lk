@@ -24,7 +24,6 @@ class ActivationController extends Controller
             ]);
 
         }else{
-
             //todo
         }
     }
