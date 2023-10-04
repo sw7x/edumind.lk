@@ -128,6 +128,8 @@ class Mapper{
 
 			// ["mapperKey1", 	'<=>',	'mapperKey2'],
             foreach ($mapperArr as $mapperKey  => $mapperSubArr) {
+                
+
                 if(is_int($mapperKey) && is_array($mapperSubArr)){
 					
 					if(count($mapperSubArr) != 3)

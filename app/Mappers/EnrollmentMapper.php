@@ -40,10 +40,10 @@ class EnrollmentMapper extends Mapper{
             
             '__ARRAY__' => [
                 [   
-                    "course_item_arr",      '<=>',   "courseItemArr",    CourseItemMapper::mapper['DATABSE_MAP']
+                    "course_item_arr",      '=>',   "courseItemArr",    CourseItemMapper::mapper['DATABSE_MAP']
                 ],
                 [
-                    "student_arr",          '<=>',   "studentArr",    UserMapper::mapper['DATABSE_MAP']
+                    "student_arr",          '=>',   "studentArr",    UserMapper::mapper['DATABSE_MAP']
                 ],
                 [
                     "",                     '<=',    "authorFeeArr",    AuthorFeeMapper::mapper['DATABSE_MAP']
@@ -70,16 +70,17 @@ class EnrollmentMapper extends Mapper{
 
             ['courseItemId', 		'<=>',      'courseItem'],
             ['courseItemId',        '<=',       'course_item_id'],
+            ['courseItemId',        '<=',       'course_selection_id'],
                     
             ['studentId',          	'<=>',      'student'],
             ['studentId',           '<=',       'student_id'],
            
             '__ARRAY__' => [
                 [
-                    "courseItemArr",	'<=>',   "course_item_arr",    CourseItemMapper::mapper['POST_MAP']
+                    "courseItemArr",	'=>',   "course_item_arr",    CourseItemMapper::mapper['POST_MAP']
                 ],
                 [
-                    "studentArr",       '<=>',   "student_arr",    UserMapper::mapper['POST_MAP']
+                    "studentArr",       '=>',   "student_arr",    UserMapper::mapper['POST_MAP']
                 ]                
             ],
         ],

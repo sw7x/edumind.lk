@@ -26,11 +26,11 @@ class UserMapper extends Mapper{
             ['profile_text',   	   '<=>',     'profileText'],
             ['status',             '<=>',     'status'],
 
-            ['role_id',            '<=>',      'roleId'],
-            ['is_activated',       '=>',       'isActivated'],
+            ['role_id',            '=>',      'roleId'],
+            ['is_activated',       '=>',      'isActivated'],
             '__ARRAY__' => [
                 [
-                    "role_arr",    '<=>',     "roleArr",    RoleMapper::mapper['DATABSE_MAP']
+                    "role_arr",    '=>',     "roleArr",    RoleMapper::mapper['DATABSE_MAP']
                 ]
             ],
 
@@ -59,7 +59,7 @@ class UserMapper extends Mapper{
             
             '__ARRAY__' => [
                 [
-                    "roleArr",   '<=>',   "role_arr",    RoleMapper::mapper['POST_MAP']
+                    "roleArr",   '=>',   "role_arr",    RoleMapper::mapper['POST_MAP']
                 ]
             ]
         ],

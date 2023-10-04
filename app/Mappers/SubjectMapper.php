@@ -25,12 +25,12 @@ class SubjectMapper  extends Mapper{
             ["slug",                      '<=>',      'slug'], 
             ["status",                    '<=>',      'status'],            
             
-            //['creator_id',                '<=>',      'creatorId'],
-			['author_id',                '<=>',      'creatorId'],
+            //['creator_id',              '<=>',      'creatorId'],
+			['author_id',                 '<=>',      'creatorId'],
 
             '__ARRAY__' => [
                 [
-                    "creator_arr",     '<=>',   "creatorArr",    UserMapper::mapper['DATABSE_MAP']
+                    "creator_arr",     '=>',   "creatorArr",    UserMapper::mapper['DATABSE_MAP']
                 ]
             ] 
         ],
@@ -48,17 +48,18 @@ class SubjectMapper  extends Mapper{
             ["status",                    '<=>',      'status'],
             
             ['creatorId',                  '<=>',      'author'],
-            ['creatorId',                  '<=>',      'author_id'],
+            ['creatorId',                  '<=',       'author_id'],
+
             ['creatorId',                  '<=>',      'creator'],
-            ['creatorId',                  '<=>',      'creator_id'],
+            ['creatorId',                  '<=',       'creator_id'],
 
             
             '__ARRAY__' => [
                 [
-                    "creatorArr",     '<=>',   "creator_arr",    UserMapper::mapper['POST_MAP']
+                    "creatorArr",     '=>',   "creator_arr",    UserMapper::mapper['POST_MAP']
                 ],
                 [
-                    "subjectArr",     '<=>',   "subject_arr",    UserMapper::mapper['POST_MAP']
+                    "subjectArr",     '=>',   "subject_arr",    UserMapper::mapper['POST_MAP']
                 ]
             ]
         ],

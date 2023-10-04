@@ -30,7 +30,7 @@ class ContactUsMapper extends Mapper
             
             '__ARRAY__' => [
                 [
-                    "user_arr",     '<=>',   "userArr",    UserMapper::mapper['DATABSE_MAP']
+                    "user_arr",     '=>',   "userArr",    UserMapper::mapper['DATABSE_MAP']
                 ]
             ]
         ],
@@ -49,11 +49,12 @@ class ContactUsMapper extends Mapper
             
             ['userId',     '<=>',     	'user'],
             ['userId',     '<=',        'user_id'],
-            ['createdAt',   '=>',       'created_at'],
+            
+            ['createdAt',  '=>',        'created_at'],
 
             '__ARRAY__' => [
                 [
-                    "userArr",     '<=>',   "user_arr",    UserMapper::mapper['POST_MAP']
+                    "userArr",     '=>',    "user_arr",    UserMapper::mapper['POST_MAP']
                 ]
             ]
         ],

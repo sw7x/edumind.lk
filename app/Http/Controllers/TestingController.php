@@ -87,7 +87,7 @@ class TestingController extends Controller
     //coupon
     public function coupon(Request $request){
 
-        $cs3 = (new CouponRepository())->findDataArrByCode('0JUA9B');
+        $cs3 = (new CouponRepository())->findDataArrByCode('1BED94');
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = CouponMapper::dbRecConvertToEntityArr($cs3);
@@ -120,7 +120,7 @@ class TestingController extends Controller
         $cs9 = CouponDtoFactory::fromArray($cs5->toArray());
         echo 'Coupon(Entity) --> toArray --> Coupon(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new CouponRepository())->findDtoDataByCode('0JUA9B');
+        $cs10 = (new CouponRepository())->findDtoDataByCode('1BED94');
         echo 'CouponRepository --> findDtoDataByCode<br>';dump($cs10);echo '<hr><br>';
 
         $cs11 = $cs3;
@@ -451,7 +451,7 @@ class TestingController extends Controller
     //courseItem
     public function courseItem(Request $request){
 
-        $cs3 = (new CourseItemRepository())->findDataArrById(20);
+        $cs3 = (new CourseItemRepository())->findDataArrById(16);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = CourseItemMapper::dbRecConvertToEntityArr($cs3);
@@ -478,7 +478,7 @@ class TestingController extends Controller
         $cs9 = CourseItemDtoFactory::fromArray($cs5->toArray());
         echo 'CourseItem(Entity) --> toArray --> CourseItem(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new CourseItemRepository())->findDtoDataById(20);
+        $cs10 = (new CourseItemRepository())->findDtoDataById(16);
         echo 'CourseItemRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
 

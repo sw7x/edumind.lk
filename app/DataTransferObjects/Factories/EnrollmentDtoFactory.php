@@ -28,17 +28,8 @@ use \DateTime;
 
 class EnrollmentDtoFactory extends AbstractDtoFactory
 {
-    
-    
-    
     //-------->course_selection_id, courseItemArr array
     //-------->student_id,studentArr array
-
-
-
-
-
-    // From Array Method
     public static function fromArray(array $data): ?EnrollmentDto { 
         if( !isset($data['courseItemId']) && !isset($data['courseItemArr']) )
             throw new MissingArgumentDtoException('EnrollmentDto create failed due to missing both courseItemId and courseItemArr parameters');

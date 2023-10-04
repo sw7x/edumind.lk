@@ -42,13 +42,13 @@ class CourseItemMapper extends Mapper{
 
             '__ARRAY__' => [
                 [
-                    "course_arr",      	'<=>',   "courseArr",    CourseMapper::mapper['DATABSE_MAP']
+                    "course_arr",       '=>',       "courseArr",    CourseMapper::mapper['DATABSE_MAP']
                 ],
                 [
-                    "used_coupon_arr", 	'<=>',   "usedCouponArr",    CouponMapper::mapper['DATABSE_MAP']
+                    "used_coupon_arr", 	'=>',       "usedCouponArr",    CouponMapper::mapper['DATABSE_MAP']
                 ],                
 				[
-                    "student_arr", 		'<=>',   "studentArr",    CouponMapper::mapper['DATABSE_MAP']
+                    "student_arr", 		'=>',      "studentArr",    CouponMapper::mapper['DATABSE_MAP']
                 ]
             ]
         ], 
@@ -65,9 +65,7 @@ class CourseItemMapper extends Mapper{
             ['edumindAmount',              	'<=>',       'edumind_amount'],
             ['authorAmount',               	'<=>',       'author_amount'],
             ['discountAmount',             	'<=>',       'discount_amount'],
-			
-
-			
+						
             ['revisedPrice',               	'<=>',       'revised_price'],
             ['edumindLoseAmount',         	'<=>',       'edumind_lose_amount'],
             ['beneficiaryEarnAmount',     	'<=>',       'beneficiary_earn_amount'],
@@ -76,23 +74,22 @@ class CourseItemMapper extends Mapper{
             ['courseId',                    '<=',        'course_id'],
 
             ['usedCouponCode',            	'<=>',       'coupon_code'],
-			['usedCouponCode',            	'<=>',       'used_coupon_code'],
+			['usedCouponCode',            	'<=',        'used_coupon_code'],
 			
-			
-			
-            
+					            
             ['studentId',                 	'<=>',       'student'],
             ['studentId',                   '<=',        'student_id'],
 
+
             '__ARRAY__' => [
                 [
-                    "courseArr",        '<=>',   "course_arr",    CourseMapper::mapper['POST_MAP']
+                    "courseArr",        '=>',       "course_arr",    CourseMapper::mapper['POST_MAP']
                 ],
                 [
-                    "usedCouponArr",    '<=>',   "used_coupon_arr",    CouponMapper::mapper['POST_MAP']
+                    "usedCouponArr",    '=>',       "used_coupon_arr",    CouponMapper::mapper['POST_MAP']
                 ],
                 [
-                    "studentArr",       '<=>',   "student_arr",    CouponMapper::mapper['POST_MAP']
+                    "studentArr",       '=>',       "student_arr",    CouponMapper::mapper['POST_MAP']
                 ]
             ]
         ],

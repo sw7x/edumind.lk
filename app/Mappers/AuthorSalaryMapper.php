@@ -22,13 +22,13 @@ class AuthorSalaryMapper  extends Mapper
             ['from_date',     '<=>',  'fromDate'],
             ['to_date',       '<=>',  'toDate'],      
             
-            ['fees',          '<=>',  'fees'],
+            ['fees',          '=>',   'fees'],
             
-            ['author_id',     '<=>',  'authorId'],
+            ['author_id',     '=>',   'authorId'],
             
             '__ARRAY__' => [
                 [
-                    "author_arr",       '<=>',   "authorArr",    UserMapper::mapper['DATABSE_MAP']
+                    "author_arr",       '=>',   "authorArr",    UserMapper::mapper['DATABSE_MAP']
                 ]
             ]
         ],
@@ -47,16 +47,16 @@ class AuthorSalaryMapper  extends Mapper
             ['fromDate',            '<=>',      'from_date'],
             ['toDate',              '<=>',      'to_date'],     
             
-            ['fees',                '<=>',      'fees'],            
+            ['fees',                '=>',       'fees'],            
             
             
             ['authorId',            '<=>',      'author'],
             ['authorId',            '<=',       'author_id'],
-            
+        
 
             '__ARRAY__' => [
                 [
-                    "authorArr",     '<=>',   "author_arr",    UserMapper::mapper['POST_MAP']
+                    "authorArr",     '=>',      "author_arr",    UserMapper::mapper['POST_MAP']
                 ]
             ] 
         ],

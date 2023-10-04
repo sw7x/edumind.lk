@@ -37,10 +37,10 @@ class CourseMapper extends Mapper
             
             '__ARRAY__' => [
                 [
-                    "subject_arr",      '<=>',   "subjectArr",    SubjectMapper::mapper['DATABSE_MAP'],
+                    "subject_arr",      '=>',   "subjectArr",    SubjectMapper::mapper['DATABSE_MAP'],
 				],                
                 [
-                    "creator_arr",      '<=>',   "creatorArr",    UserMapper::mapper['DATABSE_MAP']
+                    "creator_arr",      '=>',   "creatorArr",    UserMapper::mapper['DATABSE_MAP']
                 ]
             ]   
         ],
@@ -73,10 +73,10 @@ class CourseMapper extends Mapper
 
             '__ARRAY__' => [
                 [
-                    "subjectArr",      '<=>',   "subject_arr",    SubjectMapper::mapper['POST_MAP'],
+                    "subjectArr",      '=>',    "subject_arr",    SubjectMapper::mapper['POST_MAP'],
                 ],                
                 [
-                    "creatorArr",      '<=>',   "creator_arr",    UserMapper::mapper['POST_MAP']
+                    "creatorArr",      '=>',    "creator_arr",    UserMapper::mapper['POST_MAP']
                 ]
             ]
             

@@ -48,28 +48,28 @@ class CouponMapper extends Mapper
         /*  DTO Factory Input   <--- convet_to ---  Array(from frontend)
             DTO toArray Output  --- convet_to --->  Array(from frontend)  */ 
         self::POST_MAP => [
-            ['code',                            '<=>',  'code'],
-            ['discountPercentage',              '<=>',  'discount_percentage'],
-            ['totalCount',                      '<=>',  'total_count'],
-            ['usedCount',                       '<=>',  'used_count'],
-            ['isEnabled',                       '<=>',  'is_enabled'],
-            ['commisionPercentageFromDiscount',	'<=>',  'beneficiary_commision_percentage_from_discount'],
+            ['code',                            '<=>',      'code'],
+            ['discountPercentage',              '<=>',      'discount_percentage'],
+            ['totalCount',                      '<=>',      'total_count'],
+            ['usedCount',                       '<=>',      'used_count'],
+            ['isEnabled',                       '<=>',      'is_enabled'],
+            ['commisionPercentageFromDiscount',	'<=>',      'beneficiary_commision_percentage_from_discount'],
             
-            ['ccCourseId',                      '<=>',  'course'], 
-            ['ccCourseId',                      '<=',   'course_id'], 
-            ['ccCourseId',                      '<=',   'cc_course_id'],
+            ['ccCourseId',                      '<=>',      'course'], 
+            ['ccCourseId',                      '<=',       'course_id'], 
+            ['ccCourseId',                      '<=',       'cc_course_id'],
 
 			
-            ['beneficiaryId',                   '<=>',  'beneficiary'],
-            ['beneficiaryId',                   '<=',   'beneficiary_id'],
+            ['beneficiaryId',                   '<=>',      'beneficiary'],
+            ['beneficiaryId',                   '<=',       'beneficiary_id'],
            
 
             '__ARRAY__' => [
                 [
-                    "assignedCourseArr",    '<=>',   "assigned_course_arr",    CourseMapper::mapper['POST_MAP']
+                    "assignedCourseArr",        '=>',       "assigned_course_arr",      CourseMapper::mapper['POST_MAP']
                 ],
                 [
-                    "beneficiaryArr",       '<=>',   "beneficiary_arr",    UserMapper::mapper['POST_MAP']
+                    "beneficiaryArr",           '=>',       "beneficiary_arr",          UserMapper::mapper['POST_MAP']
                 ]
             ] 
         ],

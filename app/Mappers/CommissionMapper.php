@@ -14,22 +14,22 @@ class CommissionMapper extends Mapper{
         /*  DB Record  <--- convet_to ---  ENTITY toArray Output
             DB Record  --- convet_to --->  ENTITY Factory Input  */
         self::DATABSE_MAP => [
-            ['id',            '<=>',  'id'],
-            ['uuid',          '<=>',  'uuid'],
-            ['image',         '<=>',  'image'],
-            ['paid_amount',   '<=>',  'paidAmount'],
-            ['paid_date',     '<=>',  'paidDate'],
-            ['remarks',       '<=>',  'remarks'],
-            ['from_date',     '<=>',  'fromDate'],
-            ['to_date',       '<=>',  'toDate'],      
+            ['id',              '<=>',      'id'],
+            ['uuid',            '<=>',      'uuid'],
+            ['image',           '<=>',      'image'],
+            ['paid_amount',     '<=>',      'paidAmount'],
+            ['paid_date',       '<=>',      'paidDate'],
+            ['remarks',         '<=>',      'remarks'],
+            ['from_date',       '<=>',      'fromDate'],
+            ['to_date',         '<=>',      'toDate'],      
             
-            ['fees',          '<=>',  'fees'],
+            ['fees',            '=>',       'fees'],
    
-            ['beneficiary_id','<=>',  'beneficiaryId'],
+            ['beneficiary_id',  '=>',       'beneficiaryId'],
 
             '__ARRAY__' => [
                 [
-                    "beneficiary_arr",     '<=>',   "beneficiaryArr",    UserMapper::mapper['DATABSE_MAP']
+                    "beneficiary_arr",     '=>',   "beneficiaryArr",    UserMapper::mapper['DATABSE_MAP']
                 ]
             ]
         ],
@@ -47,14 +47,14 @@ class CommissionMapper extends Mapper{
             ['fromDate',            '<=>',      'from_date'],
             ['toDate',              '<=>',      'to_date'],       
             
-            ['fees',                '<=>',      'fees'],            
+            ['fees',                '=>',       'fees'],            
             
             ['beneficiaryId',      	'<=>',      'beneficiary'],
             ['beneficiaryId',       '<=',       'beneficiary_id'],
             
             '__ARRAY__' => [
                 [
-                    "beneficiaryArr",     '<=>',   "beneficiary_arr",    UserMapper::mapper['POST_MAP']
+                    "beneficiaryArr",     '=>',   "beneficiary_arr",    UserMapper::mapper['POST_MAP']
                 ]
             ]
         ],
