@@ -130,7 +130,16 @@ body.noscroll {
     font-size: 24px;
 }
 
-
+.middle-box {
+    max-width: 750px;
+    z-index: 100;
+    margin: 0 auto;
+    padding-top: 40px;
+}
+  
+.middle-box h1 {
+    font-size: 135px;
+}
 
 /*=============================*/
 

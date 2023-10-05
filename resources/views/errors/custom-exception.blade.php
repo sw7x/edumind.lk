@@ -10,7 +10,7 @@
                 <div class="">
 
                     <div>
-                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">500 Server Error</h2>
+                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">Oops! Something Went Wrong</h2>
                         <hr class="mb-5">
                         <!-- <h4 class="font-semibold mb-2 text-base"> 403 page </h4> -->
 
@@ -18,12 +18,12 @@
                             
                         
                         <div class="content centered">
-                         	<img class="align-center m-auto mb-10" style="width:250px;" src="{{asset('images/errors/server-error.png')}}">
+                         	<img class="align-center m-auto mb-10" style="width:250px;" src="{{asset('images/errors/custom-exception.jpg')}}">
                             
                             @if(isset($errMsg) && $errMsg)
                                 <h1 class="font-semibold mb-2 text-xl text-center">{{$errMsg}}</h1>                                
                             @else
-                                <h1 class="font-semibold mb-2 text-xl text-center">It appears there is a error in server.</h1>
+                                <h1 class="font-semibold mb-2 text-xl text-center">Error encountered. We apologize for the inconvenience.</h1>
                             @endif
 
                             <div class="flex mt-5 justify-center">

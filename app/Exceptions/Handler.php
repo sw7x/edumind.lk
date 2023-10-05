@@ -10,7 +10,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Sentinel;
 use App\Models\Role as RoleModel;
-
+use App\Exceptions\CustomException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,8 +49,17 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception){
         
-        //dd(sentinel::check());
-        if ($this->isHttpException($exception)) {
+        $isGuest    = !Sentinel::check();        
+        if(!$isGuest){
+            $user            = Sentinel::getUser();
+            $userRole        = optional($user->roles()->first())->name;   
+            $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
+            $invalidUserRole = !in_array($userRole, $allRoles);
+        }       
+        
+        
+        // for http exceptions (when use abort helper)
+        if ($this->isHttpException($exception)){
                        
             $statuCode  =   $exception->getStatusCode();
             if ($exception->getStatusCode() == 404)
@@ -65,32 +74,53 @@ class Handler extends ExceptionHandler
             $errMsg  =  $exception->getMessage() ?? '';
             
             if (isset($errorPage)) {
-            
                 // if  ajax request
                 if ($request->ajax() || $request->wantsJson())
                     return response()->json([], $statuCode);
-                        
-                // for guests
-                if(!Sentinel::check())
+                   
+                if($isGuest || $invalidUserRole)
                     return response()->view($errorPage, [], $statuCode);
-
-                
-                $user       = sentinel::getUser();                    
-                $userRole   = optional($user->roles()->first())->name;   
-                $allRoles   = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-                if(!in_array($userRole, $allRoles))
-                    return response()->view($errorPage, [], $statuCode);     
-                
-                
+                              
                 $view   =   ($userRole == RoleModel::STUDENT) ? 
                                 $errorPage :
                                 ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
 
                 return response()->view($view, ['errMsg' => $errMsg], $statuCode);    
-                //$view = $request->is('admin/*') ? 'admin-panel.errors.404' : 'errors.404' ;                                       
             }
         }
+
         
+        // for CustomException
+        if ($exception instanceof CustomException){            
+            $errorPage  =   'errors.custom-exception';
+            $msg        =   $exception->getMessage() ?? '';
+
+            if($isGuest || $invalidUserRole)
+                return response()->view($errorPage);
+            
+            $view   =   ($userRole == RoleModel::STUDENT) ? 
+                                $errorPage :
+                                ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+            
+            return response()->view($view, ['errMsg' => $msg]);                 
+        }        
+
+
+        // for \Exception and \Error
+        if ($exception instanceof \Exception || $exception instanceof \Error){
+            $errorPage  =   'errors.error';
+            $msg        =   'Something went wrong';
+
+            if($isGuest || $invalidUserRole)
+                return response()->view($errorPage);
+           
+            $view   =   ($userRole == RoleModel::STUDENT) ? 
+                                $errorPage :
+                                ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+           
+            return response()->view($view, ['errMsg' => $msg]); 
+        }        
+
         return parent::render($request, $exception);
     }
 

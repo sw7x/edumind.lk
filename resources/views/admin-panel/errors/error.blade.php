@@ -1,5 +1,5 @@
 @extends('admin-panel.layouts.master')
-@section('title','Internal Server Error')
+@section('title','Error')
 
 
 @section('content')
@@ -8,8 +8,8 @@
             <div class="ibox mb-0">
                 <div class="ibox-content">
                     <div class="middle-box text-center animated fadeInDown mt-0 pt-1 mb-0 text-red-500">
-                        <h1 class="font-semibold">500</h1>
-                        <h3 class="font-bold text-3xl">Internal Server Error</h3>
+                        <h1 class="font-semibold">Error</h1>
+                        <h3 class="font-bold text-3xl">There was a problem processing your request.</h3>
 
                         <div class="error-desc mb-10">
                             <div class="text-base">
@@ -17,7 +17,7 @@
                                     {{$errMsg}}
                                 @else
                                     The server encountered something unexpected that didn't allow it to complete 
-                                    the request. We apologize.
+                                    the request.
                                 @endif
                             </div>
                             <br/>                            

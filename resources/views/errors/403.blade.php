@@ -18,7 +18,7 @@
                             
                         
                         <div class="content centered">
-                         	<img class="align-center m-auto" style="width:500px;" src="{{asset('images/access-denied.png')}}">
+                         	<img class="align-center m-auto" style="width:500px;" src="{{asset('images/errors/access-denied.png')}}">
                             
                             @if(isset($errMsg) && $errMsg)
                                 <h1 class="font-semibold mb-2 text-xl text-center">{{$errMsg}}</h1>

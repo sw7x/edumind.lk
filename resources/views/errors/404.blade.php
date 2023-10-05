@@ -16,7 +16,7 @@
 
 
                         <div class="content centered">
-                         	<img style="width:500px;" class="m-auto mb-3" src="{{asset('images/404.svg')}}">
+                         	<img style="width:500px;" class="m-auto mb-3" src="{{asset('images/errors/404.svg')}}">
                             @php
                                 //dump($errMsg);
                             @endphp

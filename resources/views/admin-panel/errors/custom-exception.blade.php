@@ -1,5 +1,5 @@
 @extends('admin-panel.layouts.master')
-@section('title','Internal Server Error')
+@section('title','Something Went Wrong')
 
 
 @section('content')
@@ -8,8 +8,8 @@
             <div class="ibox mb-0">
                 <div class="ibox-content">
                     <div class="middle-box text-center animated fadeInDown mt-0 pt-1 mb-0 text-red-500">
-                        <h1 class="font-semibold">500</h1>
-                        <h3 class="font-bold text-3xl">Internal Server Error</h3>
+                        <h1 class="font-semibold">Oops!</h1>
+                        <h3 class="font-bold text-3xl">Something unexpected encountered.</h3>
 
                         <div class="error-desc mb-10">
                             <div class="text-base">
@@ -17,7 +17,7 @@
                                     {{$errMsg}}
                                 @else
                                     The server encountered something unexpected that didn't allow it to complete 
-                                    the request. We apologize.
+                                    the request.
                                 @endif
                             </div>
                             <br/>                            
@@ -29,7 +29,7 @@
                                     <a class="btn btn-primary mr-2" href="{{ route('admin.dashboard') }}">Dashboard</a>
                                     <a class="btn btn-info" href="{{ route('admin.dashboard') }}">Admin Panel</a>
                                 </div>
-                            </div>                           
+                            </div>                        
                         </div>
                     </div>
                 </div>
