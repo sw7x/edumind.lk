@@ -11,6 +11,12 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Sentinel;
 use App\Models\Role as RoleModel;
 use App\Exceptions\CustomException;
+use Illuminate\Auth\Access\AuthorizationException;
+
+//use Illuminate\Foundation\Application;
+//use App;
+use Illuminate\Support\Facades\App;
+
 
 class Handler extends ExceptionHandler
 {
@@ -49,6 +55,8 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception){
         
+
+
         $isGuest    = !Sentinel::check();        
         if(!$isGuest){
             $user            = Sentinel::getUser();
@@ -105,20 +113,41 @@ class Handler extends ExceptionHandler
             return response()->view($view, ['errMsg' => $msg]);                 
         }        
 
-
-        // for \Exception and \Error
-        if ($exception instanceof \Exception || $exception instanceof \Error){
-            $errorPage  =   'errors.error';
-            $msg        =   'Something went wrong';
+        
+        // for AuthorizationException
+        if ($exception instanceof AuthorizationException){            
+            $errorPage  =   'errors.403';
+            $msg        =   $exception->getMessage() ?? '';
 
             if($isGuest || $invalidUserRole)
                 return response()->view($errorPage);
-           
+            
             $view   =   ($userRole == RoleModel::STUDENT) ? 
-                                $errorPage :
-                                ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
-           
-            return response()->view($view, ['errMsg' => $msg]); 
+            $errorPage :
+            ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+            
+            return response()->view($view, ['errMsg' => $msg]);                 
+        }
+        
+
+        // for \Exception and \Error
+        if ($exception instanceof \Exception || $exception instanceof \Error){
+            if((config('app.debug') != true) || App::environment('production')){
+                
+                $errorPage  =   'errors.error';
+                $msg        =   'Something went wrong';
+                //$msg      =   $exception->getMessage() ?? '';
+                //dd($msg);
+
+                if($isGuest || $invalidUserRole)
+                    return response()->view($errorPage);
+               
+                $view   =   ($userRole == RoleModel::STUDENT) ? 
+                                    $errorPage :
+                                    ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+               
+                return response()->view($view, ['errMsg' => $msg]);
+            }
         }        
 
         return parent::render($request, $exception);
