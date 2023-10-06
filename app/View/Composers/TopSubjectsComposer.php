@@ -16,15 +16,15 @@ class TopSubjectsComposer
 
         $subjects = SubjectModel::withCount('courses')->orderBy('courses_count', 'desc')->skip(0)->take(8)->get();
         $arr = array();
-        $arr = $subjects->map(function($subject) use ($arr){
-            return array(
-                'name'  => $subject->name,
-                'url'   => $subject->slug,
-                'image' => $subject->image
-            );
+        $subjects->map(function($subject) use (&$arr){
+            $arr[]  =   array(
+                            'name'  => $subject->name,
+                            'slug'   => $subject->slug,
+                            'image' => $subject->image
+                        );
         });
 
-        $view->with('subject_info',$subjects);
+        $view->with('subject_info',$arr);
         //dd($subjects);
     }
 }

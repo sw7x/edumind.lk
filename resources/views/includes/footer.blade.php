@@ -48,26 +48,30 @@
                             <!-- Ends: .footer-widget -->
                         </div>
                         <!-- end /.col-md-4 -->
-                        <div class="col-md-3 col-sm-4">
-                            <div class="footer-widget">
-                                <div class="footer-menu footer-menu--1">
-                                    <h4 class="footer-widget-title">Popular Subjects</h4>
-                                    <ul>
-                                        @foreach($subject_info as $subArr)
-                                            <li><a href="{{route('subjects.show',$subArr['url'])}}">{{$subArr['name']}}</a></li>
-                                            @if($loop->index >= 4)
-                                            {{--
-                                            @break
-                                            --}}
-                                            @endif
-                                        @endforeach
-                                    </ul>
+                        
+                        @if(isset($subject_info) && isNotEmptyArray($subject_info))
+                            <div class="col-md-3 col-sm-4">
+                                <div class="footer-widget">
+                                    <div class="footer-menu footer-menu--1">
+                                        
+                                        <h4 class="footer-widget-title">Popular Subjects</h4>
+                                        <ul>
+                                            @foreach($subject_info as $subArr)
+                                                <li><a href="{{route('subjects.show',$subArr['slug'])}}">{{$subArr['name']}}</a></li>
+                                                @if($loop->index >= 4)
+                                                {{--
+                                                @break
+                                                --}}
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    <!-- end /.footer-menu -->
                                 </div>
-                                <!-- end /.footer-menu -->
+                                <!-- Ends: .footer-widget -->
                             </div>
-                            <!-- Ends: .footer-widget -->
-                        </div>
-                        <!-- end /.col-md-3 -->
+                            <!-- end /.col-md-3 -->
+                        @endif
 
                         <div class="col-md-3 col-sm-4">
                             <div class="footer-widget">
