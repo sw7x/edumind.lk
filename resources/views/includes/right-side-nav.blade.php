@@ -30,87 +30,87 @@
 
                         <!-- cart -->
                         @if(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
-                        <a href="#" class="header_widgets">
-                            <ion-icon name="cart-outline" class="is-icon"></ion-icon>
-                            <span>{{$cartCourseCount}}</span>
-                        </a>
+                            <a href="#" class="header_widgets">
+                                <ion-icon name="cart-outline" class="is-icon"></ion-icon>
+                                <span>{{$cartCourseCount}}</span>
+                            </a>
 
-                        <div uk-drop="mode: click" class="dropdown_cart">
-                            @if($cartDiscountedCourses->count() > 1)
-                                <div style="background: red;" class="font-semibold rounded border-b text-sm py-2 px-2 flex justify-between items-center">
-                                    <div class="text-white">
-                                        <i class="fa fa-exclamation-triangle text-base mr-1" aria-hidden="true"></i> 
-                                        <span>Your cart has invalid items !</span>  
+                            <div uk-drop="mode: click" class="dropdown_cart">
+                                @if($cartDiscountedCourses->count() > 1)
+                                    <div style="background: red;" class="font-semibold rounded border-b text-sm py-2 px-2 flex justify-between items-center">
+                                        <div class="text-white">
+                                            <i class="fa fa-exclamation-triangle text-base mr-1" aria-hidden="true"></i> 
+                                            <span>Your cart has invalid items !</span>  
+                                        </div>
+                                        <div>
+                                            {{-- <a href="" class="text-blue-500">Rest cart</a> --}}
+                                        </div>
                                     </div>
-                                    <div>
-                                        {{-- <a href="" class="text-blue-500">Rest cart</a> --}}
-                                    </div>
+                                @endif
+
+                                <div class="cart-headline">
+                                    <div>My Cart</div>
+                                    {{-- 
+                                    <a href="#" class="checkout inline-block bg-red-500 hover:bg-red-600 text-white hover:text-white py-1 px-2 rounded text-base">Checkout</a> 
+                                    --}}
+                                    <a href="{{route('view-cart')}}" class="font-medium text-sm text-blue-500">
+                                        {{($cartDiscountedCourses->count() > 1) ? 'Rest my cart' : 'View my cart'}}                                    
+                                    </a>
                                 </div>
-                            @endif
-
-                            <div class="cart-headline">
-                                <div>My Cart</div>
-                                {{-- 
-                                <a href="#" class="checkout inline-block bg-red-500 hover:bg-red-600 text-white hover:text-white py-1 px-2 rounded text-base">Checkout</a> 
-                                --}}
-                                <a href="{{route('view-cart')}}" class="font-medium text-sm text-blue-500">
-                                    {{($cartDiscountedCourses->count() > 1) ? 'Rest my cart' : 'View my cart'}}                                    
-                                </a>
-                            </div>
-                                                        
-                            <!--  <h4 class="cart-headline"> My Cart </h4>-->
-                            <ul class="dropdown_cart_scrollbar" data-simplebar 
-                                style="max-height:{{($cartDiscountedCourses->count() > 1) ? '380px':'420px'}}">
-                                <?php //dump($cartDiscountedCourses->pluck('course_id')) ?>
-                                
-                                @foreach($cartCourses as $course)
-                                <li class="@if(!($loop->last)) border-b-2 border-gray-200 @endif">
-                                    <div class="cart_avatar">
-                                        <img src="{{$course['image']}}" alt="">                                        
-                                    </div>
-                                    <div class="cart_text">
-                                        <!-- <h4>{{$course['name']}}</h4> -->
-                                        <a href="{{route('courses.show',$course['slug'])}}">{{$course['name']}}</a>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span class="text-base">{{$course['revised_price']}}</span>
-                                        
-                                        @if($cartDiscountedCourses->pluck('course_id')->contains($course['id']))
-                                            <span class="line-through text-gray-500 font-normal">{{$course['price']}}</span>
-                                        @endif
-                                        
-                                        <!-- <button class="type"> Remove</button> -->
-                                        <form action="{{route('remove-cart',$course['id'])}}" method="post" class=''>
-                                            {{csrf_field ()}}
-                                            <div class="mt-4">
-                                                <button type="submit" class="">Remove</button>
-                                            </div>
-                                            <input type="hidden" name="page" value="">
-                                        </form>
-                                    </div>
-                                </li>
-                                @endforeach
-                                <!-- 
-                                <li>
-                                    <div class="cart_avatar">
-                                        <img src="{{asset('images/courses/img-1.jpg')}}" alt="">
-                                    </div>
-                                    <div class="cart_text">
-                                        <h4>  Become a Web Developer from Scratch to Advanced </h4>
-                                    </div>
-                                    <div class="cart_price">
-                                        <span> $19.99 </span>
-                                        <button class="type"> Remove</button>
-                                    </div>
-                                </li>
-                                -->
-                            </ul>
-                            <div class="cart_footer row">
-                                <div class="col-md-5 text-left">Subtotal :</div>
-                                <div class="col-md-7 text-right"><span>Rs {{$cartTotal}}</span></div>
-                                <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
-                            </div>                          
-                        </div>                      
+                                                            
+                                <!--  <h4 class="cart-headline"> My Cart </h4>-->
+                                <ul class="dropdown_cart_scrollbar" data-simplebar 
+                                    style="max-height:{{($cartDiscountedCourses->count() > 1) ? '380px':'420px'}}">
+                                    <?php //dump($cartDiscountedCourses->pluck('course_id')) ?>
+                                    
+                                    @foreach($cartCourses as $course)
+                                    <li class="@if(!($loop->last)) border-b-2 border-gray-200 @endif">
+                                        <div class="cart_avatar">
+                                            <img src="{{$course['image']}}" alt="">                                        
+                                        </div>
+                                        <div class="cart_text">
+                                            <!-- <h4>{{$course['name']}}</h4> -->
+                                            <a href="{{route('courses.show',$course['slug'])}}">{{$course['name']}}</a>
+                                        </div>
+                                        <div class="cart_price">
+                                            <span class="text-base">{{$course['revised_price']}}</span>
+                                            
+                                            @if($cartDiscountedCourses->pluck('course_id')->contains($course['id']))
+                                                <span class="line-through text-gray-500 font-normal">{{$course['price']}}</span>
+                                            @endif
+                                            
+                                            <!-- <button class="type"> Remove</button> -->
+                                            <form action="{{route('remove-cart',$course['id'])}}" method="post" class=''>
+                                                {{csrf_field ()}}
+                                                <div class="mt-4">
+                                                    <button type="submit" class="">Remove</button>
+                                                </div>
+                                                <input type="hidden" name="page" value="">
+                                            </form>
+                                        </div>
+                                    </li>
+                                    @endforeach
+                                    <!-- 
+                                    <li>
+                                        <div class="cart_avatar">
+                                            <img src="{{asset('images/courses/img-1.jpg')}}" alt="">
+                                        </div>
+                                        <div class="cart_text">
+                                            <h4>  Become a Web Developer from Scratch to Advanced </h4>
+                                        </div>
+                                        <div class="cart_price">
+                                            <span> $19.99 </span>
+                                            <button class="type"> Remove</button>
+                                        </div>
+                                    </li>
+                                    -->
+                                </ul>
+                                <div class="cart_footer row">
+                                    <div class="col-md-5 text-left">Subtotal :</div>
+                                    <div class="col-md-7 text-right"><span>Rs {{$cartTotal}}</span></div>
+                                    <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
+                                </div>                          
+                            </div>                      
                         @endif
 
 
@@ -176,10 +176,8 @@
                                     <li>
                                         <a href="{{route('help')}}"><ion-icon name="help-circle" class="is-icon"></ion-icon> <span>Help</span></a>
                                     </li>
-                                    
 
                                 @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::TEACHER)
-                                    
                                     <li>
                                         <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></a>
                                     </li><li><hr></li>
@@ -203,7 +201,7 @@
                                     </li>
                                     <li>
                                         <a href="{{route('admin.my-earnings')}}"><ion-icon name="cash" class="is-icon"></ion-icon> <span>My Earnings</span></a>
-                                    </li>                                    
+                                    </li>
 
                                 @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::MARKETER)
                                     {{--todo create routes for marketer dashboard, and other pages--}}
@@ -267,7 +265,6 @@
                                         </a>
                                     </form>
                                 </li>
-
                             </ul>
                         </div>
                     @endif

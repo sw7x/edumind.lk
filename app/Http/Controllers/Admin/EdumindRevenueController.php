@@ -69,6 +69,7 @@ class EdumindRevenueController extends Controller
                 'msgTitle'  => 'Error !',
             ]);
         }
+        
     }
 
 

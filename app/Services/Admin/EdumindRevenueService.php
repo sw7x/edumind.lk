@@ -49,7 +49,7 @@ class EdumindRevenueService
 
     public function loadEarnings(){
 
-        $enrollmentDataArr11      = (new EnrollmentRepository())->findDataArrById(17);
+        //$enrollmentDataArr11      = (new EnrollmentRepository())->findDataArrById(17);
         //dump($enrollmentDataArr11);
 
         //TODO - add pagination
