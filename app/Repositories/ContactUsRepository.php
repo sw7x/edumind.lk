@@ -5,12 +5,12 @@ namespace App\Repositories;
 use App\Repositories\BaseRepository;
 use App\Models\ContactUs as ContactUsModel;
 
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\ContactUsMapper;
 use Illuminate\Database\Eloquent\Collection;
 
 
-class ContactUsRepository extends BaseRepository implements IGetDtoDataRepository{
+class ContactUsRepository extends BaseRepository implements IGetDataRepository{
     
     public function __construct(){
         parent::__construct(ContactUsModel::make());        

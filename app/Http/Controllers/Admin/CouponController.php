@@ -15,8 +15,6 @@ use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 use App\Models\Role as RoleModel;
 
-
-
 //use App\Models\Coupon;
 //use Illuminate\Support\Collection;
 //use App\Models\Course;
@@ -276,40 +274,40 @@ class CouponController extends Controller
     public function usageOfCoupons(){
         return view('admin-panel.marketer.usage-coupon-codes');
     }
-    
+
 
 
     public function myCoupons(){
 
-            
+
         if(!Sentinel::check())
             abort(403);
-            
-        $user            = Sentinel::getUser();            
+
+        $user            = Sentinel::getUser();
         $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-        $currentUserRole = optional($user->roles()->first())->name;        
+        $currentUserRole = optional($user->roles()->first())->name;
         if(!in_array($currentUserRole, $allRoles))
             abort(403);
-           
+
 
         // redirect users that have TEACHER, STUDENT roles
         $adminPanelAllowedRoles = [RoleModel::MARKETER, RoleModel::TEACHER];
         if(!in_array($currentUserRole, $adminPanelAllowedRoles))
             abort(404);
-            
-        
-        $view   =   ($currentUserRole == RoleModel::TEACHER) ? 
+
+
+        $view   =   ($currentUserRole == RoleModel::TEACHER) ?
                         'admin-panel.teacher.list-coupon-codes' : // TEACHER
                         'admin-panel.marketer.list-coupon-codes'; // MARKETER
 
         // load page with data for EDITOR / MARKETER user roles
-        return view($view);      
+        return view($view);
     }
-    
 
 
 
-    
+
+
 
 
 

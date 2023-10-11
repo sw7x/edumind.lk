@@ -11,10 +11,10 @@ use App\Models\Invoice as InvoiceModel;
 //get all orders of a student
 use App\Repositories\UserRepository;
 use App\Repositories\CourseItemRepository;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 
 
-class OrderRepository implements IGetDtoDataRepository{
+class OrderRepository implements IGetDataRepository{
     
     
     public function allOrders(): array {		

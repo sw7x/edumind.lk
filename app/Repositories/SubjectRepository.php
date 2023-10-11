@@ -7,13 +7,13 @@ use App\Models\Subject as SubjectModel;
 use App\Repositories\BaseRepository;
 use App\Repositories\UserRepository;
 
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\SubjectMapper;
 use Illuminate\Database\Eloquent\Collection;
 
 
 
-class SubjectRepository extends BaseRepository implements IGetDtoDataRepository {
+class SubjectRepository extends BaseRepository implements IGetDataRepository {
         
     public function __construct(){
         parent::__construct(SubjectModel::make());
@@ -138,6 +138,10 @@ class SubjectRepository extends BaseRepository implements IGetDtoDataRepository 
 
     public function findByUrl(String $url) : ?Collection{
         return $this->model->withoutGlobalScope('published')->where('slug',$slug)->first();
+    }    
+
+    public function findAvailableByUrl(String $url) : ?Collection{
+        return $this->model->where('slug',$slug)->first();
     }
 
     public function findDuplicateCountByName(string $subjectName, int $id) : int {

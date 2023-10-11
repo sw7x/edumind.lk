@@ -7,12 +7,12 @@ use App\Models\Role as RoleModel;
 use App\Models\User as UserModel;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\UserMapper;
 use Illuminate\Database\Eloquent\Collection;
 use Sentinel;
 
-class UserRepository extends BaseRepository implements IGetDtoDataRepository{
+class UserRepository extends BaseRepository implements IGetDataRepository{
     
     public function __construct(){
         parent::__construct(UserModel::make());        
@@ -133,10 +133,15 @@ class UserRepository extends BaseRepository implements IGetDtoDataRepository{
     public function findUserByEmail(String $email) : ?UserModel{
         return $this->model->withoutGlobalScope('active')->where('email',$email)->first();
     }
-
+    public function findAvailableUserByEmail(String $email) : ?UserModel{
+        return $this->model->where('email',$email)->first();
+    }
 
     public function findUserByUsername(String $username) : ?UserModel{
         return $this->model->withoutGlobalScope('active')->where('username',$username)->first();
+    }
+    public function findAvailableUserByUsername(String $username) : ?UserModel{
+        return $this->model->where('username',$username)->first();
     }    
 
     public function findDuplicateCountByName(string $fullName, int $id) : int {

@@ -5,10 +5,10 @@ namespace App\Repositories;
 use App\Repositories\BaseRepository;
 
 use App\Models\Invoice as InvoiceModel;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\InvoiceMapper;
 
-class InvoiceRepository extends BaseRepository implements IGetDtoDataRepository{
+class InvoiceRepository extends BaseRepository implements IGetDataRepository{
     
 	public function __construct(){
         parent::__construct(InvoiceModel::make());        

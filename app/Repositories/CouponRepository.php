@@ -175,7 +175,7 @@ class CouponRepository implements ICouponRepository{
     * @param array $payload
     * @return CouponModel
     */
-    public function create(array $payload): ?CouponModel {        
+    public function create(array $payload, bool $updateTimestamps = true): ?CouponModel {        
         $model = CouponModel::create($payload);
         return $model->fresh();
     }
@@ -187,10 +187,13 @@ class CouponRepository implements ICouponRepository{
     * @param array $payload
     * @return bool
     */
-    public function update(int $modelCode, array $payload): bool {        
-        $model = $this->find($modelCode);
-        return $model->update($payload);
-    }
+    public function update(string $modelCode, array $payload, bool $updateTimestamps = true): bool {        
+        $model              = $this->findByCode($modelCode);
+        $model->timestamps  = $updateTimestamps;
+        $isUpdated          = $model->update($payload);
+        $model->timestamps  = true;
+        return $isUpdated;
+     }
 
     /**
     * Delete model by id.

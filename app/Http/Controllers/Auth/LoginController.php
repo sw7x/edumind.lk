@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
@@ -10,8 +9,9 @@ use Cartalyst\Sentinel\checkpoints\NotActivatedException;
 use App\Exceptions\WrongUserTypeException;
 use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Role as RoleModel;
+
+//use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -29,7 +29,7 @@ class LoginController extends Controller
     //todo
     public function loginSubmit(Request $request){
 
-        
+
         $validator = Validator::make($request->all(), [
             'email'     =>'required',
             'password'  =>'required|min:6|max:12',
@@ -62,7 +62,7 @@ class LoginController extends Controller
 
                 if($user == null){
                     throw new CustomException('Invalid user or account diabled');
-                }else{                  
+                }else{
 
                     $role = $user->roles()->first()->slug;
                     if($role != RoleModel::TEACHER && $role != RoleModel::STUDENT){
@@ -76,7 +76,7 @@ class LoginController extends Controller
                     'password' => $request->password],$remember_me)){
 
                     $role = Sentinel::getUser()->roles()->first()->slug;
-                    
+
                     if($role == RoleModel::TEACHER){
                         return redirect()->route('teacher.my-profile', []);
                     }else if($role == RoleModel::STUDENT){

@@ -7,10 +7,10 @@ use App\Repositories\BaseRepository;
 use App\Repositories\UserRepository;
 
 use App\Models\AuthorSalary as AuthorSalaryModel;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\AuthorSalaryMapper;
 
-class AuthorSalaryRepository extends BaseRepository implements IGetDtoDataRepository{
+class AuthorSalaryRepository extends BaseRepository implements IGetDataRepository{
 
     public function __construct(){
         parent::__construct(AuthorSalaryModel::make());

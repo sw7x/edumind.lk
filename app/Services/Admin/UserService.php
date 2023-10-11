@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\Admin;
 
 use App\Repositories\UserRepository;
@@ -24,7 +23,7 @@ use App\Models\Role as RoleModel;
 
 class UserService
 {
-    
+
     private UserRepository $userRepository;
 
     function __construct(UserRepository $userRepository){
@@ -42,23 +41,23 @@ class UserService
         $teachersDtoArr = array();
         $teachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
             $teachersDtoArr[]  =   UserBuilder::buildDto($record->toArray());
-        });        
+        });
 
         $studentsDtoArr = array();
         $students->each(function (UserModel $record, int $key) use (&$studentsDtoArr){
             $studentsDtoArr[]  =   UserBuilder::buildDto($record->toArray());
-        });        
+        });
 
         $marketersDtoArr = array();
         $marketers->each(function (UserModel $record, int $key) use (&$marketersDtoArr){
             $marketersDtoArr[]  =   UserBuilder::buildDto($record->toArray());
-        });        
+        });
 
         $editorsDtoArr = array();
         $editors->each(function (UserModel $record, int $key) use (&$editorsDtoArr){
             $editorsDtoArr[]  =   UserBuilder::buildDto($record->toArray());
         });
-        
+
         //dump($teachersDtoArr);dump($studentsDtoArr);dump($marketersDtoArr);dump($editorsDtoArr);dd();
 
         return array(
@@ -76,52 +75,52 @@ class UserService
         );
     }
 
-    
+
     public function saveDbRec(Request $request) : SubjectModel {
         $subjectCount       = $this->subjectRepository->findByName($request->get('name'))->count();
-        
+
         if ($subjectCount > 0)
             throw new CustomException('Subject name already exists!');
-        
+
         $file       = $request->input('image');
         $imgDest    = (isset($file))? (new FileUploadUtil())->upload($file,'subjects/') : null;
 
         $urlString  = UrlUtil::wordsToUrl($request->name,15);
         $slug       = UrlUtil::generateSubjectUrl($urlString);
 
-        $request->merge([ 
+        $request->merge([
             "creator_id" => Sentinel::getUser()->id,
             'slug'       => $slug,
             'image'      => $imgDest
         ]);
-        
-        $subjectDto     = SubjectDtoFactory::fromRequest($request); 
-        $payloadArr     = $this->dtoToDbRecArr($subjectDto); 
+
+        $subjectDto     = SubjectDtoFactory::fromRequest($request);
+        $payloadArr     = $this->dtoToDbRecArr($subjectDto);
         return $this->subjectRepository->create($payloadArr);
     }
 
 
     public function updateDbRec(Request $request, SubjectModel $subjectDbRec) : bool {
-        
+
         $isNameExists   =   $this->subjectRepository->findDuplicateCountByName(
-                                $request->get('name'), 
+                                $request->get('name'),
                                 $subjectDbRec->id
-                            ); 
+                            );
         if($isNameExists)
             throw new CustomException('Subject name already exists!');
 
         $file           = $request->input('image');
-        
-        if(!isset($file)){ 
+
+        if(!isset($file)){
             // remove image and submit update
             $imgDest = null;
         }else{
-            /*  input filed hidden_file_add_count value equals 0 when initially filpond loads image  
+            /*  input filed hidden_file_add_count value equals 0 when initially filpond loads image
                 it means no change to previously upload image and submit edit form    */
-            if( $request->hidden_file_add_count == 0){                
+            if( $request->hidden_file_add_count == 0){
                 $defaultImgPath = asset('images/default-images/subject.png');
                 $imgUrl         = $request->hidden_subject_img_url;
-                
+
                 if($imgUrl == $defaultImgPath){
                     $imgDest = null;
                 }else{
@@ -137,27 +136,27 @@ class UserService
             }
         }
 
-        $request->merge(['image'      => $imgDest]);        
-        $subjectDto = SubjectDtoFactory::fromRequest($request);         
+        $request->merge(['image'      => $imgDest]);
+        $subjectDto = SubjectDtoFactory::fromRequest($request);
         $payloadArr = $this->dtoToDbRecArr($subjectDto);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['slug']);
         unset($payloadArr['author_id']);
-        
+
         return $subjectDbRec->update($payloadArr);
     }
 
 
-    
+
     public function deleteDbRec(UserModel $userDbRec) : bool {
         //return $subjectDbRec->delete();
-        return $this->userRepository->deleteById($userDbRec->id);        
+        return $this->userRepository->deleteById($userDbRec->id);
     }
 
     public function findUnApprovedTeachers() : array {
         $unApprovedTeachers = $this->userRepository->getUnApprovedTeachers();
-        
+
         $unApprovedTeachersArr = array();
         $unApprovedTeachers->each(function (UserModel $record, int $key) use (&$unApprovedTeachersArr){
             $unApprovedTeachersArr[]  =   UserBuilder::buildDto($record->toArray());
@@ -170,7 +169,7 @@ class UserService
         $teacherUpdateInfo  = ['status'=> $status];
         return $this->userRepository->update($userRecId, $teacherUpdateInfo);
     }
-        
+
 
 
 
@@ -178,7 +177,7 @@ class UserService
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->userRepository->findById($id);
         $dto    =   $dbRec ? UserBuilder::buildDto($dbRec->toArray()) : null;
-        
+
         return array(
             'dbRec' => $dbRec,
             'dto'   => $dto
@@ -204,7 +203,7 @@ class UserService
         $username = cleanUsernameString($username);
         if(strlen($username)>15)
             $username = substr($username, 0, 15);
-        
+
         $uname = $username;
         do {
             if(is_null($this->userRepository->findUserByUsername($uname))){
@@ -222,9 +221,9 @@ class UserService
 
 
     public function saveTeacherRec(Request $request) : array {
-        $file           = $request->input('teacher_profile_img');        
+        $file           = $request->input('teacher_profile_img');
         $destination    = isset($file) ? (new FileUploadUtil())->upload($file,'users/teachers/') : null;
-       
+
         $status = ($request->get('teacher_stat')=='enable') ? true : false;
         //DB::enableQueryLog();
 
@@ -246,7 +245,7 @@ class UserService
 
         $user_teacher = Sentinel::registerAndActivate($teacher);
         $role_teacher = Sentinel::findRoleBySlug(RoleModel::TEACHER);
-        $role_teacher->users()->attach($user_teacher);        
+        $role_teacher->users()->attach($user_teacher);
         return array('usernameMsg' => $usernameMsg);
     }
 
@@ -254,7 +253,7 @@ class UserService
 
     public function saveStudentRec(Request $request) : array {
         $status = ($request->get('student_stat')=='enable') ? true : false;
-        
+
         $username    = $this->generateUniqueUsername($request->get('stud_uname'));
         $usernameMsg = ($username != $request->get('stud_uname'))?"Given username is already there, ∴ system updated username to {$username}":'';
 
@@ -273,14 +272,14 @@ class UserService
 
         $user_stud = Sentinel::registerAndActivate($student);
         $role_stud = Sentinel::findRoleBySlug(RoleModel::STUDENT);
-        $role_stud->users()->attach($user_stud);        
+        $role_stud->users()->attach($user_stud);
         return array('usernameMsg' => $usernameMsg);
     }
-        
-    
+
+
     public function saveMarketerRec(Request $request) : array {
         $status = ($request->get('marketer_stat')=='enable') ? true : false;
-        
+
         $username    = $this->generateUniqueUsername($request->get('marketer-uname'));
         $usernameMsg = ($username != $request->get('marketer_uname'))?"Given username is already there, ∴ system updated username to {$username}":'';
 
@@ -297,14 +296,14 @@ class UserService
 
         $user_marketer = Sentinel::registerAndActivate($marketer);
         $role_marketer = Sentinel::findRoleBySlug(RoleModel::MARKETER);
-        $role_marketer->users()->attach($user_marketer);        
+        $role_marketer->users()->attach($user_marketer);
         return array('usernameMsg' => $usernameMsg);
-    }    
-    
+    }
+
 
     public function saveEditorRec(Request $request) : array {
         $status = ($request->get('editor_stat')=='enable') ? true : false;
-        
+
         $username    = $this->generateUniqueUsername($request->get('editor-uname'));
         $usernameMsg = ($username != $request->get('editor_uname'))?"Given username is already there, ∴ system updated username to {$username}":'';
 
@@ -321,9 +320,9 @@ class UserService
 
         $user_editor = Sentinel::registerAndActivate($editor);
         $role_editor = Sentinel::findRoleBySlug(RoleModel::EDITOR);
-        $role_editor->users()->attach($user_editor);        
+        $role_editor->users()->attach($user_editor);
         return array('usernameMsg' => $usernameMsg);
-    } 
+    }
 
 
 
@@ -333,23 +332,23 @@ class UserService
     public function updateTeacherRec(Request $request, UserModel $userDbRec) : bool {
         $userId         = $userDbRec->id;
         $teacherName    = $request->get('teacher_name');
-        
-        $isNameExists   =   $this->userRepository->findDuplicateCountByName($teacherName, $userId); 
+
+        $isNameExists   =   $this->userRepository->findDuplicateCountByName($teacherName, $userId);
         if($isNameExists)
             throw new CustomException('Name already exists!');
-        
-        $file = $request->input('teacher_profile_img');        
-        if(!isset($file)){ 
+
+        $file = $request->input('teacher_profile_img');
+        if(!isset($file)){
             // remove image and submit update
             $imgDest = null;
         }else{
-            /*  input filed hidden_file_add_count value equals 0 when initially filpond loads image  
+            /*  input filed hidden_file_add_count value equals 0 when initially filpond loads image
                 it means no change to previously upload image and submit edit form    */
-            if( $request->teacher_img_add_count == 0){    
+            if( $request->teacher_img_add_count == 0){
 
                 $defaultImgPath = asset('images/default-images/teacher.png');
                 $imgUrl         = $request->teacher_img_url;
-                
+
                 if($imgUrl == $defaultImgPath){
                     $imgDest = null;
                 }else{
@@ -369,118 +368,118 @@ class UserService
         if($request->teacher_reset_pw_stat == 'on')
             Sentinel::update($user, array('password' => env('APP_DEFAULT_USER_PASSWORD')));
 
-        $request->merge([ 
+        $request->merge([
             'full_name'            => $request->input('teacher_name'),
             'email'                => $userDbRec->email,
-            'username'             => $userDbRec->username,                    
+            'username'             => $userDbRec->username,
             'phone'                => $request->input('teacher_phone'),
             'status'               => ($request->get('teacher_stat') == 'enable') ? true : false,
-            
-            'gender'               => $request->input('teacher_gender'),            
+
+            'gender'               => $request->input('teacher_gender'),
             'dob_year'             => $request->input('teacher_birth_year'),
-            'edu_qualifications'   => $request->input('teacher_edu_details'),                
+            'edu_qualifications'   => $request->input('teacher_edu_details'),
             'role_id'              => Sentinel::findRoleBySlug(RoleModel::TEACHER)->id,
-            'profile_pic'          => $imgDest            
+            'profile_pic'          => $imgDest
         ]);
 
         $userDto         = UserDtoFactory::fromRequest($request);
-        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());        
-        $userEntityArr   = $userEntity->toArray();      
-        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr); 
+        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());
+        $userEntityArr   = $userEntity->toArray();
+        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr);
 
-        //dd($payloadArr);           
+        //dd($payloadArr);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['is_activated']);
-        unset($payloadArr['username']);        
+        unset($payloadArr['username']);
         unset($payloadArr['email']);
-        unset($payloadArr['role_arr']);        
+        unset($payloadArr['role_arr']);
         unset($payloadArr['role_id']);
         //return $userDbRec->update($payloadArr);
         return $this->userRepository->update($userId, $payloadArr);
     }
 
-    
+
     public function updateStudentRec(Request $request, UserModel $userDbRec) : bool {
         $userId         = $userDbRec->id;
         $studentName    = $request->get('stud_name');
-        
-        $isNameExists   =   $this->userRepository->findDuplicateCountByName($studentName, $userId); 
+
+        $isNameExists   =   $this->userRepository->findDuplicateCountByName($studentName, $userId);
         if($isNameExists)
             throw new CustomException('Name already exists!');
-        
+
         //todo -future-send email
         if($request->stud_reset_pw_stat == 'on')
             Sentinel::update($user, array('password' => env('APP_DEFAULT_USER_PASSWORD')));
 
-        $request->merge([ 
-            //'id'          => $request->input('stud_id'),    
+        $request->merge([
+            //'id'          => $request->input('stud_id'),
             'full_name'     => $request->input('stud_name'),
             'email'         => $userDbRec->email,
-            'username'      => $userDbRec->username,                       
+            'username'      => $userDbRec->username,
             'phone'         => $request->input('stud_phone'),
             'status'        => ($request->get('stud_stat') == 'enable') ? true : false,
-            
-            'gender'        => $request->input('stud_gender'),            
+
+            'gender'        => $request->input('stud_gender'),
             'dob_year'      => $request->input('stud_birth_year'),
             'profile_text'  => $request->input('stud_details'),
             'role_id'       => Sentinel::findRoleBySlug(RoleModel::STUDENT)->id
         ]);
 
         $userDto         = UserDtoFactory::fromRequest($request);
-        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());        
-        $userEntityArr   = $userEntity->toArray();      
-        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr); 
+        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());
+        $userEntityArr   = $userEntity->toArray();
+        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr);
 
-        //dd($payloadArr);           
+        //dd($payloadArr);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['is_activated']);
-        unset($payloadArr['username']); 
+        unset($payloadArr['username']);
         unset($payloadArr['email']);
-        unset($payloadArr['role_arr']); 
+        unset($payloadArr['role_arr']);
         unset($payloadArr['role_id']);
         unset($payloadArr['profile_pic']);
         //return $userDbRec->update($payloadArr);
         return $this->userRepository->update($userId, $payloadArr);
     }
 
-    
+
     public function updateMarketerRec(Request $request, UserModel $userDbRec) : bool {
         $userId         = $userDbRec->id;
         $teacherName    = $request->get('marketer_name');
-        
-        $isNameExists   =   $this->userRepository->findDuplicateCountByName($teacherName, $userId); 
+
+        $isNameExists   =   $this->userRepository->findDuplicateCountByName($teacherName, $userId);
         if($isNameExists)
             throw new CustomException('Name already exists!');
-        
+
         //todo -future-send email
         if($request->marketer_reset_pw_stat == 'on')
             Sentinel::update($user, array('password' => env('APP_DEFAULT_USER_PASSWORD')));
 
-        $request->merge([ 
+        $request->merge([
             'full_name' => $request->input('marketer_name'),
             'email'     => $userDbRec->email,
-            'username'  => $userDbRec->username,                     
+            'username'  => $userDbRec->username,
             'phone'     => $request->input('marketer_phone'),
             'status'    => ($request->get('marketer_stat') == 'enable') ? true : false,
-            
+
             'gender'    => $request->input('marketer_gender'),
             'role_id'   => Sentinel::findRoleBySlug(RoleModel::MARKETER)->id
         ]);
 
         $userDto         = UserDtoFactory::fromRequest($request);
-        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());        
-        $userEntityArr   = $userEntity->toArray();      
-        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr); 
+        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());
+        $userEntityArr   = $userEntity->toArray();
+        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr);
 
-        //dd($payloadArr);           
+        //dd($payloadArr);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['is_activated']);
-        unset($payloadArr['username']);        
+        unset($payloadArr['username']);
         unset($payloadArr['email']);
-        unset($payloadArr['role_arr']);        
+        unset($payloadArr['role_arr']);
         unset($payloadArr['role_id']);
         unset($payloadArr['profile_pic']);
         //return $userDbRec->update($payloadArr);
@@ -490,38 +489,38 @@ class UserService
     public function updateEditorRec(Request $request, UserModel $userDbRec) : bool {
         $userId         = $userDbRec->id;
         $teacherName    = $request->get('editor_name');
-        
-        $isNameExists   =   $this->userRepository->findDuplicateCountByName($teacherName, $userId); 
+
+        $isNameExists   =   $this->userRepository->findDuplicateCountByName($teacherName, $userId);
         if($isNameExists)
             throw new CustomException('Name already exists!');
-        
+
         //todo -future-send email
         if($request->editor_reset_pw_stat == 'on')
             Sentinel::update($user, array('password' => env('APP_DEFAULT_USER_PASSWORD')));
 
-        $request->merge([ 
+        $request->merge([
             'full_name' => $request->input('editor_name'),
             'email'     => $userDbRec->email,
-            'username'  => $userDbRec->username,                     
+            'username'  => $userDbRec->username,
             'phone'     => $request->input('editor_phone'),
             'status'    => ($request->get('editor_stat') == 'enable') ? true : false,
-            
+
             'gender'    => $request->input('editor_gender'),
-            'role_id'   => Sentinel::findRoleBySlug(RoleModel::EDITOR)->id,           
+            'role_id'   => Sentinel::findRoleBySlug(RoleModel::EDITOR)->id,
         ]);
 
         $userDto         = UserDtoFactory::fromRequest($request);
-        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());        
-        $userEntityArr   = $userEntity->toArray();      
-        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr); 
+        $userEntity      = (new UserFactory())->createObjTree($userDto->toArray());
+        $userEntityArr   = $userEntity->toArray();
+        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr);
 
-        //dd($payloadArr);           
+        //dd($payloadArr);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['is_activated']);
-        unset($payloadArr['username']);        
+        unset($payloadArr['username']);
         unset($payloadArr['email']);
-        unset($payloadArr['role_arr']);        
+        unset($payloadArr['role_arr']);
         unset($payloadArr['role_id']);
         unset($payloadArr['profile_pic']);
         //return $userDbRec->update($payloadArr);
@@ -537,14 +536,14 @@ class UserService
 
 
     public function entityToDbRecArr(UserEntity $user) : array {
-        $userEntityArr   = $user->toArray();      
-        $payloadArr         = UserMapper::entityConvertToDbArr($userEntityArr);            
+        $userEntityArr   = $user->toArray();
+        $payloadArr         = UserMapper::entityConvertToDbArr($userEntityArr);
         unset($payloadArr['creator_arr']);
         return $payloadArr;
     }
 
     public function dtoToDbRecArr(UserDto $userDto) : array {
-        $userEntity  = (new UserFactory())->createObjTree($userDto->toArray());        
+        $userEntity  = (new UserFactory())->createObjTree($userDto->toArray());
         $payloadArr     = $this->entityToDbRecArr($userEntity);
         return $payloadArr;
     }

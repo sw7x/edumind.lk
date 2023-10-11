@@ -1,11 +1,8 @@
 <?php
 
+namespace App\Services\Admin;
 
-namespace App\Services;
-
-
-
-class DashboardService
+class MarketerService
 {
 
     function __construct(string $argument){

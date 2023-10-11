@@ -2,6 +2,13 @@
 
 namespace App\Services\Admin;
 
+use App\Repositories\EnrollmentRepository;
+use App\Repositories\InvoiceRepository;
+use App\Domain\Factories\InvoiceFactory;
+use App\Mappers\InvoiceMapper;
+use App\Builders\EnrollmentBuilder;
+use App\DataTransferObjects\Factories\InvoiceDtoFactory;
+
 /*
 use App\Repositories\CourseSelectionRepository;
 use App\Repositories\CouponRepository;
@@ -32,13 +39,6 @@ use App\Mappers\EnrollmentMapper;
 use App\DataTransferObjects\Factories\EnrollmentDtoFactory;
 use App\DataTransferObjects\Factories\UserDtoFactory;
 */
-
-use App\Repositories\EnrollmentRepository;
-use App\Repositories\InvoiceRepository;
-use App\Domain\Factories\InvoiceFactory;
-use App\Mappers\InvoiceMapper;
-use App\Builders\EnrollmentBuilder;
-use App\DataTransferObjects\Factories\InvoiceDtoFactory;
 
 class EdumindRevenueService
 {

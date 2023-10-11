@@ -248,12 +248,12 @@
                             <div class="tube-card mt-3 lg:mx-0 -mx-5">
                                 
                                 <h4 class="py-3 px-5 border-b font-semibold text-grey-700">
-                                    @if (Session::get('courses')->count() == 1)
+                                    @if (count(Session::get('courses')) == 1)
                                         {{'One Result found'}}
-                                    @elseif (Session::get('courses')->count() == 0)    
+                                    @elseif (count(Session::get('courses')) == 0)    
                                         {{'No Results found'}}
                                     @else
-                                        {{ Session::get('courses')->count()}} Results found
+                                        {{count(Session::get('courses'))}} Results found
                                     @endif                                 
                                 </h4>
                                 
@@ -262,18 +262,26 @@
 
                                     @foreach(Session::get('courses') as $course)                                      
                                         <div class="flex md:space-x-6 space-x-3 md:p-5 p-2 relative">
-                                            <a href="{{route('courses.show',$course->slug)}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
-                                                <img src="{{$course->image}}" class="w-full h-full absolute inset-0 object-cover" alt="">
+                                            <a href="{{route('courses.show',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
+                                                <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                             </a>
                                             <div class="flex-1 md:space-y-2 space-y-1">
-                                                <a href="{{route('courses.show',$course->slug)}}" class="md:text-xl font-semibold line-clamp-2">{{$course->name}}</a>
-                                                <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course->heading_text}}</p>
-                                                <a href="#" class="md:font-semibold block text-sm">{{$course->teacher->full_name}}</a>
+                                                <a href="{{route('courses.show',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
+                                                <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course['headingText']}}</p>
+                                                
+                                                                         
+
+                                                @if($course['teacherFullName'])
+                                                    <a href="{{route('teachers.show', $course['teacherUsername'])}}" class="md:font-semibold block text-sm">
+                                                        {{$course['teacherFullName']}}
+                                                    </a>
+                                                @endif
+                                                
                                                 <div class="flex items-center justify-between">
                                                     <div class="flex __space-x-2 items-center text-sm">
-                                                        <div class="font-semibold"><span class=""><i class="align-middle icon-feather-youtube" style="font-size: 1.20rem;"></i> {{$course->video_count}} lectures</span></div>
+                                                        <div class="font-semibold"><span class=""><i class="align-middle icon-feather-youtube" style="font-size: 1.20rem;"></i> {{$course['videoCount']}} lectures</span></div>
 
-                                                        <div class="font-semibold ml-3"><span class=""><i class="align-middle icon icon-feather-clock" style="font-size: 1.20rem;"></i> {{$course->duration}}</span></div>
+                                                        <div class="font-semibold ml-3"><span class=""><i class="align-middle icon icon-feather-clock" style="font-size: 1.20rem;"></i> {{$course['duration']}}</span></div>
 
                                                         <!-- 
                                                         <ul class="flex text-gray-300 gap-4 mt-4 mb-3  ml-5">
@@ -290,8 +298,8 @@
 
                                                         <div></div>
                                                     </div>
-                                                    @if($course->price)
-                                                        <div class="text-lg font-semibold mt-3">{{ $course->price == 0 ? "Free" : 'Rs '.$course->price }}</div>
+                                                    @if(isset($course['price']))
+                                                        <div class="text-lg font-semibold mt-3">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                                     @endif
                                                 </div>
                                             </div>

@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -33,14 +31,14 @@ class ContactUsController extends Controller
 
 
 
-    public function viewPage(){               
+    public function viewPage(){
         if(Sentinel::check()){
             $user            = Sentinel::getUser();
-            $currentUserRole = optional($user->roles()->first())->name; 
+            $currentUserRole = optional($user->roles()->first())->name;
             if($currentUserRole == RoleModel::ADMIN)
-                abort(404,'This page is not available for your user role');            
-        }    
-                          
+                abort(404,'This page is not available for your user role');
+        }
+
         $userArr = $this->contactUsService->getUserInfoArr();
         return view('contact')->with('userArr', $userArr);
     }

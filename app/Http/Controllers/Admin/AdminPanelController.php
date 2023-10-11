@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Sentinel;
 use App\Models\Role as RoleModel;
 use App\Exceptions\CustomException;
-use App\Builders\UserBuilder;
+//use App\Builders\UserBuilder;
 //use Illuminate\Support\Facades\Auth;
 //use App\Mappers\UserMapper;
 //use App\Mappers\RoleMapper;
@@ -24,7 +24,7 @@ class AdminPanelController extends Controller
     function __construct(AdminUserService $adminUserService){
         $this->adminUserService  = $adminUserService;
     }
-    
+
 
 
     public function viewProfile(){
@@ -33,9 +33,9 @@ class AdminPanelController extends Controller
             $user = Sentinel::getUser();
             if(is_null($user))
                 throw new CustomException('Access denied');
-                        
+
             $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-            $currentUserRole = optional($user->roles()->first())->name;        
+            $currentUserRole = optional($user->roles()->first())->name;
             if(!in_array($currentUserRole, $allRoles))
                 throw new CustomException('Invalid user type');
 
@@ -43,27 +43,27 @@ class AdminPanelController extends Controller
             $adminPanelAllowedRoles = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER];
             if(!in_array($currentUserRole, $adminPanelAllowedRoles))
                 return redirect()->route('profile', []);
-                
+
 
             // load page with data for ADMIN / EDITOR / MARKETER user roles
             //$userData   =   $this->adminUserService->findDbRec($user->id);
             $userData   =   $this->adminUserService->loadLoggedInUserData();
             $userArr    =   AdminProfileDataTransformer::prepareUserData($userData);
-            return view('admin-panel.profile')->with(['userData' => $userArr]);         
-                     
-    
+            return view('admin-panel.profile')->with(['userData' => $userArr]);
+
+
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('admin-panel.profile'); 
+            return view('admin-panel.profile');
 
         }catch(\Exception $e){
             session()->flash('message', $e->getMessage());
             //session()->flash('message', 'Failed to load your profile');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('admin-panel.profile');  
+            return view('admin-panel.profile');
         }
     }
 
@@ -74,12 +74,12 @@ class AdminPanelController extends Controller
             if(is_null($user))
                 return redirect()->route('profile-edit', []);
 
-                        
+
             $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-            $currentUserRole = optional($user->roles()->first())->name;        
+            $currentUserRole = optional($user->roles()->first())->name;
             if(!in_array($currentUserRole, $allRoles))
                 throw new CustomException('Invalid user type');
-                        
+
             if($currentUserRole == RoleModel::STUDENT){
                 return redirect()->route('profile-edit', []);
 
@@ -97,42 +97,42 @@ class AdminPanelController extends Controller
             //$userData   =   $this->adminUserService->findDbRec($user->id);
             $userData   =   $this->adminUserService->loadLoggedInUserData();
             $userArr    =   AdminProfileDataTransformer::prepareUserData($userData);
-            return view('admin-panel.profile')->with(['userData' => $userArr]);         
-                     
-    
+            return view('admin-panel.profile')->with(['userData' => $userArr]);
+
+
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
             //return view('admin-panel.dashboard');
-            abort(404,'hhh'); 
+            abort(404,'hhh');
 
         }catch(\Exception $e){
             session()->flash('message', $e->getMessage());
             //session()->flash('message', 'Failed to load your profile');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('admin-panel.profile');  
+            return view('admin-panel.profile');
         }
     }
 
-    
 
-    
+
+
 
 
 
 
 	public function viewDashboard(){
-    	
+
         try{
 
             $user = Sentinel::getUser();
             if(is_null($user))
                 throw new CustomException('Access denied');
-                        
+
             $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-            $currentUserRole = optional($user->roles()->first())->name;        
+            $currentUserRole = optional($user->roles()->first())->name;
             if(!in_array($currentUserRole, $allRoles))
                 throw new CustomException('Invalid user type');
 
@@ -140,7 +140,7 @@ class AdminPanelController extends Controller
             $adminPanelAllowedRoles = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER];
             if(!in_array($currentUserRole, $adminPanelAllowedRoles))
                 return redirect()->route('dashboard', []);
-                
+
 
             if($currentUserRole == RoleModel::ADMIN){
                 $view    =   'admin-panel.admin.dashboard';
@@ -158,40 +158,40 @@ class AdminPanelController extends Controller
             //$userData   =   $this->adminUserService->loadLoggedInUserData();
             //$userArr    =   AdminProfileDataTransformer::prepareUserData($userData);
             //return view('admin-panel.profile')->with(['userData' => $userArr]);
-            return view($view);       
-    
+            return view($view);
+
         }catch(CustomException $e){
             session()->flash('message', $e->getMessage());
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('admin-panel.profile'); 
+            return view('admin-panel.profile');
 
         }catch(\Exception $e){
             session()->flash('message', $e->getMessage());
             //session()->flash('message', 'Failed to load your profile');
             session()->flash('cls','flash-danger');
             session()->flash('msgTitle','Error!');
-            return view('admin-panel.profile');  
+            return view('admin-panel.profile');
         }
     }
 
 
-    
+
     /*
     public function ViewMyEarnings(){
         //try{
-                        
+
             if(!Sentinel::check())
                 abort(403);
                 // return redirect()->route('home',[])->with([
                 //     'message'     => 'Access denied',
                 //     'cls'         => 'flash-danger',
                 //     'msgTitle'    => 'Error !',
-                // ]);  
-            
-            $user            = Sentinel::getUser();            
+                // ]);
+
+            $user            = Sentinel::getUser();
             $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-            $currentUserRole = optional($user->roles()->first())->name;        
+            $currentUserRole = optional($user->roles()->first())->name;
             if(!in_array($currentUserRole, $allRoles))
                 abort(403);
                 // return redirect()->route('home',[])->with([
@@ -199,7 +199,7 @@ class AdminPanelController extends Controller
                 //     'cls'         => 'flash-danger',
                 //     'msgTitle'    => 'Error !',
                 // ]);
-            
+
 
 
             // redirect users that have TEACHER, STUDENT roles
@@ -207,7 +207,7 @@ class AdminPanelController extends Controller
             if(!in_array($currentUserRole, $adminPanelAllowedRoles)){
                 abort(404);
                 //return redirect()->route('dashboard', []);
-                
+
                 //throw new CustomException('Invalid user type');
 
 
@@ -217,12 +217,12 @@ class AdminPanelController extends Controller
                     //     'message'     => 'Invalid page',
                     //     'cls'         => 'flash-danger',
                     //     'msgTitle'    => 'Error !',
-                    // ]); 
+                    // ]);
                 else
-                    //abort(404);              
+                    //abort(404);
             }
 
-            
+
             if($currentUserRole == RoleModel::TEACHER){
                 $view    =   'admin-panel.teacher.my-earnings';
             }else if($currentUserRole == RoleModel::MARKETER){
@@ -230,55 +230,55 @@ class AdminPanelController extends Controller
             }
 
             // load page with data for EDITOR / MARKETER user roles
-            return view($view);       
-    
+            return view($view);
+
         // }catch(CustomException $e){
         //     //return
         //     session()->flash('message', $e->getMessage());
         //     session()->flash('cls','flash-danger');
         //     session()->flash('msgTitle','Error!');
-        //     return view('admin-panel.profile'); 
+        //     return view('admin-panel.profile');
 
         // }catch(\Exception $e){
         //     session()->flash('message', $e->getMessage());
         //     //session()->flash('message', 'Failed to load your profile');
         //     session()->flash('cls','flash-danger');
         //     session()->flash('msgTitle','Error!');
-        //     return view('admin-panel.profile');  
+        //     return view('admin-panel.profile');
         // }
 
     }*/
 
 
-    public function ViewMyEarnings(){        
-            
+    public function ViewMyEarnings(){
+
         if(!Sentinel::check())
             abort(403);
-            
-        $user            = Sentinel::getUser();            
+
+        $user            = Sentinel::getUser();
         $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-        $currentUserRole = optional($user->roles()->first())->name;        
+        $currentUserRole = optional($user->roles()->first())->name;
         if(!in_array($currentUserRole, $allRoles))
             abort(403);
-           
+
 
         // redirect users that have TEACHER, STUDENT roles
         $adminPanelAllowedRoles = [RoleModel::MARKETER, RoleModel::TEACHER];
         if(!in_array($currentUserRole, $adminPanelAllowedRoles))
             abort(404);
-            
-        
-        $view   =   ($currentUserRole == RoleModel::TEACHER) ? 
+
+
+        $view   =   ($currentUserRole == RoleModel::TEACHER) ?
                         'admin-panel.teacher.my-earnings' : // TEACHER
                         'admin-panel.marketer.my-earnings'; // MARKETER
 
         // load page with data for EDITOR / MARKETER user roles
-        return view($view);      
+        return view($view);
     }
 
 
 
-    
+
 
 
 }

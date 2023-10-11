@@ -1,9 +1,5 @@
 <?php
-
-
-namespace App\Services;
-
-
+namespace App\Services\Admin;
 
 class DashboardService
 {

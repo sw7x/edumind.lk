@@ -11,17 +11,15 @@ use Activation;
 use App\Mail\StudentRegMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
-//use Swift_TransportException;
 use App\Utils\FileUploadUtil;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use GuzzleHttp\Client;
 use App\Models\User as UserModel;
 use App\Exceptions\CustomException;
-
 use App\Models\Role as RoleModel;
 
-
+//use Swift_TransportException;
 
 class RegistrationController extends Controller
 {
@@ -37,15 +35,15 @@ class RegistrationController extends Controller
        return view ('auth.form-register');
     }
 
-    
+
     public function postRegister(Request $request){
-        
-        
+
+
         //if username empty then username = email
-        $g_recaptcha_response = $request->input('g-recaptcha-response');        
+        $g_recaptcha_response = $request->input('g-recaptcha-response');
 
         $validator = Validator::make($request->all(), [
-            'full_name'             =>'required|min:3|max:100|unique:users,full_name',                
+            'full_name'             =>'required|min:3|max:100|unique:users,full_name',
             'email'                 =>'required|email|unique:users,email',
             'username'              =>'nullable|sometimes|unique:users,username',
             'password'              =>'required|min:6|max:12',
@@ -66,16 +64,16 @@ class RegistrationController extends Controller
             return back()->withErrors($validator)->withInput();
         } else {
 
-            try {                
-                
+            try {
+
                 if($request->input('username') == null){
                     $username = strstr($request->input('email'),'@',true);
-                    
+
                     // username alredy used in DB
                     $unameCount =   UserModel::withoutGlobalScope('active')
                                         ->where('username', '=', $username)->count();
 
-                    if ($unameCount > 0)                   
+                    if ($unameCount > 0)
                         throw new CustomException("username - {$username} not available to use");
 
                     $request->merge(['username'  =>  $username]);
@@ -94,7 +92,7 @@ class RegistrationController extends Controller
                 $body = json_decode((string)$response->getBody());
 
                 if($body->success){
-                    
+
                     //throw new \Exception("error sending student");
                     $user       = Sentinel::register($request->all());
                     $activation = Activation::create($user);
@@ -115,7 +113,7 @@ class RegistrationController extends Controller
                     session()->flash('message', 'Successfully registered, check you emails to use account activation link');
                     session()->flash('cls','flash-success');
                     session()->flash('msgTitle','Success!');
-                    return view('form-submit-page');                    
+                    return view('form-submit-page');
 
                 }else{
                     return back()->with([
@@ -140,7 +138,7 @@ class RegistrationController extends Controller
                 //return redirect()->route('auth.register');
                 return redirect()->back();
             }
-        }        
+        }
 
     }
 
@@ -151,11 +149,11 @@ class RegistrationController extends Controller
 
 
     public function postTeacherRegister(Request $request){
-        
-        $g_recaptcha_response = $request->input('g-recaptcha-response');        
+
+        $g_recaptcha_response = $request->input('g-recaptcha-response');
 
         $validator = Validator::make($request->all(), [
-            'full_name'             =>'required|min:3|max:100|unique:users,full_name',                
+            'full_name'             =>'required|min:3|max:100|unique:users,full_name',
             'email'                 =>'required|email|unique:users,email',
             'username'              =>'nullable|sometimes|unique:users,username',
             'password'              =>'required|min:6|max:12',
@@ -163,7 +161,7 @@ class RegistrationController extends Controller
             'gender'                =>'required',
             'g-recaptcha-response'  =>'required',
             'dob_year'              =>'required|digits:4|integer|min:'.(date('Y')-100).'|max:'.date('Y'),
-        ],[ 
+        ],[
             'full_name.required'            => 'Full name field is required.',
             'full_name.unique'              => 'This full name is already been used',
             'email.unique'                  => 'This Email is already been used',
@@ -177,18 +175,18 @@ class RegistrationController extends Controller
             return back()->withErrors($validator)->withInput();
         } else {
 
-            try {                
-                
+            try {
+
                 if($request->input('username') == null){
                     $username = strstr($request->input('email'),'@',true);
-                    
+
                     // username alredy used in DB
                     $unameCount =   UserModel::withoutGlobalScope('active')
                                         ->where('username', '=', $username)->count();
 
-                    if ($unameCount > 0)                   
+                    if ($unameCount > 0)
                         throw new CustomException("username - {$username} not available to use");
-                    
+
                     $request->merge(['username'  =>  $username]);
 
                 }
@@ -205,11 +203,11 @@ class RegistrationController extends Controller
                 );
                 $body = json_decode((string)$response->getBody());
 
-                // recaptcha validate success 
-                if($body->success){                    
-                    
+                // recaptcha validate success
+                if($body->success){
+
                     $file = $request->input('profile_pic');
-            
+
                     if(isset($file)){
                         $fileUploadUtil = new FileUploadUtil();
                         $destination    = $fileUploadUtil->upload($file,'users/teachers/');
@@ -235,7 +233,7 @@ class RegistrationController extends Controller
                     $siteAddress    = url('/');
                     $link           = "{$siteAddress}/activate/{$encryptedEmail}/{$activationCode}";
                     $username       = $request->input('username');
-                    
+
                     //send mail
                     Mail::to($email)->send(new TeacherRegMail($link,$username));
 
@@ -260,14 +258,14 @@ class RegistrationController extends Controller
 
                 if(isset($destination) && ($destination != false)){
                     Storage::disk('public')->delete($destination);
-                }                
+                }
                 Session::flash('msgTitle', 'Error!');
                 Session::flash('message', $e->getMessage());
                 Session::flash('cls', 'flash-danger');
                 return redirect()->back();
 
             }catch(\Exception $e){
-                
+
                 if(isset($destination) && ($destination != false)){
                     Storage::disk('public')->delete($destination);
                 }
@@ -280,7 +278,7 @@ class RegistrationController extends Controller
                 //return redirect()->route('auth.register');
                 return redirect()->back();
             }
-        }       
+        }
 
     }
 

@@ -5,10 +5,10 @@ namespace App\Repositories;
 use App\Repositories\BaseRepository;
 
 use App\Models\Role as RoleModel;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\RoleMapper;
 
-class RoleRepository extends BaseRepository implements IGetDtoDataRepository{
+class RoleRepository extends BaseRepository implements IGetDataRepository{
     
 	public function __construct(){
         parent::__construct(RoleModel::make());        

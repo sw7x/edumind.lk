@@ -11,10 +11,7 @@ use Sentinel;
 
 class ChangeAdminPasswordController extends Controller
 {
-    //
-
-
-
+    
     public function changePassword(Request $request) {
         //dd($request->all());
         $response = array();

@@ -30,20 +30,12 @@
 @section('content')
     <div class="main-container container">
         <div class="max-w-full  md:p-2 mx-auto">
+                    
+            @if(isset($student_courses) && is_array($student_courses))
 
-            @if(Session::has('message'))
-                <x-flash-message  
-                    :class="Session::get('cls', 'flash-info')"  
-                    :title="Session::get('msgTitle') ?? 'Info!'" 
-                    :message="Session::get('message') ?? ''"  
-                    :message2="Session::get('message2') ?? ''"  
-                    :canClose="true" />
-            @endif
-            
-            @if(isset($student_courses) && count($student_courses))
                 <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-5 p-3">
                     <div style="flex:1">
-                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">aaaMy Courses</h2>
+                        <h2 class="font-semibold mb-3 text-xl lg:text-3xl">My Courses</h2>
                         <hr class="mb-5">
                         <!-- <h4 class="font-semibold mb-2 text-base"> Description </h4>    -->
 
@@ -61,7 +53,7 @@
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="tube-card p-3 lg:p-6 divide-y">
-
+                                                            
                                                             @forelse($student_courses as $course)
                                                                 <div class="flex md:space-x-6 space-x-3 relative course-item pt-3 mb-5">
                                                                     <a href="{{route('courses.show',$course['slug'])}}" class="md:w-60 md:h-36 w-28 h-20 overflow-hidden rounded-lg relative shadow-sm">
@@ -114,9 +106,14 @@
                                                                             @endif
                                                                         @endisset
                                                                     </div>
-                                                                </div>                                                           
+                                                                </div>
                                                             @empty                                                            
-                                                                <div class="md:text-xl font-semibold line-clamp-2">No Courses</div>
+                                                                <x-flash-message 
+                                                                    class="flash-info"  
+                                                                    title="No Courses" 
+                                                                    message=""  
+                                                                    message2=""  
+                                                                    :canClose="false" />                                                               
                                                             @endforelse
 
                                                         </div>
@@ -131,6 +128,16 @@
                         </section>
 
                     </div>
+                </div>
+            
+            @else
+                <div class="my-5">
+                    <x-flash-message 
+                        class="flash-danger"  
+                        title="Data not available!" 
+                        message="Your courses data is not available or not in correct format"  
+                        message2=""  
+                        :canClose="false" />
                 </div>
             @endif
 

@@ -20,7 +20,7 @@ class SubjectDataTransformer{
         }
         
         $arr = array();
-        $arr['subject']         = ($subjectDataArr['subjectDto'])->toArray();
+        $arr['subject']         = ($subjectDataArr['dto'])->toArray();
         $arr['subjectCourses']  = $coursesArr;
         $arr['bgColor']         = $subjectDataArr['bgColor'];
         $arr['txtColor']        = $subjectDataArr['txtColor']; 

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\Admin;
 
 use App\Repositories\CouponRepository;
@@ -17,8 +16,11 @@ use Sentinel;
 use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
 use App\Domain\CouponCode as CouponCodeEntity;
-
-
+use App\Utils\UrlUtil;
+use App\Utils\FileUploadUtil;
+use App\DataTransferObjects\Factories\CourseDtoFactory;
+use App\Models\Course as CourseModel;
+use App\Builders\CourseBuilder;
 
 //use App\Models\User as UserModel;
 //use App\Builders\UserBuilder;
@@ -28,18 +30,11 @@ use App\Domain\CouponCode as CouponCodeEntity;
 //use App\Domain\Users\User as UserEntity;
 //use App\DataTransferObjects\UserDto;
 //use App\Domain\Factories\UserFactory;
-
-
-use App\Domain\Factories\CourseFactory;
-use App\Domain\Course as CourseEntity;
-use App\Mappers\CourseMapper;
-use Illuminate\Support\Arr;
-use App\Utils\UrlUtil;
-use App\Utils\FileUploadUtil;
-use Illuminate\Support\Str;
-use App\DataTransferObjects\Factories\CourseDtoFactory;
-use App\Models\Course as CourseModel;
-use App\Builders\CourseBuilder;
+//use App\Domain\Factories\CourseFactory;
+//use App\Domain\Course as CourseEntity;
+//use App\Mappers\CourseMapper;
+//use Illuminate\Support\Arr;
+//use Illuminate\Support\Str;
 
 
 
@@ -53,7 +48,7 @@ class CouponService
     }
 
     public function createUniqueCode() : string {
-        $code   =   '';                
+        $code   =   '';
         do{
             $code = strtoupper(substr(md5(uniqid(rand(), true)), 0, 6));
 
@@ -73,9 +68,9 @@ class CouponService
 
 
 
-    public function loadBeneficiaries(int $courseId) : array {        
+    public function loadBeneficiaries(int $courseId) : array {
         $marketers  =   (new UserRepository())->findAllAvailableMarketers();
-        
+
         if($courseId == 0){
             $teachers   =   (new UserRepository())->findAllAvailableTeachers();
 
@@ -83,7 +78,7 @@ class CouponService
             $course = (new CourseRepository())->findById($courseId);
             if(is_null($course))
                 throw new CustomException('Course not found in database');
-            
+
             $authorId   =   optional($course->teacher)->id;
             $teachers   =   is_null($authorId) ? [] : (new UserRepository())->findAvailableTeacherById($authorId);
         }
@@ -112,7 +107,7 @@ class CouponService
         if($courseId){
             $courseRecData      =   (new CourseRepository())->findDataArrById($courseId);
             $courseEntity       =   CourseBuilder::buildEntity($courseRecData);
-            
+
             $discountPercentage     =   $request->get('discount_percentage');
             $commisionPercentage    =   $request->get('beneficiary_share_percentage_from_discount');
             $canEdumindEarn         =   $courseEntity->checkEdumindCanEarn($discountPercentage, $commisionPercentage);
@@ -123,10 +118,10 @@ class CouponService
                 throw new CustomException($msg);
             }
         }
-        
+
         //throw new CustomException('msg');
         //dd($status);
-        
+
         $request->merge([
             'code'                                  => $request->get('cc-code'),
             'discount_percentage'                   => $request->get('discount_percentage'),
@@ -143,7 +138,7 @@ class CouponService
         unset($payloadArr['uuid']);
         unset($payloadArr['assigned_course_arr']);
         unset($payloadArr['beneficiary_arr']);
-        return $this->couponRepository->create($payloadArr);    
+        return $this->couponRepository->create($payloadArr);
     }
 
 
@@ -159,7 +154,7 @@ class CouponService
         return $payloadArr;
     }
 
-    
+
 
 
 

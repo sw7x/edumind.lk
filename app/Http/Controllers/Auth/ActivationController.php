@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use Activation;
-use Illuminate\Http\Request;
 use App\Models\User as UserModel;
 use Illuminate\Support\Facades\Crypt;
 
+//use Illuminate\Http\Request;
 
 class ActivationController extends Controller
 {

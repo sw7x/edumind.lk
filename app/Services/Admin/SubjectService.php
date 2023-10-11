@@ -1,7 +1,7 @@
 <?php
 
-
 namespace App\Services\Admin;
+
 use App\Models\Subject as SubjectModel;
 use App\Repositories\SubjectRepository;
 use App\Mappers\SubjectMapper;
@@ -13,7 +13,6 @@ use App\Utils\FileUploadUtil;
 use App\Utils\UrlUtil;
 use Sentinel;
 use App\Exceptions\CustomException;
-
 
 //use App\Domain\Subject as SubjectEntity;
 //use App\DataTransferObjects\SubjectDto;

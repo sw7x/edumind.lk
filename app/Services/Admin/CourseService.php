@@ -1,21 +1,8 @@
 <?php
 
-
 namespace App\Services\Admin;
 
 use App\Repositories\CourseRepository;
-//use App\Models\User as UserModel;
-//use App\Builders\UserBuilder;
-//use Illuminate\Support\Facades\Gate;
-//use App\DataTransferObjects\Factories\UserDtoFactory;
-//use App\Mappers\UserMapper;
-//use App\Domain\Users\User as UserEntity;
-//use App\DataTransferObjects\UserDto;
-//use App\Domain\Factories\UserFactory;
-//use App\Repositories\UserRepository;
-//use Sentinel;
-
-
 use App\Models\Course as CourseModel;
 use App\Builders\CourseBuilder;
 use App\DataTransferObjects\Factories\CourseDtoFactory;
@@ -29,6 +16,16 @@ use App\Utils\UrlUtil;
 use App\Utils\FileUploadUtil;
 use Illuminate\Support\Str;
 
+//use App\Models\User as UserModel;
+//use App\Builders\UserBuilder;
+//use Illuminate\Support\Facades\Gate;
+//use App\DataTransferObjects\Factories\UserDtoFactory;
+//use App\Mappers\UserMapper;
+//use App\Domain\Users\User as UserEntity;
+//use App\DataTransferObjects\UserDto;
+//use App\Domain\Factories\UserFactory;
+//use App\Repositories\UserRepository;
+//use Sentinel;
 
 class CourseService
 {

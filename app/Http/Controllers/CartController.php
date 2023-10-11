@@ -19,8 +19,6 @@ use App\Models\TempBillingInfo as TempBillingInfoModel;
 use App\Models\Course as CourseModel;
 use App\Models\CourseSelection as CourseSelectionModel;
 
-
-
 use App\Http\Requests\BillingInfoRequest;
 use App\Http\Requests\CreditCardDetailsRequest;
 
@@ -30,224 +28,43 @@ use Illuminate\Support\Facades\Crypt;
 
 use Cookie;
 
+use App\Services\CartService;
+
+//use App\Repositories\CouponRepository;
 //use App\Models\User as UserModel;
 //use Illuminate\Support\Facades\URL;
 //use Illuminate\Validation\ValidationException;
 //use Illuminate\Http\Response;
-
+//use App\Builders\CouponCodeBuilder;
 
 class CartController extends Controller
 {
-	public function viewCart()
-    {
 
+    private CartService $cartService;
+
+    function __construct(CartService $cartService){
+        $this->cartService  = $cartService;
+    }
+
+
+    public function viewCart()
+    {
         try {
             $msgArr = [];
-            $user = Sentinel::getUser();
+            $user   = Sentinel::getUser();
 
             //before load cart page view, resetting and remove invalid cart items in user's cart
             if($user && ($user->roles()->first()->slug == RoleModel::STUDENT)){
+                $freeCoursArr   = $this->cartService->removeFreeCourseFromCart($user);
+                $inavildCcArr   = $this->cartService->removeInavildCouponsFromCart($user);
+                $NonExistCcArr  = $this->cartService->removeNonExistCouponsFromCart($user);
+                $usedCcArr      = $this->cartService->removeUsedMultipleCouponsFromCart($user);
 
-
-                /*=== 1. Courses that were once paid but have now been made free of charge ===*/
-                $cartFreeCourses    =   CourseModel::join('course_selections', 'courses.id', '=', 'course_selections.course_id')
-                                            ->where('course_selections.student_id', $user->id)
-                                            ->where('course_selections.is_checkout', 0)
-                                            ->where('course_selections.cart_added_date', '!=', null)
-                                            ->where('courses.price', 0)
-                                            //->toSql()
-                                            ->get('courses.*');
-
-
-                if($cartFreeCourses->isNotEmpty()){
-                    $msgArr['rlsCourses']['errTitle'] = 'The price of some course(s) in your cart has changed to free. They have been automatically removed from your cart.';
-                    $msgArr['rlsCourses']['errArr']   =  $cartFreeCourses->map(function ($freeCourse) use ($user){
-
-                        /* delete free cuses from cart */
-                        CourseSelectionModel::where('course_selections.student_id', $user->id)
-                            ->where('course_selections.is_checkout', 0)
-                            ->where('course_selections.cart_added_date', '!=', null)
-                            ->where('course_selections.course_id',$freeCourse->id)
-                            ->delete();
-
-                        //dump($freeCourse->id);
-
-                        // generate message for the user to tell about deleted courses
-                        return '<a href="'.route('courses.show',$freeCourse->slug).'">'.$freeCourse->name.'</a>';
-                    });
-                }
-                //dump('1.cartFreeCourses');
-                //dump($cartFreeCourses);
-                /*=== 1 END =========================================================== ===*/
-
-
-
-                /*=== 2. Coupon codes become invalid after apply - available count is over, disabled ===*/
-                $cartInvalidCc  =   CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
-                                        ->where('course_selections.student_id', $user->id)
-                                        ->where('course_selections.is_checkout', 0)
-                                        ->where('course_selections.cart_added_date', '!=', null)
-
-                                        ->latest('course_selections.updated_at')
-                                        ->where('courses.price', '!=', 0)
-                                        //->where('courses.status', 'published');
-
-                                        ->join('coupons', 'course_selections.used_coupon_code', '=', 'coupons.code')
-                                        ->where(function ($query){
-                                            $query
-                                                ->orWhere('coupons.is_enabled', '!=', 1)
-                                                ->orWhereColumn('coupons.total_count', '<=', 'coupons.used_count')
-                                                ->orWhere(function ($subQuery){
-                                                    $subQuery->whereNotNull('coupons.cc_course_id')
-                                                        ->WhereColumn('course_selections.course_id', '!=', 'coupons.cc_course_id');
-                                                });
-                                        })
-                                        //->toSql();
-                                        /*->get();*/
-                                        ->get([
-                                            'course_selections.*',
-                                            'coupons.cc_course_id',
-                                            'coupons.is_enabled',
-                                            'coupons.total_count',
-                                            'coupons.used_count'
-                                        ]);
-
-
-                if($cartInvalidCc->isNotEmpty()){
-                    $msgArr['invoiceCc']['errTitle'] = 'Invalid coupon code(s) detected. They have been automatically removed from your cart.';
-                    $msgArr['invoiceCc']['errArr']   =  $cartInvalidCc->map(function ($cartItem) use ($user){
-
-                        $ccMsg  = '';
-                        $coupon = CouponModel::withoutGlobalScope('enabled')->find($cartItem->used_coupon_code);
-
-                        $cartItemCourseId   = $cartItem->course_id;
-                        $ccCourseId         = $coupon->cc_course_id;
-                        $ccAvalableCount    = $coupon->total_count - $coupon->used_count;
-                        //dump($coupon);
-                        //dump($cartItemCourseId .' === '.$ccCourseId);
-
-                        $ccMsg .= !is_null($ccCourseId) ? (($cartItemCourseId != $ccCourseId) ? ', not valid for the course(s) in your cart' : '') : '';
-                        $ccMsg .= ($ccAvalableCount <= 0)?', no longer available':'';
-                        $ccMsg .= (!$coupon->is_enabled)?', disabled':'';
-
-                        // format error messages
-                        $ccMsg = Str::replaceFirst(', ', '', $ccMsg);
-                        $ccMsg = Str::ucfirst($ccMsg);
-                        $ccMsg = $cartItem->used_coupon_code.' - '.$ccMsg;
-                        //dump($ccMsg);
-
-                        /* remove invalid coupons from courseSelection records */
-                        $cartItem->used_coupon_code        = null;
-                        $cartItem->discount_amount         = 0;
-                        $cartItem->revised_price           = $cartItem->course->price;
-                        $cartItem->edumind_lose_amount     = 0;
-                        $cartItem->beneficiary_earn_amount = 0;
-                        $cartItem->updated_at              = now();
-                        $cartItem->save(['timestamps' => false]);
-
-
-                        return $ccMsg;
-                    });
-                }
-                //dump('2.cartInvalidCc');
-                //dump($cartInvalidCc);
-                /*=== 2 END ======================================================================= ===*/
-
-
-
-
-
-
-                /*=== 3. If the foreign key relationship fails due to the nonexistence of the Coupon record ===*/
-                $csWithoutCC    =   CourseSelectionModel::whereNotExists(function ($query) {
-                                        $query->select('code')
-                                            ->from('coupons')
-                                            ->whereColumn('coupons.code', 'course_selections.used_coupon_code');
-                                    })
-                                    ->whereNotNull('course_selections.used_coupon_code')
-                                    //->toSql();
-                                    ->get();
-
-                if($csWithoutCC->isNotEmpty()){
-                    $msgArr['csWithoutCC']['errTitle'] = 'Nonexistence coupon code(s) have been automatically removed from your cart';
-                    $msgArr['csWithoutCC']['errArr']   =  $cartInvalidCc->map(function ($cartItem) use ($user){
-
-                        $msg   = '';
-                        $msg   = $cartItem->used_coupon_code;
-
-                        /* remove nonexistence coupons from user cart */
-                        $cartItem->used_coupon_code        = null;
-                        $cartItem->discount_amount         = 0;
-                        $cartItem->revised_price           = $cartItem->course->price;
-                        $cartItem->edumind_lose_amount     = 0;
-                        $cartItem->beneficiary_earn_amount = 0;
-                        $cartItem->updated_at              = now();
-                        $cartItem->save(['timestamps' => false]);
-
-
-                        return $msg;
-                    });
-                }
-                //dump('3.csWithoutCC');
-                //dump($csWithoutCC);
-                /*=== 3 END ============================================================================== ===*/
-
-
-
-
-
-
-
-
-
-
-                /*=== 4. check multiple (valid) coupon codes have used in user cart ===========================*/
-                $cartValidCc    =   CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
-                                        ->where('course_selections.student_id', $user->id)
-                                        ->where('course_selections.is_checkout', 0)
-                                        ->where('course_selections.cart_added_date', '!=', null)
-
-                                        ->latest('course_selections.updated_at')
-                                        ->where('courses.price', '!=', 0)
-                                        //->where('courses.status', 'published');
-
-                                        ->join('coupons', 'course_selections.used_coupon_code', '=', 'coupons.code')
-
-                                        ->where('coupons.is_enabled',1)
-                                        ->whereColumn('coupons.total_count', '>', 'coupons.used_count')
-                                        ->where(function ($query){
-                                            $query->orWhereNull('coupons.cc_course_id')
-                                                ->orWhereColumn('course_selections.course_id', '=', 'coupons.cc_course_id');
-                                        })
-                                        //->toSql();
-                                        ->get('course_selections.*');
-
-                if($cartValidCc->count() > 1){
-                    $msgArr['cartValidCc']['errTitle'] = 'Only one coupon code can be applied at a time. The latest applied coupon has been kept, and following coupon codes were removed from your cart';
-                    $msgArr['cartValidCc']['errArr']   =  $cartValidCc->skip(1)->map(function ($cartItem, $key) use ($user){
-
-                        $valCcMsg   = '';
-                        $valCcMsg   = $cartItem->used_coupon_code;
-
-                        /* latest applied coupon has been kept, and the others remove from user cart */
-                        $cartItem->used_coupon_code        = null;
-                        $cartItem->discount_amount         = 0;
-                        $cartItem->revised_price           = $cartItem->course->price;
-                        $cartItem->edumind_lose_amount     = 0;
-                        $cartItem->beneficiary_earn_amount = 0;
-                        $cartItem->updated_at              = now();
-                        $cartItem->save(['timestamps' => false]);
-
-
-                        return $valCcMsg;
-                    });
-                }
-                //dump('4.cartValidCc');
-                //dump($cartValidCc->count());
-                //dump($cartValidCc);
-                /*=== 4 END ============================================================================== ===*/
+                //remove empty arrays and merge
+                $msgArr =   array_filter(
+                                array_merge($freeCoursArr, $inavildCcArr, $NonExistCcArr, $usedCcArr)
+                            );
             }
-            //dd($msgArr);
 
             $cartReInitMsg      = empty($msgArr)? '' : 'Cart reset. Some items unavailable or modified. Please review and update your cart.';
             $cartReInitMsgCls   = empty($msgArr)? '' : 'flash-warning';
@@ -261,10 +78,9 @@ class CartController extends Controller
             ]);;
 
         } catch (\Exception $e) {
-
             return view('student.cart.cart-page')->with([
-                'cart_re_init_message'  => 'Cart reinitialization failed',
-                //'cart_re_init_message'  => $e->getMessage(),
+                //'cart_re_init_message'  => 'Cart reinitialization failed',
+                'cart_re_init_message'  => $e->getMessage(),
                 'cart_re_init_cls'      => 'flash-danger',
                 'cart_re_init_msgTitle' => 'Error',
                 'cart_re_init_msg_arr'  => []
@@ -273,6 +89,106 @@ class CartController extends Controller
         }
 
     }
+
+
+    public function loadBillingInfoPage(Request $request){
+        $user = Sentinel::getUser();
+        if(is_null($user))
+            abort(403, "You don't have permissions to access this page");
+
+        $arr = $this->cartService->loadBillingInfoData($request);
+        return view('student.cart.bill-info')->with($arr);
+    }
+
+
+    public function submitBillingInfo(BillingInfoRequest $request){
+
+        try{
+            $user = Sentinel::getUser();
+            if(is_null($user))
+                throw new CustomException("You don't have permissions to submit billing info form");
+
+            $errMessageBag  = optional(Session::get('errors'))->billingInfo;
+
+            if(!is_null(optional($errMessageBag)->getMessages()))
+                $billingInfoValErrors   = $errMessageBag->getMessages();
+
+            /* if have validation errors */
+            if (isset($request->validator) && $request->validator->fails())
+                throw new CustomException('Form validation is failed');
+
+            $cartCourseCount    =   $this->cartService->getCartItemCountByStudent($user);
+            if($cartCourseCount <= 0){
+                return  redirect()->route('view-cart')->with([
+                    'message'     => 'Your cart is empty therefore cannot submit billing info !',
+                    'cls'         => 'flash-danger',
+                    'msgTitle'    => 'Error !'
+                ]);
+            }
+
+            $saveFormData   = json_encode($request->except(['from','_token']));
+            $dbRec          = $this->cartService->saveBillingInfoData($saveFormData, $user);
+
+            $randomId       = substr(md5(mt_rand()), 0, 5);
+            $viewDataArr    = array(
+                'order' =>  $dbRec->id,
+                'key'   =>  'edumind_order_'.md5($dbRec->id).$randomId,
+                'code'  =>  base64_encode($randomId)
+            );
+
+            return  redirect()->to(route('load-checkout', $viewDataArr))
+                        ->withCookie('USER_B_INFO', Crypt::encryptString($saveFormData));
+
+        }catch(CustomException $e){
+            //dd('CustomException');
+            return  redirect()->back()
+                        ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
+                        ->withInput($request->input())
+                        ->with([
+                            'message'     => $e->getMessage(),
+                            'cls'         => 'flash-danger',
+                            'msgTitle'    => 'Error !',
+                        ]);
+
+        }catch(\Exception $e){
+            //dd($e->getMessage());
+            return  redirect()->back()
+                        ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
+                        ->withInput($request->input())
+                        ->with([
+                            'message'     => $e->getMessage(),
+                            //'message'     => 'Form submission failed !',
+                            'cls'         => 'flash-danger',
+                            'msgTitle'    => 'Error !',
+                        ]);
+        }
+
+    }
+
+
+    public function loadCheckout(Request $request){
+        $user   = Sentinel::getUser();
+        if(is_null($user))
+            abort(403);
+
+        $checkoutDataArr = $this->cartService->loadCheckoutData($request, $user);
+        return view('student.cart.pay-with-credit-card')->with($checkoutDataArr);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*  =========================================================================
+        ========================================================================= */
+
 
 
     public function removeFromCart(Request $request, $id){
@@ -403,198 +319,7 @@ class CartController extends Controller
     }
 
 
-	public function loadBillingInfoPage(Request $request){
-        
-        // todo ----------------add custom exception
-
-        try {
-
-            //dump('loadBillingInfoPage');
-            $encryptedCookieVal = $request->cookie('USER_B_INFO');
-            //dump($encryptedCookieVal);
-
-            $cookieVal = ($encryptedCookieVal)?Crypt::decryptString($encryptedCookieVal):'';
-            $arr = json_decode($cookieVal, true, 512, JSON_THROW_ON_ERROR);
-            //dump($arr);
-
-            $keys = ['fname','lname','email','phone','country','city','street_address'];
-
-            $allKeysExist = true;
-            foreach ($keys as $key) {
-                if (!array_key_exists($key, $arr)) {
-                    $allKeysExist = false;
-                    break;
-                }
-            }
-
-            // if one field is not there then skip form filling from cookie
-            if(!$allKeysExist){
-                throw new \Exception("cookie is not set");
-            }
-
-            return view('student.cart.bill-info')->with([
-                'fname'         => $arr['fname'],
-                'lname'         => $arr['lname'],
-                'email'         => $arr['email'],
-                'phone'         => $arr['phone'],
-                'country'       => $arr['country'],
-                'city'          => $arr['city'],
-                'street_address'=> $arr['street_address']
-            ]);
-
-        } catch (\Exception $e) {
-            return view('student.cart.bill-info')->with([
-                'fname'         => '',
-                'lname'         => '',
-                'email'         => '',
-                'phone'         => '',
-                'country'       => '',
-                'city'          => '',
-                'street_address'=> ''
-            ]);
-        }
-    }
-
-    public function submitBillingInfo(BillingInfoRequest $request){
-
-        try{
-            //dump('submitBillingInfo');
-            //dump($request->validated());
-            //dump('request->from - '.$request->get('from'));
-            //dump($request->header('referer'));
-
-            $saveFormData = json_encode($request->except(['from','_token']));
-            $user = Sentinel::getUser();
-
-
-            // if user cart has no courses then
-            $courseInCart   =   CourseSelectionModel::join('courses', 'course_selections.course_id', '=','courses.id')
-                                    ->where('course_selections.student_id', $user->id)
-                                    ->where('course_selections.is_checkout', 0)
-                                    ->where('course_selections.cart_added_date', '!=', null)
-                                    ->where('courses.price', '!=', 0)
-                                    ->count();
-
-            if($courseInCart <= 0){
-                return  redirect()->route('view-cart')->with([
-                    'message'     => 'Your cart is empty therefore cannot submit billing info !',
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Error !'
-                ]);
-            }
-
-
-
-
-
-
-            DB::beginTransaction ();
-
-            $TempBillingInfo = TempBillingInfoModel::Create([
-                'user_id'       => $user->id,
-                'billing_info'  => $saveFormData,
-                'is_checkout'   => false
-            ]);
-            //dd($TempBillingInfo);
-
-            if(null != Session::get('errors') && null != Session::get('errors')->billingInfo->getMessages()){
-                $billingInfoValErrors = Session::get('errors')->billingInfo->getMessages();
-            }
-
-            /* if have validation errors */
-            if (isset($request->validator) && $request->validator->fails()) {
-                $validationErrMsg = 'Form validation is failed';
-                throw new CustomException($validationErrMsg);
-            }
-
-            DB::commit();
-
-            $randomId = substr(md5(mt_rand()), 0, 5);
-
-            return redirect()->to(route('load-checkout', [
-                'order' => $TempBillingInfo->id,
-                'key'   => 'edumind_order_'.md5($TempBillingInfo->id).$randomId,
-                'code'  =>  base64_encode($randomId)
-            ]))->withCookie('USER_B_INFO', Crypt::encryptString($saveFormData));
-
-        }catch(CustomException $e){
-            //dd('CustomException');
-            DB::rollBack();
-            return  redirect()->back()
-                        ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
-                        ->withInput($request->input())
-                        ->with([
-                            'message'     => $e->getMessage(),
-                            'cls'         => 'flash-danger',
-                            'msgTitle'    => 'Error !',
-                        ]);
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            DB::rollBack();
-            return  redirect()->back()
-                        ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
-                        ->withInput($request->input())
-                        ->with([
-                            //'message'     => $e->getMessage(),
-                            'message'     => 'Form submission failed !',
-                            'cls'         => 'flash-danger',
-                            'msgTitle'    => 'Error !',
-                        ]);
-        }
-
-	}
-
-
-    public function loadCheckout(Request $request){
-        try {
-
-            //dump('loadCheckout');
-            $orderId    = $request->get('order');
-            $random     = base64_decode($request->get('code'));
-            $key        = $request->get('key');
-
-
-            if(!filter_var($orderId, FILTER_VALIDATE_INT) || $orderId <= 0){
-                throw new CustomException('Invalid order');
-            }
-            if(!$random) abort(403);
-            if(!$key) abort(403);
-
-            $encryptedStr = 'edumind_order_'.md5($orderId).$random;
-
-            //for validate url
-            if($key != $encryptedStr) abort(403);
-
-
-
-            //check in temp_billing_info table provided temporary record(order) exists
-            $rec = TempBillingInfoModel::find($orderId);
-            if(!$rec || ($rec->is_checkout == true)) abort(403);
-            //dump($rec->is_checkout);
-
-
-
-            //check user of the temporary record(order)
-            $user = Sentinel::getUser();
-            if($user->id != $rec->user_id) abort(403);
-
-
-
-
-
-            return view('student.cart.pay-with-credit-card')->with([
-                'orderId' => base64_encode($orderId),
-                'random'  => base64_encode($random)
-            ]);
-
-        } catch (\Exception $e) {
-            //dd($e->getMessage());
-            abort(403);
-        }
-    }
-
-	public function checkout(CreditCardDetailsRequest $request){
+    public function checkout(CreditCardDetailsRequest $request){
 
         //dump('checkout');
         //dump($request->cookie('nameppp'));
@@ -732,7 +457,7 @@ class CartController extends Controller
             ]);
 
         }catch(CustomException $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return view('student.cart.payment-failed')->with([
                 'message'   => $e->getMessage(),
                 'cls'       => 'flash-danger',
@@ -741,7 +466,7 @@ class CartController extends Controller
             ]);
 
         }catch(\Exception $e){
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return view('student.cart.payment-failed')->with([
                 //'message'   => $e->getMessage(),
                 'message'   => 'there was an issue processing your payment',

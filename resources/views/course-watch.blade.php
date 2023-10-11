@@ -1,7 +1,7 @@
 @php
     $page       = 'course-watch';
     $wrapperCls = 'course-watch';    
-    $pgtitle    = 'Watch - '.$courseData->name.'/'.$videoId;  
+    $pgtitle    = 'Watch - '.$courseData['name'].'/'.$videoId;  
 @endphp
 
 
@@ -46,22 +46,20 @@
     <div class="main-container container">
 
         <div class="row">
-
+            @php
+                //dd($courseData);
+            @endphp
             <!-- sidebar -->
             <div class="sidebar static" id="sidebar">
-
 
                 <div class="c_link_navigator flex justify-between font-bold text-lg px-2 md:px-0" style="">
                     <!-- <a title="Announcements Overview 123" class="text-left prev text-base bg-white px-3 py-3 rounded leading-4" href="">🡸  Back</a> -->
                     <span title="Previous" class="text-left prev text-base bg-white px-3 py-3 rounded leading-4" href="">🡸  Back</span>
-                    
-                    <h1 class="lg:text-2xl text-lg font-bold mt-2 line-clamp-2">{{$courseData->name}}</h1>
-
+                    <h1 class="lg:text-2xl text-lg font-bold mt-2 line-clamp-2">{{$courseData['name']}}</h1>
                     <!-- <a title="Overview to" class="text-right next text-base bg-white px-3 py-3 rounded leading-4" href="" >Next  🢂</a> -->
                     <span title="Next" class="text-right next text-base bg-white px-3 py-3 rounded leading-4" href="" >Next  🢂</span>
                 </div>
-             
-                
+                             
                 <!-- 
                 <div class="course_progress">
                     <div class="relative overflow-hidden _rounded-md bg-gray-200 h-3 mt-4">
@@ -77,152 +75,148 @@
                 <hr>
                 <br>
 
-
-
-
                 <!-- course Curriculum -->
                 <div id="curriculum_sidebar" class="curriculum_sidebar">
-                    <h3 class="text-center mb-4 text-xl font-semibold lg:mb-5"> Course Curriculum </h3>
-                    @if($courseData->content)
-                        <ul uk-accordion="multiple: true" class="divide-y space-y-3">
+                    <h3 class="text-center mb-4 text-xl font-semibold lg:mb-5"> Course Curriculum</h3>
+                    @if(isset($courseData['content']) && is_array($courseData['content']))                    
+                        
+                        @if(!empty($courseData))
+                            <ul uk-accordion="multiple: true" class="divide-y space-y-3">
+                                @php($liCount = 1)
+                                @foreach($courseData['content'] as $sectionHeading => $sectionContent)
+                                    <li class="aac{{$loop->index}} accordion_item bg-gray-200 px-0 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
+                                        <a class="text-center uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
+                                            <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div>
+                                            {{$sectionHeading}}
+                                        </a>
 
-                            @php($liCount = 1)
+                                        <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t pt-3">
+                                            <ul class="course-curriculum-list font-medium px-0" _uk-switcher="connect: #video_tabs; animation: animation: uk-animation-slide-right-small, uk-animation-slide-left-medium">
+                                                @if(array_key_first($courseData['content']) == $sectionHeading)                                            
+                                                    <!-- 
+                                                    <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
+                                                        <div class="mb-1 text-base font-normal">
+                                                            <a class="" style="" href="url1">
+                                                                <span class="mr-3">1.</span>
+                                                                Related nav container. By default, nav items are found in related items container only.
+                                                            </a>
+                                                        </div>
 
-                            @foreach($courseData->content as $sectionHeading => $sectionContent)
-                                
+                                                        <div class="flex text-sm">
+                                                            <i class="fa fa-play-circle leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
+                                                            <span style="" class="ml-5">15 minutes</span>
+                                                            <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button>
+                                                        </div>
+                                                    </li>
 
-                                <li class="aac{{$loop->index}} accordion_item bg-gray-200 px-0 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
+                                                    <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
+                                                        <div class="mb-1 text-sm font-normal">
+                                                            <a class="" style="" href="url1">
+                                                                <span class="mr-3">2.</span>
+                                                                Want related  to request new icons? Here's how. Need By default, nav nav found in related items container only container items are .
+                                                            </a>
+                                                        </div>
 
-                                    <a class="text-center uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
-                                        <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div>
-                                        {{$sectionHeading}}
-                                    </a>
+                                                        <div class="flex text-sm">
+                                                            <i class="fa fa-download leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
+                                                            <span style="" class="ml-5">5 MB</span>
+                                                            <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">⬜</button>
+                                                        </div>
+                                                    </li>
 
-                                    <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t pt-3">
+                                                    <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
+                                                        <div class="mb-1 text-sm font-normal">
+                                                            <a class="" style="" href="url1">
+                                                                <span class="mr-3">3.</span>
+                                                                Nav related container. By default, nav items are found in related items container only.
+                                                            </a>
+                                                        </div>
 
-                                        <ul class="course-curriculum-list font-medium px-0" _uk-switcher="connect: #video_tabs; animation: animation: uk-animation-slide-right-small, uk-animation-slide-left-medium">
+                                                        <div class="flex text-sm">
+                                                            <i class="fa fa-link leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
+                                                            <span style="" class="ml-5">15 minutes</span>
+                                                            <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">⬜</button>
+                                                        </div>
+                                                    </li>
 
+                                                    <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
+                                                        <div class="mb-1 text-sm font-normal">
+                                                            <a class="" style="" href="url1">
+                                                                <span class="mr-3">3.</span>
+                                                                Nav related container. By default, nav items are found in related items container only.
+                                                            </a>
+                                                        </div>
 
-                                            @if(array_key_first($courseData->content) == $sectionHeading)                                            
-                                            <!-- 
-                                            <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
-                                                <div class="mb-1 text-base font-normal">
-                                                    <a class="" style="" href="url1">
-                                                        <span class="mr-3">1.</span>
-                                                        Related nav container. By default, nav items are found in related items container only.
-                                                    </a>
-                                                </div>
+                                                        <div class="flex text-sm">
+                                                            <i class="fa fa-info-circle leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
+                                                            <span style="" class="ml-5">15 minutes</span>
+                                                            <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button>
+                                                        </div>
+                                                    </li>
+                                                    -->
+                                                @endif
 
-                                                <div class="flex text-sm">
-                                                    <i class="fa fa-play-circle leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
-                                                    <span style="" class="ml-5">15 minutes</span>
-                                                    <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button>
-                                                </div>
-                                            </li>
+                                                @foreach($sectionContent as $key=>$arr)
+                                                    <!-- {{$liCount}} -->                                                
+                                                    <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
+                                                        <div class="mb-1 text-sm font-normal">
+                                                            <a class="block switch-links" style="" href="{{$arr['inputUrl']}}" data-id="{{$liCount}}">
+                                                                <!-- <span class="mr-3">{{$key + 1}}.</span> -->
+                                                                <span class="mr-3">{{$liCount}}.</span>
+                                                                {{$arr['inputText']}}
+                                                            </a>
+                                                        </div>
 
-                                            <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
-                                                <div class="mb-1 text-sm font-normal">
-                                                    <a class="" style="" href="url1">
-                                                        <span class="mr-3">2.</span>
-                                                        Want related  to request new icons? Here's how. Need By default, nav nav found in related items container only container items are .
-                                                    </a>
-                                                </div>
+                                                        <div class="flex text-sm">
+                                                            @if(strtolower($arr['type']) == 'video')
+                                                                <i class="fa fa-play-circle leading-5 text-xl mr-0 md hydrated"></i>
+                                                            @elseif (strtolower($arr['type']) =="download")
+                                                                <i class="fa fa-download leading-5 text-xl mr-0 md hydrated"></i>
+                                                            @elseif (strtolower($arr['type']) =="other")
+                                                                <i class="fa fa-link leading-5 text-xl mr-0 md hydrated"></i>
+                                                            @else
+                                                                <i class="fa fa-info-circle leading-5 text-xl mr-0 md hydrated"></i>
+                                                            @endif
 
-                                                <div class="flex text-sm">
-                                                    <i class="fa fa-download leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
-                                                    <span style="" class="ml-5">5 MB</span>
-                                                    <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">⬜</button>
-                                                </div>
-                                            </li>
+                                                            @if($arr['linkParam'] !='')
+                                                                <span class="param ml-5">{{$arr['linkParam']}}</span>
+                                                            @endif
 
-                                            <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
-                                                <div class="mb-1 text-sm font-normal">
-                                                    <a class="" style="" href="url1">
-                                                        <span class="mr-3">3.</span>
-                                                        Nav related container. By default, nav items are found in related items container only.
-                                                    </a>
-                                                </div>
+                                                            <!-- <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button> -->
 
-                                                <div class="flex text-sm">
-                                                    <i class="fa fa-link leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
-                                                    <span style="" class="ml-5">15 minutes</span>
-                                                    <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">⬜</button>
-                                                </div>
-                                            </li>
+                                                            <!--
+                                                            @if($loop->index%2==0)
+                                                            <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button>
+                                                            @else
+                                                            <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">⬜</button>
+                                                            @endif  -->
+                                                        </div>
+                                                    </li>
+                                                    @php($liCount++)
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>                       
+                        @else
+                            <x-flash-message 
+                                class="flash-info text-center"  
+                                title="Course content is empty" 
+                                message=""  
+                                message2=""  
+                                :canClose="false" />
+                        @endif
 
-                                            <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
-                                                <div class="mb-1 text-sm font-normal">
-                                                    <a class="" style="" href="url1">
-                                                        <span class="mr-3">3.</span>
-                                                        Nav related container. By default, nav items are found in related items container only.
-                                                    </a>
-                                                </div>
-
-                                                <div class="flex text-sm">
-                                                    <i class="fa fa-info-circle leading-5 text-xl mr-0 md hydrated" aria-hidden="true"></i>
-                                                    <span style="" class="ml-5">15 minutes</span>
-                                                    <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button>
-                                                </div>
-                                            </li>
-                                            -->
-                                            @endif
-
-
-                                            @foreach($sectionContent as $key=>$arr)
-                                                <!-- {{$liCount}} -->
-                                                
-                                                <li class="hover:bg-gray-50 font-normal pl-2 pr-1 py-2 text-black border-gray-300 border-b">
-
-                                                    <div class="mb-1 text-sm font-normal">
-                                                        <a class="block switch-links" style="" href="{{$arr['inputUrl']}}" data-id="{{$liCount}}">
-                                                            <!-- <span class="mr-3">{{$key + 1}}.</span> -->
-                                                            <span class="mr-3">{{$liCount}}.</span>
-                                                            {{$arr['inputText']}}
-                                                        </a>
-                                                    </div>
-
-                                                    <div class="flex text-sm">
-
-                                                        @if(strtolower($arr['type']) == 'video')
-                                                            <i class="fa fa-play-circle leading-5 text-xl mr-0 md hydrated"></i>
-                                                        @elseif (strtolower($arr['type']) =="download")
-                                                            <i class="fa fa-download leading-5 text-xl mr-0 md hydrated"></i>
-                                                        @elseif (strtolower($arr['type']) =="other")
-                                                            <i class="fa fa-link leading-5 text-xl mr-0 md hydrated"></i>
-                                                        @else
-                                                            <i class="fa fa-info-circle leading-5 text-xl mr-0 md hydrated"></i>
-                                                        @endif
-
-                                                        @if($arr['linkParam'] !='')
-                                                            <span class="param ml-5">{{$arr['linkParam']}}</span>
-                                                        @endif
-
-                                                        <!-- <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button> -->
-
-                                                        <!--
-                                                        @if($loop->index%2==0)
-                                                        <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">✅</button>
-                                                        @else
-                                                        <button class="ml-1 change_lec_stat ml-auto" name="" type="button" class="">⬜</button>
-                                                        @endif  -->
-                                                    </div>
-                                                </li>
-                                                @php($liCount++)
-                                            @endforeach
-
-
-                                        </ul>
-
-                                    </div>
-                                </li>
-                            @endforeach
-
-                        </ul>
                     @else
-                        <p class="text-center text-sm font-semibold">Course content is empty</p>
+                        <x-flash-message 
+                            class="flash-danger text-center"  
+                            title="Error !" 
+                            message=""  
+                            message2="Course content is not available or not in correct format"  
+                            :canClose="false" />
                     @endif
-                </div>
-                                        
+                </div>               
 
             </div>
 
@@ -230,109 +224,117 @@
             <div class="main_content ml-0--imp">
                 <div class="relative">
 
-                    <ul class="_uk-switcher relative z-10" id="video_tabs">
-                    @if($courseData->content)
-                        @foreach($courseData->content as $sectionHeading => $sectionContent)
-                            @foreach($sectionContent as $key=>$arr)
+                        @if(isset($courseData['content']) && is_array($courseData['content']))
+                            @if(!empty($courseData))
+                                <ul class="_uk-switcher relative z-10" id="video_tabs">
+                                    @foreach($courseData['content'] as $sectionHeading => $sectionContent)
+                                        @foreach($sectionContent as $key=>$arr)
 
+                                            @if(strtolower($arr['type']) == 'video')
+                                                @if(ValidUrl($arr['inputUrl']))
+                                                    <li>
+                                                        <div class="embed-video">
+                                                            <iframe uk-video="automute: false;autoplay:false" src="{{$arr['inputUrl']}}" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                                                        </div>
+                                                    </li>
+                                                @else
+                                                    <li>
+                                                        <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                                            <div class=" font-bold text-4xl text-red">Error</div>
+                                                            <div class="my-5 inline-block top-div">
+                                                                <i class="text-red fa fa-ban text-9xl" aria-hidden="true"></i>
+                                                            </div>                                                
+                                                            <p class="text-2xl font-bold mt-0 text-red">Invalid Link - 
+                                                                <a href="{{$arr['inputUrl']}}" target="_blank" class="text-white underline hover:underline inline-block" title="Open">{{$arr['inputText']}}</a>
+                                                                @if($arr['linkParam'] !='')
+                                                                    <span class="text-white text-sm font-normal">({{$arr['linkParam']}})<span>
+                                                                @endif
+                                                            </p>
 
-
-                                @if(strtolower($arr['type']) == 'video')
-                                    @if(ValidUrl($arr['inputUrl']))
-                                        <li>
-                                            <div class="embed-video">
-                                                <iframe uk-video="automute: false;autoplay:false" src="{{$arr['inputUrl']}}" allow="autoplay; fullscreen" allowfullscreen></iframe>
-                                            </div>
-                                        </li>
-                                    @else
-                                        <li>
-                                            <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
-                                                <div class=" font-bold text-4xl text-red">Error</div>
-                                                <div class="my-5 inline-block top-div">
-                                                    <i class="text-red fa fa-ban text-9xl" aria-hidden="true"></i>
-                                                </div>                                                
-                                                <p class="text-2xl font-bold mt-0 text-red">Invalid Link - 
-                                                    <a href="{{$arr['inputUrl']}}" target="_blank" class="text-white underline hover:underline inline-block" title="Open">{{$arr['inputText']}}</a>
-                                                    @if($arr['linkParam'] !='')
-                                                        <span class="text-white text-sm font-normal">({{$arr['linkParam']}})<span>
-                                                    @endif
-                                                </p>
-
-                                            </div>
-                                        </li>
-                                    @endif
-
-                                @elseif (strtolower($arr['type']) =="download")
-                                    <li>
-                                        <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
-                                            <div class=" font-bold text-4xl">Download Link</div>
-                                            <div class="my-5 inline-block top-div">                                                                                          
-                                                <i class="fa fa-download text-9xl"></i>                                                 
-                                            </div>
-                                                                                        
-                                            <p class="text-2xl font-bold mt-0">
-                                                Click here to download - 
-                                                <a href="{{$arr['inputUrl']}}" download class="underline hover:underline down_icon py-5 inline-block" title="Download">{{$arr['inputText']}}</a>
-                                                @if($arr['linkParam'] !='')
-                                                    <span class="text-sm font-normal">({{$arr['linkParam']}})<span>
-                                                @endif    
-                                            </p>
-                                            
-                                        </div>
-                                    </li>
-                                @elseif (strtolower($arr['type']) =="other")
-                                    <li>
-                                        <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
-                                            <div class=" font-bold text-4xl">External Link</div>
-                                            <div class="my-5 inline-block top-div">
-                                                <div class="border-8 rounded-full mb-1 p-4">                                                    
-                                                    <i class="fa fa-link text-8xl"></i>                                                    
-                                                </div>
-                                            </div>                                            
-                                            
-                                            <p class="text-2xl font-bold mt-0">
-                                                Click here to open - 
-                                                <a href="{{$arr['inputUrl']}}" target="_blank" class="underline hover:underline down_icon py-5 inline-block" title="Open">{{$arr['inputText']}}</a>
-                                                @if($arr['linkParam'] !='')
-                                                    <span class="text-sm font-normal">({{$arr['linkParam']}})<span>
-                                                @endif    
-                                            </p>
-                                                                                    
-                                        </div>
-                                    </li>
-                                @else
-                                    <li>
-                                        <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
-                                            <div class=" font-bold text-4xl text-yellow-400">Invalid Link</div>
-                                            <div class="my-5 inline-block top-div">
-                                                <i class="fa fa-info-circle text-9xl" aria-hidden="true"></i>
-                                            </div>                                                
-                                            <p class="text-2xl font-bold mt-0 text-yellow-400">
-                                                Invalid Link type - 
-                                                <a href="{{$arr['inputUrl']}}" target="_blank" class="text-white underline hover:underline inline-block" title="Open">{{$arr['inputText']}}</a>
-                                                @if($arr['linkParam'] !='')
-                                                    <span class="text-sm font-normal text-white">({{$arr['linkParam']}})<span>
+                                                        </div>
+                                                    </li>
                                                 @endif
-                                            </p>
-                                        </div>                                        
-                                    </li>
-                                @endif
 
+                                            @elseif (strtolower($arr['type']) =="download")
+                                                <li>
+                                                    <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                                        <div class=" font-bold text-4xl">Download Link</div>
+                                                        <div class="my-5 inline-block top-div">                                                                                          
+                                                            <i class="fa fa-download text-9xl"></i>                                                 
+                                                        </div>
+                                                                                                    
+                                                        <p class="text-2xl font-bold mt-0">
+                                                            Click here to download - 
+                                                            <a href="{{$arr['inputUrl']}}" download class="underline hover:underline down_icon py-5 inline-block" title="Download">{{$arr['inputText']}}</a>
+                                                            @if($arr['linkParam'] !='')
+                                                                <span class="text-sm font-normal">({{$arr['linkParam']}})<span>
+                                                            @endif    
+                                                        </p>
+                                                        
+                                                    </div>
+                                                </li>
+                                            @elseif (strtolower($arr['type']) =="other")
+                                                <li>
+                                                    <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                                        <div class=" font-bold text-4xl">External Link</div>
+                                                        <div class="my-5 inline-block top-div">
+                                                            <div class="border-8 rounded-full mb-1 p-4">                                                    
+                                                                <i class="fa fa-link text-8xl"></i>                                                    
+                                                            </div>
+                                                        </div>                                            
+                                                        
+                                                        <p class="text-2xl font-bold mt-0">
+                                                            Click here to open - 
+                                                            <a href="{{$arr['inputUrl']}}" target="_blank" class="underline hover:underline down_icon py-5 inline-block" title="Open">{{$arr['inputText']}}</a>
+                                                            @if($arr['linkParam'] !='')
+                                                                <span class="text-sm font-normal">({{$arr['linkParam']}})<span>
+                                                            @endif    
+                                                        </p>
+                                                                                                
+                                                    </div>
+                                                </li>
+                                            @else
+                                                <li>
+                                                    <div class="text-center text-white link px-10 py-20 bg-gray-800 min-h-screen-half">
+                                                        <div class=" font-bold text-4xl text-yellow-400">Invalid Link</div>
+                                                        <div class="my-5 inline-block top-div">
+                                                            <i class="fa fa-info-circle text-9xl" aria-hidden="true"></i>
+                                                        </div>                                                
+                                                        <p class="text-2xl font-bold mt-0 text-yellow-400">
+                                                            Invalid Link type - 
+                                                            <a href="{{$arr['inputUrl']}}" target="_blank" class="text-white underline hover:underline inline-block" title="Open">{{$arr['inputText']}}</a>
+                                                            @if($arr['linkParam'] !='')
+                                                                <span class="text-sm font-normal text-white">({{$arr['linkParam']}})<span>
+                                                            @endif
+                                                        </p>
+                                                    </div>                                        
+                                                </li>
+                                            @endif
 
-                            @endforeach
-                        @endforeach
-                    @else
-                        <li>
+                                        @endforeach
+                                    @endforeach
+                                </ul>                    
+                                <div class="bg-gray-200 w-full h-full absolute inset-0 animate-pulse"></div>
+                            @else
+                                <div class="text-center text-white download-link p-10 bg-gray-800 min-h-screen-half">
+                                    <div class="text-4xl mt-5">Course content is empty</div>
+                                </div>                            
+                            @endif    
+                        @else                            
                             <div class="text-center text-white download-link p-10 bg-gray-800 min-h-screen-half">
-                                <div class=" font-bold text-4xl">Course content is empty</div>
-                            </div>
-                        </li>
-                    @endif
-                    </ul>
+                                <x-flash-message 
+                                    class="flash-danger text-center"  
+                                    title="Error !" 
+                                    message="Course content is not available or not in correct format"  
+                                    message2=""  
+                                    :canClose="false" />
+                            </div>                            
+                        @endif                       
+                    
 
-                    <div class="bg-gray-200 w-full h-full absolute inset-0 animate-pulse"></div>
 
                 </div>
+
 
                <!--  <div class="flex justify-between font-bold text-lg p-3 text-blue-500">
                     <a title="Announcements Overview 123" class="bg-white border border-blue-600 px-3 py-3 rounded leading-4 ssss" href="">🡸 Previous</a>
@@ -341,7 +343,6 @@
 
 
                 <nav class="cd-secondary-nav border-b md:p-0 lg:px-6 bg-white mt-3">
-
                     <ul id="c_menu_switcher" uk-switcher="connect: #course-tabs; animation: uk-animation-fade">
                         <li class="course_curriculum"><a href="#" class="lg:px-2"> Curriculum </a></li>
                         <li><a href="#" class="lg:px-2"> Overview </a></li>
@@ -351,18 +352,11 @@
                 </nav>
 
                 <div class="container">
-
                     <div class="__max-w-2xl lg:py-6 mx-auto uk-switcher" id="course-tabs">
 
                         <!--  curriculum -->
                         <div class="">
-
-                            <!-- sidebar width:100%;position: static;display: block;background-color: transparent;    border-width: 0px;box-shadow: unset;-->
-                            <div class="curriculum_tab">
-
-                                <!-- title -->
-                                <h2 class="text-2xl font-bold">Learn Responsive Web Design Essentials</h1>
-
+                            <div class="curriculum_tab">                               
                                 <div class="">
                                     <div class="relative overflow-hidden _rounded-md bg-gray-200 h-3 mt-4">
                                         <div class="w-2/4 h-full bg-green-500"></div>
@@ -372,90 +366,97 @@
                                         <div> Last activity on April 20, 2021</div>
                                     </div>
                                 </div>
-
-                                <!-- course Curriculum -->
                                 <div id="curriculum_mobile" class="curriculum_container">
                                     <h3 class="mb-4 text-xl font-semibold lg:mb-5"> Course Curriculum </h3>
-                                    @if($courseData->content)
-                                        <ul uk-accordion="multiple: true" class="divide-y space-y-3">
-                                            @php($li_count = 1)
-                                            @foreach($courseData->content as $sectionHeading => $sectionContent)
-                                                <li class="bg-gray-200 px-0 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
+                                    @if(isset($courseData['content']) && is_array($courseData['content']))                   
+                                        
+                                        @if(!empty($courseData))
+                                            <ul uk-accordion="multiple: true" class="divide-y space-y-3">
+                                                @php($li_count = 1)
+                                                @foreach($courseData['content'] as $sectionHeading => $sectionContent)
+                                                    <li class="bg-gray-200 px-0 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
 
-                                                    <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
-                                                        <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
+                                                        <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
+                                                            <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
 
-                                                    <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
+                                                        <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
 
-                                                        <ul class="course-curriculum-list font-medium">
+                                                            <ul class="course-curriculum-list font-medium">
 
-                                                            @foreach($sectionContent as $arr)
-                                                                <li class="font-normal hover:bg-gray-100 p-2 flex text-blue-500
-                                                                    {{($arr['isFree'] == 'Free')?' __text-blue-500':''}}
-                                                                    {{($arr['type'] == 'Download')?' __pl-8':''}}">
+                                                                @foreach($sectionContent as $arr)
+                                                                    <li class="font-normal hover:bg-gray-100 p-2 flex text-blue-500
+                                                                        {{($arr['isFree'] == 'Free')?' __text-blue-500':''}}
+                                                                        {{($arr['type'] == 'Download')?' __pl-8':''}}">
 
-                                                                    {{--$arr['type']--}}
+                                                                        {{--$arr['type']--}}
 
-
-                                                                    @if(strtolower($arr['type']) == 'video')
-                                                                        <i class="text-blue-500 fa fa-play-circle leading-6 text-3xl mr-2"></i>
-                                                                        <!-- <ion-icon name="play-circle" class="leading-6 text-2xl mr-2"></ion-icon> -->
-                                                                    @elseif (strtolower($arr['type']) =="download")
-                                                                        <i class="text-blue-500 fa fa-download leading-6 text-3xl mr-2"></i>
-                                                                        <!-- <ion-icon class="icon-feather-download leading-6 text-2xl mr-2"></ion-icon> -->
-                                                                    @elseif (strtolower($arr['type']) =="other")
-                                                                        <i class="text-blue-500 fa fa-link leading-6 text-3xl mr-2"></i>
-                                                                        <!-- <ion-icon class="icon-feather-link leading-6 text-2xl mr-2"></ion-icon> -->
-                                                                    @else
-                                                                        <i class="text-blue-500 fa fa-info-circle leading-6 text-3xl mr-2"></i>
-                                                                        <!-- <ion-icon class="icon-feather-box leading-6 text-2xl mr-2"></ion-icon> -->
-                                                                    @endif
-
-                                                                    
-
-
-
-                                                                    <div class="link_div mr-2 text-justify">
-                                                                        <a class="switch-links" href="{{$arr['inputUrl']}}" data-id="{{$li_count}}">{{$li_count}} . {{$arr['inputText']}}</a>
-
-                                                                        @if($arr['isFree'] == 'Free' && $arr['type'] == 'Video')
-                                                                        <!-- <a href="#trailer-modal" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle="">Preview</a> -->
+                                                                        @if(strtolower($arr['type']) == 'video')
+                                                                            <i class="text-blue-500 fa fa-play-circle leading-6 text-3xl mr-2"></i>
+                                                                            <!-- <ion-icon name="play-circle" class="leading-6 text-2xl mr-2"></ion-icon> -->
+                                                                        @elseif (strtolower($arr['type']) =="download")
+                                                                            <i class="text-blue-500 fa fa-download leading-6 text-3xl mr-2"></i>
+                                                                            <!-- <ion-icon class="icon-feather-download leading-6 text-2xl mr-2"></ion-icon> -->
+                                                                        @elseif (strtolower($arr['type']) =="other")
+                                                                            <i class="text-blue-500 fa fa-link leading-6 text-3xl mr-2"></i>
+                                                                            <!-- <ion-icon class="icon-feather-link leading-6 text-2xl mr-2"></ion-icon> -->
+                                                                        @else
+                                                                            <i class="text-blue-500 fa fa-info-circle leading-6 text-3xl mr-2"></i>
+                                                                            <!-- <ion-icon class="icon-feather-box leading-6 text-2xl mr-2"></ion-icon> -->
                                                                         @endif
 
-                                                                        @if($arr['isFree'] == 'Free' && $arr['type'] == 'Download')
-                                                                        <!-- <a href="{{$arr['inputUrl']}}" target="_blank" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle="">Download</a> -->
+                                                                        
+                                                                        <div class="link_div mr-2 text-justify">
+                                                                            <a class="switch-links" href="{{$arr['inputUrl']}}" data-id="{{$li_count}}">{{$li_count}} . {{$arr['inputText']}}</a>
+
+                                                                            @if($arr['isFree'] == 'Free' && $arr['type'] == 'Video')
+                                                                            <!-- <a href="#trailer-modal" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle="">Preview</a> -->
+                                                                            @endif
+
+                                                                            @if($arr['isFree'] == 'Free' && $arr['type'] == 'Download')
+                                                                            <!-- <a href="{{$arr['inputUrl']}}" target="_blank" class="bg-blue-500 hover:text-white text-white bg-gray-200 ml-4 px-2 py-1 rounded-full text-xs" uk-toggle="">Download</a> -->
+                                                                            @endif
+                                                                        </div>
+
+
+                                                                        @if($arr['linkParam'] !='')
+                                                                            <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
                                                                         @endif
-                                                                    </div>
 
 
-                                                                    @if($arr['linkParam'] !='')
-                                                                        <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
-                                                                    @endif
+                                                                        <!--
+                                                                        @if($loop->index%2==0)
+                                                                        <button class="ml-1 change_lec_stat" name="" type="button" class="">✅</button>
+                                                                        @else
+                                                                        <button class="ml-1 change_lec_stat" name="" type="button" class="">⬜</button>
+                                                                        @endif
+                                                                        -->
+                                                                    </li>
+                                                                    @php($li_count++)
+                                                                @endforeach
 
+                                                            </ul>
 
-                                                                    <!--
-                                                                    @if($loop->index%2==0)
-                                                                    <button class="ml-1 change_lec_stat" name="" type="button" class="">✅</button>
-                                                                    @else
-                                                                    <button class="ml-1 change_lec_stat" name="" type="button" class="">⬜</button>
-                                                                    @endif
-                                                                    -->
-                                                                </li>
-                                                                @php($li_count++)
-                                                            @endforeach
-
-                                                        </ul>
-
-                                                    </div>
-                                                </li>
-                                            @endforeach
-
-                                        </ul>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <x-flash-message 
+                                                class="flash-info text-center"  
+                                                title="Course content is empty" 
+                                                message=""  
+                                                message2=""  
+                                                :canClose="false" />
+                                        @endif
                                     @else
-                                        <p class="text-center text-sm font-semibold">Course content is empty</p>
+                                        <x-flash-message 
+                                            class="flash-danger text-center"  
+                                            title="Error !" 
+                                            message="Course content is not available or not in correct format"  
+                                            message2=""  
+                                            :canClose="false" />
                                     @endif
                                 </div>
-
                             </div>
                         </div>
 
@@ -463,10 +464,8 @@
                         <!--  Overview -->
                         <div>
                             <h4 class="text-2xl font-semibold"> About this course </h4>
-
                             <p> Learn Web Development Without Writing Much Code </p>
                             <hr class="my-5">
-
                             <div class="grid lg:grid-cols-3 mt-8 gap-8">
                                 <div>
                                     <h3 class="text-lg font-semibold"> Description </h3>
@@ -485,7 +484,6 @@
                                         <a href="#" class="text-blue-500">Read more .</a>
                                     </p>
                                 </div>
-
                                 <div>
                                     <h3 class="text-lg font-semibold"> What You’ll Learn </h3>
                                 </div>
@@ -500,7 +498,6 @@
                                         <li> <i class="uil-check text-xl font-bold mr-2"></i>Start building beautiful websites</li>
                                     </ul>
                                 </div>
-
                                 <div>
                                     <h3 class="text-lg font-semibold"> Requirements </h3>
                                 </div>
@@ -511,11 +508,9 @@
                                         <li>Basic/Minimal understanding of JavaScript</li>
                                     </ul>
                                 </div>
-                            </div>
-                            
+                            </div>                            
                         </div>
                         <!-- -->
-
 
 
 
@@ -643,7 +638,6 @@
                         <!--  -->
 
                     </div>
-
                 </div>
 
 
@@ -693,7 +687,6 @@
             </div>
         </div>
     </div>
-
 @stop
 
 
@@ -770,7 +763,7 @@
     $(document).on('click','a.switch-links',function(event,is_url_push_history=true){
         event.preventDefault();
         var id          = $(this).data('id');  
-        var courseTitle = '{{$courseData->name}}';
+        var courseTitle = '{{$courseData['name']}}';
         var iframe      = $( "ul#video_tabs li").eq(id-1).find('iframe');      
         // reset content list
         $( "ul#video_tabs li").each(function( index, element ){

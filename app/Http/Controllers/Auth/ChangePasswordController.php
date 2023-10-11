@@ -5,16 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Sentinel;
 
+//use Illuminate\Support\Facades\Response;
 
 class ChangePasswordController extends Controller
 {
-    
-    
+
+
     public function changePassword(Request $request) {
         return view ('auth.form-change-password');
     }

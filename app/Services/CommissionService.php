@@ -1,27 +1,15 @@
 <?php
-
-
 namespace App\Services;
-
-
 
 class CommissionService
 {
-
-	function __construct(){
+    function __construct(){
 
 	}
 
 	public function aaa(){
 
 	}
-
-
-
-
-
-
-
 
 }
 

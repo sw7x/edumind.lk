@@ -1,9 +1,10 @@
 <?php
 namespace App\Services;
 
-interface IApplicationService{
+interface IApplicationService
+{
     //view all courses
-    //add 
+    //add
     //edit
     //delete
     //view Single

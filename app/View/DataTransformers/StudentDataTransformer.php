@@ -27,8 +27,8 @@ class StudentDataTransformer{
             $isComplete = $courseData['isComplete'];
 
             $tempArr = $courseDto->toArray();
-            $tempArr['teacherName']      = $courseDto->getAuthorDto()->getFullName();
-            $tempArr['teacherUserName']  = $courseDto->getAuthorDto()->getUserName();
+            $tempArr['teacherName']      = optional($courseDto->getAuthorDto())->getFullName();
+            $tempArr['teacherUserName']  = optional($courseDto->getAuthorDto())->getUserName();
             $tempArr['price']            = number_format( $tempArr['price'], 2, '.', '' );
             $tempArr['isComplete']       = $isComplete;
 

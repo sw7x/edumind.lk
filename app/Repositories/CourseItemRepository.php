@@ -8,11 +8,11 @@ use App\Repositories\CouponRepository;
 use App\Repositories\UserRepository;
 
 
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\CourseItemMapper;
 
 
-class CourseItemRepository implements IGetDtoDataRepository{
+class CourseItemRepository implements IGetDataRepository{
     
     public function findDataArrById(int $modelId, array $columns = ['*']) : array {
         

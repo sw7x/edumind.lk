@@ -5,10 +5,10 @@ namespace App\Repositories;
 
 use App\Repositories\BaseRepository;
 use App\Models\CourseThread as CourseThreadModel;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 
 
-class CourseThreadRepository extends BaseRepository implements IGetDtoDataRepository{   
+class CourseThreadRepository extends BaseRepository implements IGetDataRepository{   
 	
     public function __construct(){
         parent::__construct(CourseThreadModel::make());        
@@ -16,5 +16,9 @@ class CourseThreadRepository extends BaseRepository implements IGetDtoDataReposi
     
     public function findDataArrById(int $modelId) : array {
 
-    } 
+    }
+
+    public function findDtoDataById(int $modelId) : array {
+        
+    }
 }

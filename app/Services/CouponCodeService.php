@@ -1,11 +1,5 @@
 <?php
-
-
 namespace App\Services;
-
-
-
-
 
 class CouponCodeService
 {
@@ -17,23 +11,6 @@ class CouponCodeService
 	public function aaa(){
 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 

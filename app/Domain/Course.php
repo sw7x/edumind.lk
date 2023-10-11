@@ -253,7 +253,7 @@ class Course extends Entity
         $sectionId = -1;
         $videoId = 0;
         $result = -1;
-
+        
         foreach($this->content as $val){
             $sectionId++;
             foreach($val as $arr){

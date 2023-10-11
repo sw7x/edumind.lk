@@ -5,13 +5,14 @@ namespace App\Repositories;
 use App\Repositories\BaseRepository;
 use App\Models\User as UserModel;
 use App\Models\Course as CourseModel;
+use App\Models\Subject as SubjectModel;
 use Illuminate\Database\Eloquent\Collection;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\CourseMapper;
 
 //use Illuminate\Database\Eloquent\Model;
 
-class CourseRepository extends BaseRepository implements IGetDtoDataRepository{
+class CourseRepository extends BaseRepository implements IGetDataRepository{
 
 
     public function __construct(){
@@ -190,6 +191,9 @@ class CourseRepository extends BaseRepository implements IGetDtoDataRepository{
         return CourseMapper::dbRecConvertToEntityArr($data);
     }
 
+    
+
+
     public function getNewCourse(int $courseCount) : ?Collection {
         return $this->model->latest()->take($courseCount)->get();
     }
@@ -263,7 +267,95 @@ class CourseRepository extends BaseRepository implements IGetDtoDataRepository{
         return $this->model->where('price','!=','0.00')->get();
     }
 
+    
+    public function findByUrl(String $slug) : ?CourseModel{
+        return $this->model->withoutGlobalScope('published')->where('slug', $slug)->first();
+    }    
 
+    public function findAvailableByUrl(String $slug) : ?CourseModel{
+        return $this->model->where('slug', $slug)->first();
+    }    
+
+
+    public function findAllAvailableStudents(): Collection {
+        $students   =   Sentinel::findRoleBySlug(RoleModel::STUDENT)->users()->with('roles')->orderBy('id')->get();
+        return $students;
+    }
+
+
+    public function getSearchCourses(array $params): Collection {
+        
+        $subjectId      = $params['subject'];
+        $courseType     = $params['course-type'];
+        $courseName     = $params['searchQueryInput'];
+        $courseDuration = $params['course-duration'];
+
+        // Define the base query
+        $query  =   $this->model->join('subjects', 'courses.subject_id', '=', 'subjects.id');
+
+        // filter by course name
+        if ($courseName)
+            $query->where('courses.name', 'like', '%' . $courseName . '%');
+        
+        // filter by subject
+        if ($subjectId)
+            $query->where('courses.subject_id', '=', $subjectId);
+        
+        // filter by courses price
+        $query->where(function ($query) use ($courseType) {
+            // If the given operator is not found in the list of valid operators set the operator to '='
+            $query->where('courses.price', ($courseType == 'free' ? 0 : '>'), 0);
+            //$query = ($courseType == 'free') ? $query->where('courses.price', 0) : $query->where('courses.price', '>', 0);
+        });
+
+
+        // filter PUBLISHED courses only
+        $query->where('subjects.status', '=', SubjectModel::PUBLISHED);
+
+
+        // filter by course duration
+        $query->where(function ($query) use ($courseDuration) {
+            if ($courseDuration == 'short') {
+                // 0-1 Hour
+                $query->where('courses.duration', 'LIKE', '0 Hours :%')
+                ->where('courses.duration', 'LIKE', '%minute%');     
+
+            }elseif ($courseDuration == 'medium') {
+                // 1-3 Hour
+                $query->where('courses.duration', 'LIKE', '1 Hour :%')
+                    ->orWhere('courses.duration', 'LIKE', '2 Hours :%');           
+
+            }elseif ($courseDuration == 'long') {
+                // 3-6 Hours
+                $query->where('courses.duration', 'LIKE', '3 Hours :%')
+                    ->orWhere('courses.duration', 'LIKE', '4 Hours :%')
+                    ->orWhere('courses.duration', 'LIKE', '5 Hours :%');               
+
+            }elseif ($courseDuration == 'very-long') {
+                 // 6+ Hours
+                $query->where('courses.duration', 'LIKE', '%Hours :%')
+                    ->where('courses.duration', 'NOT LIKE', '0 Hours :%')
+                    ->where('courses.duration', 'NOT LIKE', '2 Hours :%')
+                    ->where('courses.duration', 'NOT LIKE', '3 Hours :%')
+                    ->where('courses.duration', 'NOT LIKE', '4 Hours :%')
+                    ->where('courses.duration', 'NOT LIKE', '5 Hours :%')
+                    ->where('courses.duration', 'NOT LIKE', '1 Hour :%');
+               
+            }
+        });
+
+        $courses = $query->get('courses.*');        
+        //dd($query->toSql());
+        return $courses;      
+    }
+
+
+
+
+    
+ 
 
 }
+
+
 

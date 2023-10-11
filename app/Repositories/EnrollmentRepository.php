@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\UserRepository;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 
 use App\Models\Enrollment as EnrollmentModel;
 use App\Mappers\EnrollmentMapper;
@@ -20,7 +20,7 @@ use App\Mappers\EnrollmentMapper;
 //use App\Models\CourseSelection as CourseSelectionModel;
 
 
-class EnrollmentRepository extends BaseRepository implements IGetDtoDataRepository{
+class EnrollmentRepository extends BaseRepository implements IGetDataRepository{
 
 	public function __construct(){
         parent::__construct(EnrollmentModel::make());

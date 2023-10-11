@@ -147,9 +147,15 @@ class BaseRepository implements IRepository
     * @param array $payload
     * @return Model
     */
-    public function create(array $payload): ?Model{
+    public function create(array $payload, bool $updateTimestamps = true): ?Model{        
+        $model = $this->model->create($payload);        
         
-        $model = $this->model->create($payload);
+        if(!$updateTimestamps){
+            $model->created_at = null;
+            $model->updated_at = null;
+        }
+        
+        $model->save();
         return $model->fresh();
     }
 
@@ -160,10 +166,12 @@ class BaseRepository implements IRepository
     * @param array $payload
     * @return bool
     */
-    public function update(int $modelId, array $payload): bool{
-        
-        $model = $this->findById($modelId);
-        return $model->update($payload);
+    public function update(int $modelId, array $payload, bool $updateTimestamps = true): bool{
+        $model              = $this->findById($modelId);
+        $model->timestamps  = $updateTimestamps;
+        $isUpdated          = $model->update($payload);
+        $model->timestamps  = true;        
+        return $isUpdated;
     }
 
     /**

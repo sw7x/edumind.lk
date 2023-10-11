@@ -3,7 +3,7 @@
     //dump(Sentinel::check());
    // dump(Sentinel::getUser()->roles()->first()->slug);
    // dump($data_arr);
-   // dump($data_arr->price);
+   // dump($data_arr['price']);
    // dump($enroll_status);
    
     //dd();
@@ -11,19 +11,19 @@
 
 
 
-[{{$page}}]
+{{-- [page - {{$page}}] --}}
 
 @if(Sentinel::check())
     @if(Sentinel::getUser()->roles()->first()->slug == App\Models\Role::STUDENT)
 
-        @if($data_arr->price != 0)                                 
+        @if($data_arr['price'] != 0)                                 
             @if ($enroll_status == 'FRESH')
                 <form action="{{route('course.addToCart')}}" method="post" class='course-enroll-form'>
                     {{csrf_field ()}}
                     <div class="mt-4">
                         <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
                     </div>
-                    <input name="courseId" type="hidden" value="{{$data_arr->id}}">
+                    <input name="courseId" type="hidden" value="{{$data_arr['id']}}">
                 </form>
             @elseif ($enroll_status =='ADDED_TO_CART')                                    
                 <div class="mt-4">
@@ -39,7 +39,7 @@
                     <div class="mt-4">
                         <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Enroll Now</button>
                     </div>
-                    <input name="courseId" type="hidden" value="{{$data_arr->id}}">
+                    <input name="courseId" type="hidden" value="{{$data_arr['id']}}">
                 </form>
             @endif
         @endif 
@@ -51,7 +51,7 @@
                 <div class="mt-4">
                     <button type="submit" class="w-full h-9 px-6 rounded-md bg-green-600 hover:bg-green-400 hover:text-white text-white">Complete course</button>
                 </div>
-                <input name="courseId" type="hidden" value="{{$data_arr->id}}">
+                <input name="courseId" type="hidden" value="{{$data_arr['id']}}">
             </form>
         @endif
 
@@ -64,7 +64,7 @@
 
     @endif
 @else
-    @if($data_arr->price != 0)                               
+    @if($data_arr['price'] != 0)                               
         <form action="{{route('courses.guest-enroll')}}" method="get" class='course-enroll-form'>
             {{csrf_field ()}}
             <div class="mt-4">

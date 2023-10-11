@@ -6,11 +6,11 @@ use App\Models\Commission as CommissionModel;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\UserRepository;
-use App\Repositories\Interfaces\IGetDtoDataRepository;
+use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\CommissionMapper;
 
 
-class CommissionRepository extends BaseRepository implements IGetDtoDataRepository
+class CommissionRepository extends BaseRepository implements IGetDataRepository
 {
     
 	public function __construct(){

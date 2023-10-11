@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Services;
 
 use Sentinel;
@@ -12,7 +10,7 @@ use App\Models\ContactUs as ContactUsModel;
 class ContactUsService
 {
     private ContactUsRepository $contactUsRepository;
-    
+
     public function __construct(ContactUsRepository $contactUsRepository) {
         $this->contactUsRepository = $contactUsRepository;
     }
@@ -20,7 +18,7 @@ class ContactUsService
 
     public function getUserInfoArr() : array {
         $user = Sentinel::getUser();
-        
+
         if($user){
             $userArr = [
                 'id'        => $user->id,
@@ -34,14 +32,14 @@ class ContactUsService
         return $userArr;
     }
 
-   
-    public function saveContactUsMsg(Request $request) : ContactUsModel {       
+
+    public function saveContactUsMsg(Request $request) : ContactUsModel {
         $g_recaptcha_response = $request->input('g-recaptcha-response');
-        $body = RecaptchaUtil::validate($g_recaptcha_response);  
-        
+        $body = RecaptchaUtil::validate($g_recaptcha_response);
+
         if($body->success !== true)
-            throw new CustomException('Recaptcha validation failed');    
-        
+            throw new CustomException('Recaptcha validation failed');
+
         $userid     = (isset($request->user_id)) ? $request->user_id : null;
         $full_name  = (isset($request->full_name)) ? $request->full_name : $request->full_name_hidden;
         $email      = (isset($request->email)) ? $request->email : null;
@@ -54,9 +52,9 @@ class ContactUsService
             'subject'   =>  $request->subject,
             'message'   =>  $request->message,
             'user_id'   =>  $userid
-        ); 
+        );
 
-        return $this->contactUsRepository->create($contactInfoArr);      
+        return $this->contactUsRepository->create($contactInfoArr);
     }
 
 
@@ -67,10 +65,10 @@ class ContactUsService
 
 
 
-//service only methods - not in entity    
+//service only methods - not in entity
     //sumit msg
-    
 
 
 
-//methods - also in entity    
+
+//methods - also in entity
