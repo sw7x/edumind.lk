@@ -70,11 +70,14 @@ class Handler extends ExceptionHandler
         if ($this->isHttpException($exception)){
                        
             $statuCode  =   $exception->getStatusCode();
+            if ($exception->getStatusCode() == 403)
+                $errorPage  =   'errors.403';
+
             if ($exception->getStatusCode() == 404)
                 $errorPage  =   'errors.404';
 
-            if ($exception->getStatusCode() == 403)
-                $errorPage  =   'errors.403';
+            if ($exception->getStatusCode() == 419)
+                $errorPage  =   'errors.419';
 
             if ($exception->getStatusCode() == 500)
                 $errorPage  =   'errors.500';
