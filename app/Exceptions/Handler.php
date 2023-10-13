@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Sentinel;
 use App\Models\Role as RoleModel;
 use App\Exceptions\CustomException;
+use App\Exceptions\InvalidUserTypeException;
 use Illuminate\Auth\Access\AuthorizationException;
 
 //use Illuminate\Foundation\Application;
@@ -68,11 +69,14 @@ class Handler extends ExceptionHandler
         
         // for http exceptions (when use abort helper)
         if ($this->isHttpException($exception)){
-                       
-            $statuCode  =   $exception->getStatusCode();
-            if ($exception->getStatusCode() == 403)
-                $errorPage  =   'errors.403';
 
+            $statuCode  =   $exception->getStatusCode();
+            if ($exception->getStatusCode() == 401)
+                $errorPage  =   'errors.401';
+
+            if ($exception->getStatusCode() == 403)
+                $errorPage  =   'errors.403';                
+            
             if ($exception->getStatusCode() == 404)
                 $errorPage  =   'errors.404';
 
@@ -89,12 +93,15 @@ class Handler extends ExceptionHandler
                 if ($request->ajax() || $request->wantsJson())
                     return response()->json([], $statuCode);
                    
-                if($isGuest || $invalidUserRole)
-                    return response()->view($errorPage, [], $statuCode);
-                              
-                $view   =   ($userRole == RoleModel::STUDENT) ? 
-                                $errorPage :
-                                ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+                if($errorPage == 'errors.401'){
+                   $view = $errorPage;
+
+                }else{
+                    $view   =   ($isGuest || $invalidUserRole || $userRole == RoleModel::STUDENT) ?
+                                    $errorPage :
+                                    ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+
+                }
 
                 return response()->view($view, ['errMsg' => $errMsg], $statuCode);    
             }
@@ -106,28 +113,32 @@ class Handler extends ExceptionHandler
             $errorPage  =   'errors.custom-exception';
             $msg        =   $exception->getMessage() ?? '';
 
-            if($isGuest || $invalidUserRole)
-                return response()->view($errorPage);
-            
-            $view   =   ($userRole == RoleModel::STUDENT) ? 
-                                $errorPage :
-                                ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+            $view   =   ($isGuest || $invalidUserRole || $userRole == RoleModel::STUDENT) ? 
+                            $errorPage :
+                            ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
             
             return response()->view($view, ['errMsg' => $msg]);                 
         }        
 
         
+        // for InvalidUserTypeException
+        if ($exception instanceof InvalidUserTypeException){            
+            $errorPage  =   'errors.invalid-user-type-exception';
+            $msg        =   $exception->getMessage() ?? '';
+            
+            $view   =   $errorPage;
+            return response()->view($view, ['errMsg' => $msg]);                
+        }        
+
+
         // for AuthorizationException
         if ($exception instanceof AuthorizationException){            
             $errorPage  =   'errors.403';
             $msg        =   $exception->getMessage() ?? '';
 
-            if($isGuest || $invalidUserRole)
-                return response()->view($errorPage);
-            
-            $view   =   ($userRole == RoleModel::STUDENT) ? 
-            $errorPage :
-            ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
+            $view   =   ($isGuest || $invalidUserRole || $userRole == RoleModel::STUDENT) ? 
+                            $errorPage :
+                            ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
             
             return response()->view($view, ['errMsg' => $msg]);                 
         }
@@ -142,10 +153,7 @@ class Handler extends ExceptionHandler
                 //$msg      =   $exception->getMessage() ?? '';
                 //dd($msg);
 
-                if($isGuest || $invalidUserRole)
-                    return response()->view($errorPage);
-               
-                $view   =   ($userRole == RoleModel::STUDENT) ? 
+                $view   =   ($isGuest || $invalidUserRole || $userRole == RoleModel::STUDENT) ? 
                                     $errorPage :
                                     ($request->is('admin/*') ? 'admin-panel.'.$errorPage : $errorPage);
                
