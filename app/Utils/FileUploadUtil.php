@@ -6,8 +6,7 @@ namespace App\Utils;
 
 use Illuminate\Support\Facades\Storage;
 
-class FileUploadUtil
-{
+class FileUploadUtil{
 
     public function upload($file,$dir){
         $path = rtrim($dir, '/') . '/';

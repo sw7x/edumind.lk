@@ -9,8 +9,7 @@ use App\Models\Course as CourseModel;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Support\Facades\Storage;
 
-class UrlUtil
-{
+class UrlUtil{
 
     public static function generateSubjectUrl($urlString){
 
@@ -36,14 +35,5 @@ class UrlUtil
         return self::generateCourseUrl($urlString);      
     }
 
-    
-           
-
-
-
-
-
-
-    
 
 }

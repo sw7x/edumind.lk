@@ -6,20 +6,13 @@ use League\ColorExtractor\ColorExtractor;
 use League\ColorExtractor\Palette;
 
 
-class DefaultImgUtil
-{
-
+class DefaultImgUtil{
 
     public static function generateBannerColors($imgPath){
 
 
 
     }
-
-
-
-
-
 
 
 }

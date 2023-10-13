@@ -10,7 +10,7 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
             <h2>{{ $title ?? 'Default Title' }}</h2>
-			{!!(\App\Utils\Breadcrumb::createBreadcrumb())!!}
+			{!!(\App\Utils\BreadcrumbUtil::createBreadcrumb())!!}
         </div>
     </div>
 

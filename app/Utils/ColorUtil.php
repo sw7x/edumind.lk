@@ -6,8 +6,7 @@ use League\ColorExtractor\ColorExtractor;
 use League\ColorExtractor\Palette;
 
 
-class ColorUtil
-{
+class ColorUtil{
 
 
     public static function generateBannerColors($imgPath){
@@ -16,8 +15,6 @@ class ColorUtil
 
         $mostUsedColors = static::getMostUsed8Colors($imgPath);
         $mostUsedColor  = Color::fromIntToHex(array_keys($mostUsedColors)[0]);
-
-
 
         $contrastColor  = static::getContrastColor($mostUsedColor);
         $invColor       = static::getInvertColor($contrastColor);
@@ -30,6 +27,7 @@ class ColorUtil
 
     }
 
+    
     public static function imgBgGradient($imgPath){
 
         $topEightColors = static::getMostUsed8Colors($imgPath);
@@ -77,10 +75,6 @@ class ColorUtil
     public static function getInvertColor($color1){
         return hexInvert($color1);
     }
-
-
-
-
 
 
 }

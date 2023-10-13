@@ -8,8 +8,7 @@ use Request;
 use Illuminate\Support\Facades\Http;
 
 
-class Breadcrumb
-{
+class BreadcrumbUtil{
 
     public static function createBreadcrumb($title=null){
 
@@ -66,13 +65,3 @@ class Breadcrumb
     }
 
 }
-
-
-
-
-
-
-
-
-
-

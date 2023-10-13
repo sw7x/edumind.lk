@@ -6,8 +6,7 @@ namespace App\Utils;
 use GuzzleHttp\Client;
 
 
-class RecaptchaUtil
-{
+class RecaptchaUtil{
 
     public static function validate($g_recaptcha_response){
 
@@ -21,18 +20,6 @@ class RecaptchaUtil
             ]
         );
         return json_decode((string)$response->getBody());
-
     }
 	
-	
-    
-           
-
-
-
-
-
-
-    
-
 }
