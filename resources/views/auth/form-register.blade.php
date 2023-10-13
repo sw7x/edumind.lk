@@ -22,131 +22,133 @@
 @stop
 
 @section('content')
-        <div class="main-container container">
-            <div class="__lg:p-12 max-w-xl lg:my-0 my-12 mx-auto __p-6 space-y-">
+    <div class="main-container container">
+        <div class="__lg:p-12 max-w-xl lg:my-0 my-12 mx-auto __p-6 space-y-">
+            
+            @if ($errors->studentReg->getMessages())
+                <x-flash-message 
+                    style="margin-bottom:0px;"
+                    class="flash-danger rounded-none"  
+                    title="Form submit error!" 
+                    message=""  
+                    message2=""  
+                    :canClose="true" >
+                    <x-slot name="insideContent">
+                        <ul class="list-disc">
+                            @foreach ($errors->studentReg->getMessages() as  $field => $errorMsgArr)
+                                @foreach ($errorMsgArr as $errorMsg)
+                                    <li class="text-sm ml-3">{{ $errorMsg }}</li>
+                                @endforeach
+                            @endforeach
+                        </ul>
+                    </x-slot>    
+                </x-flash-message>
+            @endif
 
-                <form class="lg:p-10 p-6 space-y-3 relative bg-white shadow-xl rounded-md __uk-form student-reg"
-                      method="post" action="{{route('auth.register-submit')}}">
+            @if(Session::has('message'))
+                <x-flash-message  
+                    :class="Session::get('cls', 'flash-info').' rounded-none'"  
+                    :title="Session::get('msgTitle') ?? 'Info!'" 
+                    :message="Session::get('message') ?? ''"  
+                    :message2="Session::get('message2') ?? ''"  
+                    :canClose="true" />
+            @endif
+            
+            
+            <form class="lg:p-10 p-6 space-y-3 relative bg-white shadow-xl rounded-md __uk-form student-reg"
+                  method="post" action="{{route('auth.register-submit')}}">
 
-                    <h1 class="lg:text-2xl text-xl font-semibold mb-6">Register </h1>
+                <h1 class="lg:text-2xl text-xl font-semibold mb-6">Register </h1>
+                
+                <div class="text-base"><span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
 
-                    @if (count($errors) > 0)
-                        <x-flash-message 
-                            style="margin-bottom:0px;"
-                            class="flash-danger rounded-none"  
-                            title="Form submit error!" 
-                            message=""  
-                            message2=""  
-                            :canClose="true" >
-                            <x-slot name="insideContent">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li class="text-sm ml-3">{{ $error }}</li>
-                                    @endforeach
-                                </ul>    
-                            </x-slot>    
-                        </x-flash-message>
-                    @endif
+                <div>
+                    <input value="{{old('full_name')}}" type="text" placeholder="Full Name *" name="full_name" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required minlength="3" maxlength="100">
+                    <div class="error-msg"></div>
+                </div>
 
-                    @if(Session::has('message'))
-                        <x-flash-message  
-                            :class="Session::get('cls', 'flash-info').' rounded-none'"  
-                            :title="Session::get('msgTitle') ?? 'Info!'" 
-                            :message="Session::get('message') ?? ''"  
-                            :message2="Session::get('message2') ?? ''"  
-                            :canClose="true" />
-                    @endif
-                    
-                    <div class="text-base"><span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
+                <div>
+                    <input value="{{old('username')}}" type="text" placeholder="Username (leave blank if you want to use email as username)" name="username" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full">
+                    <div class="error-msg"></div>
+                </div>
 
+                <div>
+                    <input value="{{old('email')}}" type="email" placeholder="Email *" name="email" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required>
+                    <div class="error-msg"></div>
+                </div>
+
+                <div class="password-container">
+                    <input type="password" placeholder="Password (6 to 12 alpha numeric characters) *" name="password"
+                           class="password_field bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required maxlength="12" minlength="6">
+                    <button type="button" id="btnToggle" class="pw-toggle"><i id="eyeIcon" class="fa fa-eye"></i></button>
+                    <div class="error-msg"></div>
+                </div>                    
+
+                <div>
+                    <input value="{{old('phone')}}" type="text" name="phone" placeholder="Phone *" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required>
+                    <div class="error-msg"></div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-3 mt-3">
                     <div>
-                        <input value="{{old('full_name')}}" type="text" placeholder="Full Name *" name="full_name" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required minlength="3" maxlength="100">
-                        <div class="error-msg"></div>
-                    </div>
-
-                    <div>
-                        <input value="{{old('username')}}" type="text" placeholder="Username (leave blank if you want to use email as username)" name="username" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full">
-                        <div class="error-msg"></div>
-                    </div>
-
-                    <div>
-                        <input value="{{old('email')}}" type="email" placeholder="Email *" name="email" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required>
-                        <div class="error-msg"></div>
-                    </div>
-
-                    <div class="password-container">
-                        <input type="password" placeholder="Password (6 to 12 alpha numeric characters) *" name="password"
-                               class="password_field bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required maxlength="12" minlength="6">
-                        <button type="button" id="btnToggle" class="pw-toggle"><i id="eyeIcon" class="fa fa-eye"></i></button>
-                        <div class="error-msg"></div>
-                    </div>                    
-
-
-                    <div>
-                        <input value="{{old('phone')}}" type="text" name="phone" placeholder="Phone *" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required>
-                        <div class="error-msg"></div>
-                    </div>
-
-                    <div class="grid lg:grid-cols-2 gap-3 mt-3">
                         <div>
-                            <div>
-                                <label id="lbl2" class="control-label" for="dob2">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
-                                <select class="selectpicker" name="gender">
-                                    <option value="male">Male</option>
-                                    <option {{ old('gender') == 'female' ? "selected" : "" }} value="female">Female</option>
-                                </select>
-                            </div>
-                            <div class="error-msg"></div>
+                            <label id="lbl2" class="control-label" for="dob2">Gender <span class="text-red-500 text-sm font-bold">*</span></label>
+                            <select class="selectpicker" name="gender">
+                                <option value="male">Male</option>
+                                <option {{ old('gender') == 'female' ? "selected" : "" }} value="female">Female</option>
+                            </select>
                         </div>
-                        <div class="">
-                            <!-- todo date validate -->
-                            <!--
-                            <label id="lbl2" class="control-label" for="dob2">Date of Birth</label>
-                            <div class="controls">
-                                <input type="text" id="dob2" style="width: 9em;">
-                            </div>
-                            -->
-                            <label for="inputDate">Date of birth (Year)</label>
-                            <input value="{{old('dob_year')}}" type="text" class="form-control px-3" name="dob_year" required>
-                            <div class="error-msg"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-span-2">
-                        <div id='recaptcha_element' class="recaptcha_box"></div>
-                        <input type="hidden" class="hiddenRecaptcha required" name="hiddenRecaptcha" id="hiddenRecaptcha">
                         <div class="error-msg"></div>
-
-                        <span id="recaptcha-error" class="invalid-feedback">
-                            <span class="font-bold text-red text-sm">Captcha is required</span>
-                        </span>
                     </div>
-
-                    <div class="checkbox">
-                        <input type="checkbox" name="check-agree" id="stud-check-agree" class="check-agree" checked>
-                        <label for="stud-check-agree">
-                            <span class="checkbox-icon"></span>
-                            I agree to the <a class="text-blue-500" href="{{route('terms-and-services')}}" target="_blank"> Terms and Conditions </a>
-                        </label>
-                    </div>
-
-                    <div class="grid md:grid-cols-2 gap-3">
-                        <div>
-                            <button type="submit" class="submit-btn btn bg-blue-600 font-semibold p-2.5 mt-2 rounded-md text-center text-white w-full">Submit</button>
+                    <div class="">
+                        <!-- todo date validate -->
+                        <!--
+                        <label id="lbl2" class="control-label" for="dob2">Date of Birth</label>
+                        <div class="controls">
+                            <input type="text" id="dob2" style="width: 9em;">
                         </div>
-                        <div>
-                            <button type="reset" class="reset-btn btn bg-red-600 font-semibold p-2.5 mt-2 rounded-md text-center text-white w-full">Clear</button>
-                        </div>
+                        -->
+                        <label for="inputDate">Date of birth (Year)</label>
+                        <input value="{{old('dob_year')}}" type="text" class="form-control px-3" name="dob_year" required>
+                        <div class="error-msg"></div>
                     </div>
+                </div>
+                
+                <div class="col-span-2">
+                    <div id='recaptcha_element' class="recaptcha_box"></div>
+                    <input type="hidden" class="hiddenRecaptcha required" name="hiddenRecaptcha" id="hiddenRecaptcha">
+                    <div class="error-msg"></div>
 
+                    <span id="recaptcha-error" class="invalid-feedback">
+                        <span class="font-bold text-red text-sm">Captcha is required</span>
+                    </span>
+                </div>
 
-                    {{csrf_field ()}}
-                    <div class="font-semibold text-center text-sm">Already have an account? <a class="text-blue-600" href="{{route('auth.login')}}">Sign In</a></div>
+                <div class="checkbox">
+                    <input type="checkbox" name="check-agree" id="stud-check-agree" class="check-agree" checked>
+                    <label for="stud-check-agree">
+                        <span class="checkbox-icon"></span>
+                        I agree to the <a class="text-blue-500" href="{{route('terms-and-services')}}" target="_blank"> Terms and Conditions </a>
+                    </label>
+                </div>
 
-                </form>
+                <div class="grid md:grid-cols-2 gap-3">
+                    <div>
+                        <button type="submit" class="submit-btn btn bg-blue-600 font-semibold p-2.5 mt-2 rounded-md text-center text-white w-full">Submit</button>
+                    </div>
+                    <div>
+                        <button type="reset" class="reset-btn btn bg-red-600 font-semibold p-2.5 mt-2 rounded-md text-center text-white w-full">Clear</button>
+                    </div>
+                </div>
 
-            </div>
+                {{csrf_field ()}}
+
+                <div class="font-semibold text-center text-sm">Already have an account? <a class="text-blue-600" href="{{route('auth.login')}}">Sign In</a></div>
+
+            </form>
+
         </div>
+    </div>
 @stop
 
 

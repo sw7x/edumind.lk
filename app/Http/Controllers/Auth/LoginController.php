@@ -10,15 +10,15 @@ use App\Exceptions\WrongUserTypeException;
 use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Role as RoleModel;
-
 //use Illuminate\Support\Facades\Auth;
+
 
 class LoginController extends Controller
 {
-    public function __construct()
-    {   $this->middleware('checkGuest',
+    public function __construct(){   
+        $this->middleware('checkGuest',
             ['only' => ['login']]
-        );
+        );  
     }
 
 
@@ -28,129 +28,108 @@ class LoginController extends Controller
 
     //todo
     public function loginSubmit(Request $request){
+            
+        try{
+            
+            $validator = Validator::make($request->all(), [
+                'email'     =>'required',
+                'password'  =>'required|min:6|max:12',
+            ],[
+                'email.required'    => 'Username or Email is required.',
+                'password.required' => 'password field is required.',
+            ]);            
 
+            if ($validator->fails())
+                return redirect()->back()->withErrors($validator,'loginForm')->withInput();
+        
+            $remember_me = isset($request->remeber_me) ? true : false;
+            $credentials = ['login'    => $request->email];
+            $user        = Sentinel::findByCredentials($credentials);
+            
+            if(is_null($user))
+                throw new CustomException('Invalid user or account diabled');
+           
+            $role = $user->roles()->first()->slug;
+            /*if($role != RoleModel::TEACHER && $role != RoleModel::STUDENT)
+                throw new WrongUserTypeException('You dont have permission to login here');*/
+           
+            $arr =  ['login' => $request->email, 'password'  => $request->password];
+            if(Sentinel::authenticate($arr, $remember_me)){                
+                $role = Sentinel::getUser()->roles()->first()->slug;               
 
-        $validator = Validator::make($request->all(), [
-            'email'     =>'required',
-            'password'  =>'required|min:6|max:12',
-        ],[
-            'email.required'                => 'Username or Email is required.',
-            'password.required'             => 'password field is required.',
-        ]);
+                if($role == RoleModel::TEACHER){
+                    return redirect()->route('teacher.my-profile', []);
+                }else if($role == RoleModel::STUDENT){
+                    return redirect()->route('dashboard', []);
+                }else{
+                    //throw new WrongUserTypeException('You dont have permission to login here');
+                    return redirect()->route('admin.dashboard');
+                }                
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        } else {
-
-            if(isset($request->remeber_me)){
-                $remember_me = true;
             }else{
-                $remember_me = false;
-            }
-            //dd($remember_me);
-            try{
-
-                $credentials = ['login'    => $request->email];
-                $user = Sentinel::findByCredentials($credentials);
-
-
-                /*dd($user);
-
-                if($user->status == 0){
-                    throw new CustomException('Account is disable by admin');
-                }*/
-
-                if($user == null){
-                    throw new CustomException('Invalid user or account diabled');
-                }else{
-
-                    $role = $user->roles()->first()->slug;
-                    if($role != RoleModel::TEACHER && $role != RoleModel::STUDENT){
-                        //throw new WrongUserTypeException('You dont have permission to login here');
-                    }
-                }
-
-
-                if(Sentinel::authenticate([
-                    'login' => $request->email,
-                    'password' => $request->password],$remember_me)){
-
-                    $role = Sentinel::getUser()->roles()->first()->slug;
-
-                    if($role == RoleModel::TEACHER){
-                        return redirect()->route('teacher.my-profile', []);
-                    }else if($role == RoleModel::STUDENT){
-                        return redirect()->route('dashboard', []);
-                    }else{
-                        //throw new WrongUserTypeException('You dont have permission to login here');
-                        //return redirect('/student-profile-dashboard');
-                        return redirect()->route('admin.dashboard');
-                    }
-
-
-
-
-                }else{
-                    $pwResetTxt = "if you dont remember your password then you can reset it in here <a class='text-blue-600' href='".route("auth.reset-password")."'>Reset</a>";
-                    return redirect()->back()->with([
-                        'message'  => 'Wrong credentials',
-                        //'message2' => $pwResetTxt,
-                        //'title'   => 'Student Registration submit page',
-                        'cls'     => 'flash-danger',
-                        'msgTitle'=> 'Error!',
-                    ]);
-                }
-            }
-            catch(ThrottlingException $e){
-                $delay = $e->getDelay();
-
+                $pwResetTxt = "if you dont remember your password then you can reset it in here <a class='text-blue-600' href='".route("auth.reset-password-req-page")."'>Reset</a>";
                 return redirect()->back()->with([
-                    'message' => "You are banned for {$delay} seconds",
-                    //'title'   => 'Student Registration submit page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
-            }catch(NotActivatedException $e){
-
-                return redirect()->back()->with([
-                    'message' => "You account is not activated",
-                    //'title'   => 'Student Registration submit page',
-                    'cls'     => 'flash-warning',
-                    'msgTitle'=> 'Warning!',
-                ]);
-            }
-            catch(WrongUserTypeException $e){
-                return redirect()->back()->with([
-                    'message' => $e->getMessage(),
+                    'message'  => 'Wrong credentials',
+                    //'message2' => $pwResetTxt,
                     //'title'   => 'Student Registration submit page',
                     'cls'     => 'flash-danger',
                     'msgTitle'=> 'Error!',
                 ]);
             }
-            catch(CustomException $e){
-                return redirect()->back()->with([
-                    'message' => $e->getMessage(),
-                    //'title'   => 'Student Registration submit page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
-            }
-            catch(\Exception $e){
-                return redirect()->back()->with([
-                    //'message' => 'Something is wrong in login',
-                    'message' => $e->getMessage(),
-                    //'title'   => 'Student Registration submit page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
-            }
+
+        }
+        catch(ThrottlingException $e){
+            $delay = $e->getDelay();
+            return redirect()->back()->with([
+                'message' => "You are banned for {$delay} seconds",
+                //'title'   => 'Student Registration submit page',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error!',
+            ]);
+
+        }catch(NotActivatedException $e){
+            return redirect()->back()->with([
+                'message' => "You account is not activated",
+                //'title'   => 'Student Registration submit page',
+                'cls'     => 'flash-warning',
+                'msgTitle'=> 'Warning!',
+            ]);
+
+        }
+        catch(WrongUserTypeException $e){
+            return redirect()->back()->with([
+                'message' => $e->getMessage(),
+                //'title'   => 'Student Registration submit page',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error!',
+            ]);
+
+        }
+        catch(CustomException $e){
+            return redirect()->back()->with([
+                'message'  => $e->getMessage(),
+                //'title'  => 'Student Registration submit page',
+                'cls'      => 'flash-danger',
+                'msgTitle' => 'Error!'
+            ]);
+
+        }
+        catch(\Exception $e){
+            return redirect()->back()->with([
+                'message' => 'Something is wrong in login',
+                //'message' => $e->getMessage(),
+                //'title'   => 'Student Registration submit page',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Error!',
+            ]);
+
         }
 
     }
 
+    
     //todo
     public function logout(Request $request){
-
 
         if(sentinel::check()){
             //$role = Sentinel::getUser()->roles()->first()->slug;
@@ -169,15 +148,7 @@ class LoginController extends Controller
 
         return redirect()->route('auth.login');
 
-
-
-
     }
-
-
-
-
-
 
 
 }

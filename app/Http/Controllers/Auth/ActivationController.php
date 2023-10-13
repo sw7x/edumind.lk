@@ -11,19 +11,32 @@ use Illuminate\Support\Facades\Crypt;
 class ActivationController extends Controller
 {
     public function activate($encryptedEmail, $activationCode){
-        $email  =   Crypt::decrypt($encryptedEmail);
-        $user   =   UserModel::withoutGlobalScope('active')->whereEmail($email)->first();
+        
+        try {
+            
+            $email  =   Crypt::decrypt($encryptedEmail);
+            $user   =   UserModel::withoutGlobalScope('active')->whereEmail($email)->first();
 
+            if(Activation::complete($user,$activationCode)){
+                return redirect('/login')->with([
+                    'message' => 'Now you can login',
+                    'cls'     => 'flash-success',
+                    'msgTitle'=> 'Activation Complete!',
+                ]);
 
-        if(Activation::complete($user,$activationCode)){
+            }else{
+                throw new \Exception("Activation Failed!");                
+            }  
+
+        } catch (\Throwable $e) {
             return redirect('/login')->with([
-                'message' => 'Now you can login',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Activation Complete!',
-            ]);
-
-        }else{
-            //todo
+                'message' => 'Unable to activate your account. Please try again later.',
+                'cls'     => 'flash-danger',
+                'msgTitle'=> 'Activation Failed!',
+            ]);    
         }
+
+
+
     }
 }

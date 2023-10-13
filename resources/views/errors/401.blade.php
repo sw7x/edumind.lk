@@ -96,7 +96,7 @@
                     
                     @if(!Sentinel::check())
                         <br>
-                        <div class="font-semibold text-center text-sm">So you can’t get in to your account? Did you <a class="text-blue-600" href="{{route('auth.reset-password')}}">forget your password</a></div>
+                        <div class="font-semibold text-center text-sm">So you can’t get in to your account? Did you <a class="text-blue-600" href="{{route('auth.reset-password-req-page')}}">forget your password</a></div>
                     @endif 
 
                 </form>

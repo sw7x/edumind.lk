@@ -9,38 +9,65 @@ use Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
-
+use Illuminate\Support\Facades\Validator;
+use Sentinel;
 
 
 //todo cant reset password editor,marketers,admin
 class ForgotPasswordController extends Controller
 {
-    public function forgotPassword(){
-        return view ('auth.form-forget-password');
+    public function resetPasswordReq(){        
+        if(Sentinel::check())
+            return redirect(route('home'))->with([
+                'message'   => 'Logout first, then request reset password',
+                'cls'       => 'flash-warning',
+                'msgTitle'  => 'Warning!',
+            ]);
+
+        return view ('auth.form-forget-password-request');
     }
 
-    public function postForgotPassword(Request $request){
-
-        $user = UserModel::whereEmail($request->email)->first();
-
-        if($user==null){
+    
+    public function resetPasswordReqSubmit(Request $request){
+        
+        try {
             
-            $userRec = UserModel::withoutGlobalScope('active')->whereEmail($request->email)->first();          
-            return redirect()->back()->with([
-               'message' => ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
-               'cls'     => 'flash-danger',
-               'msgTitle'=> 'Error!',
-           ]);
-        }else{
+            if(Sentinel::check())
+                return redirect(route('home'))->with([
+                    'message'   => 'Logout first, then request reset password',
+                    'cls'       => 'flash-warning',
+                    'msgTitle'  => 'Warning!',
+                ]);
 
+            $validator = Validator::make($request->all(), ['email' => 'required|email'],[
+                'email.required'    => 'Email is required.',
+                'email.email'       => 'must be emaill addresss'
+            ]);
+
+            if ($validator->fails())
+                return back()->withErrors($validator,'forgotPw')->withInput();
+
+            $user = UserModel::whereEmail($request->email)->first();
+            
+            if(is_null($user)){            
+                $userRec = UserModel::withoutGlobalScope('active')->whereEmail($request->email)->first();          
+                return  redirect()->back()->with([
+                   'message' => ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
+                   'cls'     => 'flash-danger',
+                   'msgTitle'=> 'Error!',
+                ]);
+            }
+
+            
             if(Reminder::exists($user)){
-
+                // create new reminder if old reminder exists and it is created before 4 hours 
                 $reminderModel  =   Reminder::createModel();
                 $before4Hours   =   \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
-                $reminder       =   reminderModel::where('user_id', '=', $user->id)
+                $reminder       =   $reminderModel::where('user_id', '=', $user->id)
                                         ->where('updated_at', '>', $before4Hours)
                                         ->where('completed', 0)
-                                        ->get()->last();
+                                        ->get()
+                                        ->last();
 
                 if($reminder == null)
                     $reminder = Reminder::create($user);
@@ -48,31 +75,56 @@ class ForgotPasswordController extends Controller
             }else{
                 $reminder = Reminder::create($user);
             }
-
+            
+            //send mail
             $email          = $user->email;
             $encryptedEmail = Crypt::encrypt($email);
-
             $siteAddress    = url('/');
             $pwResetTxt     = "{$siteAddress}/reset/{$encryptedEmail}/{$reminder->code}";
-            //send mail
             Mail::to($email)->send(new resetPasswordMail($pwResetTxt));
 
             return redirect()->back()->with([
                'message' => 'Password reset link was sent to your email',
-               //'title'   => 'Student registration submit page',
+               //'title' => 'Student registration submit page',
                'cls'     => 'flash-success',
                'msgTitle'=> 'Success!',
-            ]);
+            ]);            
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with([
+               'message' => 'Failed to sent email which contains password reset link',
+               //'title' => 'Student registration submit page',
+               'cls'     => 'flash-danger',
+               'msgTitle'=> 'Error!',
+            ]);     
         }
+
     }
 
 
 
-    public function resetPassword($encryptedEmail,$resetCode){
-
+    public function resetConfirm($encryptedEmail, $resetCode){
         try{
+            
+            if(Sentinel::check())
+                return redirect(route('home'))->with([
+                    'message'   => 'Logout first, then confirm resetting password',
+                    'cls'       => 'flash-warning',
+                    'msgTitle'  => 'Warning!',
+                ]);
+
             $email  =   Crypt::decrypt($encryptedEmail);
             $user   =   UserModel::whereEmail($email)->first();
+
+            if(is_null($user)){
+                $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
+                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
+                return redirect(route('auth.reset-password-req-page'))->with([
+                    'message'   => $err_message,
+                    'cls'       => 'flash-danger',
+                    'msgTitle'  => 'Error!',
+                ]);
+            }
 
             $reminderModel  =   Reminder::createModel();
             $before4Hours   =   \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
@@ -80,114 +132,111 @@ class ForgotPasswordController extends Controller
                                     ->where('updated_at', '>', $before4Hours)
                                     ->where('completed', 0)
                                     ->get()->last();
-
-            $code = $reminder->code;
-
-            if($user == null){
-                $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
-                $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
-                
-                session()->flash('message',$err_message);
-                session()->flash('cls','flash-danger');
-                session()->flash('msgTitle','Error!');
-                return view('form-submit-page');
-            }
-
+    
             if(Reminder::exists($user)){
-
+                $code = $reminder->code;
                 if($code == $resetCode){
-                    //return 'ok';
-                    session()->flash('message','Valid reset password link');
-                    session()->flash('cls','flash-success');
-                    session()->flash('msgTitle','Success!');
-                    return view('auth.form-reset-password');
+                    return view('auth.form-forget-password-confirm');
 
                 }else{
-                    session()->flash('message','Invalid reset password link');
-                    session()->flash('cls','flash-danger');
-                    session()->flash('msgTitle','Error!');
-                    return view('form-submit-page');
-                    
+                    return redirect(route('auth.reset-password-req-page'))->with([
+                        'message'   => 'Invalid reset password link',
+                        'cls'       => 'flash-danger',
+                        'msgTitle'  => 'Error!',
+                    ]);                                      
                 }
             }else{
-                session()->flash('message','Invalid reset password link');
-                session()->flash('cls','flash-danger');
-                session()->flash('msgTitle','Error!');
-                return view('form-submit-page');
-
+                return redirect(route('auth.reset-password-req-page'))->with([
+                    'message'   => 'Invalid reset password link',
+                    'cls'       => 'flash-danger',
+                    'msgTitle'  => 'Error!',
+                ]);
             }
 
         }catch(\Exception $e){
-            session()->flash('message', 'Error in reset password');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('form-submit-page');
-
+            return redirect(route('auth.reset-password-req-page'))->with([
+                //'message' => $e->getMessage(),
+                'message'   => 'Error in reset password',
+                'cls'       => 'flash-danger',
+                'msgTitle'  => 'Error!',
+            ]);
         }
     }
 
-    public function postResetPassword(Request $request,$encryptedEmail,$resetCode){
 
-        $this->validate($request,[
-            'password'              => 'confirmed|required|min:6|max:12',
-            'password_confirmation' => 'required|min:6|max:12',
-        ]);
-
+    public function resetConfirmSubmit(Request $request, $encryptedEmail, $resetCode){
         try{
-            $email = Crypt::decrypt($encryptedEmail);
-            $user = UserModel::whereEmail($email)->first();
+            
+            if(Sentinel::check())
+                return redirect(route('home'))->with([
+                    'message'   => 'Logout first, then confirm submit resetting password',
+                    'cls'       => 'flash-warning',
+                    'msgTitle'  => 'Warning!',
+                ]);
+            
+            $validator = Validator::make($request->all(),[
+                'password'              => 'confirmed|required|min:6|max:12',
+                'password_confirmation' => 'required|min:6|max:12'
+            ],[]);
+            
+            if ($validator->fails())
+                return back()->withErrors($validator,'forgotPwConfirm')->withInput();
 
-            if($user == null){
+            $email  = Crypt::decrypt($encryptedEmail);
+            $user   = UserModel::whereEmail($email)->first();
+
+            if(is_null($user)){
                 $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
                 $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
                 
-                session()->flash('message',$err_message);
-                //session()->flash('message', 'Invalid user');
-                session()->flash('cls','flash-danger');
-                session()->flash('msgTitle','Error!');
-                return view('form-submit-page');
+                session()->now('message', $err_message);
+                session()->now('cls','flash-danger');
+                session()->now('msgTitle','Error!');
+                return view('acknowledgement');
             }
 
             if(Reminder::exists($user)){
 
-                $reminderModel = Reminder::createModel();
-                $before4Hours  = \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
-                $reminder = $reminderModel::where('user_id', '=', $user->id)
-                    ->where('updated_at', '>', $before4Hours)
-                    ->where('completed', 0)
-                    ->get()->last();
-                $code = $reminder->code;
+                $reminderModel  =   Reminder::createModel();
+                $before4Hours   =   \Carbon\Carbon::now()->timezone('Asia/Colombo')->subHours(4)->toDateTimeString();
+                $reminder       =   $reminderModel::where('user_id', '=', $user->id)
+                                        ->where('updated_at', '>', $before4Hours)
+                                        ->where('completed', 0)
+                                        ->get()
+                                        ->last();
+                $code           =   $reminder->code;
 
                 if($code == $resetCode){
-
                     Reminder::complete($user, $code,$request->password);
                     return redirect()->route('auth.login')->with([
-                        'message' => 'Please login with your new password',
-                        'cls'     => 'flash-success',
-                        'msgTitle'=> 'Success!',
-                        'message2'=> 'Successfully password reset was done!',
+                        'message'   => 'Please login with your new password',
+                        'cls'       => 'flash-success',
+                        'msgTitle'  => 'Success!',
+                        'message2'  => 'Successfully password reset was done!',
                     ]);
 
                 }else{
-                    session()->flash('message', 'Invalid reset password link');
-                    session()->flash('cls','flash-danger');
-                    session()->flash('msgTitle','Error!');
-                    return view('form-submit-page');
+                    return redirect()->route('auth.reset-password-req-page')->with([
+                       'message'    => 'Invalid reset password link',
+                       'cls'        => 'flash-danger',
+                       'msgTitle'   => 'Error!',
+                    ]); 
                 }
             }else{
-                session()->flash('message', 'Invalid reset password link');
-                session()->flash('cls','flash-danger');
-                session()->flash('msgTitle','Error!');
-                return view('form-submit-page');                
-
+                return redirect()->route('auth.reset-password-req-page')->with([
+                   'message'    => 'Invalid reset password link',
+                   'cls'        => 'flash-danger',
+                   'msgTitle'   => 'Error!',
+                ]);              
             }
 
         }catch(\Exception $e){
-            session()->flash('message', 'Error in reset password');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('form-submit-page');
-            
+            return redirect()->back()->with([
+               'message'    => 'Error in reset password',
+               //'message'  => $e->getMessage(),
+               'cls'        => 'flash-danger',
+               'msgTitle'   => 'Error!',
+            ]);
         }
 
     }

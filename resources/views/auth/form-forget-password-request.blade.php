@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title','Login')
+@section('title','Forgot password')
 
 @section('page-css')
 <style>
@@ -14,8 +14,8 @@
 @section('content')
     <div class="main-container container">
         <div class="__lg:p-12 max-w-xl lg:my-0 my-12 mx-auto __p-6 space-y-">
-            
-            @if ($errors->loginForm->getMessages())                    
+        
+            @if ($errors->forgotPw->getMessages())                    
                 <x-flash-message 
                     style="margin-bottom:0px;"
                     class="flash-danger rounded-none"  
@@ -25,7 +25,7 @@
                     :canClose="true" >
                     <x-slot name="insideContent">
                         <ul class="list-disc">
-                            @foreach ($errors->loginForm->getMessages() as  $field => $errorMsgArr)
+                            @foreach ($errors->forgotPw->getMessages() as  $field => $errorMsgArr)
                                 @foreach ($errorMsgArr as $errorMsg)
                                     <li class="text-sm ml-3">{{ $errorMsg }}</li>
                                 @endforeach
@@ -43,34 +43,22 @@
                     :message2="Session::get('message2') ?? ''"  
                     :canClose="true" />
             @endif
-
+            
 
             <form class="lg:p-10 p-6 space-y-3 relative bg-white shadow-xl rounded-md"
-                  method="post" action="{{route('auth.login-submit')}}">
+                  method="post" action="{{route('auth.reset-password-req-submit')}}">
 
-                <h1 class="lg:text-2xl text-xl font-semibold mb-6"> Login </h1>
+                <h1 class="lg:text-2xl text-xl font-semibold mb-6">Forgot password </h1>
+        
+                <p>Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.</p>
 
                 <div class="text-base"><span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
 
                 <div>
-                    <!-- <label class="mb-0" for="username"> Username </label> -->
-                    <input type="text" name="email" placeholder="Username or Email *" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required>
-                </div>
-                <!-- <div>
-                    <label class="mb-0" for="email"> Email Address </label>
-                    <input type="email" id="email" placeholder="Info@example.com" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full">
-                </div> -->
-
-                <div class="password-container">
-                    <input required type="password" placeholder="Password (6 to 12 alpha numeric characters) *" name="password"
-                           class="password_field bg-gray-100 h-12 mt-5 px-3 rounded-md w-full" maxlength="12" minlength="6">
-                    <button type="button" id="btnToggle" class="pw-toggle"><i id="eyeIcon" class="fa fa-eye"></i></button>
+                    <input type="email" name="email" placeholder="Email *" class="bg-gray-100 h-12 mt-2 px-3 rounded-md w-full" required>
                 </div>
 
-                <div class="checkbox">
-                    <input type="checkbox" id="remeber_me" checked name="remeber_me">
-                    <label for="remeber_me"><span class="checkbox-icon"></span>Remember Me</label>
-                </div>
+                {{csrf_field ()}}
 
                 <div class="grid lg:grid-cols-2 gap-3">
                     <div>
@@ -80,6 +68,8 @@
                         <button type="reset" class="btn bg-red-600 font-semibold p-2.5 mt-2 rounded-md text-center text-white w-full">Clear</button>
                     </div>
                 </div>
+
+                <div class="font-semibold text-center text-sm">Already have an account? <a class="text-blue-600" href="{{route('auth.login')}}">Sign In</a></div>
 
                 <div class="uk-heading-line uk-text-center py-5"><span> Or, connect with </span></div>
 
@@ -99,13 +89,9 @@
                         <ion-icon name="logo-twitter" class="p-2 rounded-full text-4xl bg-gray-100 text-indigo-500"></ion-icon>
                     </a>
                     <a href="#">
-                        <ion-icon name="logo-instagram" class="p-2 rounded-full text-4xl bg-gray-100"></ion-icon>
+                        <ion-icon name="logo-github" class="p-2 rounded-full text-4xl bg-gray-100"></ion-icon>
                     </a>
                 </div>
-
-                {{csrf_field ()}}
-
-                <div class="font-semibold text-center text-sm">So you can’t get in to your account? Did you <a class="text-blue-600" href="{{route('auth.reset-password-req-page')}}">forget your password</a></div>
 
             </form>
 

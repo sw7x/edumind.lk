@@ -19,11 +19,11 @@ Route::group(['as'=>'auth.','namespace' =>'Auth'], function() {
 
     Route::group(['middleware'=> 'noAdminUser'], function(){
 
-        Route::get('/reset-password', [ForgotPasswordController::class,'forgotPassword'])->name ('reset-password');
-        Route::post('/reset-password', [ForgotPasswordController::class,'postForgotPassword'])->name ('reset-password-submit');
+        Route::get('/reset-password', [ForgotPasswordController::class,'resetPasswordReq'])->name ('reset-password-req-page');
+        Route::post('/reset-password', [ForgotPasswordController::class,'resetPasswordReqSubmit'])->name ('reset-password-req-submit');
 
-        Route::get('/reset/{email}/{resetCode}', [ForgotPasswordController::class,'resetPassword'])->name ('reset-password-form');
-        Route::post('/reset/{email}/{resetCode}', [ForgotPasswordController::class,'postResetPassword'])->name ('reset-password-form-submit');
+        Route::get('/reset/{email}/{resetCode}', [ForgotPasswordController::class,'resetConfirm'])->name ('reset-password-confirm');
+        Route::post('/reset/{email}/{resetCode}', [ForgotPasswordController::class,'resetConfirmSubmit'])->name ('reset-password-confirm-submit');
 
         Route::get ('/login', [User_LoginController::class,'login'])->name ('login');
         Route::post ('/login', [User_LoginController::class,'loginSubmit'])->name ('login-submit');
