@@ -29,23 +29,17 @@
                         </ul>
 
                         <div class="tab-content mb-3">
-
                             <div role="tabpanel" id="tab-teacher-updates" class="tab-pane active">
                                 <div class="panel-body">
-
                                     <h3>Add new teacher</h3>
-
                                 </div>
                             </div>
 
                             <div role="tabpanel" id="tab-student-updates" class="tab-pane">
                                 <div class="panel-body">
-
                                     <h3>Add new student</h3>
-
                                 </div>
                             </div>
-
                         </div>
 
                     </div>

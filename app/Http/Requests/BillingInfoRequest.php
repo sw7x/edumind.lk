@@ -59,6 +59,7 @@ class BillingInfoRequest extends FormRequest
                 //'fname'             =>  'required|between:5,15',
 
                 'lname'             =>  'required',
+                //'lname'             =>  'required|email',                
                 //'lname'             =>  'required|between:5,15',
 
                 'email'             =>  'required|email',
@@ -89,6 +90,7 @@ class BillingInfoRequest extends FormRequest
             //'fname.between'            => ':attribute is required',
             
             'lname.required'            => ':attribute is required',
+            //'lname.email'               => ':attribute must be email address',
             
             
             'email.required'            => ':attribute is required',

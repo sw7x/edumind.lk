@@ -39,16 +39,16 @@ class TeacherController extends Controller
             $teacherCoursesArr = AdminTeacherDataTransformer::prepareMyCourseData($teacherCourses);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($teacherCoursesArr);
 
         }catch(\Exception $e){
-            //session()->flash('message','Failed to show your courses');
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            //session()->now('message','Failed to show your courses');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($teacherCoursesArr);
         }
 

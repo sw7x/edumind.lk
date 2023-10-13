@@ -19,6 +19,7 @@ use App\Services\Admin\TeacherService as AdminTeacherService;
 use App\Services\Admin\SubjectService as AdminSubjectService;
 use App\View\DataTransformers\Admin\CourseDataTransformer as AdminCourseDataTransformer;
 use Illuminate\Support\Arr;
+use App\SharedServices\CourseSharedService;
 
 //use Illuminate\Database\Eloquent\ModelNotFoundException;
 //use App\Services\TeacherService;
@@ -61,9 +62,9 @@ class CourseController extends Controller
             return view('admin-panel.course-list')->withData($courseArr);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.course-list');
 
         }catch(AuthorizationException $e){
@@ -74,9 +75,9 @@ class CourseController extends Controller
             ]);
 
         }catch(\Exception $e){
-            session()->flash('message','Failed to show courses');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message','Failed to show courses');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.course-list');
 
         }
@@ -108,9 +109,9 @@ class CourseController extends Controller
 
         }catch(CustomException $e){
             //dd($e->getMessage());
-            session()->flash('message',  $e->getMessage());
-            session()->flash('cls',      'flash-danger');
-            session()->flash('msgTitle', 'Error!');
+            session()->now('message',  $e->getMessage());
+            session()->now('cls',      'flash-danger');
+            session()->now('msgTitle', 'Error!');
             return view('admin-panel.course-add');
 
         }catch(AuthorizationException $e){
@@ -122,9 +123,9 @@ class CourseController extends Controller
 
         }catch(\Exception $e){
             //dd($e->getMessage());
-            session()->flash('message',  'Failed to show course add form');
-            session()->flash('cls',      'flash-danger');
-            session()->flash('msgTitle', 'Error!');
+            session()->now('message',  'Failed to show course add form');
+            session()->now('cls',      'flash-danger');
+            session()->now('msgTitle', 'Error!');
             return view('admin-panel.course-add');
 
         }
@@ -241,7 +242,8 @@ class CourseController extends Controller
                 throw new CustomException('Course does not found');
 
             $courseContent      = $courseData['dto']->getContent();
-            $courseContentVal   = $this->adminCourseService->validateCourseContent($courseContent);
+            $courseContentVal   = (new CourseSharedService())->validateCourseContent($courseContent);
+
 
             $courseDataArr   = array();
             $courseDataArr[] = $courseData;
@@ -255,9 +257,9 @@ class CourseController extends Controller
             ]);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.course-view');
 
         }catch(AuthorizationException $e){
@@ -268,10 +270,10 @@ class CourseController extends Controller
             ]);
 
         }catch(\Exception $e){
-            session()->flash('message',$e->getMessage());
-            //session()->flash('message','Course does not exist!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            //session()->now('message','Course does not exist!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.course-view');
 
         }
@@ -298,9 +300,9 @@ class CourseController extends Controller
 
             //to display course content
             $courseContent          = $courseData['dto']->getContent();
-            $validatedCourseContent = $this->adminCourseService->validateCourseContent($courseContent);
+            $validatedCourseContent =  (new CourseSharedService())->validateCourseContent($courseContent);
             $courseContentStr       = json_encode($validatedCourseContent['data'], 512);
-
+            
 
             // load teachers dropdown data
             $teachersData   = $this->adminTeacherService->loadAllAvailableTeachers();
@@ -327,9 +329,9 @@ class CourseController extends Controller
 
         }catch(CustomException $e){
             $exData = $e->getData();
-            session()->flash('message'  ,$e->getMessage());
-            session()->flash('cls'      ,$exData['cls'] ?? "flash-danger");
-            session()->flash('msgTitle' ,$exData['msgTitle']  ?? 'Error !');
+            session()->now('message'  ,$e->getMessage());
+            session()->now('cls'      ,$exData['cls'] ?? "flash-danger");
+            session()->now('msgTitle' ,$exData['msgTitle']  ?? 'Error !');
             return view('admin-panel.course-edit');
 
         }catch(AuthorizationException $e){
@@ -341,10 +343,10 @@ class CourseController extends Controller
 
         }
         catch(\Exception $e){
-            //session()->flash('message'  ,'Failed to load course edit form!');
-            session()->flash('message'  ,$e->getMessage());
-            session()->flash('cls'      ,'flash-danger');
-            session()->flash('msgTitle' ,'Error!');
+            //session()->now('message'  ,'Failed to load course edit form!');
+            session()->now('message'  ,$e->getMessage());
+            session()->now('cls'      ,'flash-danger');
+            session()->now('msgTitle' ,'Error!');
             return view('admin-panel.course-edit');
         }
 

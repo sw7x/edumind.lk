@@ -53,16 +53,16 @@ class AdminPanelController extends Controller
 
 
         }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message', $e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.profile');
 
         }catch(\Exception $e){
-            session()->flash('message', $e->getMessage());
-            //session()->flash('message', 'Failed to load your profile');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message', $e->getMessage());
+            //session()->now('message', 'Failed to load your profile');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.profile');
         }
     }
@@ -101,17 +101,17 @@ class AdminPanelController extends Controller
 
 
         }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message', $e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             //return view('admin-panel.dashboard');
             abort(404,'hhh');
 
         }catch(\Exception $e){
-            session()->flash('message', $e->getMessage());
-            //session()->flash('message', 'Failed to load your profile');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message', $e->getMessage());
+            //session()->now('message', 'Failed to load your profile');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.profile');
         }
     }
@@ -161,16 +161,16 @@ class AdminPanelController extends Controller
             return view($view);
 
         }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message', $e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.profile');
 
         }catch(\Exception $e){
-            session()->flash('message', $e->getMessage());
-            //session()->flash('message', 'Failed to load your profile');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message', $e->getMessage());
+            //session()->now('message', 'Failed to load your profile');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.profile');
         }
     }
@@ -234,16 +234,16 @@ class AdminPanelController extends Controller
 
         // }catch(CustomException $e){
         //     //return
-        //     session()->flash('message', $e->getMessage());
-        //     session()->flash('cls','flash-danger');
-        //     session()->flash('msgTitle','Error!');
+        //     session()->now('message', $e->getMessage());
+        //     session()->now('cls','flash-danger');
+        //     session()->now('msgTitle','Error!');
         //     return view('admin-panel.profile');
 
         // }catch(\Exception $e){
-        //     session()->flash('message', $e->getMessage());
-        //     //session()->flash('message', 'Failed to load your profile');
-        //     session()->flash('cls','flash-danger');
-        //     session()->flash('msgTitle','Error!');
+        //     session()->now('message', $e->getMessage());
+        //     //session()->now('message', 'Failed to load your profile');
+        //     session()->now('cls','flash-danger');
+        //     session()->now('msgTitle','Error!');
         //     return view('admin-panel.profile');
         // }
 

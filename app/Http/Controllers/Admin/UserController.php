@@ -104,9 +104,9 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.user-list');
 
         }catch(AuthorizationException $e){
@@ -118,10 +118,10 @@ class UserController extends Controller
 
         }catch(\Exception $e){
             //dd($e);
-            //session()->flash('message','Failed to show all users');
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            //session()->now('message','Failed to show all users');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.user-list');
         }
     }
@@ -147,9 +147,9 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            session()->flash('message',  'Failed to show user add form');
-            session()->flash('cls',      'flash-danger');
-            session()->flash('msgTitle', 'Error!');
+            session()->now('message',  'Failed to show user add form');
+            session()->now('cls',      'flash-danger');
+            session()->now('msgTitle', 'Error!');
             return view('admin-panel.user-add');
         }
     }
@@ -416,9 +416,9 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-            session()->flash('view_user_message',$e->getMessage());
-            session()->flash('view_user_cls','flash-danger');
-            session()->flash('view_user_msgTitle','Error!');
+            session()->now('view_user_message',$e->getMessage());
+            session()->now('view_user_cls','flash-danger');
+            session()->now('view_user_msgTitle','Error!');
             return view('admin-panel.user-view');
 
         }catch(AuthorizationException $e){
@@ -429,10 +429,10 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            session()->flash('view_user_message','User does not exist');
-            //session()->flash('view_user_message',$e->getMessage());
-            session()->flash('view_user_cls','flash-danger');
-            session()->flash('view_user_msgTitle','Error!');
+            session()->now('view_user_message','User does not exist');
+            //session()->now('view_user_message',$e->getMessage());
+            session()->now('view_user_cls','flash-danger');
+            session()->now('view_user_msgTitle','Error!');
             return view('admin-panel.user-view');
 
         }
@@ -466,9 +466,9 @@ class UserController extends Controller
 
         }catch(CustomException $e){
             //$exData = $e->getData();
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls',$exData['cls'] ?? "flash-danger");
-            session()->flash('msgTitle', $exData['msgTitle']  ?? 'Error !');
+            session()->now('message',$e->getMessage());
+            session()->now('cls',$exData['cls'] ?? "flash-danger");
+            session()->now('msgTitle', $exData['msgTitle']  ?? 'Error !');
             return view('admin-panel.user-edit');
 
         }catch(AuthorizationException $e){
@@ -480,9 +480,9 @@ class UserController extends Controller
 
         }
         catch(\Exception $e){
-            session()->flash('message','User edit failed');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message','User edit failed');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.user-edit');
 
         }
@@ -849,9 +849,9 @@ class UserController extends Controller
             ]);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.user-approve-teachers');
 
         }catch(AuthorizationException $e){
@@ -862,10 +862,10 @@ class UserController extends Controller
             ]);
 
         }catch(\Exception $e){
-            session()->flash('message','User does not exist');
-            //session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message','User does not exist');
+            //session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.user-approve-teachers');
 
         }

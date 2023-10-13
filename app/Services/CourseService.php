@@ -16,7 +16,7 @@ use App\Models\Subject as SubjectModel;
 use App\Models\User as UserModel;
 use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
-
+use App\SharedServices\CourseSharedService;
 //use Illuminate\Support\Str;
 
 class CourseService
@@ -58,7 +58,7 @@ class CourseService
             $viewFile = 'course-single-enrolled';
 
         //validate course content format
-        $courseContentData  =  $this->validateCourseContent($courseRec->content);
+        $courseContentData  =  (new CourseSharedService())->validateCourseContent($courseRec->content);
 
         $courseDto = CourseBuilder::buildDto($courseRec->toArray());
 
@@ -253,17 +253,6 @@ class CourseService
         });
         return $courseArr;
     }
-
-
-    public function validateCourseContent($courseContent) : array {
-        $isContentValid     = (is_array($courseContent) && Arr::isAssoc($courseContent));
-        $content            = $isContentValid ? $courseContent : [];
-        return array(
-            'content'       => $content,
-            'invalidFormat' => !$isContentValid
-        );
-    }
-
 
 
     public function loadSearchResults(Request $request){

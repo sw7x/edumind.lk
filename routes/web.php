@@ -173,7 +173,7 @@ Route::group(['middleware'=> 'checkStudent'], function(){
 
 Route::group(['prefix'=>'students','as'=>'students.'], function(){
     Route::get('/{slug?}', [StudentController::class,'viewStudent'])->name('show');
-    Route::get('/{slug?}/courses', [StudentController::class,'viewEnrolledCourses'])->name('courses');
+    Route::get('/{slug?}/courses', [StudentController::class,'viewStudentEnrolledCourses'])->name('courses');
 });
 
 

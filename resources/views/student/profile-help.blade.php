@@ -8,7 +8,7 @@
             <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-5 p-3">
 
                 <div style="flex:1">
-                    <h2 class="font-semibold mb-3 text-xl lg:text-3xl">stud help Page</h2>
+                    <h2 class="font-semibold mb-3 text-xl lg:text-3xl">student help Page</h2>
                     <hr class="mb-5">
                     <!-- <h4 class="font-semibold mb-2 text-base"> Description </h4>    -->
 

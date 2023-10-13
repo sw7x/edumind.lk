@@ -61,7 +61,7 @@ class SubjectService
     public function loadSubjectDataByUrl(string $url) : array {
         $subjectRec    = SubjectModel::where('slug', $url)->first();
         if(!$subjectRec)
-            throw new CustomException('Subject does not exist or disabled');
+            abort(404,'Subject does not exist or disabled');
 
         $subjectCourses = SubjectModel::where('slug', $url)->first()->courses;
 
@@ -75,7 +75,8 @@ class SubjectService
         $bannerColors = ColorUtil::generateBannerColors($subjectRec->image);
 
         return array(
-            'subjectDto'       => $subjectDto,
+            'dto'              => $subjectDto,
+            'dbRec'            => $subjectRec,
             'coursesDtoArr'    => $coursesDtoArr,
             'bgColor'          => $bannerColors['bgColor'],
             'txtColor'         => $bannerColors['txtColor']

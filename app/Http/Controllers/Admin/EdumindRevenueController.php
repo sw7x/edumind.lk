@@ -20,7 +20,7 @@ class EdumindRevenueController extends Controller
 
 
     public function loadEarnings_0(Request $request){
-
+        
         try{
             //todo
             //$this->authorize('create',Subject::class);
@@ -30,14 +30,14 @@ class EdumindRevenueController extends Controller
 
         }catch(CustomException $e){
             $earningsData = null;
-            $request->session()->flash('message',  $e->getMessage());
-            $request->session()->flash('cls',      'flash-danger');
-            $request->session()->flash('msgTitle', 'Error !');
+            $request->session()->now('message',  $e->getMessage());
+            $request->session()->now('cls',      'flash-danger');
+            $request->session()->now('msgTitle', 'Error !');
         }catch(\Exception $e){
             $earningsData = null;
-            $request->session()->flash('message',  'Unable to load earnings!');
-            $request->session()->flash('cls',      'flash-danger');
-            $request->session()->flash('msgTitle', 'Error !');
+            $request->session()->now('message',  'Unable to load earnings!');
+            $request->session()->now('cls',      'flash-danger');
+            $request->session()->now('msgTitle', 'Error !');
         }
         return view('admin-panel.admin.earnings-0')->with(["data" => $earningsData]);
     }

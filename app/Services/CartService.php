@@ -230,7 +230,7 @@ class CartService
 
         return array(
             'orderId' => base64_encode($orderId),
-            'random' => base64_encode($random)
+            'random'  => base64_encode($random)
         );
     }
 

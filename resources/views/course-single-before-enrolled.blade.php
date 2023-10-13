@@ -156,6 +156,11 @@
 
                     </div>
 
+                    <?php 
+                        //dump($courseContent);
+                        //dump($courseContentInvFormat);
+
+                    ?>
                     <!-- course Curriculum -->
                     <div id="curriculum" class="tube-card p-5 lg:p-8">
                         <h3 class="mb-4 text-xl font-semibold lg:mb-5">Course Curriculum</h3>
@@ -163,7 +168,8 @@
                             @if($courseContentInvFormat == false)
                                 <ul uk-accordion="multiple: true" class="divide-y space-y-3">
                                     @php($liCount = 1)
-                                    @foreach($courseContent as $sectionHeading => $sectionContent)
+                                    @forelse($courseContent as $sectionHeading => $sectionContent)
+                                        
                                         <li class="bg-gray-200 px-0 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
 
                                             <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
@@ -224,7 +230,15 @@
                                                 </ul>
                                             </div>
                                         </li>
-                                    @endforeach
+
+                                    @empty
+                                        <x-flash-message 
+                                            class="flash-warning"  
+                                            title="Course content is empty!" 
+                                            message=""  
+                                            message2=""  
+                                            :canClose="false" />
+                                    @endforelse                                    
                                 </ul>
                             @else
                                 <x-flash-message 

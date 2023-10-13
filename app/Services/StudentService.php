@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\Course as CourseModel;
 use App\Models\Role as RoleModel;
+use App\Models\User as UserModel;
 use App\Exceptions\CustomException;
 
 use Sentinel;
@@ -35,16 +36,16 @@ class StudentService
 	}
 
 
-	public function getLoggedInUserEnrolledCourses() : array {
-		$user = Sentinel::getUser();
-		if(is_null($user))
-			throw new CustomException('Access denied');
+	public function getStudentEnrolledCourses(?UserModel $student) : array {
+		//$user = Sentinel::getUser();
+		if(is_null($student))
+            abort(404, 'Student not found');
 
-		$role = optional($user->roles()->first())->name;
+		$role = optional($student->roles()->first())->name;
 		if($role !=RoleModel::STUDENT)
-			throw new CustomException('Wrong user type');
+			throw new CustomException('Invalid user type');
 
-		$studentCourses = (new CourseRepository())->getEnrolledCoursesByStudent($user);
+		$studentCourses = (new CourseRepository())->getEnrolledCoursesByStudent($student);
 		//dd($studentCourses);
 
 		$dataArr = array();
@@ -58,7 +59,13 @@ class StudentService
     }
 
 
-
+	public function loadStudentEnrolledCoursesByUsername(string $username) : array {
+		$student 	= (new UserRepository())->findAvailableUserByUsername($username);
+		if(is_null($student))
+            abort(404, 'Student not found');
+		             
+        return $this->getStudentEnrolledCourses($student);
+	}
 
 
 

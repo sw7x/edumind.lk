@@ -15,14 +15,8 @@
                     <hr class="mb-5">
                     <!-- <h4 class="font-semibold mb-2 text-base"> Description </h4>    -->
                     
-                    @if(Session::has('message'))
-                        <x-flash-message  
-                            :class="Session::get('cls', 'flash-info')"  
-                            :title="Session::get('msgTitle') ?? 'Info!'" 
-                            :message="Session::get('message') ?? ''"  
-                            :message2="Session::get('message2') ?? ''"  
-                            :canClose="false" />
-                    @else
+                    <?php $studentData = array(1,2,3);?>
+                    @if(isset($studentData) && isNotEmptyArray($studentData))    
                         <section class="tabs-section">
                             <div class="_container">
                                 <div class="row">
@@ -87,7 +81,15 @@
                                 </div>
                             </div>
                         </section>
+                    @else
+                        <x-flash-message 
+                            class="flash-danger"  
+                            title="Data not available!" 
+                            message="Dashboard data is not available or not in correct format"  
+                            message2=""  
+                            :canClose="false" />
                     @endif
+                    
                 </div>
 
             </div>

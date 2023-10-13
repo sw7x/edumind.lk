@@ -76,31 +76,6 @@ class CourseService
     }
 
 
-    //validate course content format
-    public function validateCourseContent($courseContent) : array {
-
-
-        if(is_null($courseContent)){
-            $courseContentData          = $courseContent;
-            $courseContentInvFormat     = false;
-        }else{
-            if(is_array($courseContent) && Arr::isAssoc($courseContent)){
-                $courseContentData      = $courseContent;
-                $courseContentInvFormat = false;
-            }else{
-                $courseContentData      = [];
-                $courseContentInvFormat = true;
-            }
-        }
-
-        return array(
-            'data'          => $courseContentData,
-            'isInvFormat'   => $courseContentInvFormat
-        );
-
-    }
-
-
     /*
         if course content is in correct format then send it to view
         to recive as old values

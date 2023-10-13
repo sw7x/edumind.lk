@@ -35,22 +35,22 @@ class ContactUsMessagesController extends Controller
             $studentCommentsArr     = AdminContactUsDataTransformer::prepareData($studentCommentsDtoArr);
 
         }catch(AuthorizationException $e){
-            session()->flash('message','You dont have Permissions to view student comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Permission Denied!');
+            session()->now('message','You dont have Permissions to view student comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Permission Denied!');
             unset($studentCommentsArr);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($studentCommentsArr);
 
         }catch(\Exception $e){
-            session()->flash('message',$e->getMessage());
-            //session()->flash('message','Failed to show all student comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            //session()->now('message','Failed to show all student comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($studentCommentsArr);
         }
 
@@ -69,22 +69,22 @@ class ContactUsMessagesController extends Controller
             $teacherCommentsArr     = AdminContactUsDataTransformer::prepareData($teacherCommentsDtoArr);
 
         }catch(AuthorizationException $e){
-            session()->flash('message','You dont have Permissions to view teacher comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Permission Denied!');
+            session()->now('message','You dont have Permissions to view teacher comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Permission Denied!');
             unset($teacherCommentsArr);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($teacherCommentsArr);
 
         }catch(\Exception $e){
-            session()->flash('message',$e->getMessage());
-            //session()->flash('message','Failed to show all teacher comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            //session()->now('message','Failed to show all teacher comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($teacherCommentsArr);
         }
 
@@ -102,22 +102,22 @@ class ContactUsMessagesController extends Controller
             $otherUserCommentsArr     = AdminContactUsDataTransformer::prepareData($otherUserCommentsDtoArr);
 
         }catch(AuthorizationException $e){
-            session()->flash('message','You dont have Permissions to view otherUser comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Permission Denied!');
+            session()->now('message','You dont have Permissions to view otherUser comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Permission Denied!');
             unset($otherUserCommentsArr);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($otherUserCommentsArr);
 
         }catch(\Exception $e){
-            session()->flash('message',$e->getMessage());
-            //session()->flash('message','Failed to show all otherUser comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            //session()->now('message','Failed to show all otherUser comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($otherUserCommentsArr);
         }
 
@@ -136,22 +136,22 @@ class ContactUsMessagesController extends Controller
             $guestCommentsArr     = AdminContactUsDataTransformer::prepareData($guestCommentsDtoArr);
 
         }catch(AuthorizationException $e){
-            session()->flash('message','You dont have Permissions to view guest comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Permission Denied!');
+            session()->now('message','You dont have Permissions to view guest comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Permission Denied!');
             unset($guestCommentsArr);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($guestCommentsArr);
 
         }catch(\Exception $e){
-            session()->flash('message',$e->getMessage());
-            //session()->flash('message','Failed to show all guest comments!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            //session()->now('message','Failed to show all guest comments!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             unset($guestCommentsArr);
         }
 

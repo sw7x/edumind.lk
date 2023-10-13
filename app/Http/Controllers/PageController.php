@@ -1,28 +1,33 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Sentinel;
 use App\Models\Role as RoleModel;
 use App\Exceptions\CustomException;
+use App\Exceptions\InvalidUserTypeException;
+
+use App\View\DataTransformers\ProfileDataTransformer;
+use App\Services\UserService;
+use App\SharedServices\UserSharedService;
+
+/*
+use Illuminate\Support\Facades\Session;
 use App\Builders\UserBuilder;
 use App\Repositories\UserRepository;
-use App\View\DataTransformers\ProfileDataTransformer;
-
-use App\Services\UserService;
-
+*/
 class PageController extends Controller
 {
-    
+
     private UserService $userService;
+    private UserSharedService $userSharedService;
 
 
-    function __construct(UserService $userService){
-        $this->userService  = $userService;
+    function __construct(UserService $userService, UserSharedService $userSharedService){
+        $this->userService          = $userService;
+        $this->userSharedService    = $userSharedService;
     }
-    
+
     public function viewInstruction(){
         return view('instruction');
     }
@@ -64,139 +69,75 @@ class PageController extends Controller
             'msgTitle'    => 'Warning !',
         ]);*/
     }
-    
-    public function viewProfileEditPage(Request $request){
-        try{
-            
-            $user = Sentinel::getUser();
-            if(is_null($user))
-                throw new CustomException('Access denied');
-            
-            $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-            $currentUserRole = optional($user->roles()->first())->name;        
-            if(!in_array($currentUserRole, $allRoles))
-                throw new CustomException('Invalid user type');
 
-            
-            // redirect users that have ADMIN, EDITOR, MARKETER roles
-            $allowedRoles = [RoleModel::TEACHER, RoleModel::STUDENT];
-            if(!in_array($currentUserRole, $allowedRoles))
-                abort(403);
+    public function viewProfileEditPage(Request $request){      
+        $user = Sentinel::getUser();
+        if(is_null($user))
+            abort(401, 'Authentication is required To access this page');
 
-            if($currentUserRole == RoleModel::STUDENT)
-                return view('student.student-profile-edit');
+        if(!$this->userSharedService->checkUserHaveValidRole($user))
+            throw new InvalidUserTypeException('Your user role is not valid for access this page.');
 
-            
-            if($currentUserRole == RoleModel::TEACHER)
-                return redirect()->route('admin.profile-edit', []);
+        if(!$this->userSharedService->isAllowed($user, [RoleModel::TEACHER, RoleModel::STUDENT]))
+            abort(403);
 
-            
-            
+        $currentUserRole = $this->userSharedService->getRoleByUser($user);
+        
+        if($currentUserRole == RoleModel::STUDENT)
+            return view('student.profile-edit');
 
-            //$userData   =   $this->userService->findDbRec($user->id);
-            //$userArr    = ProfileDataTransformer::prepareUserData($userData);
-            //return view('student.student-my-profile')->with(['userData' => $userArr]);
-                             
-        }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('student.student-my-profile'); 
+        if($currentUserRole == RoleModel::TEACHER)
+            return redirect()->route('admin.profile-edit', []);
 
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            session()->flash('message', $e->getMessage());
-            //session()->flash('message', 'Failed to load your profile');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('student.student-my-profile');  
-        }
+        //$userData   =   $this->userService->findDbRec($user->id);
+        //$userArr    = ProfileDataTransformer::prepareUserData($userData);
+        //return view('student.my-profile')->with(['userData' => $userArr]);
+
     }
+
 
     public function viewProfile(Request $request){
+        $user = Sentinel::getUser();
+        if(is_null($user))
+            abort(401, 'Authentication is required To access this page');
+
+        if(!$this->userSharedService->checkUserHaveValidRole($user))
+            throw new InvalidUserTypeException('Your user role is not valid for access this page.');
         
-        //dump('viewProfile');
-        
-        try{
-            
-            $user = Sentinel::getUser();
-            if(is_null($user))
-                throw new CustomException('Access denied');
-            
-            $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-            $currentUserRole = optional($user->roles()->first())->name;        
-            if(!in_array($currentUserRole, $allRoles))
-                throw new CustomException('Invalid user type');
+        // redirect ADMIN, EDITOR, MARKETER, TEACHER users to profile page in admin panel
+        if(!$this->userSharedService->isAllowed($user, [RoleModel::STUDENT]))
+            return redirect()->route('admin.profile', []);
 
-            
-            // redirect users that have ADMIN, EDITOR, MARKETER roles
-            $allowedRoles = [RoleModel::STUDENT];
-            if(!in_array($currentUserRole, $allowedRoles))
-                return redirect()->route('admin.profile', []);
-            
-
-            $userData   =   $this->userService->findDbRec($user->id);
-            $userArr    = ProfileDataTransformer::prepareUserData($userData);
-            return view('student.student-my-profile')->with(['userData' => $userArr]);
-                             
-        }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('student.student-my-profile'); 
-
-        }catch(\Exception $e){
-            session()->flash('message', $e->getMessage());
-            //session()->flash('message', 'Failed to load your profile');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('student.student-my-profile');  
-        }
+        $userData   =   $this->userService->findDbRec($user->id);
+        $userArr    = ProfileDataTransformer::prepareUserData($userData);
+        return view('student.my-profile')->with(['userData' => $userArr]);
+       
     }
+
 
     public function viewHelpPage(Request $request){
-        return view('help');        
+        return view('help');
     }
 
+
     public function viewDashboardPage(Request $request){
-        
-        //dump('viewDashboardPage');
-        
-        try{
-            $user = Sentinel::getUser();
-            if(is_null($user))
-                throw new CustomException('Access denied');
-            
-            $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-            $currentUserRole = optional($user->roles()->first())->name;        
-            if(!in_array($currentUserRole, $allRoles))
-                throw new CustomException('Invalid user type');
 
-            
-            // redirect users that have ADMIN, EDITOR, MARKETER roles
-            $allowedRoles = [RoleModel::STUDENT];
-            if(!in_array($currentUserRole, $allowedRoles))
-                return redirect()->route('admin.dashboard', []);
-            
+        $user = Sentinel::getUser();
+        if(is_null($user)) 
+            abort(401, 'Authentication is required To access this page');
+                    
+        if(!$this->userSharedService->checkUserHaveValidRole($user))
+            throw new InvalidUserTypeException('Your user role is not valid for access this page.');
+                
+        // redirect ADMIN, EDITOR, MARKETER, TEACHER users to dashboard of admin panel
+        if(!$this->userSharedService->isAllowed($user, [RoleModel::STUDENT]))
+            return redirect()->route('admin.dashboard', []);
 
-            //$userData   =   $this->userService->findDbRec($user->id);
-            //$userArr    =   ProfileDataTransformer::prepareUserData($userData);
-            //return view('student.student-my-profile')->with(['userData' => $userArr]);
-            return view('student.student-profile-dashboard');
-                             
-        }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('student.student-profile-dashboard'); 
+        //$userData   =   $this->userService->findDbRec($user->id);
+        //$userArr    =   ProfileDataTransformer::prepareUserData($userData);
+        //return view('student.my-profile')->with(['userData' => $userArr]);
+        return view('student.dashboard');
 
-        }catch(\Exception $e){
-            session()->flash('message', $e->getMessage());
-            //session()->flash('message', 'Failed to load your profile');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
-            return view('student.student-profile-dashboard');  
-        }
     }
 
 

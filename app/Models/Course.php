@@ -212,6 +212,7 @@ class Course extends Model
         }        
     }
 
+    /* 
     public function getLinkCount(){
         $courseLinkCount = 0;
         foreach($this->content as $arr){
@@ -240,7 +241,8 @@ class Course extends Model
 
         return $result;
         //dump("vid - {$vid} === section- {$result}");
-    }
+    } 
+    */
 
 
 

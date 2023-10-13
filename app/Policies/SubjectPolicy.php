@@ -6,7 +6,7 @@ use App\Models\Subject as SubjectModel;
 use App\Models\User as UserModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Role as RoleModel;
-
+use Illuminate\Auth\Access\Response;
 
 class SubjectPolicy
 {
@@ -114,6 +114,10 @@ class SubjectPolicy
     
     public function viewSingleInSiteFrontend(UserModel $user, SubjectModel $subject)
     {
+        // return Response::allow();
+        // return Response::deny('You do not own this post.');
+        // return $this->deny('Sorry, your level is not high enough to do that!');
+        // return $this->allow('Sorry, your level is not high enough to do that!');
         return true;
     }
 

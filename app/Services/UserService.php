@@ -6,6 +6,8 @@ use App\Repositories\UserRepository;
 use Sentinel;
 use App\Builders\UserBuilder;
 use App\Exceptions\CustomException;
+use App\Models\User as UserModel;
+
 
 class UserService
 {  
@@ -36,10 +38,26 @@ class UserService
             'dto'   =>  UserBuilder::buildDto($user->toArray()),
             'dbRec' =>  $user,
         );
+    }    
+
+
+    public function loadUserData() : array {
+        $user = Sentinel::getUser();
+        if(is_null($user))
+            throw new CustomException('Access denied');
+
+        return array(
+            'dto'   =>  UserBuilder::buildDto($user->toArray()),
+            'dbRec' =>  $user,
+        );
     }
 
-
     
+
+
+
+
+
     /*
     private $userRepository;
 

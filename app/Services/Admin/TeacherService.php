@@ -14,29 +14,33 @@ use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
 
 use App\Builders\UserBuilder;
+use App\Builders\CourseBuilder;
 
 
 class TeacherService
 {
 
     private UserRepository $userRepository;
+    private CourseRepository $courseRepository;
 
-    function __construct(UserRepository $userRepository){
-        $this->userRepository = $userRepository;
+    function __construct(UserRepository $userRepository,CourseRepository $courseRepository ){
+        $this->userRepository   = $userRepository;
+        $this->courseRepository = $courseRepository;
     }
 
     public function getAllCoursesByTeacher(UserModel $teacher){
-        $teacherCourses = $teacher->getTeachingCourses()->withoutGlobalScope('published')->get();
-        
+        $teacherCourses = $this->courseRepository->getPublishedCoursesByTeacher($teacher);
+
         $dataArr = array();
         $teacherCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
-            $courseArr       = (new CourseRepository())->findDataArrById($record->id);
+            $dataArr[]          = CourseBuilder::buildDto($record->toArray());
+            /*$courseArr       = $this->courseRepository->findDataArrById($record->id);
             $courseEntityArr = CourseMapper::dbRecConvertToEntityArr($courseArr);
-            $courseEntity    = (new CourseFactory())->createObjTree($courseEntityArr);            
-            $courseDto       =  CourseDtoFactory::fromArray($courseEntity->toArray());            
-            $dataArr[]       = $courseDto;              
+            $courseEntity    = (new CourseFactory())->createObjTree($courseEntityArr);
+            $courseDto       =  CourseDtoFactory::fromArray($courseEntity->toArray());
+            $dataArr[]       = $courseDto; */
         });
-        return $dataArr;
+        return $dataArr;        
     }
 
     public function loadAllAvailableTeachers(){        

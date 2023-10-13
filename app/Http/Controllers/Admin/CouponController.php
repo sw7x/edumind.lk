@@ -156,9 +156,9 @@ class CouponController extends Controller
             ]);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.coupon-code-view');
 
         }catch(AuthorizationException $e){
@@ -169,10 +169,10 @@ class CouponController extends Controller
             ]);*/
 
         }catch(\Exception $e){
-            session()->flash('message','Coupon code does not exist');
-            //session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message','Coupon code does not exist');
+            //session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.coupon-code-view');
         }
 

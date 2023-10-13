@@ -173,7 +173,6 @@
 
     $(document).ready(function(){
         
-        /**/
         var cleaveCreditCard = new Cleave('#creditCardNumber', {
             creditCard: true,
             delimiter: '-',
@@ -188,11 +187,6 @@
             date: true,
             datePattern: ['m', 'y']
         });
-
-
-
-
-
 
 
         /*
@@ -253,9 +247,7 @@
                 $errMsgDiv.find('label').css('fontSize','13px');                               
             }
 
-        }); 
-
-
+        });
 
     });
 
@@ -264,9 +256,7 @@
         var form = $('form#back-to-bill-info');
         form.submit();
         //alert();
-
         event.preventDefault();
-
     });
 
 
@@ -283,9 +273,6 @@
         input.value = numbers.join(' ');
     }
     */
-
-
-
 
 </script>
 @stop

@@ -7,25 +7,14 @@
 
     <div class="main-container container">
         <div class="lg:flex lg:space-x-10 mt-8 mb-4">
-
-
             <div class="w-full">
 
                 <div class="my-2 flex items-center justify-between pb-2">
                     <div><h2 class="text-xl font-semibold">Teachers List</h2></div>
                 </div>
                 
-                @if(Session::has('message'))
-                    <x-flash-message  
-                        :class="Session::get('cls', 'flash-info')"  
-                        :title="Session::get('msgTitle') ?? 'Info!'" 
-                        :message="Session::get('message') ?? ''"  
-                        :message2="Session::get('message2') ?? ''"  
-                        :canClose="true" />
-                @endif
-
-                @if(isset($teachers))
-
+                @if(isset($teachers) && is_array($teachers))
+                                
                     @if(!empty($teachers))
                         <div class="_space-y-7 mt-6 flex flex-row justify-between flex-wrap">     
                             @forelse ($teachers as $teacher)                        
@@ -60,6 +49,7 @@
                                 </div>                                                
                             @endforeach    
                         </div>                        
+                        
                         <!-- Pagination -->
                         <div class="nr-pagination-wrapper flex justify-center mt-9 space-x-2 font-semibold items-center">
                             <ul class="pagination">
@@ -91,19 +81,14 @@
                     @else
                         <x-flash-message  
                             class="flash-info"  
-                            title="No teachers" 
-                            message="There is no teachers to show"  
+                            title="No records" 
+                            message="There is no teachers available to show"  
                             message2=""  
-                            :canClose="false" />
-                        
+                            :canClose="false" />                        
                     @endif
                     
-
-
-                   
-
-
-                    {{--<div class="relative p-3 bg-white shadow rounded-md flex items-center space-x-3 mb-10 teacher-card">
+                    {{--
+                    <div class="relative p-3 bg-white shadow rounded-md flex items-center space-x-3 mb-10 teacher-card">
                         <a href="#" class="profile-image rounded-lg shadow-md">
                             <img src="{{asset('images/book/book1.jpg')}}" class="w-40 h-48  __-mt-7 " alt="">
                         </a>
@@ -197,14 +182,15 @@
                                 <ion-icon class="text-4xl text-blue-400 hover:text-blue-700" name="link"></ion-icon>
                             </a>
                         </div>
-                    </div>--}}
+                    </div>
+                    --}}
                                         
                 @else
                     <x-flash-message  
                         class="flash-danger"  
-                        title="Data not available" 
-                        message="No Data available to show"  
-                        message2=""  
+                        title="Data not available!" 
+                        message="Teachers data is not available or not in correct format"
+                        message2=""
                         :canClose="false" />                    
                 @endif
 

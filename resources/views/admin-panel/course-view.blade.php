@@ -178,54 +178,63 @@
                                             @if(isset($courseContent))
                                                 @if($courseContentInvFormat == false)
                                                     <ul uk-accordion="multiple: true" class="divide-y space-y-3">
-                                                        @foreach($courseContent as $sectionHeading => $sectionContent)
-                                                        <li class="uk-open bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':''}}">
+                                                        @forelse($courseContent as $sectionHeading => $sectionContent)
+                                                        
+                                                            <li class="uk-open bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':''}}">
 
-                                                            <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
-                                                                <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
+                                                                <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
+                                                                    <div class="mb-1 text-sm font-medium"> Section {{$loop->index+1}}</div> {{$sectionHeading}}</a>
 
-                                                            <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
+                                                                <div class="uk-accordion-content mt-3 text-base border-gray-400 border-t">
 
-                                                                <ul class="course-curriculum-list font-medium">                                                                                               
+                                                                    <ul class="course-curriculum-list font-medium">                                                                                               
 
-                                                                    @foreach($sectionContent as $arr)
-                                                                    <li class=" hover:bg-gray-100 p-2 flex rounded-md
-                                                                        {{($arr['isFree'] == true)?' text-blue-500':''}}
-                                                                        {{($arr['type'] == 'Download')?' __pl-8-important':''}}">
+                                                                        @foreach($sectionContent as $arr)
+                                                                        <li class=" hover:bg-gray-100 p-2 flex rounded-md
+                                                                            {{($arr['isFree'] == true)?' text-blue-500':''}}
+                                                                            {{($arr['type'] == 'Download')?' __pl-8-important':''}}">
 
-                                                                        @if(strtolower($arr['type']) == 'video')
-                                                                            <i class="fa fa-play-circle text-2xl mr-2"></i>
-                                                                            <!-- <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> -->
-                                                                        @elseif (strtolower($arr['type']) =="download")
-                                                                            <i class="fa fa-download leading-6 text-2xl mr-2"></i>
-                                                                            <!-- <ion-icon class="icon-feather-download text-2xl mr-2"></ion-icon> -->
-                                                                        @elseif (strtolower($arr['type']) =="other")
-                                                                            <i class="fa fa-link leading-6 text-2xl mr-2"></i>
-                                                                            <!-- <ion-icon class="icon-feather-link text-2xl mr-2"></ion-icon> -->
-                                                                        @else
-                                                                            <i class="fa fa-info-circle leading-6 text-2xl mr-2"></i>
-                                                                            <!-- <ion-icon class="icon-feather-box text-2xl mr-2"></ion-icon> -->
-                                                                        @endif
-
-                                                                        <div class="link_div mr-2 text-justify">    
-                                                                            <a class="link" href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>                                                    
-
-                                                                            @if($arr['isFree'] == true)
-                                                                            <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                                            @if(strtolower($arr['type']) == 'video')
+                                                                                <i class="fa fa-play-circle text-2xl mr-2"></i>
+                                                                                <!-- <ion-icon name="play-circle" class="text-2xl mr-2"></ion-icon> -->
+                                                                            @elseif (strtolower($arr['type']) =="download")
+                                                                                <i class="fa fa-download leading-6 text-2xl mr-2"></i>
+                                                                                <!-- <ion-icon class="icon-feather-download text-2xl mr-2"></ion-icon> -->
+                                                                            @elseif (strtolower($arr['type']) =="other")
+                                                                                <i class="fa fa-link leading-6 text-2xl mr-2"></i>
+                                                                                <!-- <ion-icon class="icon-feather-link text-2xl mr-2"></ion-icon> -->
+                                                                            @else
+                                                                                <i class="fa fa-info-circle leading-6 text-2xl mr-2"></i>
+                                                                                <!-- <ion-icon class="icon-feather-box text-2xl mr-2"></ion-icon> -->
                                                                             @endif
-                                                                        </div>
 
-                                                                        @if($arr['linkParam'] !='')
-                                                                        <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
-                                                                        @endif
-                                                                    </li>
-                                                                    @endforeach
+                                                                            <div class="link_div mr-2 text-justify">    
+                                                                                <a class="link" href="{{$arr['inputUrl']}}">{{$arr['inputText']}}</a>                                                    
 
-                                                                </ul>
+                                                                                @if($arr['isFree'] == true)
+                                                                                <span class="bg-blue-500 text-white bg-gray-200 ml-4 px-3 py-1 rounded-full text-xs">Free</span>
+                                                                                @endif
+                                                                            </div>
 
-                                                            </div>
-                                                        </li>
-                                                        @endforeach
+                                                                            @if($arr['linkParam'] !='')
+                                                                            <span class="param text-sm ml-auto">{{$arr['linkParam']}}</span>
+                                                                            @endif
+                                                                        </li>
+                                                                        @endforeach
+
+                                                                    </ul>
+
+                                                                </div>
+                                                            </li>
+
+                                                        @empty
+                                                            <x-flash-message 
+                                                                class="flash-warning"  
+                                                                title="Course content is empty!" 
+                                                                message=""  
+                                                                message2=""  
+                                                                :canClose="false" />
+                                                        @endforelse
                                                     </ul>
                                                 @else
                                                     <p class="text-center text-sm font-semibold text-red-600">Course content is not in correct format</p>

@@ -8,26 +8,15 @@
     <div class="main-container container">
         <div class="max-w-full  md:p-2 mx-auto">
 
-            @if(Session::has('message'))
-                <x-flash-message  
-                    :class="Session::get('cls', 'flash-info')"  
-                    :title="Session::get('msgTitle') ?? 'Info!'" 
-                    :message="Session::get('message') ?? ''"  
-                    :message2="Session::get('message2') ?? ''"  
-                    :canClose="true" />
-            @endif
-
             @php
                 //var_dump($userData);
             @endphp
 
-            @if(isset($userData))
+            @if(isset($userData) && isNotEmptyArray($userData))
                 <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-5 p-3">
                     <div  style="flex:1">
                         <h2 class="font-semibold mb-3 text-xl lg:text-3xl">Profile Page (student)</h2>
                         <hr class="mb-5">
-
-
                         <section class="tabs-section">
                             <div class="tab-content">
                                 <div class="tab-pane active show" id="tab-1">
@@ -100,17 +89,17 @@
                                 </div>
                             </div>
                         </section>
-
                     </div>
                 </div>
             @else
                 <x-flash-message  
                     class="flash-danger"  
                     title="Error!" 
-                    message="User Profile does not exist!"  
+                    message="Profile data is not available or not in correct format"  
                     message2=""  
                     :canClose="false" />
             @endif
+
         </div>
     </div>
 @stop

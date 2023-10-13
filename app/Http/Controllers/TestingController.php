@@ -63,22 +63,20 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-
-/*
-use App\Models\Invoice as InvoiceModel;
 use App\Models\Course as CourseModel;
+/*
+use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\Invoice as InvoiceModel;
 use App\Models\ContactUs as ContactUsModel;
 use App\Models\Coupon as CouponModel;
 use App\Models\AuthorSalary as AuthorSalaryModel;
 use App\Models\Commission as CommissionModel;
 use App\Models\Subject as SubjectModel;
 use App\Models\Role;
-use App\Models\CourseSelection;
 use App\Models\User;
 use App\Models\Enrollment as EnrollmentModel;
+use Illuminate\Support\Facades\DB;
 */
-
-
 
 
 class TestingController extends Controller
@@ -87,7 +85,7 @@ class TestingController extends Controller
     //coupon
     public function coupon(Request $request){
 
-        $cs3 = (new CouponRepository())->findDataArrByCode('1BED94');
+        $cs3 = (new CouponRepository())->findDataArrByCode('0H1AOQ');
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
         $cs4 = CouponMapper::dbRecConvertToEntityArr($cs3);
@@ -120,7 +118,7 @@ class TestingController extends Controller
         $cs9 = CouponDtoFactory::fromArray($cs5->toArray());
         echo 'Coupon(Entity) --> toArray --> Coupon(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new CouponRepository())->findDtoDataByCode('1BED94');
+        $cs10 = (new CouponRepository())->findDtoDataByCode('0H1AOQ');
         echo 'CouponRepository --> findDtoDataByCode<br>';dump($cs10);echo '<hr><br>';
 
         $cs11 = $cs3;

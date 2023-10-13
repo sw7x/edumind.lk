@@ -58,9 +58,9 @@ class SubjectController extends Controller
             ]);
         }catch(\Exception $e){
             dump($e->getMessage());
-            session()->flash('message','Failed to view all subjects');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message','Failed to view all subjects');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.subject-list');
         }
     }
@@ -84,9 +84,9 @@ class SubjectController extends Controller
             ]);
 
         }catch(\Exception $e){
-            session()->flash('message',  'Failed to show subject add form');
-            session()->flash('cls',      'flash-danger');
-            session()->flash('msgTitle', 'Error!');
+            session()->now('message',  'Failed to show subject add form');
+            session()->now('cls',      'flash-danger');
+            session()->now('msgTitle', 'Error!');
             return view('admin-panel.subject-add');
         }
 
@@ -163,9 +163,9 @@ class SubjectController extends Controller
             return view('admin-panel.subject-view')->with(['subject'   => $subjectDataArr]);
 
         }catch(CustomException $e){
-            session()->flash('message',$e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message',$e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.subject-view');
 
         }catch(AuthorizationException $e){
@@ -175,10 +175,10 @@ class SubjectController extends Controller
                 'msgTitle'    => 'Permission Denied !',
             ]);
         }catch(\Exception $e){
-            //session()->flash('message',$e->getMessage());
-            session()->flash('message','Cannot display subject info!');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            //session()->now('message',$e->getMessage());
+            session()->now('message','Cannot display subject info!');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.subject-view');
         }
     }
@@ -206,9 +206,9 @@ class SubjectController extends Controller
             return view('admin-panel.subject-edit')->with(['subject'   => $subjectDataArr]);
 
         }catch(CustomException $e){
-            session()->flash('message', $e->getMessage());
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message', $e->getMessage());
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.subject-list');
 
         }catch(AuthorizationException $e){
@@ -219,9 +219,9 @@ class SubjectController extends Controller
             ]);
 
         }catch(\Exception $e){
-            session()->flash('message','Resource not exist');
-            session()->flash('cls','flash-danger');
-            session()->flash('msgTitle','Error!');
+            session()->now('message','Resource not exist');
+            session()->now('cls','flash-danger');
+            session()->now('msgTitle','Error!');
             return view('admin-panel.subject-list');
 
         }

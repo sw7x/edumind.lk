@@ -531,10 +531,6 @@ class UserService
 
 
 
-
-
-
-
     public function entityToDbRecArr(UserEntity $user) : array {
         $userEntityArr   = $user->toArray();
         $payloadArr         = UserMapper::entityConvertToDbArr($userEntityArr);

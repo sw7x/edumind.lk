@@ -41,15 +41,19 @@ class CourseController extends Controller
             throw new CustomException('Course id not provided');
 
         $courseData     = $this->courseService->loadCourseData($slug);
-
+        
         $courseDataArr  = CourseDataTransformer::prepareCourseData($courseData);
         $viewFile       = $courseData['viewFile'];
 
         return view($viewFile)->with([
             'courseData'             => $courseDataArr,
 
-            'courseContent'          => $courseData['courseContentData']['content'],
-            'courseContentInvFormat' => $courseData['courseContentData']['invalidFormat'],
+            //'courseContent'          => $courseData['courseContentData']['content'],
+            //'courseContentInvFormat' => $courseData['courseContentData']['invalidFormat'],
+
+            'courseContent'          => $courseData['courseContentData']['data'],
+            'courseContentInvFormat' => $courseData['courseContentData']['isInvFormat'],
+
 
             'bgColor'                => $courseData['colors']['bgColor'],
             'txtColor'               => $courseData['colors']['txtColor'],
@@ -162,18 +166,15 @@ class CourseController extends Controller
         $user     = Sentinel::getUser();
 
         try{
-            if(!filter_var($courseId, FILTER_VALIDATE_INT)){
+            if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-            }
-
-            if($user == null){
+            
+            if($user == null)
                 throw new CustomException('First login before enrolling');
-            }
-
-            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT){
+            
+            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT)
                 throw new CustomException('Invalid user');
-            }
-
+            
             $course = CourseModel::find($courseId);
 
             if($course != null){

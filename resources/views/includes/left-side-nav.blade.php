@@ -48,8 +48,6 @@
                                                 <li><a href="{{route('profile-edit')}}">profile edit</a></li>
                                                 <li><a href="{{route('help')}}">help</a></li>
                                                 <li><a href="{{route('enrolled-courses')}}">Enrolled courses(s)</a></li>
-                                                <li><a href="{{route('students.show','student1')}}">##View Student profile</a></li>
-                                                <li><a href="{{route('students.courses','student1')}}">##student enrolled courses (full-width)</a></li>
                                             </ul>
                                         </li>
 
@@ -70,6 +68,8 @@
                                                 <li><a href="{{route('admin.my-earnings')}}">teacher-profile-earnings</a></li>
                                             </ul>
                                         </li>
+                                        <li><a href="{{route('students.show','student1')}}">Student1 - profile</a></li>
+                                        <li><a href="{{route('students.courses','student1')}}">Student1 - enrolled courses</a></li>
                                         <li><a href="{{route('teachers.show','teacher1')}}">view teacher profile</a></li>
                                         <li><a href="{{route('courses.index')}}">All courses</a></li>
                                         <li><a href="{{route('courses.search')}}">Course search</a></li>                                       
@@ -148,8 +148,6 @@
                                                     <li><a href="{{route('profile-edit')}}">Profile edit</a></li>
                                                     <li><a href="{{route('help')}}">Help</a></li>
                                                     <li><a href="{{route('enrolled-courses')}}">Enrolled courses(s)</a></li>
-                                                    <li><a href="{{route('students.show','student1')}}">##View Student profile</a></li>
-                                                    <li><a href="{{route('students.courses','student1')}}">##student enrolled courses (full-width)</a></li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -161,17 +159,15 @@
                                                     <li><a href="{{route('profile')}}">Profile</a></li>
                                                     <li><a href="{{route('admin.profile-edit')}}">profile-edit</a></li>
                                                     <li><a href="{{route('help')}}">Help</a></li>
-
                                                     <li><a href="{{route('admin.my-courses')}}">My courses(t)</a></li>
-
-
                                                     {{--<li><a href="{{route('teacher.courses','teacher1')}}">--teacher-profile-courses</a></li>--}}
-
                                                     <li><a href="{{route('admin.courses.create')}}">Course create</a></li>
                                                     <li><a href="{{route('admin.my-earnings')}}">My earnings</a></li>
                                                 </ul>
                                             </div>
                                         </li>
+                                        <li><a href="{{route('students.show','student1')}}">Student1 - profile</a></li>
+                                        <li><a href="{{route('students.courses','student1')}}">Student1 - enrolled courses</a></li>
                                         <li><a href="{{route('teachers.index')}}">View all teachers</a></li>                                                
                                         <li><a href="{{route('teachers.show','teacher1')}}">View teacher profile</a></li>
                                         <li><a href="{{route('courses.index')}}">All courses</a></li>

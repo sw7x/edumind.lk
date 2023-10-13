@@ -47,8 +47,7 @@ class CartController extends Controller
     }
 
 
-    public function viewCart()
-    {
+    public function viewCart(){
         try {
             $msgArr = [];
             $user   = Sentinel::getUser();

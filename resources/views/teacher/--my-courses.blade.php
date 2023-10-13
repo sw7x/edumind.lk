@@ -97,7 +97,8 @@
                                                                     --}}
                                                                     <div></div>
                                                                 </div>
-                                                                @if($course['price'])
+                                                                
+                                                                @if(isset($course['price']))
                                                                     <div class="text-lg font-semibold">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                                                 @endif
                                                             </div>

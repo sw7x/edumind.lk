@@ -32,7 +32,6 @@
         <div class="max-w-full  md:p-2 mx-auto">
                     
             @if(isset($student_courses) && is_array($student_courses))
-
                 <div class="lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-5 p-3">
                     <div style="flex:1">
                         <h2 class="font-semibold mb-3 text-xl lg:text-3xl">My Courses</h2>

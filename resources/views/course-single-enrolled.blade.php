@@ -146,8 +146,9 @@
                         @if(isset($courseContent))
                             @if($courseContentInvFormat == false)
                                 <ul uk-accordion="multiple: true" class="divide-y space-y-3">
-                                    @php($liCount = 1)
-                                    @foreach($courseContent as $sectionHeading => $sectionContent)
+                                    @php($liCount = 1)                                    
+                                    @forelse($courseContent as $sectionHeading => $sectionContent)
+                                        
                                         <li class="bg-gray-200 px-2 pb-3 rounded {{($loop->index>0)?'pt-2':'uk-open'}}">
 
                                             <a class="uk-accordion-title text-md mx-2 pt-3 font-semibold" href="#">
@@ -188,7 +189,15 @@
 
                                             </div>
                                         </li>
-                                    @endforeach
+
+                                    @empty
+                                        <x-flash-message 
+                                            class="flash-warning"  
+                                            title="Course content is empty!" 
+                                            message=""  
+                                            message2=""  
+                                            :canClose="false" />
+                                    @endforelse
                                 </ul>
                             @else
                                 <x-flash-message 

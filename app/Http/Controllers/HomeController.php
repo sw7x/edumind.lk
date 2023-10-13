@@ -6,17 +6,16 @@ use App\Services\CourseService;
 use App\Services\TeacherService;
 use App\View\DataTransformers\HomePageDataTransformer;
 use Sentinel;
-
 /*
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
+use App\Exceptions\CustomException;
+use App\Models\Course as CourseModel;
+use App\Models\CourseSelection as CourseSelectionModel;
 */
-
-
-
 
 class HomeController extends Controller
 {
@@ -39,16 +38,7 @@ class HomeController extends Controller
     }
 
 
-
-
-
     public function index(){
-
-        //$rr     =   optional(Sentinel::getUser())->roles()->first()->slug;
-        //dd($rr);
-
-
-
         $teachers          = $this->teacherService->loadPopularTeachers();
         $newCourses        = $this->courseService->loadNewCourses();
         $popularCourses    = $this->courseService->loadPopularCourses();
@@ -57,8 +47,6 @@ class HomeController extends Controller
         $popularCoursesArr = HomePageDataTransformer::prepareCourseDataList($popularCourses);
         $teachersArr       = HomePageDataTransformer::prepareTeacherDataList($teachers);
 
-        //dd('hh');
-
         return view('home')->with([
             'teachers'          => $teachersArr,
             'new_courses'       => $newCoursesArr,
@@ -66,15 +54,4 @@ class HomeController extends Controller
         ]);
     }
 
-
-
-
-
 }
-
-
-
-
-
-
-?>
