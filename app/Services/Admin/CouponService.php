@@ -15,8 +15,8 @@ use Sentinel;
 use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
 use App\Domain\CouponCode as CouponCodeEntity;
-use App\Utils\UrlUtil;
-use App\Utils\FileUploadUtil;
+use App\Common\Utils\UrlUtil;
+use App\Common\Utils\FileUploadUtil;
 use App\DataTransferObjects\Factories\CourseDtoFactory;
 use App\Models\Course as CourseModel;
 

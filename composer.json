@@ -36,11 +36,11 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/string.php",
-            "app/Helpers/color.php",
-            "app/Helpers/url.php",
-            "app/Helpers/debug.php",
-            "app/Helpers/array.php"
+            "app/Common/Helpers/string.php",
+            "app/Common/Helpers/color.php",
+            "app/Common/Helpers/url.php",
+            "app/Common/Helpers/debug.php",
+            "app/Common/Helpers/array.php"
         ]
     },
     "autoload-dev": {

@@ -21,7 +21,7 @@ use App\View\DataFormatters\SubjectDataFormatter;
 use DB;
 
 //use App\Repositories\CourseRepository;
-//use App\Utils\ColorUtil;
+//use App\Common\Utils\ColorUtil;
 //use Illuminate\Support\Arr;
 
 

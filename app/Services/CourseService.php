@@ -8,7 +8,7 @@ use App\Repositories\SubjectRepository;
 //use App\Builders\SubjectBuilder;
 use Illuminate\Support\Arr;
 use Sentinel;
-use App\Utils\ColorUtil;
+use App\Common\Utils\ColorUtil;
 
 use App\Models\Course as CourseModel;
 use App\Models\Role as RoleModel;
@@ -16,7 +16,7 @@ use App\Models\Subject as SubjectModel;
 use App\Models\User as UserModel;
 use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
-use App\SharedServices\CourseSharedService;
+use App\Common\SharedServices\CourseSharedService;
 //use Illuminate\Support\Str;
 use App\DataTransformers\Database\CourseDataTransformer;
 use App\DataTransformers\Database\SubjectDataTransformer;

@@ -11,7 +11,7 @@ use Activation;
 use App\Mail\StudentRegMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
-use App\Utils\FileUploadUtil;
+use App\Common\Utils\FileUploadUtil;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use GuzzleHttp\Client;

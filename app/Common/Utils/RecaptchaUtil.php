@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Utils;
+namespace App\Common\Utils;
 
 use GuzzleHttp\Client;
 

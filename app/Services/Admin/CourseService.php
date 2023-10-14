@@ -12,8 +12,8 @@ use App\DataTransferObjects\CourseDto;
 use App\Domain\Factories\CourseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use App\Utils\UrlUtil;
-use App\Utils\FileUploadUtil;
+use App\Common\Utils\UrlUtil;
+use App\Common\Utils\FileUploadUtil;
 use Illuminate\Support\Str;
 
 //use App\Models\User as UserModel;

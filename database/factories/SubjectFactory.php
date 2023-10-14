@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Subject as SubjectModel;
-use App\Utils\UrlUtil;
+use App\Common\Utils\UrlUtil;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Role as RoleModel;
 use Sentinel;

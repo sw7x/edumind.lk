@@ -1,5 +1,5 @@
 <?php
-namespace App\Utils;
+namespace App\Common\Utils;
 
 use League\ColorExtractor\Color;
 use League\ColorExtractor\ColorExtractor;

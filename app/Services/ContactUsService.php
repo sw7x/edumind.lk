@@ -5,7 +5,7 @@ use Sentinel;
 use Illuminate\Http\Request;
 
 use App\Repositories\ContactUsRepository;
-use App\Utils\RecaptchaUtil;
+use App\Common\Utils\RecaptchaUtil;
 use App\Models\ContactUs as ContactUsModel;
 class ContactUsService
 {

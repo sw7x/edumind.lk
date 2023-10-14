@@ -19,13 +19,13 @@ use App\Services\Admin\TeacherService as AdminTeacherService;
 use App\Services\Admin\SubjectService as AdminSubjectService;
 use App\View\DataFormatters\Admin\CourseDataFormatter as AdminCourseDataFormatter;
 use Illuminate\Support\Arr;
-use App\SharedServices\CourseSharedService;
+use App\Common\SharedServices\CourseSharedService;
 
 //use Illuminate\Database\Eloquent\ModelNotFoundException;
 //use App\Services\TeacherService;
 //use App\Services\UserService;
-//use App\Utils\FileUploadUtil;
-//use App\Utils\UrlUtil;
+//use App\Common\Utils\FileUploadUtil;
+//use App\Common\Utils\UrlUtil;
 //use Illuminate\Support\Str;
 
 

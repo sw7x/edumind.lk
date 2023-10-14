@@ -25,7 +25,7 @@ use App\Models\Role as RoleModel;
 
 /*
 
-use App\Utils\FileUploadUtil;
+use App\Common\Utils\FileUploadUtil;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB as DB;
 use Illuminate\Support\Facades\Storage;

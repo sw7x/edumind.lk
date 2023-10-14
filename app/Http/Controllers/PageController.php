@@ -9,7 +9,7 @@ use App\Exceptions\InvalidUserTypeException;
 
 use App\View\DataFormatters\ProfileDataFormatter;
 use App\Services\UserService;
-use App\SharedServices\UserSharedService;
+use App\Common\SharedServices\UserSharedService;
 
 /*
 use Illuminate\Support\Facades\Session;

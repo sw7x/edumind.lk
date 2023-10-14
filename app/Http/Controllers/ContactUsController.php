@@ -11,7 +11,7 @@ use App\Models\ContactUs as ContactUsModel;
 
 //use GuzzleHttp\Client;
 //use Illuminate\Validation\ValidationException;
-//use App\Utils\RecaptchaUtil;
+//use App\Common\Utils\RecaptchaUtil;
 
 class ContactUsController extends Controller
 {

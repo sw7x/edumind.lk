@@ -1,6 +1,6 @@
 <?php
 
-namespace App\SharedServices;
+namespace App\Common\SharedServices;
 
 use App\Exceptions\CustomException;
 

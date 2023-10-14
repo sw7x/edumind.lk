@@ -8,7 +8,7 @@ use App\Repositories\SubjectRepository;
 
 use Sentinel;
 use App\Exceptions\CustomException;
-use App\Utils\ColorUtil;
+use App\Common\Utils\ColorUtil;
 
 
 /*
@@ -21,8 +21,8 @@ use App\Mappers\CourseMapper;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use App\Utils\FileUploadUtil;
-use App\Utils\UrlUtil;
+use App\Common\Utils\FileUploadUtil;
+use App\Common\Utils\UrlUtil;
 
 use App\Domain\Subject as SubjectEntity;
 

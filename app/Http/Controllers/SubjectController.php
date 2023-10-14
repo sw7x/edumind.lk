@@ -7,7 +7,7 @@ use App\Services\SubjectService;
 use App\View\DataFormatters\SubjectDataFormatter;
 
 //use Illuminate\Auth\Access\AuthorizationException;
-//use App\Utils\ColorUtil;
+//use App\Common\Utils\ColorUtil;
 //use Illuminate\Http\Request;
 
 

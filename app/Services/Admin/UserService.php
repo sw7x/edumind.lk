@@ -15,12 +15,12 @@ use App\DataTransferObjects\UserDto;
 use App\Domain\Factories\UserFactory;
 
 use Illuminate\Http\Request;
-use App\Utils\FileUploadUtil;
+use App\Common\Utils\FileUploadUtil;
 use Sentinel;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
 use App\DataTransformers\Database\UserDataTransformer;
-
+use App\Common\Utils\UrlUtil;
 
 
 class UserService

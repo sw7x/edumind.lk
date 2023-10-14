@@ -14,8 +14,8 @@ use App\Services\Admin\SubjectService as AdminSubjectService;
 use App\View\DataFormatters\Admin\SubjectDataFormatter as AdminSubjectDataFormatter;
 
 /*
-use App\Utils\FileUploadUtil;
-use App\Utils\UrlUtil;
+use App\Common\Utils\FileUploadUtil;
+use App\Common\Utils\UrlUtil;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
