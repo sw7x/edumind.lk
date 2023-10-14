@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Session;
 use App\Services\Admin\CourseService as AdminCourseService;
 use App\Services\Admin\TeacherService as AdminTeacherService;
 use App\Services\Admin\SubjectService as AdminSubjectService;
-use App\View\DataTransformers\Admin\CourseDataTransformer as AdminCourseDataTransformer;
+use App\View\DataFormatters\Admin\CourseDataFormatter as AdminCourseDataFormatter;
 use Illuminate\Support\Arr;
 use App\SharedServices\CourseSharedService;
 
@@ -58,7 +58,7 @@ class CourseController extends Controller
 
             $courses = $this->adminCourseService->loadAllCourses();
 
-            $courseArr = AdminCourseDataTransformer::prepareCourseListData($courses);
+            $courseArr = AdminCourseDataFormatter::prepareCourseListData($courses);
             return view('admin-panel.course-list')->withData($courseArr);
 
         }catch(CustomException $e){
@@ -97,8 +97,8 @@ class CourseController extends Controller
             $teachersData = $this->adminTeacherService->loadAllAvailableTeachers();
             $subjectsData = $this->adminSubjectService->loadAllAvailableSubjects();
 
-            $teachersArr = AdminCourseDataTransformer::prepareUserListData($teachersData);
-            $subjectsArr = AdminCourseDataTransformer::prepareSubjectListData($subjectsData);
+            $teachersArr = AdminCourseDataFormatter::prepareUserListData($teachersData);
+            $subjectsArr = AdminCourseDataFormatter::prepareSubjectListData($subjectsData);
 
             return view('admin-panel.course-add')->with([
                 'teachers'       => $teachersArr,
@@ -247,7 +247,7 @@ class CourseController extends Controller
 
             $courseDataArr   = array();
             $courseDataArr[] = $courseData;
-            $courseArr       = AdminCourseDataTransformer::prepareCourseListData($courseDataArr);
+            $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
             //dd($courseArr);
 
             return view('admin-panel.course-view')->with([
@@ -306,18 +306,18 @@ class CourseController extends Controller
 
             // load teachers dropdown data
             $teachersData   = $this->adminTeacherService->loadAllAvailableTeachers();
-            $teachersArr    = AdminCourseDataTransformer::prepareUserListData($teachersData);
+            $teachersArr    = AdminCourseDataFormatter::prepareUserListData($teachersData);
 
 
             // load subjects dropdown data
             $subjectsData   = $this->adminSubjectService->loadAllAvailableSubjects();
-            $subjectsArr    = AdminCourseDataTransformer::prepareSubjectListData($subjectsData);
+            $subjectsArr    = AdminCourseDataFormatter::prepareSubjectListData($subjectsData);
 
 
             //course data
             $courseDataArr   = array();
             $courseDataArr[] = $courseData;
-            $courseArr       = AdminCourseDataTransformer::prepareCourseListData($courseDataArr);
+            $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
 
             return view('admin-panel.course-edit')->with([
                 'course'        => reset($courseArr),

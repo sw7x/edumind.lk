@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\CustomException;
 use App\Services\TeacherService;
 use Sentinel;
-use App\View\DataTransformers\TeacherDataTransformer;
+use App\View\DataFormatters\TeacherDataFormatter;
 
 //use App\Models\Role as RoleModel;
 //use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class TeacherController extends Controller
     public function viewAllTeachers(){
         $teachers       = $this->teacherService->loadAllAvailableTeachers();
 
-        $teachersArr    = TeacherDataTransformer::prepareUserListData($teachers);
+        $teachersArr    = TeacherDataFormatter::prepareUserListData($teachers);
         return view('teacher-list')->with(['teachers' => $teachersArr]);
     }
 
@@ -34,8 +34,8 @@ class TeacherController extends Controller
         $teacherData            = $this->teacherService->loadTeacherDataByUserName($username);
         $teacherCoursesData     = $this->teacherService->loadPublishedCoursesByTeacher($teacherData['dbRec']);
 
-        $userarr     = TeacherDataTransformer::prepareUserData($teacherData);
-        $coursesarr  = TeacherDataTransformer::prepareCourseData($teacherCoursesData);
+        $userarr     = TeacherDataFormatter::prepareUserData($teacherData);
+        $coursesarr  = TeacherDataFormatter::prepareCourseData($teacherCoursesData);
 
         return view('view-teacher-profile')->with([
             'userData'          => $userarr,
@@ -57,7 +57,7 @@ class TeacherController extends Controller
             abort(403, 'Wrong user type');
 
         $courses    = $this->teacherService->loadAllCoursesByTeacher($user);
-        $coursesArr = TeacherDataTransformer::prepareCourseData($courses);
+        $coursesArr = TeacherDataFormatter::prepareCourseData($courses);
 
         //return view('teacher.my-courses-full-width')->with([
         return view('teacher.my-courses')->with([

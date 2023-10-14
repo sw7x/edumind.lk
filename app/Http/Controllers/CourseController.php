@@ -15,9 +15,9 @@ use App\Models\Role as RoleModel;
 use App\Models\Course as CourseModel;
 
 use App\Services\CourseService;
-use App\View\DataTransformers\CourseDataTransformer;
+use App\View\DataFormatters\CourseDataFormatter;
 
-use App\View\DataTransformers\SubjectDataTransformer;
+use App\View\DataFormatters\SubjectDataFormatter;
 use DB;
 
 //use App\Repositories\CourseRepository;
@@ -42,7 +42,7 @@ class CourseController extends Controller
 
         $courseData     = $this->courseService->loadCourseData($slug);
         
-        $courseDataArr  = CourseDataTransformer::prepareCourseData($courseData);
+        $courseDataArr  = CourseDataFormatter::prepareCourseData($courseData);
         $viewFile       = $courseData['viewFile'];
 
         return view($viewFile)->with([
@@ -96,7 +96,7 @@ class CourseController extends Controller
 
     public function viewSearchPage(){
         $subjects        = $this->courseService->loadCourseSearchPageData();
-        $subjectsDataArr = SubjectDataTransformer::prepareSubjectDataList($subjects);
+        $subjectsDataArr = SubjectDataFormatter::prepareSubjectDataList($subjects);
         return view('course-search')->with(['subjectData'=>$subjectsDataArr]);
     }
 
@@ -126,7 +126,7 @@ class CourseController extends Controller
 
         $coursesDtoArr  =   $this->courseService->loadSearchResults($request);
 
-        $coursesArr     =   CourseDataTransformer::prepareCoursListData($coursesDtoArr);
+        $coursesArr     =   CourseDataFormatter::prepareCoursListData($coursesDtoArr);
         return  redirect(route('courses.search'))
                     ->withInput($request->all())
                     ->with(['courses' => $coursesArr]);
@@ -146,7 +146,7 @@ class CourseController extends Controller
             $courses = $this->courseService->loadAllCourses();
         }
 
-        $courseDataArr  = CourseDataTransformer::prepareCoursListData($courses);
+        $courseDataArr  = CourseDataFormatter::prepareCoursListData($courses);
         return view('all-courses')->with(['all_courses' => $courseDataArr]);
     }
 

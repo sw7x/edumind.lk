@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Repositories\UserRepository;
 use Sentinel;
-use App\Builders\UserBuilder;
 use App\Exceptions\CustomException;
 use App\Models\User as UserModel;
+use App\DataTransformers\Database\CourseDataTransformer;
 
 
 class UserService
@@ -21,7 +21,7 @@ class UserService
 
     public function findDbRec(int $id) : array {
         $dbRec  =   $this->userRepository->findById($id);
-        $dto    =   $dbRec ? UserBuilder::buildDto($dbRec->toArray()) : null;
+        $dto    =   $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
         
         return array(
             'dbRec' => $dbRec,
@@ -35,7 +35,7 @@ class UserService
             throw new CustomException('Access denied');
 
         return array(
-            'dto'   =>  UserBuilder::buildDto($user->toArray()),
+            'dto'   =>  CourseDataTransformer::buildDto($user->toArray()),
             'dbRec' =>  $user,
         );
     }    
@@ -47,7 +47,7 @@ class UserService
             throw new CustomException('Access denied');
 
         return array(
-            'dto'   =>  UserBuilder::buildDto($user->toArray()),
+            'dto'   =>  CourseDataTransformer::buildDto($user->toArray()),
             'dbRec' =>  $user,
         );
     }

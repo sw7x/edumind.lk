@@ -1,29 +1,24 @@
 <?php 
 
-namespace App\View\DataTransformers;
+namespace App\View\DataFormatters;
 
 
 
-class ProfileDataTransformer{
+
+class StudentDataFormatter{
     
-    public static function prepareUserData(array $userData) : array {
-        
-        $userDbRec  =   $userData['dbRec'];
-        $userDto    =   $userData['dto'];
+    public static function prepareUserData(array   $loggedInUserData) : array {
+        $loggedInUserDto = $loggedInUserData['dto'];  
+        $createdAt       = $loggedInUserData['createdAt'];  
 
-        $userArr    =   array();
-        $userArr    =   $userDto->toArray();
-
-        $userArr['createdAt']    =  optional($userDbRec->created_at)->format('Y/m/d H:i');
-        $userArr['createdAtAgo'] =  optional($userDbRec->created_at)->diffForHumans();
-        $userArr['roleName']     =  optional($userDbRec->roles()->first())->name;
-    
-        return $userArr;
+        $tempArr                 = $loggedInUserDto->toArray();
+        $tempArr['createdAt']    = $createdAt->format('Y/m/d H:i');
+        $tempArr['createdAtAgo'] = $createdAt->diffForHumans();
+        return $tempArr;
     }
 
 
 
-    /*
     public static function prepareEnrolledCourseData(array $courseDtoArr) : array {
         $arr = array();
         foreach ($courseDtoArr as $courseData) {
@@ -32,8 +27,8 @@ class ProfileDataTransformer{
             $isComplete = $courseData['isComplete'];
 
             $tempArr = $courseDto->toArray();
-            $tempArr['teacherName']      = $courseDto->getAuthorDto()->getFullName();
-            $tempArr['teacherUserName']  = $courseDto->getAuthorDto()->getUserName();
+            $tempArr['teacherName']      = optional($courseDto->getAuthorDto())->getFullName();
+            $tempArr['teacherUserName']  = optional($courseDto->getAuthorDto())->getUserName();
             $tempArr['price']            = number_format( $tempArr['price'], 2, '.', '' );
             $tempArr['isComplete']       = $isComplete;
 
@@ -58,7 +53,6 @@ class ProfileDataTransformer{
         }
         return $arr;
     }
-    */
 
 
 

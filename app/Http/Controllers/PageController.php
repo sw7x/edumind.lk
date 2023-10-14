@@ -7,7 +7,7 @@ use App\Models\Role as RoleModel;
 use App\Exceptions\CustomException;
 use App\Exceptions\InvalidUserTypeException;
 
-use App\View\DataTransformers\ProfileDataTransformer;
+use App\View\DataFormatters\ProfileDataFormatter;
 use App\Services\UserService;
 use App\SharedServices\UserSharedService;
 
@@ -90,7 +90,7 @@ class PageController extends Controller
             return redirect()->route('admin.profile-edit', []);
 
         //$userData   =   $this->userService->findDbRec($user->id);
-        //$userArr    = ProfileDataTransformer::prepareUserData($userData);
+        //$userArr    = ProfileDataFormatter::prepareUserData($userData);
         //return view('student.my-profile')->with(['userData' => $userArr]);
 
     }
@@ -109,7 +109,7 @@ class PageController extends Controller
             return redirect()->route('admin.profile', []);
 
         $userData   =   $this->userService->findDbRec($user->id);
-        $userArr    = ProfileDataTransformer::prepareUserData($userData);
+        $userArr    = ProfileDataFormatter::prepareUserData($userData);
         return view('student.my-profile')->with(['userData' => $userArr]);
        
     }
@@ -134,7 +134,7 @@ class PageController extends Controller
             return redirect()->route('admin.dashboard', []);
 
         //$userData   =   $this->userService->findDbRec($user->id);
-        //$userArr    =   ProfileDataTransformer::prepareUserData($userData);
+        //$userArr    =   ProfileDataFormatter::prepareUserData($userData);
         //return view('student.my-profile')->with(['userData' => $userArr]);
         return view('student.dashboard');
 

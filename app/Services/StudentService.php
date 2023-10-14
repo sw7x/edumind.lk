@@ -7,14 +7,13 @@ use App\Models\User as UserModel;
 use App\Exceptions\CustomException;
 
 use Sentinel;
-use App\Builders\UserBuilder;
-use App\Builders\CourseBuilder;
 
 use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
 
 //use App\DataTransferObjects\UserDto;
-
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\UserDataTransformer;
 
 class StudentService
 {
@@ -30,7 +29,7 @@ class StudentService
 			throw new CustomException('Wrong user type');
 
 		return array(
-			'dto' 		=> UserBuilder::buildDto($user->toArray()),
+			'dto' 		=> UserDataTransformer::buildDto($user->toArray()),
 			'createdAt' => $user->created_at
 		);
 	}
@@ -51,7 +50,7 @@ class StudentService
 		$dataArr = array();
         $studentCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
             $tempArr 				= [];
-            $tempArr['dto'] 		= CourseBuilder::buildDto($record->toArray());
+            $tempArr['dto'] 		= CourseDataTransformer::buildDto($record->toArray());
             $tempArr['isComplete']	= $record->is_complete;
             $dataArr[] 				= $tempArr;
         });

@@ -1,12 +1,12 @@
 <?php 
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 
 
 use Carbon\Carbon;
 
 
-class ContactUsDataTransformer{
+class ContactUsDataFormatter{
     
     public static function prepareData(array $contactUsDtoArr) : array {
         $arr = array();

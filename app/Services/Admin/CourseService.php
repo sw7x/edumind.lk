@@ -4,7 +4,7 @@ namespace App\Services\Admin;
 
 use App\Repositories\CourseRepository;
 use App\Models\Course as CourseModel;
-use App\Builders\CourseBuilder;
+
 use App\DataTransferObjects\Factories\CourseDtoFactory;
 use App\Mappers\CourseMapper;
 use App\Domain\Course as CourseEntity;
@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
 //use App\Domain\Factories\UserFactory;
 //use App\Repositories\UserRepository;
 //use Sentinel;
+use App\DataTransformers\Database\CourseDataTransformer;
 
 class CourseService
 {
@@ -42,7 +43,7 @@ class CourseService
         $coursesDtoArr = array();
         $courses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){
             $tempArr = array();
-            $tempArr['dto']         = CourseBuilder::buildDto($record->toArray());
+            $tempArr['dto']         = CourseDataTransformer::buildDto($record->toArray());
             $tempArr['updatedAt']   = $record->updated_at;
 
             $coursesDtoArr[]        = $tempArr;
@@ -53,7 +54,7 @@ class CourseService
 
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->courseRepository->findById($id);
-        $dto    =   $dbRec ? CourseBuilder::buildDto($dbRec->toArray()) : null;
+        $dto    =   $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,
@@ -67,7 +68,7 @@ class CourseService
     }
 
     public function checkIsCourseEmpty(CourseModel $courseDbRec) : bool {
-       $courseEntity = CourseBuilder::buildEntity($courseDbRec->toArray());
+       $courseEntity = CourseDataTransformer::buildEntity($courseDbRec->toArray());
        return  $courseEntity->isEmpty();
     }
 
@@ -188,7 +189,7 @@ class CourseService
         ]);
 
         $courseDto     = CourseDtoFactory::fromRequest($request);
-        $payloadArr    = $this->dtoToDbRecArr($courseDto);
+        $payloadArr    = CourseDataTransformer::dtoToDbRecArr($courseDto);
         unset($payloadArr['uuid']);
         unset($payloadArr['subject_arr']);
         unset($payloadArr['creator_arr']);
@@ -266,7 +267,7 @@ class CourseService
         ]);
 
         $courseDto     = CourseDtoFactory::fromRequest($request);
-        $payloadArr    = $this->dtoToDbRecArr($courseDto);
+        $payloadArr    = CourseDataTransformer::dtoToDbRecArr($courseDto);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['subject_arr']);
@@ -276,6 +277,7 @@ class CourseService
     }
 
 
+    /*    
     public function entityToDbRecArr(CourseEntity $course) : array {
         $courseEntityArr   = $course->toArray();
         $payloadArr         = CourseMapper::entityConvertToDbArr($courseEntityArr);
@@ -287,5 +289,6 @@ class CourseService
         $payloadArr     = $this->entityToDbRecArr($courseEntity);
         return $payloadArr;
     }
+    */
 
 }

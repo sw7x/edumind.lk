@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\View\DataTransformers;
+namespace App\View\DataFormatters;
 
-class SubjectDataTransformer{
+class SubjectDataFormatter{
     
     public static function prepareSubjectDataList(array $subjectDtoArr) : array {
         $arr = array();

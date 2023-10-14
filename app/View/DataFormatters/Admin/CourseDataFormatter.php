@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class CourseDataTransformer{
+class CourseDataFormatter{
 
     public static function prepareCourseListData(array $courseDataArr) : array {
         $arr = array();

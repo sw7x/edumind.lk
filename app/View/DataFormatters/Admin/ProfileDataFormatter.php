@@ -1,10 +1,10 @@
 <?php 
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 
 
 
-class ProfileDataTransformer{
+class ProfileDataFormatter{
     
     public static function prepareUserData(array $userData) : array {
         

@@ -10,7 +10,7 @@ use App\Http\Requests\Admin\Coupon\CouponStoreRequest;
 use Illuminate\Support\Facades\Session;
 use App\Services\Admin\CouponService as AdminCouponService;
 use Illuminate\Support\Facades\Validator;
-use App\View\DataTransformers\Admin\CouponCodeDataTransformer as AdminCouponCodeDataTransformer;
+use App\View\DataFormatters\Admin\CouponCodeDataFormatter as AdminCouponCodeDataFormatter;
 use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 use App\Models\Role as RoleModel;
@@ -149,7 +149,7 @@ class CouponController extends Controller
             //todo
             //$this->authorize('view', $couponCodeData['dbRec']);
 
-            $couponDataArr = AdminCouponCodeDataTransformer::prepareCouponData($couponCodeData);
+            $couponDataArr = AdminCouponCodeDataFormatter::prepareCouponData($couponCodeData);
 
             return view('admin-panel.coupon-code-view')->with([
                 'coupon'   => $couponDataArr,

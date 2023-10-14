@@ -1,11 +1,11 @@
 <?php 
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 
 
 use Carbon\Carbon;
 
-class UserDataTransformer{
+class UserDataFormatter{
     
     public static function prepareUserListData(array $userDtoArr) : array {
         $arr = array();

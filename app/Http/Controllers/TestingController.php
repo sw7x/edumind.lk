@@ -288,7 +288,7 @@ class TestingController extends Controller
     //course
     public function course(Request $request){
 
-        $cs3 = (new CourseRepository())->findDataArrById(5);
+        $cs3 = (new CourseRepository)->findDataArrById(5);
         echo 'findDataArrById<br>';dump($cs3);echo '<hr><br>';
 
 
@@ -296,12 +296,12 @@ class TestingController extends Controller
         echo 'dbRec => EntityArr<br>';dump($cs4);echo '<hr><br>';
 
 
-        $cs5 = (new CourseFactory())->createObjTree($cs4);
+        $cs5 = (new CourseFactory)->createObjTree($cs4);
         echo 'Course(Entity)<br>';dump($cs5);echo '<hr><br>';
         echo 'Course(Entity)->toArray<br>';dump($cs5->toArray());echo '<hr><br>';
 
 
-        $cs6 = (new CourseFactory())->createObjTree($cs5->toArray());
+        $cs6 = (new CourseFactory)->createObjTree($cs5->toArray());
         echo 'Course(Entity) --> toArray --> Course(Entity)<br>';dump($cs6);echo '<hr><br>';
 
 
@@ -316,7 +316,7 @@ class TestingController extends Controller
         $cs9 = CourseDtoFactory::fromArray($cs5->toArray());
         echo 'Course(Entity) --> toArray --> Course(Dto)<br>';dump($cs9);echo '<hr><br>';
 
-        $cs10 = (new CourseRepository())->findDtoDataById(5);
+        $cs10 = (new CourseRepository)->findDtoDataById(5);
         echo 'CourseRepository --> findDtoDataById<br>';dump($cs10);echo '<hr><br>';
 
         $cs11 = $cs3;

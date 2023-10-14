@@ -8,7 +8,6 @@ use App\Exceptions\CustomException;
 
 use App\DataTransferObjects\CouponCodeDto;
 use App\Models\Coupon as CouponModel;
-use App\Builders\CouponCodeBuilder;
 use App\DataTransferObjects\Factories\CouponDtoFactory;
 use App\Mappers\CouponMapper;
 use App\Domain\Factories\CouponFactory;
@@ -20,7 +19,9 @@ use App\Utils\UrlUtil;
 use App\Utils\FileUploadUtil;
 use App\DataTransferObjects\Factories\CourseDtoFactory;
 use App\Models\Course as CourseModel;
-use App\Builders\CourseBuilder;
+
+
+
 
 //use App\Models\User as UserModel;
 //use App\Builders\UserBuilder;
@@ -36,6 +37,9 @@ use App\Builders\CourseBuilder;
 //use Illuminate\Support\Arr;
 //use Illuminate\Support\Str;
 
+
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\CouponCodeDataTransformer;
 
 
 class CouponService
@@ -58,7 +62,7 @@ class CouponService
 
     public function findDbRec(string $code) : ?array {
         $dbRec  =   $this->couponRepository->findByCode($code);
-        $dto    =   $dbRec ? CouponCodeBuilder::buildDto($dbRec->toArray()) : null;
+        $dto    =   $dbRec ? CouponCodeDataTransformer::buildDto($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,
@@ -106,7 +110,7 @@ class CouponService
 
         if($courseId){
             $courseRecData      =   (new CourseRepository())->findDataArrById($courseId);
-            $courseEntity       =   CourseBuilder::buildEntity($courseRecData);
+            $courseEntity       =   CourseDataTransformer::buildEntity($courseRecData);
 
             $discountPercentage     =   $request->get('discount_percentage');
             $commisionPercentage    =   $request->get('beneficiary_share_percentage_from_discount');
@@ -134,7 +138,7 @@ class CouponService
         ]);
 
         $couponDto     = CouponDtoFactory::fromRequest($request);
-        $payloadArr    = $this->dtoToDbRecArr($couponDto);
+        $payloadArr    = CouponCodeDataTransformer::dtoToDbRecArr($couponDto);
         unset($payloadArr['uuid']);
         unset($payloadArr['assigned_course_arr']);
         unset($payloadArr['beneficiary_arr']);
@@ -142,6 +146,7 @@ class CouponService
     }
 
 
+    /*    
     public function entityToDbRecArr(CouponCodeEntity $couponEntity) : array {
         $couponEntityArr   = $couponEntity->toArray();
         $payloadArr        = CouponMapper::entityConvertToDbArr($couponEntityArr);
@@ -153,7 +158,7 @@ class CouponService
         $payloadArr     = $this->entityToDbRecArr($couponEntity);
         return $payloadArr;
     }
-
+    */
 
 
 
@@ -166,7 +171,7 @@ class CouponService
         $coursesDtoArr = array();
         $courses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){
             $tempArr = array();
-            $tempArr['dto']         = CourseBuilder::buildDto($record->toArray());
+            $tempArr['dto']         = CourseDataTransformer::buildDto($record->toArray());
             $tempArr['updatedAt']   = $record->updated_at;
 
             $coursesDtoArr[]        = $tempArr;
@@ -182,7 +187,7 @@ class CouponService
     }
 
     public function checkIsCourseEmpty(CourseModel $courseDbRec) : bool {
-       $courseEntity = CourseBuilder::buildEntity($courseDbRec->toArray());
+       $courseEntity = CourseDataTransformer::buildEntity($courseDbRec->toArray());
        return  $courseEntity->isEmpty();
     }
 
@@ -251,7 +256,7 @@ class CouponService
         ]);
 
         $courseDto     = CourseDtoFactory::fromRequest($request);
-        $payloadArr    = $this->dtoToDbRecArr($courseDto);
+        $payloadArr    = CouponCodeDataTransformer::dtoToDbRecArr($courseDto);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['subject_arr']);

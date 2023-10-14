@@ -1,11 +1,11 @@
 <?php 
 
-namespace App\View\DataTransformers;
+namespace App\View\DataFormatters;
 
 
 
 
-class TeacherDataTransformer{
+class TeacherDataFormatter{
     
     public static function prepareUserData(array $userData) : array {
         $userDto    = $userData['dto'];  

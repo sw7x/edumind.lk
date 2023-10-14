@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Builders;
+namespace App\Database\DataTransformers;
 
 use App\Domain\CourseItem as CourseItemEntity;
 
@@ -13,7 +13,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 use App\Repositories\CouponRepository;
 
-class CourseItemBuilder{
+class CourseItemDataTransformer{
 
 	public static function buildDto(array $courseSelRecData) : CourseItemDto {        
         
@@ -48,16 +48,18 @@ class CourseItemBuilder{
 
 
 
-/*            $rr = (new CourseItemRepository())->findDataArrById(15);
-            dump($rr);
-            dump(CourseItemBuilder::buildDto($rr));
-            dump('-----------------------');
+/*            
+$rr = (new CourseItemRepository())->findDataArrById(15);
+dump($rr);
+dump(CourseItemDataTransformer::buildDto($rr));
+dump('-----------------------');
 
-            $user11 = CourseSelection::find(15);
-            dump($user11);
-            dump($user11->toArray());
-            dump(CourseItemBuilder::buildDto($rr));
+$user11 = CourseSelection::find(15);
+dump($user11);
+dump($user11->toArray());
+dump(CourseItemDataTransformer::buildDto($rr));
 
-            dd('k');*/
+dd('k');
+*/
 
 

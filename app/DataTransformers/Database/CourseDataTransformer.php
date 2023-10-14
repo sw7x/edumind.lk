@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Builders;
+namespace App\DataTransformers\Database;
 
 use App\Domain\Course as CourseEntity;
 use App\DataTransferObjects\CourseDto;
@@ -10,7 +10,7 @@ use App\Domain\Factories\CourseFactory;
 use App\Repositories\UserRepository;
 use App\Repositories\SubjectRepository;
 
-class CourseBuilder{
+class CourseDataTransformer{
 
 	public static function buildDto(array $courseRecData) : CourseDto {
         $courseEntity      = self::buildEntity($courseRecData);
@@ -36,5 +36,20 @@ class CourseBuilder{
         $courseEntity      	= (new CourseFactory())->createObjTree($courseEntityArr);
         return $courseEntity;
 	}
+
+
+    public static function entityToDbRecArr(CourseEntity $course) : array {
+        $courseEntityArr   = $course->toArray();
+        $payloadArr         = CourseMapper::entityConvertToDbArr($courseEntityArr);
+        return $payloadArr;
+    }
+    
+
+    public static function dtoToDbRecArr(CourseDto $courseDto) : array {
+        $courseEntity   = (new CourseFactory())->createObjTree($courseDto->toArray());
+        $payloadArr     = self::entityToDbRecArr($courseEntity);
+        return $payloadArr;
+    }
+
 }
 

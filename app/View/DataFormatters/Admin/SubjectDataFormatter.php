@@ -1,9 +1,9 @@
 <?php 
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 use App\DataTransferObjects\SubjectDto;
 
-class SubjectDataTransformer{
+class SubjectDataFormatter{
     
     public static function prepareSubjectDataList(array $subjectDataArr) : array {
         $arr = array();

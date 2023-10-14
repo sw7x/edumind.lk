@@ -6,8 +6,8 @@ use App\Repositories\EnrollmentRepository;
 use App\Repositories\InvoiceRepository;
 use App\Domain\Factories\InvoiceFactory;
 use App\Mappers\InvoiceMapper;
-use App\Builders\EnrollmentBuilder;
 use App\DataTransferObjects\Factories\InvoiceDtoFactory;
+use App\DataTransformers\Database\EnrollmentDataTransformer;
 
 /*
 use App\Repositories\CourseSelectionRepository;
@@ -40,6 +40,8 @@ use App\DataTransferObjects\Factories\EnrollmentDtoFactory;
 use App\DataTransferObjects\Factories\UserDtoFactory;
 */
 
+
+
 class EdumindRevenueService
 {
 
@@ -66,7 +68,7 @@ class EdumindRevenueService
 
         $edumindRevenueArr = array();
         foreach ($enrollmentsRecArr as $enrollmentRec) {
-            $enrollmentDto          = EnrollmentBuilder::buildDto($enrollmentRec->toArray());
+            $enrollmentDto          = EnrollmentDataTransformer::buildDto($enrollmentRec->toArray());
 
             $invoiceId              = $enrollmentRec['invoiceId'];
             $invoiceDataArr         = (new InvoiceRepository())->findDataArrById($invoiceId);

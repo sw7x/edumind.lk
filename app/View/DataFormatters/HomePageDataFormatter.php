@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\View\DataTransformers;
+namespace App\View\DataFormatters;
 
-class HomePageDataTransformer{
+class HomePageDataFormatter{
     
     public static function prepareCourseDataList(array $couseDtoArr) : array {
         $arr = array();

@@ -1,12 +1,12 @@
 <?php 
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 
 
 use Carbon\Carbon;
 
 
-class TeacherDataTransformer{
+class TeacherDataFormatter{
     
     public static function prepareMyCourseData(array $coursesDtoArr) : array {
         $arr = array();

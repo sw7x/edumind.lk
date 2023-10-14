@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Builders;
+namespace App\DataTransformers\Database;
 
 use App\Domain\Users\User as UserEntity;
 
@@ -8,9 +8,10 @@ use App\DataTransferObjects\UserDto;
 use App\DataTransferObjects\Factories\UserDtoFactory;
 use App\Mappers\UserMapper;
 use App\Domain\Factories\UserFactory;
+
 //use App\Repositories\UserRepository;
 
-class UserBuilder{
+class UserDataTransformer{
 
 	public static function buildDto(array $userRecData) : UserDto {
 
@@ -44,6 +45,22 @@ class UserBuilder{
         return $userEntity;
 
 	}
+    
+
+    public static function entityToDbRecArr(UserEntity $user) : array {
+        $userEntityArr   = $user->toArray();
+        $payloadArr      = UserMapper::entityConvertToDbArr($userEntityArr);
+        unset($payloadArr['creator_arr']);
+        return $payloadArr;
+    }
+
+
+    public static function dtoToDbRecArr(UserDto $userDto) : array {
+        $userEntity  = (new UserFactory())->createObjTree($userDto->toArray());
+        $payloadArr     = self::entityToDbRecArr($userEntity);
+        return $payloadArr;
+    }
+
 }
 
 

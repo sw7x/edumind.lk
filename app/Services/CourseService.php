@@ -4,8 +4,8 @@ namespace App\Services;
 use App\Repositories\CourseRepository;
 use App\Repositories\SubjectRepository;
 
-use App\Builders\CourseBuilder;
-use App\Builders\SubjectBuilder;
+//use App\Builders\CourseBuilder;
+//use App\Builders\SubjectBuilder;
 use Illuminate\Support\Arr;
 use Sentinel;
 use App\Utils\ColorUtil;
@@ -18,6 +18,9 @@ use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
 use App\SharedServices\CourseSharedService;
 //use Illuminate\Support\Str;
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\SubjectDataTransformer;
+
 
 class CourseService
 {
@@ -30,7 +33,7 @@ class CourseService
 
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->courseRepository->findById($id);
-        $dto    =   $dbRec ? CourseBuilder::buildDto($dbRec->toArray()) : null;
+        $dto    =   $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,
@@ -60,7 +63,7 @@ class CourseService
         //validate course content format
         $courseContentData  =  (new CourseSharedService())->validateCourseContent($courseRec->content);
 
-        $courseDto = CourseBuilder::buildDto($courseRec->toArray());
+        $courseDto = CourseDataTransformer::buildDto($courseRec->toArray());
 
         return array(
             'dto'               => $courseDto,
@@ -82,14 +85,14 @@ class CourseService
         if($courseRec->status != CourseModel::PUBLISHED)
             throw new CustomException('Course is temporary disabled');
 
-        $courseEntity   = CourseBuilder::buildEntity($courseRec->toArray());
+        $courseEntity   = CourseDataTransformer::buildEntity($courseRec->toArray());
 
         //if invalid video id is given in url then load first video
         $videoId        = is_numeric($videoId) ? intval($videoId) : 1;
         $vid            = ($videoId > 0 && $videoId <= $courseEntity->getLinkCount()) ? $videoId : 1;
         $sectionId      = $courseEntity->getVideoSectionId($vid);
 
-        $courseDto      = CourseBuilder::buildDto($courseRec->toArray());
+        $courseDto      = CourseDataTransformer::buildDto($courseRec->toArray());
 
         return array(
             'dto'       => $courseDto,
@@ -106,7 +109,7 @@ class CourseService
 
         $dataArr = array();
         $subjecRecs->each(function (SubjectModel $record, int $key) use (&$dataArr){
-            $dataArr[] = SubjectBuilder::buildDto($record->toArray());
+            $dataArr[] = SubjectDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -118,7 +121,7 @@ class CourseService
 
         $dataArr = array();
         $newCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
-            $dataArr[]  =   CourseBuilder::buildDto($record->toArray());
+            $dataArr[]  =   CourseDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -129,7 +132,7 @@ class CourseService
         $popularCourses = $this->courseRepository->getPopularCourses($courseCount);
         $dataArr = array();
         $popularCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
-            $dataArr[]  =   CourseBuilder::buildDto($record->toArray());
+            $dataArr[]  =   CourseDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -232,7 +235,7 @@ class CourseService
                 $status = ($enrollment) ? ($enrollment->is_complete ? 'COMPLETED' : 'ENROLLED') : 'ADDED_TO_CART';
 
             return array(
-                'dto'                => CourseBuilder::buildDto($courseRec->toArray()),
+                'dto'                => CourseDataTransformer::buildDto($courseRec->toArray()),
                 'dbRec'              => $courseRec,
                 'enrollments_status' => $status,
             );
@@ -247,7 +250,7 @@ class CourseService
 
         $allCourses->map(function (CourseModel $item) use (&$courseArr){
             $tempArr            = array();
-            $tempArr['dto']     = CourseBuilder::buildDto($item->toArray());
+            $tempArr['dto']     = CourseDataTransformer::buildDto($item->toArray());
             $tempArr['dbRec']   = $item;
             $courseArr[]        = $tempArr;
         });
@@ -264,7 +267,7 @@ class CourseService
         $courses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){
             $tempArr            = array();
 
-            $tempArr['dto']     = CourseBuilder::buildDto($record->toArray());
+            $tempArr['dto']     = CourseDataTransformer::buildDto($record->toArray());
             $tempArr['dbRec']   = $record;
 
             $coursesDtoArr[]    = $tempArr;

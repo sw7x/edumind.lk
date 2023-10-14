@@ -19,6 +19,8 @@ use App\Utils\FileUploadUtil;
 use Sentinel;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
+use App\DataTransformers\Database\UserDataTransformer;
+
 
 
 class UserService
@@ -40,22 +42,22 @@ class UserService
 
         $teachersDtoArr = array();
         $teachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
-            $teachersDtoArr[]  =   UserBuilder::buildDto($record->toArray());
+            $teachersDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
         });
 
         $studentsDtoArr = array();
         $students->each(function (UserModel $record, int $key) use (&$studentsDtoArr){
-            $studentsDtoArr[]  =   UserBuilder::buildDto($record->toArray());
+            $studentsDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
         });
 
         $marketersDtoArr = array();
         $marketers->each(function (UserModel $record, int $key) use (&$marketersDtoArr){
-            $marketersDtoArr[]  =   UserBuilder::buildDto($record->toArray());
+            $marketersDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
         });
 
         $editorsDtoArr = array();
         $editors->each(function (UserModel $record, int $key) use (&$editorsDtoArr){
-            $editorsDtoArr[]  =   UserBuilder::buildDto($record->toArray());
+            $editorsDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
         });
 
         //dump($teachersDtoArr);dump($studentsDtoArr);dump($marketersDtoArr);dump($editorsDtoArr);dd();
@@ -95,7 +97,7 @@ class UserService
         ]);
 
         $subjectDto     = SubjectDtoFactory::fromRequest($request);
-        $payloadArr     = $this->dtoToDbRecArr($subjectDto);
+        $payloadArr     = UserDataTransformer::dtoToDbRecArr($subjectDto);
         return $this->subjectRepository->create($payloadArr);
     }
 
@@ -138,7 +140,7 @@ class UserService
 
         $request->merge(['image'      => $imgDest]);
         $subjectDto = SubjectDtoFactory::fromRequest($request);
-        $payloadArr = $this->dtoToDbRecArr($subjectDto);
+        $payloadArr = UserDataTransformer::dtoToDbRecArr($subjectDto);
         unset($payloadArr['id']);
         unset($payloadArr['uuid']);
         unset($payloadArr['slug']);
@@ -159,7 +161,7 @@ class UserService
 
         $unApprovedTeachersArr = array();
         $unApprovedTeachers->each(function (UserModel $record, int $key) use (&$unApprovedTeachersArr){
-            $unApprovedTeachersArr[]  =   UserBuilder::buildDto($record->toArray());
+            $unApprovedTeachersArr[]  =   UserDataTransformer::buildDto($record->toArray());
         });
 
         return $unApprovedTeachersArr;
@@ -176,7 +178,7 @@ class UserService
 
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->userRepository->findById($id);
-        $dto    =   $dbRec ? UserBuilder::buildDto($dbRec->toArray()) : null;
+        $dto    =   $dbRec ? UserDataTransformer::buildDto($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,
@@ -192,7 +194,7 @@ class UserService
             throw new CustomException('Access denied');
 
         return array(
-            'dto'   =>  UserBuilder::buildDto($user->toArray()),
+            'dto'   =>  UserDataTransformer::buildDto($user->toArray()),
             'dbRec' =>  $user,
         );
     }
@@ -531,7 +533,7 @@ class UserService
 
 
 
-    public function entityToDbRecArr(UserEntity $user) : array {
+    /*public function entityToDbRecArr(UserEntity $user) : array {
         $userEntityArr   = $user->toArray();
         $payloadArr         = UserMapper::entityConvertToDbArr($userEntityArr);
         unset($payloadArr['creator_arr']);
@@ -542,7 +544,7 @@ class UserService
         $userEntity  = (new UserFactory())->createObjTree($userDto->toArray());
         $payloadArr     = $this->entityToDbRecArr($userEntity);
         return $payloadArr;
-    }
+    }*/
 
 
 }

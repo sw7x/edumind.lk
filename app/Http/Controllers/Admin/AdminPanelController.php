@@ -14,7 +14,7 @@ use App\Exceptions\CustomException;
 //use App\Domain\Factories\RoleFactory;
 //use Illuminate\Http\Request;
 use App\Services\Admin\UserService as AdminUserService;
-use App\View\DataTransformers\Admin\ProfileDataTransformer as AdminProfileDataTransformer;
+use App\View\DataFormatters\Admin\ProfileDataFormatter as AdminProfileDataFormatter;
 
 class AdminPanelController extends Controller
 {
@@ -48,7 +48,7 @@ class AdminPanelController extends Controller
             // load page with data for ADMIN / EDITOR / MARKETER user roles
             //$userData   =   $this->adminUserService->findDbRec($user->id);
             $userData   =   $this->adminUserService->loadLoggedInUserData();
-            $userArr    =   AdminProfileDataTransformer::prepareUserData($userData);
+            $userArr    =   AdminProfileDataFormatter::prepareUserData($userData);
             return view('admin-panel.profile')->with(['userData' => $userArr]);
 
 
@@ -96,7 +96,7 @@ class AdminPanelController extends Controller
             // load page with data for ADMIN / EDITOR / MARKETER user roles
             //$userData   =   $this->adminUserService->findDbRec($user->id);
             $userData   =   $this->adminUserService->loadLoggedInUserData();
-            $userArr    =   AdminProfileDataTransformer::prepareUserData($userData);
+            $userArr    =   AdminProfileDataFormatter::prepareUserData($userData);
             return view('admin-panel.profile')->with(['userData' => $userArr]);
 
 
@@ -156,7 +156,7 @@ class AdminPanelController extends Controller
             // load page with data for ADMIN / EDITOR / MARKETER user roles
             //$userData   =   $this->adminUserService->findDbRec($user->id);
             //$userData   =   $this->adminUserService->loadLoggedInUserData();
-            //$userArr    =   AdminProfileDataTransformer::prepareUserData($userData);
+            //$userArr    =   AdminProfileDataFormatter::prepareUserData($userData);
             //return view('admin-panel.profile')->with(['userData' => $userArr]);
             return view($view);
 

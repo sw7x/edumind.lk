@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Builders;
+namespace App\DataTransformers\Database;
 
 use App\Domain\CouponCode as CouponCodeEntity;
 use App\DataTransferObjects\CouponCodeDto;
@@ -10,7 +10,7 @@ use App\Domain\Factories\CouponFactory;
 use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 
-class CouponCodeBuilder{
+class CouponCodeDataTransformer{
 
 	public static function buildDto(array $couponCodeRecData) : CouponCodeDto {
 
@@ -35,6 +35,21 @@ class CouponCodeBuilder{
         $couponCodeEntity    = (new CouponFactory())->createObjTree($couponCodeEntityArr);
         return $couponCodeEntity;
 	}
+
+
+    public static function entityToDbRecArr(CouponCodeEntity $couponEntity) : array {
+        $couponEntityArr   = $couponEntity->toArray();
+        $payloadArr        = CouponMapper::entityConvertToDbArr($couponEntityArr);
+        return $payloadArr;
+    }
+
+    public static function dtoToDbRecArr(CouponCodeDto $couponDto) : array {
+        $couponEntity   = (new CouponFactory())->createObjTree($couponDto->toArray());
+        $payloadArr     = self::entityToDbRecArr($couponEntity);
+        return $payloadArr;
+    }
+
+
 }
 
 
@@ -43,15 +58,15 @@ class CouponCodeBuilder{
 /*
 $rr = (new CouponRepository())->findDataArrByCode('1EHW75');
 dump($rr);
-dump(CouponCodeBuilder::buildDto($rr));
-dump(CouponCodeBuilder::buildEntity($rr));
+dump(CouponCodeDataTransformer::buildDto($rr));
+dump(CouponCodeDataTransformer::buildEntity($rr));
 dump('-----------------------');
 
 $user11 = Coupon::find('1EHW75');
 dump($user11);
 dump($user11->toArray());
-dump(CouponCodeBuilder::buildDto($rr));
-dump(CouponCodeBuilder::buildEntity($rr));
+dump(CouponCodeDataTransformer::buildDto($rr));
+dump(CouponCodeDataTransformer::buildEntity($rr));
 
 dd('k');
 

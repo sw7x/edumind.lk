@@ -8,7 +8,7 @@ use App\Models\ContactUs as ContactUsModel;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Services\Admin\ContactUsService as AdminContactUsService;
-use App\View\DataTransformers\Admin\ContactUsDataTransformer as AdminContactUsDataTransformer;
+use App\View\DataFormatters\Admin\ContactUsDataFormatter as AdminContactUsDataFormatter;
 
 //use App\Repositories\ContactUsRepository;
 
@@ -32,7 +32,7 @@ class ContactUsMessagesController extends Controller
             $this->authorize('viewAny',ContactUsModel::class);
 
             $studentCommentsDtoArr  = $this->adminContactUsService->loadStudentMessages();
-            $studentCommentsArr     = AdminContactUsDataTransformer::prepareData($studentCommentsDtoArr);
+            $studentCommentsArr     = AdminContactUsDataFormatter::prepareData($studentCommentsDtoArr);
 
         }catch(AuthorizationException $e){
             session()->now('message','You dont have Permissions to view student comments!');
@@ -66,7 +66,7 @@ class ContactUsMessagesController extends Controller
             $this->authorize('viewAny',ContactUsModel::class);
 
             $teacherCommentsDtoArr  = $this->adminContactUsService->loadTeacherMessages();
-            $teacherCommentsArr     = AdminContactUsDataTransformer::prepareData($teacherCommentsDtoArr);
+            $teacherCommentsArr     = AdminContactUsDataFormatter::prepareData($teacherCommentsDtoArr);
 
         }catch(AuthorizationException $e){
             session()->now('message','You dont have Permissions to view teacher comments!');
@@ -99,7 +99,7 @@ class ContactUsMessagesController extends Controller
             $this->authorize('viewAny',ContactUsModel::class);
 
             $otherUserCommentsDtoArr  = $this->adminContactUsService->loadOtherUserMessages();
-            $otherUserCommentsArr     = AdminContactUsDataTransformer::prepareData($otherUserCommentsDtoArr);
+            $otherUserCommentsArr     = AdminContactUsDataFormatter::prepareData($otherUserCommentsDtoArr);
 
         }catch(AuthorizationException $e){
             session()->now('message','You dont have Permissions to view otherUser comments!');
@@ -133,7 +133,7 @@ class ContactUsMessagesController extends Controller
             $this->authorize('viewAny',ContactUsModel::class);
 
             $guestCommentsDtoArr  = $this->adminContactUsService->loadGuestMessages();
-            $guestCommentsArr     = AdminContactUsDataTransformer::prepareData($guestCommentsDtoArr);
+            $guestCommentsArr     = AdminContactUsDataFormatter::prepareData($guestCommentsDtoArr);
 
         }catch(AuthorizationException $e){
             session()->now('message','You dont have Permissions to view guest comments!');

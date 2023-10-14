@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Builders;
+namespace App\DataTransformers\Database;
 
 use App\Domain\Enrollment as EnrollmentEntity;
 
@@ -13,7 +13,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\CourseItemRepository;
 
 
-class EnrollmentBuilder{
+class EnrollmentDataTransformer{
 
 	public static function buildDto(array $EnrollmentRecData) : EnrollmentDto {        
         
@@ -40,15 +40,17 @@ class EnrollmentBuilder{
 	}
 } 	
 
-/*          $rr = (new EnrollmentRepository())->findDataArrById(20);
-            dump($rr);
-            dump(EnrollmentBuilder::buildDto($rr));
-            dump('-----------------------');
+/*          
+$rr = (new EnrollmentRepository())->findDataArrById(20);
+dump($rr);
+dump(EnrollmentBuilder::buildDto($rr));
+dump('-----------------------');
 
-            $user11 = Enrollment::find(20);
-            dump($user11);
-            dump($user11->toArray());
-            dump(EnrollmentBuilder::buildDto($rr));
+$user11 = Enrollment::find(20);
+dump($user11);
+dump($user11->toArray());
+dump(EnrollmentBuilder::buildDto($rr));
 
-            dd('k');
+dd('k');
+
 */

@@ -13,9 +13,8 @@ use App\DataTransferObjects\Factories\CourseDtoFactory;
 use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
 
-use App\Builders\UserBuilder;
-use App\Builders\CourseBuilder;
-
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\UserDataTransformer;
 
 class TeacherService
 {
@@ -33,7 +32,7 @@ class TeacherService
 
         $dataArr = array();
         $teacherCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
-            $dataArr[]          = CourseBuilder::buildDto($record->toArray());
+            $dataArr[]          = CourseDataTransformer::buildDto($record->toArray());
             /*$courseArr       = $this->courseRepository->findDataArrById($record->id);
             $courseEntityArr = CourseMapper::dbRecConvertToEntityArr($courseArr);
             $courseEntity    = (new CourseFactory())->createObjTree($courseEntityArr);
@@ -47,7 +46,7 @@ class TeacherService
         $teachers = $this->userRepository->findAllAvailableTeachers();
         $dataArr = array();
         $teachers->each(function (UserModel $record, int $key) use (&$dataArr){           
-            $dataArr[]       = UserBuilder::buildDto($record->toArray());              
+            $dataArr[]       = UserDataTransformer::buildDto($record->toArray());              
         });
         return $dataArr;
     }

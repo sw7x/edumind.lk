@@ -10,8 +10,7 @@ use Sentinel;
 use App\Exceptions\CustomException;
 use App\Utils\ColorUtil;
 
-use App\Builders\SubjectBuilder;
-use App\Builders\CourseBuilder;
+
 /*
 use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
@@ -34,6 +33,8 @@ use App\Domain\Factories\SubjectFactory;
 use App\Domain\Factories\CourseFactory;
 */
 
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\SubjectDataTransformer;
 
 class SubjectService
 {
@@ -52,7 +53,7 @@ class SubjectService
 
         $dataArr = array();
         $allRecs->each(function (SubjectModel $record, int $key) use (&$dataArr){
-            $dataArr[] = SubjectBuilder::buildDto($record->toArray());
+            $dataArr[] = SubjectDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -65,11 +66,11 @@ class SubjectService
 
         $subjectCourses = SubjectModel::where('slug', $url)->first()->courses;
 
-        $subjectDto     = SubjectBuilder::buildDto($subjectRec->toArray());
+        $subjectDto     = SubjectDataTransformer::buildDto($subjectRec->toArray());
 
         $coursesDtoArr  = array();
         $subjectCourses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){
-            $coursesDtoArr[] = CourseBuilder::buildDto($record->toArray());
+            $coursesDtoArr[] = CourseDataTransformer::buildDto($record->toArray());
         });
 
         $bannerColors = ColorUtil::generateBannerColors($subjectRec->image);
@@ -86,7 +87,7 @@ class SubjectService
 
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->subjectRepository->findById($id);
-        $dto    =   $dbRec ? SubjectBuilder::buildDto($dbRec->toArray()) : null;
+        $dto    =   $dbRec ? SubjectDataTransformer::buildDto($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,

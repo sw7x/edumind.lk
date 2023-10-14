@@ -5,8 +5,6 @@ namespace App\Services;
 use App\Repositories\CourseSelectionRepository;
 use App\Repositories\CouponRepository;
 
-use App\Builders\CouponCodeBuilder;
-
 use App\Exceptions\CustomException;
 use App\Models\User as UserModel;
 use App\Models\CourseSelection as CourseSelectionModel;
@@ -14,10 +12,10 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\TempBillingInfo as TempBillingInfoModel;
+use App\DataTransformers\Database\CouponCodeDataTransformer;
 
 //use App\Repositories\CourseRepository;
 //use App\Repositories\CourseItemRepository;
-//use App\Builders\CourseBuilder;
 
 
 class CartService
@@ -73,7 +71,7 @@ class CartService
                 $usedCc = $cartItem->used_coupon_code;
 
                 $couponDataArr  = (new CouponRepository())->findDataArrByCode($usedCc);
-                $couponEntity   = CouponCodeBuilder::buildEntity($couponDataArr);
+                $couponEntity   = CouponCodeDataTransformer::buildEntity($couponDataArr);
                 $ccCourseId     = optional($couponEntity->getCourse())->getId();
 
                 $ccMsg  = '';

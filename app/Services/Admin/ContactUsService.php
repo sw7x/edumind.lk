@@ -4,7 +4,8 @@ namespace App\Services\Admin;
 
 use App\Models\ContactUs as ContactUsModel;
 use App\Repositories\ContactUsRepository;
-use App\Builders\ContactUsMessageBuilder;
+
+use App\DataTransformers\Database\ContactUsMessageDataTransformer;
 
 
 class ContactUsService
@@ -21,7 +22,7 @@ class ContactUsService
 
         $dataArr = array();
         $studentContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageBuilder::buildDto($record->toArray());
+            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -31,7 +32,7 @@ class ContactUsService
 
         $dataArr = array();
         $teacherContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageBuilder::buildDto($record->toArray());
+            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -42,7 +43,7 @@ class ContactUsService
 
         $dataArr = array();
         $otherUserContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageBuilder::buildDto($record->toArray());
+            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -52,7 +53,7 @@ class ContactUsService
 
         $dataArr = array();
         $guestContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageBuilder::buildDto($record->toArray());
+            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }

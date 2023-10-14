@@ -13,7 +13,7 @@ use App\Utils\FileUploadUtil;
 use App\Utils\UrlUtil;
 use Sentinel;
 use App\Exceptions\CustomException;
-
+use App\DataTransformers\Database\SubjectDataTransformer;
 //use App\Domain\Subject as SubjectEntity;
 //use App\DataTransferObjects\SubjectDto;
 //use Illuminate\Database\Eloquent\Collection;
@@ -25,10 +25,10 @@ use App\Exceptions\CustomException;
 class SubjectService
 {
 
-    private $subjectRepository;
+    private SubjectRepository $subjectRepository;
 
     function __construct(SubjectRepository $subjectRepository){
-        $this->subjectRepository = $subjectRepository;
+        $this->subjectRepository        = $subjectRepository;
     }
 
     public function loadAllDbRecs() : array {
@@ -36,9 +36,9 @@ class SubjectService
 
         $dataArr = array();
         $allRecs->each(function (SubjectModel $record, int $key) use (&$dataArr){
-            $subjectDto     =   SubjectBuilder::buildDto($record->toArray());
+            $subjectDto     =   SubjectDataTransformer::buildDto($record->toArray());
             $dataArr[]      =   array(
-                                    'data'  => SubjectBuilder::buildDto($record->toArray()),
+                                    'data'  => SubjectDataTransformer::buildDto($record->toArray()),
                                     'dbRec' => $record
                                 );
         });
@@ -50,9 +50,9 @@ class SubjectService
 
         $dataArr = array();
         $allRecs->each(function (SubjectModel $record, int $key) use (&$dataArr){
-            $subjectDto     =   SubjectBuilder::buildDto($record->toArray());
+            $subjectDto     =   SubjectDataTransformer::buildDto($record->toArray());
             $dataArr[]      =   array(
-                                    'data'  => SubjectBuilder::buildDto($record->toArray()),
+                                    'data'  => SubjectDataTransformer::buildDto($record->toArray()),
                                     'dbRec' => $record
                                 );
         });
@@ -145,7 +145,8 @@ class SubjectService
 
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->subjectRepository->findById($id);
-        $dto    =   $dbRec ? SubjectBuilder::buildDto($dbRec->toArray()) : null;
+        $dto    =   $dbRec ? SubjectDataTransformer::buildDto($dbRec->toArray()) : null;
+        $entity    =   $dbRec ? SubjectDataTransformer::buildEntity($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,

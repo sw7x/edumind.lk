@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Sentinel;
 use App\Services\Admin\SubjectService as AdminSubjectService;
 
-use App\View\DataTransformers\Admin\SubjectDataTransformer as AdminSubjectDataTransformer;
+use App\View\DataFormatters\Admin\SubjectDataFormatter as AdminSubjectDataFormatter;
 
 /*
 use App\Utils\FileUploadUtil;
@@ -46,7 +46,7 @@ class SubjectController extends Controller
             $this->authorize('viewAny',SubjectModel::class);
             $subjectsData   = $this->adminSubjectService->loadAllDbRecs();
 
-            $filteredDataArr = AdminSubjectDataTransformer::prepareSubjectDataList($subjectsData);
+            $filteredDataArr = AdminSubjectDataFormatter::prepareSubjectDataList($subjectsData);
 
             return view ('admin-panel.subject-list')->withData($filteredDataArr);
 
@@ -159,7 +159,7 @@ class SubjectController extends Controller
 
             $this->authorize('view', $subjectData['dbRec']);
 
-            $subjectDataArr = AdminSubjectDataTransformer::prepareViewSubjectData($subjectData['dto']);
+            $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
             return view('admin-panel.subject-view')->with(['subject'   => $subjectDataArr]);
 
         }catch(CustomException $e){
@@ -202,7 +202,7 @@ class SubjectController extends Controller
 
             $this->authorize('update', $subjectData['dbRec']);
 
-            $subjectDataArr = AdminSubjectDataTransformer::prepareViewSubjectData($subjectData['dto']);
+            $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
             return view('admin-panel.subject-edit')->with(['subject'   => $subjectDataArr]);
 
         }catch(CustomException $e){

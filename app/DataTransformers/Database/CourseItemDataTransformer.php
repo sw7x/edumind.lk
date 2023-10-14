@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Builders;
+namespace App\DataTransformers\Database;
 
 use App\Domain\CourseItem as CourseItemEntity;
 
@@ -13,7 +13,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 use App\Repositories\CouponRepository;
 
-class CourseItemBuilder{
+class CourseItemDataTransformer{
 
 	public static function buildDto(array $courseSelRecData) : CourseItemDto {        
         
@@ -26,12 +26,12 @@ class CourseItemBuilder{
  
 		if(!isset($courseSelRecData['course_arr'])){
         	$courseId 							= $courseSelRecData['course_id'];
-        	$courseSelRecData['course_arr'] 	= is_null($courseId) ? [] : (new CourseRepository())->findDataArrById($authorId);
+        	$courseSelRecData['course_arr'] 	= is_null($courseId) ? [] : (new CourseRepository())->findDataArrById($courseId);
         }		
 
         if(!isset($courseSelRecData['student_arr'])){
         	$studentId 							= $courseSelRecData['student_id'];
-        	$courseSelRecData['student_arr'] 	= is_null($studentId) ? [] : (new UserRepository())->findDataArrById($authorId);
+        	$courseSelRecData['student_arr'] 	= is_null($studentId) ? [] : (new UserRepository())->findDataArrById($studentId);
         }		
 
         if(!isset($courseSelRecData['used_coupon_arr'])){
@@ -48,16 +48,19 @@ class CourseItemBuilder{
 
 
 
-/*            $rr = (new CourseItemRepository())->findDataArrById(15);
-            dump($rr);
-            dump(CourseItemBuilder::buildDto($rr));
-            dump('-----------------------');
+/*            
+$rr = (new CourseItemRepository())->findDataArrById(15);
+dump($rr);
+dump(CourseItemDataTransformer::buildDto($rr));
+dump('-----------------------');
 
-            $user11 = CourseSelection::find(15);
-            dump($user11);
-            dump($user11->toArray());
-            dump(CourseItemBuilder::buildDto($rr));
+$user11 = CourseSelection::find(15);
+dump($user11);
+dump($user11->toArray());
+dump(CourseItemDataTransformer::buildDto($rr));
 
-            dd('k');*/
+dd('k');
+
+*/
 
 

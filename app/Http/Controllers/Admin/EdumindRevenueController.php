@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\Admin\EdumindRevenueService;
 use App\Http\Controllers\Controller;
 use App\Exceptions\CustomException;
-use App\View\DataTransformers\Admin\EdumindRevenueDataTransformer as AdminEdumindRevenueDataTransformer;
+use App\View\DataFormatters\Admin\EdumindRevenueDataFormatter as AdminEdumindRevenueDataFormatter;
 
 //use App\Models\Coupon;
 //use Illuminate\Auth\Access\AuthorizationException;
@@ -26,7 +26,7 @@ class EdumindRevenueController extends Controller
             //$this->authorize('create',Subject::class);
 
             $edumindRevenueData = (new EdumindRevenueService())->loadEarnings();
-            $earningsData       =  AdminEdumindRevenueDataTransformer::prepareData($edumindRevenueData);
+            $earningsData       =  AdminEdumindRevenueDataFormatter::prepareData($edumindRevenueData);
 
         }catch(CustomException $e){
             $earningsData = null;
@@ -52,7 +52,7 @@ class EdumindRevenueController extends Controller
             //throw new CustomException('For example, to access a request parameter');
 
             $edumindRevenueData = (new EdumindRevenueService())->loadEarnings();
-            $earningsData       =  AdminEdumindRevenueDataTransformer::prepareData($edumindRevenueData);
+            $earningsData       =  AdminEdumindRevenueDataFormatter::prepareData($edumindRevenueData);
             return view('admin-panel.admin.earnings')->with(["data" => $earningsData]);
 
         }catch(CustomException $e){

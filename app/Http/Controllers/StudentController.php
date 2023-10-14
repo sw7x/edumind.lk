@@ -5,7 +5,7 @@ use App\Exceptions\CustomException;
 use App\Exceptions\InvalidUserTypeException;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
-use App\View\DataTransformers\StudentDataTransformer;
+use App\View\DataFormatters\StudentDataFormatter;
 use Sentinel;
 use App\Models\Role as RoleModel;
 
@@ -39,7 +39,7 @@ class StudentController extends Controller
             throw new CustomException('Invalid page');
             
         $enrolledCourses = $this->studentService->getStudentEnrolledCourses($user);
-        $coursesArr      = StudentDataTransformer::prepareEnrolledCourseData($enrolledCourses);
+        $coursesArr      = StudentDataFormatter::prepareEnrolledCourseData($enrolledCourses);
 
         return view('student.my-courses')->with(['student_courses'   => $coursesArr]);
         //return view('student.my-courses-full-width')->with(['student_courses'   => $coursesArr]);        
@@ -57,7 +57,7 @@ class StudentController extends Controller
             throw new CustomException('Profile username not provided');
 
         $studentData = $this->studentService->loadStudentDataByUserName($username);
-        $userarr     = StudentDataTransformer::prepareUserData($studentData);
+        $userarr     = StudentDataFormatter::prepareUserData($studentData);
         
         return view('view-student-profile')->with(['userData' =>  $userarr]);       
     }
@@ -81,7 +81,7 @@ class StudentController extends Controller
 
         
         $enrolledCourses = $this->studentService->loadStudentEnrolledCoursesByUsername($username);
-        $coursesArr      = StudentDataTransformer::prepareEnrolledCourseData($enrolledCourses);
+        $coursesArr      = StudentDataFormatter::prepareEnrolledCourseData($enrolledCourses);
 
         return view('student.student-enrolled-courses')->with(['student_courses'   => $coursesArr]);
     }

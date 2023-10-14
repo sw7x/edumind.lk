@@ -9,7 +9,7 @@ use App\Services\Admin\TeacherService as AdminTeacherService;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
 
-use App\View\DataTransformers\Admin\TeacherDataTransformer as AdminTeacherDataTransformer;
+use App\View\DataFormatters\Admin\TeacherDataFormatter as AdminTeacherDataFormatter;
 
 class TeacherController extends Controller
 {
@@ -36,7 +36,7 @@ class TeacherController extends Controller
                 throw new CustomException('Wrong user type');
 
             $teacherCourses    = $this->adminTeacherService->getAllCoursesByTeacher($user);
-            $teacherCoursesArr = AdminTeacherDataTransformer::prepareMyCourseData($teacherCourses);
+            $teacherCoursesArr = AdminTeacherDataFormatter::prepareMyCourseData($teacherCourses);
 
         }catch(CustomException $e){
             session()->now('message',$e->getMessage());

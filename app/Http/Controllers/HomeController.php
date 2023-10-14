@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CourseService;
 use App\Services\TeacherService;
-use App\View\DataTransformers\HomePageDataTransformer;
+use App\View\DataFormatters\HomePageDataFormatter;
 use Sentinel;
 /*
 use Illuminate\Http\Request;
@@ -39,13 +39,14 @@ class HomeController extends Controller
 
 
     public function index(){
+        
         $teachers          = $this->teacherService->loadPopularTeachers();
         $newCourses        = $this->courseService->loadNewCourses();
         $popularCourses    = $this->courseService->loadPopularCourses();
 
-        $newCoursesArr     = HomePageDataTransformer::prepareCourseDataList($newCourses);
-        $popularCoursesArr = HomePageDataTransformer::prepareCourseDataList($popularCourses);
-        $teachersArr       = HomePageDataTransformer::prepareTeacherDataList($teachers);
+        $newCoursesArr     = HomePageDataFormatter::prepareCourseDataList($newCourses);
+        $popularCoursesArr = HomePageDataFormatter::prepareCourseDataList($popularCourses);
+        $teachersArr       = HomePageDataFormatter::prepareTeacherDataList($teachers);
 
         return view('home')->with([
             'teachers'          => $teachersArr,

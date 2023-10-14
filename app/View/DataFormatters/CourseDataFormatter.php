@@ -1,10 +1,10 @@
 <?php 
 
-namespace App\View\DataTransformers;
+namespace App\View\DataFormatters;
 
 
 
-class CourseDataTransformer{
+class CourseDataFormatter{
     
     public static function prepareCourseData(array $courseData) : array {
         $tempArr        = array();

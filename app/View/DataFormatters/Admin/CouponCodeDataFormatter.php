@@ -1,11 +1,11 @@
 <?php 
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 
 
 use Carbon\Carbon;
 
-class CouponCodeDataTransformer{
+class CouponCodeDataFormatter{
     
     public static function prepareCouponData(array $couponCodeDataArr) : array {
         //dd($userDto);

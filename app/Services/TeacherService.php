@@ -9,12 +9,14 @@ use App\Models\User as UserModel;
 use App\Exceptions\CustomException;
 use App\Repositories\CourseRepository;
 use App\Repositories\UserRepository;
-use App\Builders\UserBuilder;
-use App\Builders\CourseBuilder;
+
 use App\Models\Role as RoleModel;
 //use App\Mappers\CourseMapper;
 //use App\Domain\Factories\CourseFactory;
 //use App\DataTransferObjects\Factories\CourseDtoFactory;
+
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\UserDataTransformer;
 
 class TeacherService
 {
@@ -39,17 +41,18 @@ class TeacherService
 
         return array(
             'dbRec'     => $user,
-            'dto'       => UserBuilder::buildDto($user->toArray()),
+            'dto'       => UserDataTransformer::buildDto($user->toArray()),
             'createdAt' => $user->created_at
         );
     }
 
+    
     public function loadPublishedCoursesByTeacher(UserModel $teacher){
         $courses = $this->courseRepository->getPublishedCoursesByTeacher($teacher);
 
         $dataArr = array();
         $courses->each(function (CourseModel $record, int $key) use (&$dataArr){
-            $dataArr[]          = CourseBuilder::buildDto($record->toArray());
+            $dataArr[]          = CourseDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -60,7 +63,7 @@ class TeacherService
 
         $teachersDtoArr = array();
         $teachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
-            $tempArr['dto']         =   UserBuilder::buildDto($record->toArray());
+            $tempArr['dto']         =   UserDataTransformer::buildDto($record->toArray());
             $tempArr['courseCount'] =   $record->getCourseCount();
             $teachersDtoArr[]       =   $tempArr;
         });
@@ -81,7 +84,7 @@ class TeacherService
 
         $teachersDtoArr = array();
         $popularTeachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
-            $teachersDtoArr[]  =   UserBuilder::buildDto($record->toArray());
+            $teachersDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
         });
         return $teachersDtoArr;
     }
@@ -93,7 +96,7 @@ class TeacherService
 
         $dataArr = array();
         $teacherCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
-            $dataArr[]          = CourseBuilder::buildDto($record->toArray());
+            $dataArr[]          = CourseDataTransformer::buildDto($record->toArray());
             /*$courseArr       = (new CourseRepository())->findDataArrById($record->id);
             $courseEntityArr = CourseMapper::dbRecConvertToEntityArr($courseArr);
             $courseEntity    = (new CourseFactory())->createObjTree($courseEntityArr);

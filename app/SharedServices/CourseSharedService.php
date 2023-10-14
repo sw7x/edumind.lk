@@ -24,17 +24,4 @@ class CourseSharedService
         return array('data' => $content, 'isInvFormat' => !$valid);
     }
 
-
-    public function entityToDbRecArr(CourseEntity $course) : array {
-        $courseEntityArr   = $course->toArray();
-        $payloadArr         = CourseMapper::entityConvertToDbArr($courseEntityArr);
-        return $payloadArr;
-    }
-
-    public function dtoToDbRecArr(CourseDto $courseDto) : array {
-        $courseEntity   = (new CourseFactory())->createObjTree($courseDto->toArray());
-        $payloadArr     = $this->entityToDbRecArr($courseEntity);
-        return $payloadArr;
-    }
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Builders;
+namespace App\DataTransformers\Database;
 
 use App\Domain\Order as OrderEntity;
 
@@ -10,11 +10,7 @@ use App\Mappers\OrderMapper;
 use App\Domain\Factories\OrderFactory;
 
 
-
-
-
-
-class OrderBuilder{
+class OrderDataTransformer{
 
 	public static function buildDto(array $orderData) : OrderDto {        
         

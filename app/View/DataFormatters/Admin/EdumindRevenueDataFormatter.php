@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\View\DataTransformers\Admin;
+namespace App\View\DataFormatters\Admin;
 
-class EdumindRevenueDataTransformer{
+class EdumindRevenueDataFormatter{
     
     public static function prepareData(array $dataArr) : array {
         //dump2($dataArr);

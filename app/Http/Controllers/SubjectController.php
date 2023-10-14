@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
 use App\Services\SubjectService;
-use App\View\DataTransformers\SubjectDataTransformer;
+use App\View\DataFormatters\SubjectDataFormatter;
 
 //use Illuminate\Auth\Access\AuthorizationException;
 //use App\Utils\ColorUtil;
@@ -23,7 +23,7 @@ class SubjectController extends Controller
 
     public function index(){
         $subjectDtoArr  = $this->SubjectService->loadAllSubjects();
-        $subjectArr     = SubjectDataTransformer::prepareSubjectDataList($subjectDtoArr);
+        $subjectArr     = SubjectDataFormatter::prepareSubjectDataList($subjectDtoArr);
         return view ('subject-list')->with(['subjects' => $subjectArr]);
     }
 
@@ -35,7 +35,7 @@ class SubjectController extends Controller
         $subjectData    = $this->SubjectService->loadSubjectDataByUrl($slug);
         //$this->authorize('viewSingleInSiteFrontend',$subjectData['dbRec']);
 
-        $subjectDataArr = SubjectDataTransformer::prepareViewSubjectData($subjectData);
+        $subjectDataArr = SubjectDataFormatter::prepareViewSubjectData($subjectData);
 
         return view('subject-single')->with([
             'subjectData'       => $subjectDataArr['subject'],

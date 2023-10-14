@@ -13,7 +13,7 @@ use App\Http\Requests\Admin\StudentStoreRequest;
 use App\Http\Requests\Admin\StudentUpdateRequest;
 use App\Http\Requests\Admin\TeacherStoreRequest;
 use App\Http\Requests\Admin\TeacherUpdateRequest;
-use App\View\DataTransformers\Admin\UserDataTransformer as AdminUserDataTransformer;
+use App\View\DataFormatters\Admin\UserDataFormatter as AdminUserDataFormatter;
 
 use App\Services\Admin\UserService as AdminUserService;
 
@@ -83,10 +83,10 @@ class UserController extends Controller
             $this->authorize('viewAny',User::class);
             $userArr = $this->adminUserService->loadAllUserRecs();
 
-            $teachers   = AdminUserDataTransformer::prepareUserListData($userArr['teachersDtoArr']);
-            $students   = AdminUserDataTransformer::prepareUserListData($userArr['studentsDtoArr']);
-            $marketers  = AdminUserDataTransformer::prepareUserListData($userArr['marketersDtoArr']);
-            $editors    = AdminUserDataTransformer::prepareUserListData($userArr['editorsDtoArr']);
+            $teachers   = AdminUserDataFormatter::prepareUserListData($userArr['teachersDtoArr']);
+            $students   = AdminUserDataFormatter::prepareUserListData($userArr['studentsDtoArr']);
+            $marketers  = AdminUserDataFormatter::prepareUserListData($userArr['marketersDtoArr']);
+            $editors    = AdminUserDataFormatter::prepareUserListData($userArr['editorsDtoArr']);
 
             //dd($teachers);
             return view('admin-panel.user-list')->with([
@@ -409,7 +409,7 @@ class UserController extends Controller
 
             $this->authorize('view', $userData['dbRec']);
 
-            $filteredUserData   = AdminUserDataTransformer::prepareUserData($userData);
+            $filteredUserData   = AdminUserDataFormatter::prepareUserData($userData);
 
             return view('admin-panel.user-view')->with([
                 'userData'   => $filteredUserData
@@ -459,7 +459,7 @@ class UserController extends Controller
             if(empty($userData['dbRec']->getAllUserRoles()))
                 throw new CustomException('User have no role!');
 
-            $filteredUserData = AdminUserDataTransformer::prepareUserData($userData);
+            $filteredUserData = AdminUserDataFormatter::prepareUserData($userData);
             return view('admin-panel.user-edit')->with([
                 'userData'   => $filteredUserData,
             ]);
@@ -843,7 +843,7 @@ class UserController extends Controller
 
             $unApprovedTeachers = $this->adminUserService->findUnApprovedTeachers();
 
-            $teachersArr = AdminUserDataTransformer::prepareUnApprovedTeachers($unApprovedTeachers);
+            $teachersArr = AdminUserDataFormatter::prepareUnApprovedTeachers($unApprovedTeachers);
             return view('admin-panel.user-approve-teachers')->with([
                 'teachers'   => $teachersArr,
             ]);
@@ -894,7 +894,7 @@ class UserController extends Controller
             if($userData['dbRec']->status == true)
                 throw new CustomException("Account already activated");
 
-            $filteredUserData   = AdminUserDataTransformer::prepareUserData($userData);
+            $filteredUserData   = AdminUserDataFormatter::prepareUserData($userData);
 
             return view('admin-panel.teacher.approve-account')->with([
                 'userData'   => $filteredUserData,
