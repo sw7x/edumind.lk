@@ -59,28 +59,29 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth'                  => \App\Http\Middleware\Authenticate::class,
+        'auth.basic'            => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'cache.headers'         => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can'                   => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'                 => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm'      => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed'                => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle'              => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified'              => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        
+        
+        
+        'auth'                          => \App\Http\Middleware\Auth::class,
+        'authUnlessRedirect'            => \App\Http\Middleware\AuthUnlessRedirect::class,        
+        'guest'                         => \App\Http\Middleware\Guest::class,
+        'guestUnlessRedirect'           => \App\Http\Middleware\GuestUnlessRedirect::class,
+        
+        'validRole'                     => \App\Http\Middleware\ValidRole::class,
+        'validRoleUnlessRedirect'       => \App\Http\Middleware\ValidRoleUnlessRedirect::class,       
 
-        'checkStudent'      => \App\Http\Middleware\CheckStudent::class,
-        'checkAdmin'        => \App\Http\Middleware\CheckAdmin::class,
-        'checkEditor'       => \App\Http\Middleware\CheckEditor::class,
-        'checkGuest'        => \App\Http\Middleware\CheckGuest::class,
-        'checkIsAdminUser'  => \App\Http\Middleware\CheckIsAdminUser::class,
-        'checkLoginUser'    => \App\Http\Middleware\CheckLoginUser::class,
-        'checkMarketer'     => \App\Http\Middleware\CheckMarketer::class,
-        'checkTeacher'      => \App\Http\Middleware\CheckTeacher::class,
-        'noTeacher'      => \App\Http\Middleware\NoTeacher::class,
-        'noStudent'      => \App\Http\Middleware\NoStudent::class,
-        'noAdminUser'    => \App\Http\Middleware\NoAdminUser::class,
-        'adminPanelAccess'      => \App\Http\Middleware\AccessAdminPanel::class,
-        'canAccess'             => \App\Http\Middleware\CanAccess::class,
+        'selectedRoles'                 => \App\Http\Middleware\SelectedRoles::class,
+        'selectedRolesUnlessRedirect'   => \App\Http\Middleware\SelectedRolesUnlessRedirect::class,
+        'skipRoles'                     => \App\Http\Middleware\SkipRoles::class,
+        'skipRolesAndRedirect'          => \App\Http\Middleware\SkipRolesAndRedirect::class,
     ];
 }

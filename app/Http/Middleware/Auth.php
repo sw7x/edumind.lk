@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Sentinel;
 
 
-class CheckGuest
+class Auth
 {
     /**
      * Handle an incoming request.
@@ -19,13 +19,10 @@ class CheckGuest
      */
     public function handle(Request $request, Closure $next)
     {
-
-
-        if(!sentinel::check()){
-            return $next($request);
-        }else{
-            return redirect('/');
-        }
-
+        if(!Sentinel::check())
+            abort(401, 'The page you are trying to access is inaccessible to unauthenticated users.');
+            
+        return $next($request);       
     }
 }
+    
