@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\Auth\ChangeAdminPasswordController;
 
 Route::group(['as'=>'auth.','namespace' =>'Auth'], function() {
 
-    Route::group(['middleware'=> 'noAdminUser'], function(){
+    
 
         Route::get('/reset-password', [ForgotPasswordController::class,'resetPasswordReq'])->name ('reset-password-req-page');
         Route::post('/reset-password', [ForgotPasswordController::class,'resetPasswordReqSubmit'])->name ('reset-password-req-submit');
@@ -39,7 +39,6 @@ Route::group(['as'=>'auth.','namespace' =>'Auth'], function() {
         Route::get ('/activate/{encrypted_email}/{activation_code}', [ActivationController::class,'activate'])->name ('activate');
 
 
-    });
     Route::get('/change-password', [ChangePasswordController::class,'changePassword'])->name ('change-password');
     Route::post('/change-password', [ChangePasswordController::class,'postChangePassword'])->name ('change-password-submit');
 

@@ -55,32 +55,8 @@ class PageController extends Controller
 
 
 
-    public function pageNoPermission(Request $request){
-
-        //dump($request->input('susa'));
-        //dd(Session::get('susa'));
-
-        return view('form-submit-page');
-
-        /*return view('form-submit-page')->with([
-            //'message'     => 'You dont have permission to access this page',
-            'message'     => $request->get('susa'),
-            'cls'         => "flash-warning",
-            'msgTitle'    => 'Warning !',
-        ]);*/
-    }
-
-    public function viewProfileEditPage(Request $request){      
-        $user = Sentinel::getUser();
-        if(is_null($user))
-            abort(401, 'Authentication is required To access this page');
-
-        if(!$this->userSharedService->checkUserHaveValidRole($user))
-            throw new InvalidUserTypeException('Your user role is not valid for access this page.');
-
-        if(!$this->userSharedService->isAllowed($user, [RoleModel::TEACHER, RoleModel::STUDENT]))
-            abort(403);
-
+    public function viewProfileEdit(Request $request){      
+        $user            = Sentinel::getUser();        
         $currentUserRole = $this->userSharedService->getRoleByUser($user);
         
         if($currentUserRole == RoleModel::STUDENT)
@@ -92,43 +68,30 @@ class PageController extends Controller
         //$userData   =   $this->userService->findDbRec($user->id);
         //$userArr    = ProfileDataFormatter::prepareUserData($userData);
         //return view('student.my-profile')->with(['userData' => $userArr]);
-
     }
 
 
     public function viewProfile(Request $request){
         $user = Sentinel::getUser();
-        if(is_null($user))
-            abort(401, 'Authentication is required To access this page');
-
-        if(!$this->userSharedService->checkUserHaveValidRole($user))
-            throw new InvalidUserTypeException('Your user role is not valid for access this page.');
-        
+                
         // redirect ADMIN, EDITOR, MARKETER, TEACHER users to profile page in admin panel
         if(!$this->userSharedService->isAllowed($user, [RoleModel::STUDENT]))
             return redirect()->route('admin.profile', []);
 
         $userData   =   $this->userService->findDbRec($user->id);
         $userArr    = ProfileDataFormatter::prepareUserData($userData);
-        return view('student.my-profile')->with(['userData' => $userArr]);
-       
+        return view('student.my-profile')->with(['userData' => $userArr]);       
     }
 
 
-    public function viewHelpPage(Request $request){
+    public function viewHelp(Request $request){
         return view('help');
     }
 
 
-    public function viewDashboardPage(Request $request){
-
+    public function viewDashboard(Request $request){
         $user = Sentinel::getUser();
-        if(is_null($user)) 
-            abort(401, 'Authentication is required To access this page');
-                    
-        if(!$this->userSharedService->checkUserHaveValidRole($user))
-            throw new InvalidUserTypeException('Your user role is not valid for access this page.');
-                
+                        
         // redirect ADMIN, EDITOR, MARKETER, TEACHER users to dashboard of admin panel
         if(!$this->userSharedService->isAllowed($user, [RoleModel::STUDENT]))
             return redirect()->route('admin.dashboard', []);
@@ -137,23 +100,22 @@ class PageController extends Controller
         //$userArr    =   ProfileDataFormatter::prepareUserData($userData);
         //return view('student.my-profile')->with(['userData' => $userArr]);
         return view('student.dashboard');
-
     }
 
 
-    public function viewComingSoonPage(Request $request){
+    public function viewComingSoon(Request $request){
         return view('coming-soon');
     }
 
-    public function viewAboutUsPage(Request $request){
+    public function viewAboutUs(Request $request){
         return view('about-us');
     }
 
-    public function viewWhyChooseUsPage(Request $request){
+    public function viewWhyChooseUs(Request $request){
         return view('why-edumind');
     }
 
-    public function viewTermsAndServicesPage(Request $request){
+    public function viewTermsAndServices(Request $request){
         return view('terms-and-services');
     }
 

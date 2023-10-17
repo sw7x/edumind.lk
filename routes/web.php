@@ -83,21 +83,21 @@ Route::get('/', [HomeController::class,'index'])->name('home');
 
 
 
-//Route::get('/coming-soon', [PageController::class,'viewComingSoonPage'])->name('coming-soon');
+//Route::get('/coming-soon', [PageController::class,'viewComingSoon'])->name('coming-soon');
 Route::get('/', [HomeController::class,'index'])->name('home');
-Route::get('/about-us', [PageController::class,'viewAboutUsPage'])->name('about-us');
-Route::get('/why-choose-us', [PageController::class,'viewWhyChooseUsPage'])->name('why-choose-us');
-Route::get('/terms-and-services', [PageController::class,'viewTermsAndServicesPage'])->name('terms-and-services');
+Route::get('/about-us', [PageController::class,'viewAboutUs'])->name('about-us');
+Route::get('/why-choose-us', [PageController::class,'viewWhyChooseUs'])->name('why-choose-us');
+Route::get('/terms-and-services', [PageController::class,'viewTermsAndServices'])->name('terms-and-services');
 Route::get('/instructions', [PageController::class,'viewInstruction'])->name('instructions');
-Route::get('/help', [PageController::class,'viewHelpPage'])->name('help');
+Route::get('/help', [PageController::class,'viewHelp'])->name('help');
 
 
 
 /* ========== common routes for users ============*/
 Route::get('/profile', [PageController::class,'viewProfile'])->name('profile');
-Route::get('/dashboard', [PageController::class,'viewDashboardPage'])->name('dashboard');
-Route::get('/profile-edit', [PageController::class,'viewProfileEditPage'])->name('profile-edit');
-Route::get('/enrolled-courses', [StudentController::class,'viewEnrolledCoursesPage'])->name('enrolled-courses');
+Route::get('/dashboard', [PageController::class,'viewDashboard'])->name('dashboard');
+Route::get('/profile-edit', [PageController::class,'viewProfileEdit'])->name('profile-edit');
+Route::get('/enrolled-courses', [StudentController::class,'enrolledCourses'])->name('enrolled-courses');
 
 
 
@@ -105,20 +105,20 @@ Route::get('/enrolled-courses', [StudentController::class,'viewEnrolledCoursesPa
 
 //------------>>>>>>>>>>>>>>>>>>>>>>>>>>
 /* =========== cart =================*/
-Route::get('/cart', [CartController::class,'viewCart'])->middleware('checkStudent')->name('view-cart');
-Route::get('/billing-info', [CartController::class,'loadBillingInfoPage'])->middleware('checkStudent')->name('billing-info');
-Route::post('/submit-billing-info', [CartController::class,'submitBillingInfo'])->middleware('checkStudent')->name('submit-billing-info');
-Route::get('/checkout', [CartController::class,'loadCheckout'])->middleware('checkStudent')->name('load-checkout');
-Route::post('/checkout', [CartController::class,'checkout'])->middleware('checkStudent')->name('checkout');
-Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})->middleware('checkStudent')->name('checkout-complete');
-Route::get('/payment-failed',function(){ return view('student.cart.payment-failed');})->middleware('checkStudent')->name('payment-failed');
+Route::get('/cart', [CartController::class,'viewCart'])->name('view-cart');
+Route::get('/billing-info', [CartController::class,'loadBillingInfoForm'])->name('billing-info');
+Route::post('/submit-billing-info', [CartController::class,'submitBillingInfo'])->name('submit-billing-info');
+Route::get('/checkout', [CartController::class,'loadCheckout'])->name('load-checkout');
+Route::post('/checkout', [CartController::class,'checkout'])->name('checkout');
+//Route::get('/checkout-complete',function(){ return view('student.cart.checkout-complete');})->name('checkout-complete');
+//Route::get('/payment-failed',function(){ return view('student.cart.payment-failed');})->name('payment-failed');
 
 
 
 
-Route::post('/apply-coupon', [CartController::class,'applyCoupon'])->middleware('checkStudent')->name('apply-coupon');
-Route::post('/remove-coupon', [CartController::class,'removeCoupon'])->middleware('checkStudent')->name('remove-coupon');
-Route::post('/cart/remove/{id}', [CartController::class,'removeFromCart'])->middleware('checkStudent')->name('remove-cart');
+Route::post('/apply-coupon', [CartController::class,'applyCoupon'])->name('apply-coupon');
+Route::post('/remove-coupon', [CartController::class,'removeCoupon'])->name('remove-coupon');
+Route::post('/cart/remove/{id}', [CartController::class,'removeFromCart'])->name('remove-cart');
 Route::post('/course/add-to-cart', [CartController::class,'addToCart'])->name('course.addToCart');
 
 //Route::get('/credit-pay',function(){ return view('student.cart.pay-with-credit-card');})->name('credit-pay');
@@ -143,7 +143,7 @@ Route::group(['prefix'=>'courses','as'=>'courses.'], function(){
     Route::post('/complete', [User_CourseController::class,'complete'])->name('complete');
 
     Route::get('/search', [User_CourseController::class,'viewSearchPage'])->name('search');
-    Route::post('/search', [User_CourseController::class,'SearchCourse'])->name('search-submit');
+    Route::post('/search', [User_CourseController::class,'submitSearch'])->name('search-submit');
 
     Route::get('/{slug?}', [User_CourseController::class,'show'])->name('show');
     Route::get('/watch/{slug?}/{videoId?}', [User_CourseController::class,'watchCourse'])->name('watch');
@@ -165,10 +165,9 @@ Route::group(['prefix'=>'subjects','as'=>'subjects.'], function(){
 
 /*==== student ===*/
 //for testing later remove
-Route::group(['middleware'=> 'checkStudent'], function(){
     //block to other users than students
     Route::get('/student-profile-dashboard', [StudentController::class,'loadDashboard'])->name('student-profile-dashboard');
-});
+
 
 
 Route::group(['prefix'=>'students','as'=>'students.'], function(){
@@ -187,14 +186,14 @@ Route::group(['prefix'=>'teachers','as'=>'teachers.'], function(){
 
 
 Route::group(['prefix'=>'contact-us','as'=>'contact-us.','namespace' =>''], function(){
-    Route::get('/', [ContactUsController::class,'viewPage'])->name('view');    
-    Route::post('/submit', [ContactUsController::class,'submitForm'])->name('submit');
+    Route::get('/', [ContactUsController::class,'viewContactUs'])->name('view');    
+    Route::post('/submit', [ContactUsController::class,'submitContactForm'])->name('submit');
 });
 //->can('create', ContactUs::class);;
             
 
 /*
-Route::group(['middleware' => ['CheckIsAdminUser', 'CheckMarketer']], function() {
+Route::group(['middleware' => ['___', '___']], function() {
 
 });
 */
@@ -217,7 +216,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
 
         Route::get('/dashboard',[AdminPanelController::class,'viewDashboard'])->name('dashboard');
         Route::get('/profile', [AdminPanelController::class,'viewProfile'])->name('profile');
-        Route::get('profile-edit', [AdminPanelController::class,'viewProfileEditPage'])->name('profile-edit');
+        Route::get('profile-edit', [AdminPanelController::class,'viewProfileEdit'])->name('profile-edit');
         Route::get('/my-courses', [Admin_TeacherController::class,'viewMyCourses'])->name('my-courses');
         Route::get('/my-earnings', [AdminPanelController::class,'ViewMyEarnings'])->name('my-earnings');
         Route::get('/my-commissions', [Admin_MarketerController::class,'viewMyCommissions'])->name('my-commissions');

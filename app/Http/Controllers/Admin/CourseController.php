@@ -158,7 +158,7 @@ class CourseController extends Controller
 
             /* if have validation errors create text to display*/
             $valErrMsg = $dbValidCourseContent['validationErrMsg'];
-            if ( isset($request->validator) && $request->validator->fails())
+            if (isset($request->validator) && $request->validator->fails())
                 $valErrMsg  .= (($valErrMsg != '') ? ' and ' : '') . 'Form validation is failed';
 
             if($valErrMsg)

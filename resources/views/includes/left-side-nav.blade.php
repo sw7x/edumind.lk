@@ -181,8 +181,14 @@
                                                     <li><a href="{{route('view-cart')}}">Cart page</a></li>
                                                     {{-- <li><a href="{{route('bill-info')}}">billing info</a></li>
                                                     <li><a href="{{route('credit-pay')}}">credit card pay</a></li> --}}
-                                                    <li><a href="{{route('checkout-complete')}}">checkout complete</a></li>
-                                                    <li><a href="{{route('payment-failed')}}">Payment failed</a></li>
+                                                    
+                                                    @if(Route::has('checkout-complete'))
+                                                        <li><a href="{{route('checkout-complete')}}">checkout complete</a></li>
+                                                    @endif    
+                                                    
+                                                    @if(Route::has('checkout-complete'))
+                                                        <li><a href="{{route('payment-failed')}}">Payment failed</a></li>
+                                                    @endif    
                                                 </ul>
                                             </div>
                                         </li>

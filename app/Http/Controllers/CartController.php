@@ -90,7 +90,7 @@ class CartController extends Controller
     }
 
 
-    public function loadBillingInfoPage(Request $request){
+    public function loadBillingInfoForm(Request $request){
         $user = Sentinel::getUser();
         if(is_null($user))
             abort(403, "You don't have permissions to access this page");

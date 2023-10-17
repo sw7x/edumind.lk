@@ -67,7 +67,7 @@ class AdminPanelController extends Controller
         }
     }
 
-    public function viewProfileEditPage(){
+    public function viewProfileEdit){
         try{
 
             $user = Sentinel::getUser();

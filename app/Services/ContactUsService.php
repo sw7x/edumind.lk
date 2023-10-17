@@ -16,23 +16,6 @@ class ContactUsService
     }
 
 
-    public function getUserInfoArr() : array {
-        $user = Sentinel::getUser();
-
-        if($user){
-            $userArr = [
-                'id'        => $user->id,
-                'full_name' => $user->full_name,
-                'email'     => $user->email,
-                'phone'     => $user->phone,
-            ];
-        }else{
-            $userArr = [];
-        }
-        return $userArr;
-    }
-
-
     public function saveContactUsMsg(Request $request) : ContactUsModel {
         $g_recaptcha_response = $request->input('g-recaptcha-response');
         $body = RecaptchaUtil::validate($g_recaptcha_response);

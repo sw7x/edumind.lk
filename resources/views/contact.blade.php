@@ -52,24 +52,28 @@
                 <form action="{{route('contact-us.submit')}}" method="post" id="contact-form">
                     
                     @if(Session::has('message'))
-                        <x-flash-message  
-                            :class="Session::get('cls', 'flash-info')"  
-                            :title="Session::get('msgTitle') ?? 'Info!'" 
+                        <x-flash-message 
+                            style="margin-bottom:0px;" 
+                            :class="Session::get('cls', 'flash-info').' rounded-none'"  
+                            :title="Session::get('msgTitle') ?? 'Form submit error!'" 
                             :message="Session::get('message') ?? ''"  
                             :message2="Session::get('message2') ?? ''"  
-                            :canClose="true" >
+                            :canClose="true">
                             <x-slot name="insideContent">
-                                @if (count($errors) > 0)
-                                    <br>
-                                    <ul class="list-disc ml-2">
-                                        @foreach ($errors as $error)
-                                            <li class="text-sm ml-3">{{ $error }}</li>
+                                @if($errors->contactUsForm->getMessages())
+                                <br>
+                                <ul class="list-disc">
+                                    @foreach ($errors->contactUsForm->getMessages() as  $field => $errorMsgArr)
+                                        @foreach ($errorMsgArr as $errorMsg)
+                                            <li class="text-sm ml-3">{{ $errorMsg }}</li>
                                         @endforeach
-                                    </ul>
-                                @endif
-                            </x-slot>
+                                    @endforeach
+                                </ul>
+                                @endif    
+                            </x-slot>    
                         </x-flash-message>
                     @endif
+                    
 
 
                     <div class="grid grid-cols-2 gap-0 lg:p-6 p-2">

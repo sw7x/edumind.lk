@@ -15,12 +15,12 @@ class CourseSharedService
 
     //validate course content format
     public function validateCourseContent($courseContent) : array {
-        $valid  =   (is_null($courseContent) || $courseContent === [] || $courseContent === '') ?
-                        true :
-                        (is_array($courseContent) && Arr::isAssoc($courseContent));        
+        $isEmptyContent = is_null($courseContent) || $courseContent === [] || $courseContent === '';
+        $isAssocArr     = (is_array($courseContent) && Arr::isAssoc($courseContent));
 
-        $content    =   (is_array($courseContent) && Arr::isAssoc($courseContent)) ? $courseContent : [];
-
+        $valid          =   $isEmptyContent ? true : $isAssocArr;        
+        $content        =   $isAssocArr ? $courseContent : [];
+        
         return array('data' => $content, 'isInvFormat' => !$valid);
     }
 

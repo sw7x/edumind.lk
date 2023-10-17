@@ -46,8 +46,6 @@ class SubjectService
     }
 
 
-
-
     public function loadAllSubjects() : array {
         $allRecs = $this->subjectRepository->allWithGlobalScope();
 
@@ -60,9 +58,9 @@ class SubjectService
 
 
     public function loadSubjectDataByUrl(string $url) : array {
-        $subjectRec    = SubjectModel::where('slug', $url)->first();
+        $subjectRec    = $this->subjectRepository->findAvailableByUrl($url);
         if(!$subjectRec)
-            abort(404,'Subject does not exist or disabled');
+            abort(404,'Subject not found');
 
         $subjectCourses = SubjectModel::where('slug', $url)->first()->courses;
 

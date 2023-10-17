@@ -101,7 +101,7 @@ class CourseController extends Controller
     }
 
 
-    public function SearchCourse(Request $request){
+    public function submitSearch(Request $request){
         $validator = Validator::make($request->all(), [
             'subject'           =>  'numeric|nullable',
             'course-type'       =>  'required|in:free,paid',

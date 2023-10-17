@@ -8,10 +8,13 @@ use App\Services\ContactUsService;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
 use App\Models\ContactUs as ContactUsModel;
-
+use App\Common\SharedServices\UserSharedService;
 //use GuzzleHttp\Client;
 //use Illuminate\Validation\ValidationException;
 //use App\Common\Utils\RecaptchaUtil;
+use App\Http\Requests\ContactUsFormRequest;
+use Illuminate\Support\Facades\Session;
+
 
 class ContactUsController extends Controller
 {
@@ -20,57 +23,33 @@ class ContactUsController extends Controller
 
     public function __construct(ContactUsService $contactUsService){
         $this->contactUsService = $contactUsService;
+                $this->middleware('auth');
 
-        /*
-        todo
-        $this->middleware('check.admin',
-            ['only' => ['store','update','destroy']]
-        );
-        */
+        //$this->middleware('withOutUserRoles:RoleModel::ADMIN');
     }
 
 
 
-    public function viewPage(){
-        if(Sentinel::check()){
-            $user            = Sentinel::getUser();
-            $currentUserRole = optional($user->roles()->first())->name;
-            if($currentUserRole == RoleModel::ADMIN)
-                abort(404,'This page is not available for your user role');
-        }
-
-        $userArr = $this->contactUsService->getUserInfoArr();
+    public function viewContactUs(){
+        $user    = Sentinel::getUser();        
+        $userArr = (new UserSharedService)->getUserInfoArr($user);
         return view('contact')->with('userArr', $userArr);
     }
 
 
-    public function submitForm(Request $request){
+    public function submitContactForm(ContactUsFormRequest $request){
 
         try{
-            $validator = Validator::make($request->all(), [
-                'full_name'             =>'sometimes|required',
-                'subject'               =>'required|min:3|max:50',
-                'message'               =>'required',
-                'g-recaptcha-response'  =>'required',
-            ],[
-                'full_name.required'            => 'Full name field is required.',
-
-                'subject.required'              => 'Subject field is required.',
-                'subject.min'                   => 'Subject should have minimum 3 characters.',
-                'subject.max'                   => 'Subject should not exceed 50 characters.',
-
-                'message.required'              => 'Message field is required.',
-                'g-recaptcha-response.required' => 'Recaptcha is required.',
-            ]);
-
-            if ($validator->fails())
-                throw new CustomException('Form validation failed');
+                        
+            $formErrors = optional(Session::get('errors'))->contactUsForm;
+            if ( isset($request->validator) && $request->validator->fails())
+                throw new CustomException('Form validation is failed !');
 
             $this->authorize('create', ContactUsModel::class);
 
             $insertedRec = $this->contactUsService->saveContactUsMsg($request);
             if(!$insertedRec)
-                throw new CustomException('Failed to insert into database');
+                throw new CustomException('Failed to save your message in database');
 
             return redirect()->back()->with([
                 'message'  => 'Your message has been sent successfully',
@@ -80,7 +59,7 @@ class ContactUsController extends Controller
 
         }catch(CustomException $e){
             return back()
-            ->withErrors($validator)
+            ->withErrors($formErrors)
             ->withInput()
             ->with([
                 'message'   => $e->getMessage(),
@@ -90,7 +69,7 @@ class ContactUsController extends Controller
 
         }catch(\Exception $e){
             return back()
-            ->withErrors($validator)
+            ->withErrors($formErrors)
             ->withInput()
             ->with([
                 'message'   => $e->getMessage(),

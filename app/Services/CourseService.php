@@ -130,6 +130,7 @@ class CourseService
     public function loadPopularCourses(){
         $courseCount    = 5;
         $popularCourses = $this->courseRepository->getPopularCourses($courseCount);
+        
         $dataArr = array();
         $popularCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
             $dataArr[]  =   CourseDataTransformer::buildDto($record->toArray());
