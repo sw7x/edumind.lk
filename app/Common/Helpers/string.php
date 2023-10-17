@@ -58,5 +58,9 @@ if(! function_exists('snakeToCamelCase')){
     }
 }
 
-
-
+if(! function_exists('arrayToString')){
+    function arrayToString(array $arr) {
+        $str = (!empty($arr)) ? implode(',', $arr) : '';
+        return $str;
+    }
+}
