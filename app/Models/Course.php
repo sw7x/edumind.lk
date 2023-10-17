@@ -38,7 +38,6 @@ class Course extends Model
 
     ];
 
-
     protected $fillable = [
         'name',
         'uuid',
@@ -57,11 +56,6 @@ class Course extends Model
         'slug'
     ];
 
-
-
-
-
-    
     /**
      * Return the sluggable configuration array for this model.
      *
@@ -77,39 +71,6 @@ class Course extends Model
     }
 
 
-    /*public function getContentAttribute($value)
-    {
-        //return $value;
-        //return stripslashes($value);
-        //return "getContentAttribute";
-        //$rr = stripslashes($value);
-        //return $rr;
-        //dump($value);
-        //return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-        //dump($rr);
-        //return  json_decode($rr, true, 512, JSON_THROW_ON_ERROR);
-        //return json_decode($value, true, 512, JSON_UNESCAPED_SLASHES);
-
-
-        if($value){
-            return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-        }else{
-            return "";
-        }   
-
-
-
-    }
-
-    
-    public function getTopicsAttribute($value)
-    {   
-        if($value){
-            return  json_decode($value ?? "{}", true, 512, JSON_THROW_ON_ERROR);
-        }else{
-            return "";
-        }        
-    }*/
 
     public static function boot(){
         parent::boot();        
@@ -125,8 +86,6 @@ class Course extends Model
     }
 
 
-    
-
 
 
     public function getImageAttribute($value){        
@@ -138,8 +97,45 @@ class Course extends Model
         return $imagePath;
     }
 
+    public function getLastUpdatedTime(){
+        return Carbon::parse($this->updated_at)->diffForHumans();
+    }
+
+    public function getCreatedTime(){
+        return Carbon::parse($this->created_at)->diffForHumans();
+    }
+
+    /*
+    public function getContentAttribute($value){
+        return $value;
+        return stripslashes($value);
+        return "getContentAttribute";
+        $rr = stripslashes($value);
+        return $rr;
+        dump($value);
+        return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        dump($rr);
+        return  json_decode($rr, true, 512, JSON_THROW_ON_ERROR);
+        return json_decode($value, true, 512, JSON_UNESCAPED_SLASHES);
 
 
+        if($value){
+            return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        }else{
+            return "";
+        }
+    }
+    
+    public function getTopicsAttribute($value){   
+        if($value){
+            return  json_decode($value ?? "{}", true, 512, JSON_THROW_ON_ERROR);
+        }else{
+            return "";
+        }        
+    }
+    */
+
+    
 
 
     public function subject(){
@@ -182,28 +178,8 @@ class Course extends Model
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getLastUpdatedTime(){
-        return Carbon::parse($this->updated_at)->diffForHumans();
-    }
-
-    public function getCreatedTime(){
-        return Carbon::parse($this->created_at)->diffForHumans();
-    }
-
-    public function isEmpty(){       
-        
+    /*
+    public function isEmpty(){      
         //dd($this->topics);
         if(!$this->content){
             return true;
@@ -211,8 +187,7 @@ class Course extends Model
             return empty($this->content);
         }        
     }
-
-    /* 
+    
     public function getLinkCount(){
         $courseLinkCount = 0;
         foreach($this->content as $arr){
@@ -220,7 +195,6 @@ class Course extends Model
         }
         return $courseLinkCount;
     }
-
 
     public function getVideoSectionId($vid){
         //dd($this->content);
@@ -243,8 +217,5 @@ class Course extends Model
         //dump("vid - {$vid} === section- {$result}");
     } 
     */
-
-
-
 
 }

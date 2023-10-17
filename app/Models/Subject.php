@@ -33,17 +33,12 @@ class Subject extends Model
         });
     }
 
-
-
-
-
-
-
     protected static function booted(){
         static::addGlobalScope('published', function (Builder $builder) {
             $builder->where('subjects.status', self::PUBLISHED);
         });
     }
+
 
 
     public function getImageAttribute($value){
@@ -55,7 +50,6 @@ class Subject extends Model
         }
         return $imagePath;
     }
-
 
 
 

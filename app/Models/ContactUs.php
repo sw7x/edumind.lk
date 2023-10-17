@@ -28,13 +28,6 @@ class ContactUs extends Model
     }
 
 
-
-
-
-
-
-
-
     /**
      * Create a new factory instance for the model.
      *
@@ -43,10 +36,6 @@ class ContactUs extends Model
     protected static function newFactory(){
         return ContactUsFactory::new();
     }
-
-
-
-
 
     public function user(){
         return $this->belongsTo(User::class,'user_id','id');

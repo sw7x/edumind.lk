@@ -83,17 +83,10 @@ class Enrollment extends Model
         return $this->belongsTo(CommissionModel::class,'commission_id','id');
     }
 
-
-
-
-
-    
-    
     public function involvedCourse(){
         //return $this->courseSelection();
         return $this->belongsTo(CourseSelectionModel::class,'course_selection_id','id');
     }
-
 
 
     
@@ -179,9 +172,6 @@ class Enrollment extends Model
         //no need
         //->where('coupons.is_enabled', 1)
         //->whereColumn('coupons.total_count', '>', 'coupons.used_count');      
-    }
-
-
-    
+    }    
 
 }

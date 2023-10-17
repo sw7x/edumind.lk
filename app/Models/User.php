@@ -109,44 +109,6 @@ class User extends CartalystUser
 
 
 
-    /*
-    //TODO
-    public function getProfilePicAttribute($value){
-        
-        if($this->roles->isEmpty()){
-            $imagePath = asset('images/default-images/user.png');
-        }else{
-            if($value){           
-                $imagePath = asset('storage/'.$value);
-            }else{            
-                
-                $userRole = $this->getUserRoles()->first()->slug;
-                
-                switch ($userRole) {
-                    case "admin":
-                        $imagePath = asset('images/default-images/admin.png');
-                        break;
-                    case "editor":
-                        $imagePath = asset('images/default-images/editor.png');
-                        break;
-                    case "marketer":
-                        $imagePath  = asset('images/default-images/marketer.png');
-                        break;
-                    case "teacher":
-                        $imagePath = asset('images/default-images/teacher.png');
-                        break;
-                    case "student":
-                        $imagePath = asset('images/default-images/student.png');
-                        break;
-                    default:
-                        $imagePath = asset('images/default-images/user.png');
-                }                    
-            }
-        }        
-        //dd($this->getUserRoles());    
-        return $imagePath;
-    }*/
-
     public function getProfilePicAttribute($value){
         
         if($this->roles->isEmpty()){
@@ -181,10 +143,14 @@ class User extends CartalystUser
         return $imagePath;
     }
 
+    
     public function getIsActivatedAttribute(){
         return $this->isactivated();
     }
-
+    
+    public function getLastLoginTime(){
+        return Carbon::parse($this->last_login)->diffForHumans();
+    }
 
 
 
@@ -192,8 +158,6 @@ class User extends CartalystUser
     {
         return $this->hasMany(CourseSelectionModel::class,'student_id');        
     }
-
-
 
     public function getTeachingCourses(){
         return $this->hasMany(CourseModel::class,'teacher_id','id');
@@ -203,12 +167,9 @@ class User extends CartalystUser
         return $this->hasMany(ContactUsModel::class,'user_id','id');
     }
 
-
-
     public function subjects(){
         return $this->hasMany(SubjectModel::class,'author_id','id');
     }
-
     
     public function coupons()
     {
@@ -226,7 +187,6 @@ class User extends CartalystUser
             'id' // Local key on the course_selections table...
         );
     }
-
 
     public function enrollmentsToUserCreatedCourses()
     {
@@ -255,7 +215,6 @@ class User extends CartalystUser
                     ->whereNull('course_selections.cart_added_date');
             });
         });
-
     }
 
     public function commissionedEnrollments()
@@ -289,7 +248,6 @@ class User extends CartalystUser
             });
         });
         */
-
     }
 
 
@@ -298,9 +256,7 @@ class User extends CartalystUser
 
 
 
-    public function getLastLoginTime(){
-        return Carbon::parse($this->last_login)->diffForHumans();
-    }
+    
 
     public function delete()
     {

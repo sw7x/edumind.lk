@@ -6,15 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 //use Illuminate\Database\Eloquent\SoftDeletes;
 
-
 use App\Models\Course as CourseModel;
 use App\Models\User as UserModel;
 use App\Models\Coupon as CouponModel;
 use App\Models\Enrollment as EnrollmentModel;
 use Ramsey\Uuid\Uuid;
-
-
-
 
 
 class CourseSelection extends Model
@@ -43,8 +39,6 @@ class CourseSelection extends Model
         'is_checkout'    => 'boolean',
     ];
 
-
-
        
     public static function boot(){
         parent::boot();        
@@ -53,12 +47,6 @@ class CourseSelection extends Model
             $model->uuid = $uuid;
         });
     }
-
-
-
-
-
-
 
 
     public function course()
@@ -76,11 +64,9 @@ class CourseSelection extends Model
         return $this->hasOne(EnrollmentModel::class,'course_selection_id','id');
     }
 
-
     public function coupon()
     {
         return $this->belongsTo(CouponModel::class,'used_coupon_code','code');
     }
-
 
 }

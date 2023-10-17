@@ -89,10 +89,11 @@ class Coupon extends Model
 
 	}
 
-	/*public function enrollments()
-    {
+	/*
+    public function enrollments(){
         return $this->hasMany(Enrollment::class,'used_coupon_code','code');
-    }*/
+    }
+    */
 	
     public function course_selections()
     {
@@ -114,13 +115,6 @@ class Coupon extends Model
 
 
 
-
-
-
-
-
-
-
     /*    
     public function getFirstNameAttribute($value)
     {
@@ -132,7 +126,4 @@ class Coupon extends Model
         $this->attributes['first_name'] = strtolower($value);
     }
     */
-
-
-
 }

@@ -39,10 +39,5 @@ class Invoice extends Model
     {
         return $this->hasMany(EnrollmentModel::class,'invoice_id','id');        
     }
-
-
-    
-
-
     
 }
