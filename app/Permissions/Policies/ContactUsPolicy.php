@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Permissions\Policies;
 
 use App\Models\ContactUs as ContactUsModel;
 use App\Models\User as UserModel;

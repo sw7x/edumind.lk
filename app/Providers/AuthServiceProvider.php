@@ -25,10 +25,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',        
-        'App\Models\ContactUs' => 'App\Policies\ContactUsPolicy',
-        'App\Models\User'       => 'App\Policies\UserPolicy',
-        'App\Models\Course'     => 'App\Policies\CoursePolicy',
-        //'Sentinel'       => 'App\Policies\UserPolicy',
+        'App\Models\ContactUs'  => 'App\Permissions\Policies\ContactUsPolicy',
+        'App\Models\User'       => 'App\Permissions\Policies\UserPolicy',
+        'App\Models\Course'     => 'App\Permissions\Policies\CoursePolicy',
+        //'Sentinel'            => 'App\Policies\UserPolicy',
+
+        'App\Models\Subject'    => 'App\Permissions\Policies\SubjectPolicy',
+
     ];
 
     /**
@@ -56,12 +59,12 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(GateContract $gate)
     {
         $this->registerPolicies($gate);
-        //
         
-        GateFacade::define('is_admin', function(UserModel $user) {
+        /*GateFacade::define('is-admin', function(UserModel $user) {
             return $user->isAdmin();
-        });
+        });*/
 
+        //require base_path('app/Permissions/admin-gates.php');
     }
 
     /**

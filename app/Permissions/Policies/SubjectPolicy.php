@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Permissions\Policies;
 
 use App\Models\Subject as SubjectModel;
 use App\Models\User as UserModel;
@@ -8,8 +8,27 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Role as RoleModel;
 use Illuminate\Auth\Access\Response;
 
+
+use App\Exceptions\InvalidUserTypeException;
+use App\Common\SharedServices\UserSharedService;
+use Illuminate\Auth\Access\AuthorizationException;
+
+
+
+
+use Illuminate\Auth\AuthenticationException;//401 Unauthorized:
+use Illuminate\Database\Eloquent\ModelNotFoundException;//404 Not Found:
+use Illuminate\Database\QueryException;//500 Internal Server Error:
+use Illuminate\Session\TokenMismatchException;//419 Forbidden:
+
+
+
+
 class SubjectPolicy
 {
+    use HandlesAuthorization;
+
+    
     use HandlesAuthorization;
 
     /**
@@ -105,7 +124,6 @@ class SubjectPolicy
     }
 
 
-
     public function viewAllInSiteFrontend(UserModel $user)
     {
         return true;
@@ -113,21 +131,61 @@ class SubjectPolicy
 
     
     public function viewSingleInSiteFrontend(UserModel $user, SubjectModel $subject)
-    {
+    {       
         // return Response::allow();
         // return Response::deny('You do not own this post.');
         // return $this->deny('Sorry, your level is not high enough to do that!');
         // return $this->allow('Sorry, your level is not high enough to do that!');
         return true;
     }
+    
+    public function testSubject(?UserModel $user, string $hhh)
+    {
+        dump($hhh);
+        dd($user);
+        //return $this->deny('Sorry, your level is not high enough to do that!');
+        //abort(419, 'xx-Authentication is required To access this page');
 
+        
+        //dd($user);
+        if(is_null($user)) 
+            abort(401, 'Authentication is required To access this page');
+        
+        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+            //throw new InvalidUserTypeException('Your user role is not valid for access this page.');
+        
+        if(!(new UserSharedService)->isAllowed($user, [RoleModel::TEACHER, RoleModel::STUDENT]))
+            //abort(403);
+            
+        dump('dfdfdfdfd');
+        abort(401, 'Authentication is required To access this page');
+
+        
+        //throw new AuthorizationException('You are not authorized to update this post.');
+        //--throw new AuthenticationException('You are not authorized to update this post.');
+        //throw new ModelNotFoundException('You are not authorized to update this post.');
+        //throw new QueryException('You are not authorized to update this post.');
+        //throw new TokenMismatchException('You are not authorized to update this post.');
+
+            //abort(401);
+        return true;
+    }
+    
+    public function testSubject2(UserModel $user, SubjectModel $subject)
+    //public function testSubject2(UserModel $user, SubjectModel $subject, string $hhh)
+    {
+        //dump($subject);
+        //dump($user);
+        //dd($hhh);
+        abort(401, 'Authentication is required To access this page');
+
+
+        return 0;
+    }
 
     public function test(UserModel $user){
         dd("ggggg");
     }
-
-
-
 
 
 }

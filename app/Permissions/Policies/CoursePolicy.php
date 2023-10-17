@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Permissions\Policies;
 
 use App\Models\Course as CourseModel;
 use App\Models\User as UserModel;
@@ -100,8 +100,40 @@ class CoursePolicy
         //
     }
 
-    
+    public function watch(UserModel $user, CourseModel $course)
+    {
+        /*
 
+        $userRole = $user->roles()->first()->slug;
+        if(in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]))
+
+        if($userRole == RoleModel::TEACHER)    
+        if user student and student enrolled 
+        
+
+        if($userRole == RoleModel::TEACHER)    
+    
+        if user teacher and teacher owned 
+
+        admin/editor
+        */
+
+
+        $userRole = $user->roles()->first()->slug;   
+        return  
+            in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
+            ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));
+            ($userRole == RoleModel::STUDENT && $user->isCourseAuthor($course));
+
+
+
+
+
+        $userRole = $user->roles()->first()->slug;   
+        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER, RoleModel::MARKETER]);
+    }
+
+    
     public function changeStatus(UserModel $user, CourseModel $course)
     {
         $userRole = $user->roles()->first()->slug;
