@@ -136,12 +136,12 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
         return $this->model->withoutGlobalScope('published')->where('name',$name)->get();
     }    
 
-    public function findByUrl(String $url) : ?Collection{
+    public function findByUrl(String $url) : ?SubjectModel{
         return $this->model->withoutGlobalScope('published')->where('slug',$slug)->first();
     }    
 
-    public function findAvailableByUrl(String $url) : ?Collection{
-        return $this->model->where('slug',$slug)->first();
+    public function findAvailableByUrl(String $url) : ?SubjectModel{
+        return $this->model->where('slug',$url)->first();
     }
 
     public function findDuplicateCountByName(string $subjectName, int $id) : int {
