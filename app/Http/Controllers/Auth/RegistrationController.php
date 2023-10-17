@@ -24,12 +24,12 @@ use App\Models\Role as RoleModel;
 class RegistrationController extends Controller
 {
 
-    public function __construct()
-    {
+    public function __construct(){        
         $this->middleware('checkGuest',
             ['only' => ['register','teacherRegister']]
         );
     }
+    
 
     public function register(){
        return view ('auth.form-register');
@@ -198,7 +198,7 @@ class RegistrationController extends Controller
             if($body->success){
 
                 $file = $request->input('profile_pic');
-                $destination = isset($file) ? (new FileUploadUtil())->upload($file,'users/teachers/') : null;
+                $destination = isset($file) ? FileUploadUtil::upload($file,'users/teachers/') : null;
 
                 $reqData = $request->all();
                 $reqData['profile_pic'] = $destination;

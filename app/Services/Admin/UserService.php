@@ -85,7 +85,7 @@ class UserService
             throw new CustomException('Subject name already exists!');
 
         $file       = $request->input('image');
-        $imgDest    = (isset($file))? (new FileUploadUtil())->upload($file,'subjects/') : null;
+        $imgDest    = (isset($file))? FileUploadUtil::upload($file,'subjects/') : null;
 
         $urlString  = UrlUtil::wordsToUrl($request->name,15);
         $slug       = UrlUtil::generateSubjectUrl($urlString);
@@ -133,8 +133,7 @@ class UserService
             }else{
                 // previously image is uploaded and now change the image and upload
                 //todo delete prviously uploaded image
-                $fileUploadUtil = new FileUploadUtil();
-                $imgDest        = $fileUploadUtil->upload($file,'subjects/');
+                $imgDest        = FileUploadUtil::upload($file,'subjects/');
             }
         }
 
@@ -224,7 +223,7 @@ class UserService
 
     public function saveTeacherRec(Request $request) : array {
         $file           = $request->input('teacher_profile_img');
-        $destination    = isset($file) ? (new FileUploadUtil())->upload($file,'users/teachers/') : null;
+        $destination    = isset($file) ? FileUploadUtil::upload($file,'users/teachers/') : null;
 
         $status = ($request->get('teacher_stat')=='enable') ? true : false;
         //DB::enableQueryLog();
@@ -361,8 +360,7 @@ class UserService
             }else{
                 // previously image is uploaded and now change the image and upload
                 //todo delete prviously uploaded image
-                $fileUploadUtil = new FileUploadUtil();
-                $imgDest        = $fileUploadUtil->upload($file,'users/teachers/');
+                $imgDest        = FileUploadUtil::upload($file,'users/teachers/');
             }
         }
 

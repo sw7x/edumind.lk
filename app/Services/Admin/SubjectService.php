@@ -67,7 +67,7 @@ class SubjectService
             throw new CustomException('Subject name already exists!');
 
         $file       = $request->input('image');
-        $imgDest    = (isset($file))? (new FileUploadUtil())->upload($file,'subjects/') : null;
+        $imgDest    = (isset($file))? FileUploadUtil::upload($file,'subjects/') : null;
 
         $urlString  = UrlUtil::wordsToUrl($request->name,15);
         $slug       = UrlUtil::generateSubjectUrl($urlString);
@@ -117,7 +117,7 @@ class SubjectService
             }else{
                 // previously image is uploaded and now change the image and upload
                 //todo delete prviously uploaded image
-                $imgDest        =   (new FileUploadUtil())->upload($file,'subjects/');
+                $imgDest        =   FileUploadUtil::upload($file,'subjects/');
             }
         }
 

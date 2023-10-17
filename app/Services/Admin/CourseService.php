@@ -161,7 +161,7 @@ class CourseService
 
         /* image upload */
         $file        = $request->input('course-img');
-        $destination = isset($file) ? (new FileUploadUtil())->upload($file,'courses/') : null;
+        $destination = isset($file) ? FileUploadUtil::upload($file,'courses/') : null;
 
 
         // set duration text for insert into database
@@ -237,7 +237,7 @@ class CourseService
             }else{
                 // previously image is uploaded and now change the image and upload
                 //todo delete prviously uploaded image
-                $imgDest        = (new FileUploadUtil())->upload($file,'courses/');
+                $imgDest        = FileUploadUtil::upload($file,'courses/');
             }
         }
 

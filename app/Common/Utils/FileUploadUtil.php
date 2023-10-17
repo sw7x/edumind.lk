@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class FileUploadUtil{
 
-    public function upload($file,$dir){
+    public static function upload($file, $dir){
         $path = rtrim($dir, '/') . '/';
 
         $jData = json_decode($file);
