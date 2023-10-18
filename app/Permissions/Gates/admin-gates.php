@@ -10,3 +10,6 @@ GateFacade::define('is_admin_aaa', function(UserModel $user) {
 
 
 
+GateFacade::define('edit-settings', function(UserModel $user) {
+    return true;
+});

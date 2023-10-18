@@ -8,16 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use App\Common\SharedServices\UserSharedService;
 use App\Exceptions\InvalidUserTypeException;
 use Illuminate\Support\Facades\Gate;
-use App\Permissions\PermissionDeniedTypesEnum;
-use App\Permissions\PermissionDeniedMessageEnum;
-
+use App\Permissions\PermissionCheckResultEnum;
+use App\Permissions\PermissionCheckMessageEnum;
+use App\Permissions\PermissionResponse;
+use App\Permissions\PermissionCheckRedirectEnum;
 
 
 
 class PermissionChecker{
 
 	
-	public static function authorize(string $ability, ...$args){
+	public static function authorize(string $ability, ...$args): void{
 		$target 	= reset($args);
 		$otherArgs 	= array_slice($args, 1);
 		
@@ -30,82 +31,138 @@ class PermissionChecker{
     		self::authorizeOrAbortByModelClass($ability, $className, ...$otherArgs);
 
 		}else{
-			abort(403, PermissionDeniedMessageEnum::FORBIDDEN_MSG);
+			abort(403, PermissionCheckMessageEnum::FORBIDDEN_MSG);
 		}		
 	}
 	
-
-	public static function getStatus(string $ability, ...$args){
+	public static function getResponse(string $ability, ...$args): PermissionResponse {
 		$target 	= reset($args);
 		$otherArgs  = array_slice($args, 1);
 		
 		if ($target instanceof Model) {
     		$model = reset($args);		
-    		return self::inspectByModelRec($ability, $model, ...$otherArgs);
+    		return self::responseByModelRec($ability, $model, ...$otherArgs);
 
 		} elseif(is_string($target)) {
     		$className = reset($args);
-    		return self::inspectByModelClass($ability, $className, ...$otherArgs);
+    		return self::responseByModelClass($ability, $className, ...$otherArgs);
 
 		}else{
-			return PermissionDeniedTypesEnum::FORBIDDEN;				
+			return self::forbiddenResponse();
 		}
 	}
 
 
 
-	private static function authorizeOrAbortByModelClass(string $ability, string $modelClassName, ...$args){
+	private static function authorizeOrAbortByModelClass(
+		string $ability, 
+		string $modelClassName, 
+		...$args
+	): void {
+		
 		if(!Sentinel::check())
-            abort(401, PermissionDeniedMessageEnum::NO_AUTH_MSG);
+            abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);
 
         $user = Sentinel::getUser();
         if(!(new UserSharedService)->checkUserHaveValidRole($user))
-            throw new InvalidUserTypeException(PermissionDeniedMessageEnum::INVALID_ROLE_MSG);
+            throw new InvalidUserTypeException(PermissionCheckMessageEnum::INVALID_ROLE_MSG);
 
         if(!Gate::allows($ability, [$modelClassName, ...$args]))
-			abort(403, PermissionDeniedMessageEnum::FORBIDDEN_MSG);	
+			abort(403, PermissionCheckMessageEnum::FORBIDDEN_MSG);	
 	}
 
-	private static function authorizeOrAbortByModelRec(string $ability, Model $model, ...$args){
+	private static function authorizeOrAbortByModelRec(string $ability, Model $model, ...$args): void {
 		if(!Sentinel::check())
-            abort(401, PermissionDeniedMessageEnum::NO_AUTH_MSG);
+            abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);
 
         $user = Sentinel::getUser();
         if(!(new UserSharedService)->checkUserHaveValidRole($user))
-            throw new InvalidUserTypeException(PermissionDeniedMessageEnum::INVALID_ROLE_MSG);
+            throw new InvalidUserTypeException(PermissionCheckMessageEnum::INVALID_ROLE_MSG);
 
 		if(!Gate::allows($ability, [$model, ...$args]))
-			abort(403, PermissionDeniedMessageEnum::FORBIDDEN_MSG);	
+			abort(403, PermissionCheckMessageEnum::FORBIDDEN_MSG);	
 	}
 	
 	
 
-	private static function inspectByModelClass(string $ability, string $modelClassName, ...$args){
+	private static function responseByModelClass(
+		string $ability, 
+		string $modelClassName, 
+		...$args
+	): PermissionResponse {
+
 		if(!Sentinel::check())
-            return PermissionDeniedTypesEnum::NO_AUTH;
+           return self::noAuthResponse();
 
         $user = Sentinel::getUser();
         if(!(new UserSharedService)->checkUserHaveValidRole($user))
-			return PermissionDeniedTypesEnum::INVALID_ROLE;
+			return self::invalidRoleResponse();	
 
 		if(!Gate::allows($ability, [$modelClassName, ...$args]))
-			return PermissionDeniedTypesEnum::FORBIDDEN;
-
-		return true;
+			return self::forbiddenResponse();
+		
+		return self::successResponse();
 	}	
 
-	private static function inspectByModelRec(string $ability, Model $model, ...$args){
+	private static function responseByModelRec(
+		string $ability, 
+		Model $model, 
+		...$args
+	): PermissionResponse {
+		
 		if(!Sentinel::check())
-            return PermissionDeniedTypesEnum::NO_AUTH;
+            return self::noAuthResponse();
 
         $user = Sentinel::getUser();
         if(!(new UserSharedService)->checkUserHaveValidRole($user))
-			return PermissionDeniedTypesEnum::INVALID_ROLE;
+			return self::invalidRoleResponse();	
 
 		if(!Gate::allows($ability, [$model, ...$args]))
-			return PermissionDeniedTypesEnum::FORBIDDEN;
+			return self::forbiddenResponse();
 
-		return true;	
+		return self::successResponse();	
+	}
+
+
+
+	private static function noAuthResponse(): PermissionResponse {
+		return 	new PermissionResponse(
+			PermissionCheckResultEnum::NO_AUTH,
+			false,
+			PermissionCheckMessageEnum::NO_AUTH_MSG,
+			401,
+			PermissionCheckRedirectEnum::ROUTE_LOGIN
+		);
+	}
+
+	private static function invalidRoleResponse(): PermissionResponse {
+		return 	new PermissionResponse(
+			PermissionCheckResultEnum::INVALID_ROLE, 
+			false, 
+			PermissionCheckMessageEnum::INVALID_ROLE_MSG,
+			null,
+			PermissionCheckRedirectEnum::ROUTE_HOME
+		);
+	}
+
+	private static function forbiddenResponse(): PermissionResponse {
+		return new PermissionResponse(
+			PermissionCheckResultEnum::FORBIDDEN, 
+			false, 
+			PermissionCheckMessageEnum::FORBIDDEN_MSG,
+			403,
+			PermissionCheckRedirectEnum::ROUTE_HOME
+		);
+	}
+
+	private static function successResponse(): PermissionResponse {
+		return new PermissionResponse(
+			PermissionCheckResultEnum::SUCCESS, 
+			true, 
+			PermissionCheckMessageEnum::SUCCESS_MSG,
+			200,
+			null
+		);
 	}
 
 }
