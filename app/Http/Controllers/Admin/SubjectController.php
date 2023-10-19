@@ -10,7 +10,7 @@ use App\Models\Subject as SubjectModel;
 use Illuminate\Auth\Access\AuthorizationException;
 use Sentinel;
 use App\Services\Admin\SubjectService as AdminSubjectService;
-
+use App\Common\Utils\AlertDataUtil;
 use App\View\DataFormatters\Admin\SubjectDataFormatter as AdminSubjectDataFormatter;
 
 /*
@@ -51,11 +51,12 @@ class SubjectController extends Controller
             return view ('admin-panel.subject-list')->withData($filteredDataArr);
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.dashboard'))->with([
-                'message'     => 'You dont have Permissions view all subjects !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.dashboard'))->with(
+                AlertDataUtil::error('You dont have Permissions view all subjects !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
+
         }catch(\Exception $e){
             dump($e->getMessage());
             session()->now('message','Failed to view all subjects');
@@ -77,11 +78,11 @@ class SubjectController extends Controller
             return view('admin-panel.subject-add');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects.index'))->with([
-                'message'   =>'You dont have Permissions create new subject',
-                'cls'       =>'flash-danger',
-                'msgTitle'  =>'Permission Denied!'
-            ]);
+            return redirect(route('admin.subjects.index'))->with(
+                AlertDataUtil::error('You dont have Permissions create new subject !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
 
         }catch(\Exception $e){
             session()->now('message',  'Failed to show subject add form');
@@ -110,31 +111,29 @@ class SubjectController extends Controller
             if (!$isSaved)
                 throw new CustomException("Subject create failed");
 
-            return redirect(route('admin.subjects.create'))->with([
-                'message' => 'Subject inserted successfully',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect(route('admin.subjects.create'))->with(
+                 AlertDataUtil::success('Subject inserted successfully')
+             );
 
         }catch(CustomException $e){
-            return redirect(route('admin.subjects.create'))->with([
-                'message'  => $e->getMessage(),
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-            ]);
+            return redirect(route('admin.subjects.create'))->with(
+                AlertDataUtil::error($e->getMessage())
+            );
+
+            
         }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects.create'))->with([
-                'message'     => 'You dont have Permissions create new subject !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.subjects.create'))->with(
+                 AlertDataUtil::error('You dont have Permissions create new subject !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+             );
+
         }catch(\Exception $e){
-            return redirect(route('admin.subjects.create'))->with([
-                //'message'  => $e->getMessage(),
-                'message'  => 'Subject creation failed!',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-            ]);
+            return redirect(route('admin.subjects.create'))->with(
+                AlertDataUtil::error('Subject creation failed!',[
+                    //'message'  => $e->getMessage(),
+                ])
+            );
         }
 
     }
@@ -169,11 +168,11 @@ class SubjectController extends Controller
             return view('admin-panel.subject-view');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects.index'))->with([
-                'message'     => 'You dont have Permissions to view the subject !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.subjects.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to view the subject !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
         }catch(\Exception $e){
             //session()->now('message',$e->getMessage());
             session()->now('message','Cannot display subject info!');
@@ -212,11 +211,11 @@ class SubjectController extends Controller
             return view('admin-panel.subject-list');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects-list'))->with([
-                'message'     => 'You dont have Permissions to update the subject !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.subjects-list'))->with(
+                AlertDataUtil::error('You dont have Permissions to update the subject !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+             );
 
         }catch(\Exception $e){
             session()->now('message','Resource not exist');
@@ -254,32 +253,30 @@ class SubjectController extends Controller
             if (!$isUpdated)
                 throw new CustomException("Subject update failed");
 
-            return redirect()->route('admin.subjects.index')->with([
-                'message' => 'Subject updated successfully',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect()->route('admin.subjects.index')->with(
+                AlertDataUtil::success('Subject inserted successfully')
+            );
 
         }catch(CustomException $e){
-            return redirect()->route('admin.subjects.edit', $id)->with([
-                'message'  => $e->getMessage(),
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error !',
-            ]);
+            return redirect()->route('admin.subjects.edit', $id)->with(
+                AlertDataUtil::error($e->getMessage())
+            );
+
         }catch(AuthorizationException $e){
-            return redirect()->route('admin.subjects.index')->with([
-                //'message'  => $e->getMessage(),
-                'message'     => 'You dont have Permissions to update the subject !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect()->route('admin.subjects.index')->with(
+                 AlertDataUtil::error('You dont have Permissions to update the subject !',[
+                    'msgTitle' => 'Permission Denied!',
+                    //'message'  => $e->getMessage(),
+                ])
+             );
+
         }catch(\Exception $e){
-            return redirect()->route('admin.subjects.edit', $id)->with([
-                'message'  => $e->getMessage(),
-                //'message'   => 'Subject updated failed!',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error !',
-            ]);
+            return redirect()->route('admin.subjects.edit', $id)->with(
+                AlertDataUtil::error('Subject update failed!',[
+                    //'message'  => $e->getMessage(),
+                ])
+            );
+
         }
     }
 
@@ -306,33 +303,29 @@ class SubjectController extends Controller
             if (!$isDelete)
                 throw new CustomException("Subject delete failed");
 
-            return redirect()->route('admin.subjects.index')->with([
-                'message' => 'Subject deleted successfully',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect()->route('admin.subjects.index')->with(
+                AlertDataUtil::success('Subject inserted successfully')
+            );
 
         }catch(CustomException $e){
             $exData = $e->getData();
-            return redirect()->route('admin.subjects.index')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => $exData['cls'] ?? "flash-danger",
-                'msgTitle'    => $exData['msgTitle']  ?? 'Error !',
-            ]);
+            return redirect()->route('admin.subjects.index')->with(
+                AlertDataUtil::error($e->getMessage())
+            );
 
         }catch(AuthorizationException $e){
-            return redirect()->route('admin.subjects.index')->with([
-                'message'     => 'You dont have Permissions to delete the subject !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect()->route('admin.subjects.index')->with(
+                AlertDataUtil::error('You dont have Permissions to delete the subject !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
+
         }catch(\Exception $e){
-            return redirect()->route('admin.subjects.index')->with([
-                'message'     => $e->getMessage(),
-                //'message'   => 'subject delete failed',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!',
-            ]);
+            return redirect()->route('admin.subjects.index')->with(
+                AlertDataUtil::error('Subject delete failed!',[
+                    //'message'  => $e->getMessage(),
+                ])
+            );
         }
 
     }

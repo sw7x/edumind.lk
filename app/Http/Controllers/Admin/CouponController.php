@@ -155,11 +155,11 @@ class CouponController extends Controller
             return view('admin-panel.coupon-code-view');
 
         }catch(AuthorizationException $e){
-            /*return redirect(route('admin.users.index'))->with([
-                'message'     => 'You dont have Permissions to view the user !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);*/
+            /*return redirect(route('admin.users.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to view the user !',[
+                    'msgTitle'    => 'Permission Denied !'
+                ])
+            );*/
 
         }catch(\Exception $e){
             session()->now('message','Coupon code does not exist');

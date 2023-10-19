@@ -14,6 +14,7 @@ use App\Http\Requests\Admin\StudentUpdateRequest;
 use App\Http\Requests\Admin\TeacherStoreRequest;
 use App\Http\Requests\Admin\TeacherUpdateRequest;
 use App\View\DataFormatters\Admin\UserDataFormatter as AdminUserDataFormatter;
+use App\Common\Utils\AlertDataUtil;
 
 use App\Services\Admin\UserService as AdminUserService;
 
@@ -110,11 +111,11 @@ class UserController extends Controller
             return view('admin-panel.user-list');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.dashboard'))->with([
-                'message'   =>'You dont have Permissions view all users',
-                'cls'       =>'flash-danger',
-                'msgTitle'  =>'Permission Denied!'
-            ]);
+            return redirect(route('admin.dashboard'))->with(
+                AlertDataUtil::error('You dont have Permissions view all users !',[
+                    'msgTitle'  =>'Permission Denied!'
+                ])
+            );
 
         }catch(\Exception $e){
             //dd($e);
@@ -140,11 +141,11 @@ class UserController extends Controller
             return view('admin-panel.user-add');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with([
-                'message'   =>'You dont have Permissions to create users',
-                'cls'       =>'flash-danger',
-                'msgTitle'  =>'Permission Denied!'
-            ]);
+            return redirect(route('admin.users.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to create users',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
 
         }catch(\Exception $e){
             session()->now('message',  'Failed to show user add form');
@@ -422,11 +423,11 @@ class UserController extends Controller
             return view('admin-panel.user-view');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with([
-                'message'     => 'You dont have Permissions to view the user !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.users.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to view the user !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
 
         }catch(\Exception $e){
             session()->now('view_user_message','User does not exist');
@@ -472,11 +473,11 @@ class UserController extends Controller
             return view('admin-panel.user-edit');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with([
-                'message'     => 'You dont have Permissions to edit the user',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.users.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to edit the user !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+             );
 
         }
         catch(\Exception $e){
@@ -508,12 +509,9 @@ class UserController extends Controller
             if (!$isUpdated)
                 throw new CustomException("User update failed");
 
-
-            return redirect()->route('admin.users.index')->with([
-                'message' => 'Teacher update success',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect()->route('admin.users.index')->with(
+                AlertDataUtil::success('Teacher update success')
+            );
 
         }catch(CustomException $e){
             //dd($e->getMessage());
@@ -564,11 +562,9 @@ class UserController extends Controller
             if (!$isUpdated)
                 throw new CustomException("User update failed");
 
-            return redirect()->route('admin.users.index')->with([
-                'message' => 'Student update success',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect()->route('admin.users.index')->with(
+                AlertDataUtil::success('Student update success')
+            );
 
         }catch(CustomException $e){
             //dd($e->getMessage());
@@ -617,12 +613,9 @@ class UserController extends Controller
             $isUpdated = $this->adminUserService->updateMarketerRec($request, $userData['dbRec']);
             if (!$isUpdated)
                 throw new CustomException("User update failed");
-
-            return redirect()->route('admin.users.index')->with([
-                'message' => 'Student update success',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect()->route('admin.users.index')->with(
+                AlertDataUtil::success('Marketer update success')
+            );
 
         }catch(CustomException $e){
             //dd($e->getMessage());
@@ -672,11 +665,9 @@ class UserController extends Controller
             if (!$isUpdated)
                 throw new CustomException("User update failed");
 
-            return redirect()->route('admin.users.index')->with([
-                'message'  => 'Editor update success',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect()->route('admin.users.index')->with(                
+                AlertDataUtil::success('Editor update success')
+            );
 
         }catch(CustomException $e){
             //dd($e->getMessage());
@@ -738,11 +729,12 @@ class UserController extends Controller
             ]);
 
         }catch(AuthorizationException $e){
-            return response()->json([
-                'message'=> 'You dont have Permissions to update user status !',
-                'status' => 'error',
-                'msgTitle'=> 'Permission Denied !'
-            ]);
+            return response()->json(
+                AlertDataUtil::error('You dont have Permissions to update user status !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
+
         }
         catch(\Exception $e){
             return response()->json([
@@ -802,32 +794,27 @@ class UserController extends Controller
             if (!$isDelete)
                 throw new CustomException("User delete failed",$eArr);
 
-            return redirect(route($redirectRoute, []). $hash)->with([
-                'message'   => 'successfully deleted the user record',
-                'cls'       => 'flash-success',
-                'msgTitle'  => 'Success!',
-            ]);
+            return redirect(route($redirectRoute, []). $hash)->with(                
+                AlertDataUtil::success('successfully deleted the user record')
+            );
 
         }catch(CustomException $e){
-            return redirect(route('admin.users.index',[]).$hash)->with([
-                'message'     => $e->getMessage(),
-                'cls'         => "flash-danger",
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect(route('admin.users.index',[]).$hash)->with(
+                AlertDataUtil::error($e->getMessage())
+            );
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with([
-                'message'     => 'You dont have Permissions to delete the user !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.users.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to delete the user !',[
+                    'msgTitle' => 'Permission Denied !',
+                ])
+            );
         }catch(\Exception $e){
-            return redirect(route('admin.users.index',[]).$hash)->with([
-                'message'     => 'User delete failed!',
-                //'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect(route('admin.users.index',[]).$hash)->with(
+                AlertDataUtil::error('User delete failed !',[
+                    //'message' => $e->getMessage(),
+                ])
+            );
         }
 
     }
@@ -855,11 +842,11 @@ class UserController extends Controller
             return view('admin-panel.user-approve-teachers');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with([
-                'message'     => 'You dont have Permissions to view the user !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.users.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to view the user !',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
 
         }catch(\Exception $e){
             session()->now('message','User does not exist');
@@ -902,25 +889,23 @@ class UserController extends Controller
 
         }catch(CustomException $e){
             return view('admin-panel.teacher.approve-account')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
+                AlertDataUtil::error($e->getMessage())
             ]);
 
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with([
-                'message'     => 'You dont have Permissions to view the user !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+        }catch(AuthorizationException $e){            
+            return redirect(route('admin.users.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to view the user !',[
+                    'msgTitle' => 'Permission Denied !',
+                ])
+            );
 
         }catch(\Exception $e){
-            return view('admin-panel.teacher.approve-account')->with([
-                'message'     => 'Error',
-                //'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect(route('admin-panel.teacher.approve-account')->with(
+                AlertDataUtil::error('Failed to load Un Approved Teachers!',[
+                    //'message' => $e->getMessage(),
+                ])
+            );
+            
         }
     }
 

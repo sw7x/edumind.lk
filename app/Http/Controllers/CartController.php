@@ -27,7 +27,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 
 use Cookie;
-
+use App\Common\Utils\AlertDataUtil;
 use App\Services\CartService;
 
 //use App\Repositories\CouponRepository;
@@ -117,13 +117,11 @@ class CartController extends Controller
                 throw new CustomException('Form validation is failed');
 
             $cartCourseCount    =   $this->cartService->getCartItemCountByStudent($user);
-            if($cartCourseCount <= 0){
-                return  redirect()->route('view-cart')->with([
-                    'message'     => 'Your cart is empty therefore cannot submit billing info !',
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Error !'
-                ]);
-            }
+            if($cartCourseCount <= 0)
+                return  redirect()->route('view-cart')->with(
+                    AlertDataUtil::error('Your cart is empty therefore cannot submit billing info !',[
+                );
+            
 
             $saveFormData   = json_encode($request->except(['from','_token']));
             $dbRec          = $this->cartService->saveBillingInfoData($saveFormData, $user);
@@ -143,23 +141,18 @@ class CartController extends Controller
             return  redirect()->back()
                         ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
                         ->withInput($request->input())
-                        ->with([
-                            'message'     => $e->getMessage(),
-                            'cls'         => 'flash-danger',
-                            'msgTitle'    => 'Error !',
-                        ]);
+                        ->with(AlertDataUtil::error($e->getMessage());
 
         }catch(\Exception $e){
             //dd($e->getMessage());
             return  redirect()->back()
                         ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
                         ->withInput($request->input())
-                        ->with([
-                            'message'     => $e->getMessage(),
-                            //'message'     => 'Form submission failed !',
-                            'cls'         => 'flash-danger',
-                            'msgTitle'    => 'Error !',
-                        ]);
+                        ->with(
+                            AlertDataUtil::error('Form submission failed !',[
+                                //'message'     => $e->getMessage(),
+                            ])
+                        );
         }
 
     }
@@ -219,11 +212,9 @@ class CartController extends Controller
             }
 
        }else{
-            return redirect(route('view-cart'))->with([
-                'message'   => 'Course remove from cart failed!',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!',
-            ]);
+            return redirect(route('view-cart'))->with(
+                AlertDataUtil::error('Course remove from cart failed!')
+            );
        }
 
     }
@@ -299,20 +290,15 @@ class CartController extends Controller
 
         }catch(CustomException $e){
 			dd($e->getMessage());
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
         	dd($e->getMessage());
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                //'message'     => 'Course does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error('Checkout failed !',[
+                    //'message'     => $e->getMessage(),
+                ])
+            );
         }
 
     }
@@ -457,22 +443,18 @@ class CartController extends Controller
 
         }catch(CustomException $e){
             //dd($e->getMessage());
-            return view('student.cart.payment-failed')->with([
-                'message'   => $e->getMessage(),
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error !',
-                'returnUrl' => $returnUrl
-            ]);
+            return view('student.cart.payment-failed')->with(
+                AlertDataUtil::error($e->getMessage(),['returnUrl' => $returnUrl])
+            );
 
         }catch(\Exception $e){
             //dd($e->getMessage());
-            return view('student.cart.payment-failed')->with([
-                //'message'   => $e->getMessage(),
-                'message'   => 'there was an issue processing your payment',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error !',
-                'returnUrl' => $returnUrl
-            ]);
+            return view('student.cart.payment-failed')->with(
+                AlertDataUtil::error('There was an issue processing your payment',[
+                    //'message' => $e->getMessage(),
+                    'returnUrl' => $returnUrl
+                ])
+            );
         }
     }
 
@@ -519,31 +501,21 @@ class CartController extends Controller
                     'beneficiary_earn_amount'   => 0
                 ]);
 
-                return redirect()->back()->with([
-                    'message'     => 'Successfully added course to your cart',
-                    'cls'         => 'flash-success',
-                    'msgTitle'    => 'Success !',
-                ]);
+                return  redirect()->back()
+                            ->with(AlertDataUtil::success('Successfully added course to your cart'));
 
             }else{
                 throw new ModelNotFoundException;
             }
         }catch(CustomException $e){
-
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
-
             return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                //'message'     => 'Course does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+                AlertDataUtil::error('Course add to cart failed !',[
+                    //'message'     => $e->getMessage(),
+                ])
+            );
         }
     }
 
@@ -582,28 +554,19 @@ class CartController extends Controller
 			$csRec->beneficiary_earn_amount = 0;
 			$csRec->save();
 
-			return redirect()->route('view-cart')->with([
-                'message'     => 'Successfully removed coupon from your cart',
-                'cls'         => 'flash-success',
-                'msgTitle'    => 'Success !',
-            ]);;
+			return   redirect()->route('view-cart')
+                        ->with(AlertDataUtil::success('Successfully removed coupon from your cart'));
 
 
     	}catch(CustomException $e){
-
-			return redirect()->route('view-cart')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+			return redirect()->route('view-cart')->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
-
-			return redirect()->route('view-cart')->with([
-                'message'     => 'Unable to remove coupon from your cart',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+			return redirect()->route('view-cart')->with(
+                AlertDataUtil::error('Unable to remove coupon from your cart',[
+                    //'message' => $e->getMessage()
+                )
+            );
         }
     }
 
@@ -616,9 +579,6 @@ class CartController extends Controller
 
     	//remove multiple applied cc
 		//dump($cartItemsQuery->where('used_coupon_code','!=',null)->count());
-
-
-
 
     	try{
 			$user = Sentinel::getUser();
@@ -718,29 +678,20 @@ class CartController extends Controller
 				$ccAppliedCrtItem->save();
 			});
 
-            return redirect()->route('view-cart')->with([
-                'message'     => 'Successfully applied coupon code',
-                'cls'         => 'flash-success',
-                'msgTitle'    => 'Success !',
-            ]);
+            return redirect()->route('view-cart')->with(
+                AlertDataUtil::success('Successfully applied coupon code')
+            );
 
 
 		}catch(CustomException $e){
-
-            return redirect()->route('view-cart')->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->route('view-cart')->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
-
-            return redirect()->route('view-cart')->with([
-                //'message'     => $e->getMessage(),
-                'message'     => 'Coupon code was failed to apply',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->route('view-cart')->with(
+                AlertDataUtil::error('Coupon code was failed to apply',[
+                    //'message' => $e->getMessage(),
+                ])
+            );
         }
 
 	}
