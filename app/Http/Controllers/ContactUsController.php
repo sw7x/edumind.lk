@@ -14,6 +14,7 @@ use App\Common\SharedServices\UserSharedService;
 //use App\Common\Utils\RecaptchaUtil;
 use App\Http\Requests\ContactUsFormRequest;
 use Illuminate\Support\Facades\Session;
+use App\Common\Utils\AlertDataUtil;
 
 
 class ContactUsController extends Controller
@@ -23,7 +24,7 @@ class ContactUsController extends Controller
 
     public function __construct(ContactUsService $contactUsService){
         $this->contactUsService = $contactUsService;
-                $this->middleware('auth');
+        $this->middleware('auth');
 
         //$this->middleware('withOutUserRoles:RoleModel::ADMIN');
     }
@@ -50,33 +51,20 @@ class ContactUsController extends Controller
             $insertedRec = $this->contactUsService->saveContactUsMsg($request);
             if(!$insertedRec)
                 throw new CustomException('Failed to save your message in database');
-
-            return redirect()->back()->with([
-                'message'  => 'Your message has been sent successfully',
-                'cls'      => 'flash-success',
-                'msgTitle' => 'Success',
-            ]);
+            
+            return redirect()->back()->with(AlertDataUtil::success('Your message has been sent successfully'));
 
         }catch(CustomException $e){
             return back()
             ->withErrors($formErrors)
             ->withInput()
-            ->with([
-                'message'   => $e->getMessage(),
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!'
-            ]);
+            ->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             return back()
             ->withErrors($formErrors)
             ->withInput()
-            ->with([
-                'message'   => $e->getMessage(),
-                //'message'     => 'Form submit failed',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error!'
-            ]);
+            ->with(AlertDataUtil::error('Form submit failed',['message'=> $e->getMessage()]));
         }
 
 

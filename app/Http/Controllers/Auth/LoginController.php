@@ -11,14 +11,14 @@ use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Role as RoleModel;
 //use Illuminate\Support\Facades\Auth;
-
+use App\Common\Utils\AlertDataUtil;
 
 class LoginController extends Controller
 {
     public function __construct(){   
         $this->middleware('checkGuest',
             ['only' => ['login']]
-        );  
+        );     
     }
 
 
@@ -66,62 +66,57 @@ class LoginController extends Controller
                     return redirect()->route('admin.dashboard');
                 }                
 
-            }else{
+            }else{                
                 $pwResetTxt = "if you dont remember your password then you can reset it in here <a class='text-blue-600' href='".route("auth.reset-password-req-page")."'>Reset</a>";
-                return redirect()->back()->with([
-                    'message'  => 'Wrong credentials',
-                    //'message2' => $pwResetTxt,
-                    //'title'   => 'Student Registration submit page',
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                ]);
+                return redirect()->back()->with(
+                    AlertDataUtil::error('Wrong credentials',[
+                        'message2' => $pwResetTxt
+                        //'title'    => 'Student Registration submit page',
+                    ])
+                );
             }
 
         }
         catch(ThrottlingException $e){
             $delay = $e->getDelay();
-            return redirect()->back()->with([
-                'message' => "You are banned for {$delay} seconds",
-                //'title'   => 'Student Registration submit page',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error!',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error("You are banned for {$delay} seconds"),[
+                    //'title'   => 'Student Registration submit page'
+                ])                
+            );
 
         }catch(NotActivatedException $e){
-            return redirect()->back()->with([
-                'message' => "You account is not activated",
-                //'title'   => 'Student Registration submit page',
-                'cls'     => 'flash-warning',
-                'msgTitle'=> 'Warning!',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::warning('You account is not activated',[
+                    //'title'   => 'Student Registration submit page'                    
+                ])
+            );
 
         }
         catch(WrongUserTypeException $e){
-            return redirect()->back()->with([
-                'message' => $e->getMessage(),
-                //'title'   => 'Student Registration submit page',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error!',
+            return redirect()->back()->with(
+                AlertDataUtil::error($e->getMessage(),[
+                    //'title'   => 'Student Registration submit page',
+                ])
             ]);
 
         }
         catch(CustomException $e){
-            return redirect()->back()->with([
-                'message'  => $e->getMessage(),
-                //'title'  => 'Student Registration submit page',
-                'cls'      => 'flash-danger',
-                'msgTitle' => 'Error!'
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error($e->getMessage(),[
+                    //'message' => $e->getMessage(),
+                    //'title'   => 'Student Registration submit page'
+                ])
+            );
 
         }
         catch(\Exception $e){
-            return redirect()->back()->with([
-                'message' => 'Something is wrong in login',
-                //'message' => $e->getMessage(),
-                //'title'   => 'Student Registration submit page',
-                'cls'     => 'flash-danger',
-                'msgTitle'=> 'Error!',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error('Something is wrong in login',[
+                    //'message' => $e->getMessage(),
+                    //'title'   => 'Student Registration submit page'
+                ])
+            );
 
         }
 

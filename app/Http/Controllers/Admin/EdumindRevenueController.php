@@ -7,6 +7,7 @@ use App\Services\Admin\EdumindRevenueService;
 use App\Http\Controllers\Controller;
 use App\Exceptions\CustomException;
 use App\View\DataFormatters\Admin\EdumindRevenueDataFormatter as AdminEdumindRevenueDataFormatter;
+use App\Common\Utils\AlertDataUtil;
 
 //use App\Models\Coupon;
 //use Illuminate\Auth\Access\AuthorizationException;
@@ -55,19 +56,15 @@ class EdumindRevenueController extends Controller
             $earningsData       =  AdminEdumindRevenueDataFormatter::prepareData($edumindRevenueData);
             return view('admin-panel.admin.earnings')->with(["data" => $earningsData]);
 
-        }catch(CustomException $e){
-            return view('admin-panel.admin.earnings')->with([
-                'message'   => $e->getMessage(),
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error !',
-            ]);
+        }catch(CustomException $e){                      
+            return view('admin-panel.admin.earnings')->with(AlertDataUtil::error($e->getMessage()));
+            
         }catch(\Exception $e){
-            return view('admin-panel.admin.earnings')->with([
-                //'message'  => $e->getMessage(),
-                'message'   => 'Unable to load earnings!',//-----------------
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error !',
-            ]);
+            return view('admin-panel.admin.earnings')->with(
+                AlertDataUtil::error('Unable to load earnings!',[
+                    //'message'  => $e->getMessage()
+                ])
+            );
         }
         
     }

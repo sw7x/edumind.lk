@@ -14,6 +14,7 @@ use App\View\DataFormatters\Admin\CouponCodeDataFormatter as AdminCouponCodeData
 use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 use App\Models\Role as RoleModel;
+use App\Common\Utils\AlertDataUtil;
 
 //use App\Models\Coupon;
 //use Illuminate\Support\Collection;
@@ -81,43 +82,35 @@ class CouponController extends Controller
             if (!$isSaved)
                 throw new CustomException("Coupon create failed");
 
-            return redirect()->route('admin.coupon-codes.create')->with([
-                'message' => 'Coupon created successfully',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+            return redirect()->route('admin.coupon-codes.create')->with(
+                AlertDataUtil::success('Coupon created successfully')
+            );
 
         }catch(CustomException $e){
 
             return redirect(route('admin.coupon-codes.create'))
                 ->withErrors($couponCreateValErrors ?? [],'couponCreateError')
                 ->withInput($request->input())
-                ->with([
-                    'message'               => $e->getMessage(),
-                    //'message'             => $e->getMessage(),
-                    'cls'                   => 'flash-danger',
-                    'msgTitle'              => 'Error!',
-                ]);
+                ->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(AuthorizationException $e){
             return redirect(route('admin.coupon-codes.create'))
-                ->with([
-                    'message'   => 'You dont have Permissions to create Coupons !',
-                    //'message' => $e->getMessage(),
-                    'cls'       => 'flash-danger',
-                    'msgTitle'  => 'Permission Denied!'
-                ]);
+                ->with(
+                    AlertDataUtil::error('You dont have Permissions to create Coupons !', [
+                        //'message' => $e->getMessage(),
+                        'msgTitle'  => 'Permission Denied!'
+                    ])
+                );
 
         }catch(\Exception $e){
             return redirect(route('admin.coupon-codes.create'))
                 ->withErrors($couponCreateValErrors ?? [],'couponCreateError')
                 ->withInput($request->input())
-                ->with([
-                    //'message'   => 'Coupon create Failed!',
-                    'message' => $e->getMessage(),
-                    'cls'       => 'flash-danger',
-                    'msgTitle'  => 'Error!'
-                ]);
+                ->with(
+                    AlertDataUtil::error('Coupon create Failed !', [
+                        //'message' => $e->getMessage(),
+                    ])
+                );
         }
 
 

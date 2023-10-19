@@ -20,6 +20,7 @@ use App\Services\Admin\SubjectService as AdminSubjectService;
 use App\View\DataFormatters\Admin\CourseDataFormatter as AdminCourseDataFormatter;
 use Illuminate\Support\Arr;
 use App\Common\SharedServices\CourseSharedService;
+use App\Common\Utils\AlertDataUtil;
 
 //use Illuminate\Database\Eloquent\ModelNotFoundException;
 //use App\Services\TeacherService;
@@ -68,11 +69,11 @@ class CourseController extends Controller
             return view('admin-panel.course-list');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.dashboard'))->with([
-                'message'   =>'You dont have Permissions view all users',
-                'cls'       =>'flash-danger',
-                'msgTitle'  =>'Permission Denied!'
-            ]);
+            return redirect(route('admin.dashboard'))->with(
+                AlertDataUtil::error('You dont have Permissions view all users',[
+                    'msgTitle' => 'Permission Denied!'
+                ]);
+            );            
 
         }catch(\Exception $e){
             session()->now('message','Failed to show courses');
@@ -115,11 +116,11 @@ class CourseController extends Controller
             return view('admin-panel.course-add');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.courses.index'))->with([
-                'message'   =>'You dont have Permissions to create courses',
-                'cls'       =>'flash-danger',
-                'msgTitle'  =>'Permission Denied!'
-            ]);
+            return redirect(route('admin.courses.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to create courses',[
+                    'msgTitle' => 'Permission Denied!'
+                ]);
+            );
 
         }catch(\Exception $e){
             //dd($e->getMessage());
@@ -167,12 +168,10 @@ class CourseController extends Controller
             $isSaved = $this->adminCourseService->saveDbRec($request);
             if (!$isSaved)
                 throw new CustomException("Course create failed");
-
-            return redirect()->route('admin.courses.create')->with([
-                'message' => 'Course created successfully',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+ 
+            return redirect()->route('admin.courses.create')->with(
+                AlertDataUtil::sucess('Course created successfully')
+            );
 
         }catch(CustomException $e){
 
@@ -184,22 +183,23 @@ class CourseController extends Controller
                 ->withErrors($courseValErrors['contentMsg'] ?? [],'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [],'infoErrMsgArr')
                 ->withInput($request->input())
-                ->with([
-                    'message'               => $e->getMessage(),
-                    //'message'             => $e->getMessage(),
-                    'cls'                   => 'flash-danger',
-                    'msgTitle'              => 'Error!',
-                    'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
+                ->with(
+                    AlertDataUtil::error('You dont have Permissions to create Teachers !',[
+                        //'message'               => $e->getMessage(),
+                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
+                    ])
                 ]);
 
         }catch(AuthorizationException $e){
             return redirect(route('admin.courses.create'))
-                ->with([
-                    'message'       => 'You dont have Permissions to create Teachers !',
-                    //'message2'    => $pwResetTxt,
-                    'cls'           => 'flash-danger',
-                    'msgTitle'      => 'Permission Denied!'
-                ]);
+                ->with(
+                    AlertDataUtil::error('You dont have Permissions to create Teachers !',[
+                        'msgTitle'      => 'Permission Denied!',
+                        //'message2'    => $pwResetTxt,
+                    ])
+                );
+
+
 
         }catch(\Exception $e){
             /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
@@ -210,14 +210,12 @@ class CourseController extends Controller
                 ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
                 ->withInput($request->input())
-                ->with([
-                    //'message'  => 'Add Teacher Failed!',
-                    'message'  => $e->getMessage(),
-                    //'message2' => $pwResetTxt,
-                    'cls'     => 'flash-danger',
-                    'msgTitle'=> 'Error!',
-                    'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
-                ]);
+                ->with(
+                    AlertDataUtil::error('Add Teacher Failed !',[
+                        //'message'             => $e->getMessage(),
+                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []]
+                    ])
+                );
         }
 
     }
@@ -263,11 +261,11 @@ class CourseController extends Controller
             return view('admin-panel.course-view');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.courses.index'))->with([
-                'message'     => 'You dont have Permissions to view the course !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.courses.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to view the course !',[
+                    'msgTitle' => 'Permission Denied!',
+                ])
+            );
 
         }catch(\Exception $e){
             session()->now('message',$e->getMessage());
@@ -335,14 +333,14 @@ class CourseController extends Controller
             return view('admin-panel.course-edit');
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.courses.index'))->with([
-                'message'     => 'You dont have Permissions to edit the course',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied !',
-            ]);
+            return redirect(route('admin.courses.index'))->with(
+                AlertDataUtil::error('You dont have Permissions to edit the course !',[
+                    'msgTitle' => 'Permission Denied!',
+                ])
+            );
 
         }
-        catch(\Exception $e){
+        catch(\Exception $e){            
             //session()->now('message'  ,'Failed to load course edit form!');
             session()->now('message'  ,$e->getMessage());
             session()->now('cls'      ,'flash-danger');
@@ -395,12 +393,10 @@ class CourseController extends Controller
             $isSaved = $this->adminCourseService->updateDbRec($request, $courseData['dbRec']);
             if (!$isSaved)
                 throw new CustomException("Course create failed");
-            
-            return redirect()->route('admin.courses.index')->with([
-                'message' => 'Course created successfully',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success',
-            ]);
+                      
+            return redirect()->route('admin.courses.index')->with(
+                AlertDataUtil::success('Course created successfully')    
+            );
 
         }catch(CustomException $e){
             //dump($request->input());
@@ -413,21 +409,20 @@ class CourseController extends Controller
                 ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
                 ->withInput($request->input())
-                ->with([
-                    'message'               => $e->getMessage(),
-                    //'message'             => $e->getMessage(),
-                    'cls'                   => 'flash-danger',
-                    'msgTitle'              => 'Error!',
-                    'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
-                ]);
+                ->with(
+                    AlertDataUtil::error($e->getMessage(),[
+                        //'message'             => $e->getMessage(),
+                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
+                    ])
+                );
 
         }catch(AuthorizationException $e){
             return redirect()->route('admin.courses.index')
-                ->with([
-                    'message'     => 'You dont have Permissions to update the course!',
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Permission Denied !',
-                ]);
+                ->with(
+                    AlertDataUtil::error('You dont have Permissions to update the course !',[
+                        'msgTitle' => 'Permission Denied!',
+                    ])
+                );
 
         }catch(\Exception $e){
             //dd($e->getMessage());
@@ -435,14 +430,12 @@ class CourseController extends Controller
                 ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
                 ->withInput($request->input())
-                ->with([
-                    'message'               => 'Course update failed!',
-                    //'message'             => $e->getMessage(),
-                    //'message2'            => $pwResetTxt,
-                    'cls'                   => 'flash-danger',
-                    'msgTitle'              => 'Error!',
-                    'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
-                ]);
+                ->with(
+                    AlertDataUtil::error('Course update failed !',[
+                        //'message'             => $e->getMessage(),
+                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
+                    ])
+                );
         }
 
     }
@@ -469,27 +462,24 @@ class CourseController extends Controller
             if (!$isDelete)
                 throw new CustomException("Course delete failed");
 
-            return redirect(route('admin.courses.index'))->with([
-                'message'  => 'successfully deleted the course',
-                'cls'      => 'flash-success',
-                'msgTitle' => 'Success!',
-            ]);
+            return redirect(route('admin.courses.index'))->with(
+                AlertDataUtil::success('successfully deleted the course')
+            );
 
         }catch(CustomException $e){
             //dd('CustomException');
-            $exData = $e->getData();
-            return redirect(route('admin.courses.index'))->with([
-                'message'     => $e->getMessage(),
-                'cls'         => $exData['cls'] ?? "flash-danger",
-                'msgTitle'    => $exData['msgTitle']  ?? 'Error!',
-            ]);
+            $exData = $e->getData();            
+            return redirect(route('admin.courses.index'))->with(
+                AlertDataUtil::error($e->getMessage(),[
+                    'cls'         => $exData['cls'] ?? "flash-danger",
+                    'msgTitle'    => $exData['msgTitle']  ?? 'Error!'
+                ])
+            );
 
         }catch(\Exception $e){
-            return redirect(route('admin.courses.index'))->with([
-                'message'     => 'Course delete failed!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect(route('admin.courses.index'))->with(
+                AlertDataUtil::error('Course delete failed !')
+            );
         }
     }
 

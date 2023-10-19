@@ -8,12 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Sentinel;
+use App\Common\Utils\AlertDataUtil;
 
 //use Illuminate\Support\Facades\Response;
 
 class ChangePasswordController extends Controller
 {
-
 
     public function changePassword(Request $request) {
         return view ('auth.form-change-password');
@@ -48,34 +48,24 @@ class ChangePasswordController extends Controller
             
             if ($hasher->check($oldPassword, $user->password)) {
                 Sentinel::update($user, array('password' => $password));
-                return redirect()->route('auth.change-password', [])->with([
-                    'msgTitle'  => 'Success!',
-                    'message'   => 'Password successfully updated',
-                    'cls'       =>'flash-success'
-                ]);
 
-            }else{
-               return redirect()->back()->with([
-                    'msgTitle'  => 'Error!',
-                    'message'   => 'Current password is incorrect',
-                    'cls'       => 'flash-danger'
-                ]);
+                return redirect()->route('auth.change-password', [])->with(
+                    AlertDataUtil::success('Password successfully updated')
+                );
+
+            }else{                
+                return redirect()->back()->with(AlertDataUtil::error('Current password is incorrect'));
             }
 
-        }catch(CustomException $e){
-            return redirect()->back()->with([
-                'msgTitle'  => 'Error!',
-                'message'   => $e->getMessage(),
-                'cls'       => 'flash-danger'
-            ]);
+        }catch(CustomException $e){            
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
-        }catch(\Exception $e){
-            return redirect()->back()->with([
-                'msgTitle'  => 'Error!',
-                'message'   => 'Failed to change your password',
-                //'message'   => $e->getMessage(),                    
-                'cls'       => 'flash-danger'
-            ]);
+        }catch(\Exception $e){            
+            return redirect()->back()->with(
+                AlertDataUtil::error('Failed to change your password',[
+                    //'message'   => $e->getMessage(),
+                ])
+            );
 
         }
         

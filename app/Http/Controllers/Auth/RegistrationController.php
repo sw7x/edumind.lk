@@ -18,6 +18,7 @@ use GuzzleHttp\Client;
 use App\Models\User as UserModel;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
+use App\Common\Utils\AlertDataUtil;
 
 //use Swift_TransportException;
 
@@ -103,36 +104,21 @@ class RegistrationController extends Controller
                 $username       = $request->input('username');
                 Mail::to($email)->send(new StudentRegMail($link,$username));
 
-                return view('form-submit-page')->with([
-                    'message'   => 'Successfully registered, check you emails to use account activation link',
-                    'cls'       => 'flash-success',
-                    'msgTitle'  => 'Success!'
-                ]);
+
+                return view('form-submit-page')->with(
+                    AlertDataUtil::success('Successfully registered, check you emails to use account activation link')
+                );
 
             }else{
-                return back()->with([
-                    'message'     => 'Recaptcha validation failed',
-                    'cls'         => 'flash-danger',
-                    'msgTitle'    => 'Form submit error !'
-                ]);
+                return back()->with(AlertDataUtil::error('Recaptcha validation failed'));
             }
 
         }catch(CustomException $e){
-            return redirect()->back()->with([
-                'message'   => $e->getMessage(),
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!'
-            ]);
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             //return redirect()->route('auth.register');
-            return redirect()->back()->with([
-                'message'   => 'Error in registration process',
-                //'message' => $e->getMessage(),
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!'
-            ]);                
-            
+            return redirect()->back()->with(AlertDataUtil::error('Error in registration process'));                        
         }
         
 
@@ -220,47 +206,35 @@ class RegistrationController extends Controller
                 $username       = $request->input('username');
                 Mail::to($email)->send(new TeacherRegMail($link,$username));
 
-                return view('form-submit-page')->with([
-                    'message'  => 'Successfully registered, check you emails to use account activation link',
-                    'title'    => 'Teacher registration submit page',
-                    'cls'      => 'flash-success',
-                    'msgTitle' => 'Success!',
-                ]);
+                return view('form-submit-page')->with(
+                    AlertDataUtil::success('Successfully registered, check you emails to use account activation link',[
+                        'title' => 'Teacher registration submit page'
+                    ])
+                );
 
             }else{
-                return back()->with([
-                    'message'   => 'Recaptcha validation failed',
-                    'cls'       => 'flash-danger',
-                    'msgTitle'  => 'Form submit error !',
-                ]);
+                return back()->with(AlertDataUtil::error('Recaptcha validation failed'));
             }
 
         }catch(CustomException $e){
             if(isset($destination) && ($destination != false))
                 Storage::disk('public')->delete($destination);
             
-            return redirect()->back()->with([
-                'message'   => $e->getMessage(),
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!'
-            ]);
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             if(isset($destination) && ($destination != false))
                 Storage::disk('public')->delete($destination);
             
             //return redirect()->route('auth.register');
-            return redirect()->back()->with([
-                //'message'   => $e->getMessage(),
-                'message'   => 'Error in registration process',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!'
-            ]);
-
+            return redirect()->back()->with(
+                AlertDataUtil::error('Error in registration process',[
+                    //'message'   => $e->getMessage(),
+                ])
+            );
         }
         
 
     }
-
 
 }

@@ -19,6 +19,7 @@ use App\View\DataFormatters\CourseDataFormatter;
 
 use App\View\DataFormatters\SubjectDataFormatter;
 use DB;
+use App\Common\Utils\AlertDataUtil;
 
 //use App\Repositories\CourseRepository;
 //use App\Common\Utils\ColorUtil;
@@ -65,13 +66,11 @@ class CourseController extends Controller
 
 
     public function guestEnroll(){
-        return redirect(route('auth.login'))->with([
-            'message'   => 'Login before enroll the course',
-            //'message2' => $pwResetTxt,
-            //'title'   => 'Student Registration submit page',
-            'cls'       => 'flash-warning',
-            'msgTitle'  => 'Warning!',
-        ]);
+        return redirect(route('auth.login'))->with(
+            AlertDataUtil::warning('Login before enroll the course',[
+                //'title' => 'Student Registration submit page',
+            ])
+        );
 
     }
 
@@ -115,14 +114,12 @@ class CourseController extends Controller
         ]);
 
         if ($validator->fails())
-            return redirect()->route('courses.search')->with([
-                'message'       => 'Search failed!',
-                //'message'     => $e->getMessage(),
-                'cls'           => 'flash-danger',
-                'msgTitle'      => 'Error!',
-                'valErrMsgArr'  => $validator->messages()->get('*') ?? []
-            ]);
-
+            return redirect()->route('courses.search')->with(
+                AlertDataUtil::error('Search failed !',[
+                    'valErrMsgArr'  => $validator->messages()->get('*') ?? []
+                    //'message'     => $e->getMessage()
+                ])
+            );
 
         $coursesDtoArr  =   $this->courseService->loadSearchResults($request);
 
@@ -190,32 +187,22 @@ class CourseController extends Controller
                     'is_complete'           => 0,
                     'course_selection_id'   => $rec->id,
                 ]);
-
-                return redirect()->back()->with([
-                    'message'     => 'Successfully enrolled to the course',
-                    'cls'         => 'flash-success',
-                    'msgTitle'    => 'Success !',
-                ]);
+                return redirect()->back()->with(
+                    AlertDataUtil::success('Successfully enrolled to the course')
+                );
 
             }else{
                 throw new ModelNotFoundException;
             }
         }catch(CustomException $e){
-
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
-
-            return redirect()->back()->with([
-                //'message'     => $e->getMessage(),
-                'message'     => 'Course does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error('Course does not exist!',[
+                    //'message' => $e->getMessage()
+                ])
+            );
         }
     }
 
@@ -242,7 +229,6 @@ class CourseController extends Controller
 
             if($course != null){
 
-
                 $CourseSelectionRecord = CourseSelectionModel::where('course_id',$course->id)->where('student_id',$user->id)->get()->first();
 
                 $enrollmentRecord   = EnrollmentModel::where('course_selection_id', $CourseSelectionRecord->id)->get()->first();
@@ -250,29 +236,22 @@ class CourseController extends Controller
                 $enrollmentRecord->complete_date    = Carbon::now();
                 $enrollmentRecord->save();
 
-                return redirect()->back()->with([
-                    'message'     => 'Successfully listed course as completed',
-                    'cls'         => 'flash-success',
-                    'msgTitle'    => 'Success !',
-                ]);
+                return redirect()->back()->with(
+                    AlertDataUtil::success('Successfully listed course as completed')
+                );
 
             }else{
                 throw new ModelNotFoundException;
             }
-        }catch(CustomException $e){
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+        }catch(CustomException $e){           
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
-            return redirect()->back()->with([
-                'message'     => $e->getMessage(),
-                //'message'     => 'Course does not exist!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error !',
-            ]);
+            return redirect()->back()->with(
+               AlertDataUtil::error('Course does not exist!', [
+                //'message' => $e->getMessage(),
+               ])
+           );
 
         }
 

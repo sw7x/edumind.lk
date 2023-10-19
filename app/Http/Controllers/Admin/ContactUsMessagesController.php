@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Services\Admin\ContactUsService as AdminContactUsService;
 use App\View\DataFormatters\Admin\ContactUsDataFormatter as AdminContactUsDataFormatter;
+use App\Common\Utils\AlertDataUtil;
 
 //use App\Repositories\ContactUsRepository;
 
@@ -201,37 +202,34 @@ class ContactUsMessagesController extends Controller
             $isDelete  = $this->adminContactUsService->deleteContactUsMessage($id);
             if(!$isDelete)
                 throw new CustomException("Failed to delete comment !");
-
-            return redirect(route($redirectRoute))->with([
-                'message'  => 'successfully deleted the comment',
-                'cls'     => 'flash-success',
-                'msgTitle'=> 'Success!',
-            ]);
+            
+            return redirect(route($redirectRoute))->with(
+                AlertDataUtil::success('successfully deleted the comment !')
+            );
 
 
         }catch(CustomException $e){
             $exData = $e->getData();
-            return redirect()->back()->with([
-            //return redirect(route($redirectRoute ?? 'admin.dashboard'))->with([
-                'message'     => $e->getMessage(),
-                'cls'         => $exData['cls'] ?? "flash-danger",
-                'msgTitle'    => $exData['msgTitle']  ?? 'Error!',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error($e->getMessage(),[
+                    'cls'         => $exData['cls'] ?? "flash-danger",
+                    'msgTitle'    => $exData['msgTitle']  ?? 'Error!',
+                ])
+            );
 
         }catch(AuthorizationException $e){
-            return redirect(route('admin.dashboard'))->with([
-                'message'     => 'You dont have Permissions to delete the comment !',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Permission Denied!',
-            ]);
+            return redirect(route('admin.dashboard'))->with(
+                AlertDataUtil::error('You dont have Permissions to view guest comments!',[
+                    'msgTitle' => 'Permission Denied!'
+                ])
+            );
 
         }catch(\Exception $e){
-            return redirect()->back()->with([
-                //'message'     => $e->getMessage(),
-                'message'     => 'Comment delete failed!',
-                'cls'         => 'flash-danger',
-                'msgTitle'    => 'Error!',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error('Comment delete failed !',[
+                    //'message' => $e->getMessage()
+                ])
+            );
         }
     }
 

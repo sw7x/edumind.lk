@@ -11,18 +11,18 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Sentinel;
+use App\Common\Utils\AlertDataUtil;
 
 
 //todo cant reset password editor,marketers,admin
 class ForgotPasswordController extends Controller
 {
+    
     public function resetPasswordReq(){        
         if(Sentinel::check())
-            return redirect(route('home'))->with([
-                'message'   => 'Logout first, then request reset password',
-                'cls'       => 'flash-warning',
-                'msgTitle'  => 'Warning!',
-            ]);
+            return redirect(route('home'))->with(
+                AlertDataUtil::warning('Logout first, then request reset password !')
+            );
 
         return view ('auth.form-forget-password-request');
     }
@@ -33,11 +33,9 @@ class ForgotPasswordController extends Controller
         try {
             
             if(Sentinel::check())
-                return redirect(route('home'))->with([
-                    'message'   => 'Logout first, then request reset password',
-                    'cls'       => 'flash-warning',
-                    'msgTitle'  => 'Warning!',
-                ]);
+                return redirect(route('home'))->with(
+                    AlertDataUtil::warning('Logout first, then request reset password !')
+                );
 
             $validator = Validator::make($request->all(), ['email' => 'required|email'],[
                 'email.required'    => 'Email is required.',
@@ -51,11 +49,9 @@ class ForgotPasswordController extends Controller
             
             if(is_null($user)){            
                 $userRec = UserModel::withoutGlobalScope('active')->whereEmail($request->email)->first();          
-                return  redirect()->back()->with([
-                   'message' => ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.',
-                   'cls'     => 'flash-danger',
-                   'msgTitle'=> 'Error!',
-                ]);
+                $msg     = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
+                return  redirect()->back()->with(AlertDataUtil::error($msg));
+                
             }
 
             
@@ -83,20 +79,18 @@ class ForgotPasswordController extends Controller
             $pwResetTxt     = "{$siteAddress}/reset/{$encryptedEmail}/{$reminder->code}";
             Mail::to($email)->send(new resetPasswordMail($pwResetTxt));
 
-            return redirect()->back()->with([
-               'message' => 'Password reset link was sent to your email',
-               //'title' => 'Student registration submit page',
-               'cls'     => 'flash-success',
-               'msgTitle'=> 'Success!',
-            ]);            
+            return redirect()->back()->with(
+                AlertDataUtil::success('Password reset link was sent to your email',[
+                    //'title' => 'Student registration submit page'
+                ])
+            );            
             
         } catch (\Exception $e) {
-            return redirect()->back()->with([
-               'message' => 'Failed to sent email which contains password reset link',
-               //'title' => 'Student registration submit page',
-               'cls'     => 'flash-danger',
-               'msgTitle'=> 'Error!',
-            ]);     
+            return redirect()->back()->with(
+                AlertDataUtil::error('Failed to sent email which contains password reset link',[
+                    //'title' => 'Student registration submit page'
+                ])
+            );     
         }
 
     }
@@ -107,11 +101,9 @@ class ForgotPasswordController extends Controller
         try{
             
             if(Sentinel::check())
-                return redirect(route('home'))->with([
-                    'message'   => 'Logout first, then confirm resetting password',
-                    'cls'       => 'flash-warning',
-                    'msgTitle'  => 'Warning!',
-                ]);
+                return redirect(route('home'))->with(
+                    AlertDataUtil::warning('Logout first, then confirm resetting password')
+                );
 
             $email  =   Crypt::decrypt($encryptedEmail);
             $user   =   UserModel::whereEmail($email)->first();
@@ -119,11 +111,9 @@ class ForgotPasswordController extends Controller
             if(is_null($user)){
                 $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
                 $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
-                return redirect(route('auth.reset-password-req-page'))->with([
-                    'message'   => $err_message,
-                    'cls'       => 'flash-danger',
-                    'msgTitle'  => 'Error!',
-                ]);
+                return  redirect(route('auth.reset-password-req-page'))
+                            ->with(AlertDataUtil::error($err_message));   
+
             }
 
             $reminderModel  =   Reminder::createModel();
@@ -139,27 +129,23 @@ class ForgotPasswordController extends Controller
                     return view('auth.form-forget-password-confirm');
 
                 }else{
-                    return redirect(route('auth.reset-password-req-page'))->with([
-                        'message'   => 'Invalid reset password link',
-                        'cls'       => 'flash-danger',
-                        'msgTitle'  => 'Error!',
-                    ]);                                      
+                    return redirect(route('auth.reset-password-req-page'))->with(
+                        AlertDataUtil::error('Invalid reset password link')
+                    );                                      
                 }
             }else{
-                return redirect(route('auth.reset-password-req-page'))->with([
-                    'message'   => 'Invalid reset password link',
-                    'cls'       => 'flash-danger',
-                    'msgTitle'  => 'Error!',
-                ]);
+                return redirect(route('auth.reset-password-req-page'))->with(
+                    AlertDataUtil::error('Invalid reset password link')
+                );
+
             }
 
         }catch(\Exception $e){
-            return redirect(route('auth.reset-password-req-page'))->with([
-                //'message' => $e->getMessage(),
-                'message'   => 'Error in reset password',
-                'cls'       => 'flash-danger',
-                'msgTitle'  => 'Error!',
-            ]);
+            return redirect(route('auth.reset-password-req-page'))->with(
+                AlertDataUtil::error('Error in reset password',[
+                    //'message' => $e->getMessage(),
+                ])
+            );
         }
     }
 
@@ -168,11 +154,10 @@ class ForgotPasswordController extends Controller
         try{
             
             if(Sentinel::check())
-                return redirect(route('home'))->with([
-                    'message'   => 'Logout first, then confirm submit resetting password',
-                    'cls'       => 'flash-warning',
-                    'msgTitle'  => 'Warning!',
-                ]);
+                return redirect(route('home'))->with(
+                    AlertDataUtil::warning('Logout first, then confirm submit resetting password')
+                );
+
             
             $validator = Validator::make($request->all(),[
                 'password'              => 'confirmed|required|min:6|max:12',
@@ -188,7 +173,6 @@ class ForgotPasswordController extends Controller
             if(is_null($user)){
                 $userRec     = UserModel::withoutGlobalScope('active')->whereEmail($email)->first();    
                 $err_message = ($userRec) ? 'Cant reset password because your account is disabled' : 'Invalid email.';
-                
                 session()->now('message', $err_message);
                 session()->now('cls','flash-danger');
                 session()->now('msgTitle','Error!');
@@ -208,35 +192,29 @@ class ForgotPasswordController extends Controller
 
                 if($code == $resetCode){
                     Reminder::complete($user, $code,$request->password);
-                    return redirect()->route('auth.login')->with([
-                        'message'   => 'Please login with your new password',
-                        'cls'       => 'flash-success',
-                        'msgTitle'  => 'Success!',
-                        'message2'  => 'Successfully password reset was done!',
-                    ]);
+                    return redirect()->route('auth.login')->with(
+                        AlertDataUtil::success('Please login with your new password',[
+                            'message2'  => 'Successfully password reset was done!'
+                        ])
+                    );
 
                 }else{
-                    return redirect()->route('auth.reset-password-req-page')->with([
-                       'message'    => 'Invalid reset password link',
-                       'cls'        => 'flash-danger',
-                       'msgTitle'   => 'Error!',
-                    ]); 
+                    return redirect()->route('auth.reset-password-req-page')->with(
+                        AlertDataUtil::error('Invalid reset password link')
+                    ); 
                 }
             }else{
-                return redirect()->route('auth.reset-password-req-page')->with([
-                   'message'    => 'Invalid reset password link',
-                   'cls'        => 'flash-danger',
-                   'msgTitle'   => 'Error!',
-                ]);              
+                return redirect()->route('auth.reset-password-req-page')->with(
+                    AlertDataUtil::error('Invalid reset password link')
+                );              
             }
 
         }catch(\Exception $e){
-            return redirect()->back()->with([
-               'message'    => 'Error in reset password',
-               //'message'  => $e->getMessage(),
-               'cls'        => 'flash-danger',
-               'msgTitle'   => 'Error!',
-            ]);
+            return redirect()->back()->with(
+                AlertDataUtil::error('Error in reset password',[
+                    //'message'  => $e->getMessage(),
+                ])
+            );
         }
 
     }
