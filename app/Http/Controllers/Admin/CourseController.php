@@ -72,7 +72,7 @@ class CourseController extends Controller
             return redirect(route('admin.dashboard'))->with(
                 AlertDataUtil::error('You dont have Permissions view all users',[
                     'msgTitle' => 'Permission Denied!'
-                ]);
+                ])
             );            
 
         }catch(\Exception $e){
@@ -119,7 +119,7 @@ class CourseController extends Controller
             return redirect(route('admin.courses.index'))->with(
                 AlertDataUtil::error('You dont have Permissions to create courses',[
                     'msgTitle' => 'Permission Denied!'
-                ]);
+                ])
             );
 
         }catch(\Exception $e){
@@ -188,7 +188,7 @@ class CourseController extends Controller
                         //'message'               => $e->getMessage(),
                         'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
                     ])
-                ]);
+                );
 
         }catch(AuthorizationException $e){
             return redirect(route('admin.courses.create'))
@@ -213,7 +213,7 @@ class CourseController extends Controller
                 ->with(
                     AlertDataUtil::error('Add Teacher Failed !',[
                         //'message'             => $e->getMessage(),
-                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []]
+                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
                     ])
                 );
         }

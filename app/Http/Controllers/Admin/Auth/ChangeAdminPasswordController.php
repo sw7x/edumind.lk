@@ -14,7 +14,7 @@ class ChangeAdminPasswordController extends Controller
     
     public function changePassword(Request $request) {
         //dd($request->all());
-        $response = array();
+        $response = array();        
         try{
             $hasher = Sentinel::getHasher();
 

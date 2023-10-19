@@ -119,7 +119,7 @@ class CartController extends Controller
             $cartCourseCount    =   $this->cartService->getCartItemCountByStudent($user);
             if($cartCourseCount <= 0)
                 return  redirect()->route('view-cart')->with(
-                    AlertDataUtil::error('Your cart is empty therefore cannot submit billing info !',[
+                    AlertDataUtil::error('Your cart is empty therefore cannot submit billing info !')
                 );
             
 
@@ -141,7 +141,7 @@ class CartController extends Controller
             return  redirect()->back()
                         ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
                         ->withInput($request->input())
-                        ->with(AlertDataUtil::error($e->getMessage());
+                        ->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             //dd($e->getMessage());
@@ -511,7 +511,7 @@ class CartController extends Controller
             return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
-            return redirect()->back()->with([
+            return redirect()->back()->with(
                 AlertDataUtil::error('Course add to cart failed !',[
                     //'message'     => $e->getMessage(),
                 ])
@@ -565,7 +565,7 @@ class CartController extends Controller
 			return redirect()->route('view-cart')->with(
                 AlertDataUtil::error('Unable to remove coupon from your cart',[
                     //'message' => $e->getMessage()
-                )
+                ])
             );
         }
     }

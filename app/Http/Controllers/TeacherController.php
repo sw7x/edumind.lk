@@ -25,7 +25,7 @@ class TeacherController extends Controller
         $teachersArr    = TeacherDataFormatter::prepareUserListData($teachers);
         return view('teacher-list')->with(['teachers' => $teachersArr]);
     }
-
+    
 
     public function viewTeacher($username = null){
         if(!$username)

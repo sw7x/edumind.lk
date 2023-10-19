@@ -18,7 +18,7 @@ class LoginController extends Controller
     public function __construct(){   
         $this->middleware('checkGuest',
             ['only' => ['login']]
-        );     
+        );            
     }
 
 
@@ -80,7 +80,7 @@ class LoginController extends Controller
         catch(ThrottlingException $e){
             $delay = $e->getDelay();
             return redirect()->back()->with(
-                AlertDataUtil::error("You are banned for {$delay} seconds"),[
+                AlertDataUtil::error("You are banned for {$delay} seconds",[
                     //'title'   => 'Student Registration submit page'
                 ])                
             );
@@ -98,7 +98,7 @@ class LoginController extends Controller
                 AlertDataUtil::error($e->getMessage(),[
                     //'title'   => 'Student Registration submit page',
                 ])
-            ]);
+            );
 
         }
         catch(CustomException $e){

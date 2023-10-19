@@ -180,11 +180,11 @@ class UserController extends Controller
             ->withErrors($request->validator)
             ->withInput()
             ->with([
-                'teacher_submit_message'  => $e->getMessage(),
+                'teacher_submit_message'    => $e->getMessage(),
                 //'teacher_submit_message2' => $pwResetTxt,
-                //'teacher_submit_title'   => 'Student Registration submit page',
-                'teacher_submit_cls'     => $e->getData('cls') ?? 'flash-danger',
-                'teacher_submit_msgTitle'=> $e->getData('msgTitle') ?? 'Error !',
+                //'teacher_submit_title'    => 'Student Registration submit page',
+                'teacher_submit_cls'        => $e->getData('cls') ?? 'flash-danger',
+                'teacher_submit_msgTitle'   => $e->getData('msgTitle') ?? 'Error !',
             ]);
 
         }catch(AuthorizationException $e){
@@ -900,7 +900,7 @@ class UserController extends Controller
             );
 
         }catch(\Exception $e){
-            return redirect(route('admin-panel.teacher.approve-account')->with(
+            return redirect(route('admin-panel.teacher.approve-account'))->with(
                 AlertDataUtil::error('Failed to load Un Approved Teachers!',[
                     //'message' => $e->getMessage(),
                 ])
