@@ -12,44 +12,66 @@ use App\Permissions\PermissionCheckResultEnum;
 use App\Permissions\PermissionCheckMessageEnum;
 use App\Permissions\PermissionResponse;
 use App\Permissions\PermissionCheckRedirectEnum;
-
+use \BadMethodCallException;
+use \ArgumentCountError;
 
 
 class PermissionChecker{
 
-	
-	public static function authorize(string $ability, ...$args): void{
-		$target 	= reset($args);
-		$otherArgs 	= array_slice($args, 1);
-		
-		if ($target instanceof Model) {
-    		$model = reset($args);			
-    		self::authorizeOrAbortByModelRec($ability, $model, ...$otherArgs);
+	public static function authorize(string $ability, $args = []): void{
+		if (is_string($args)) {
+			self::authorizeOrAbortByModelClass($ability, $args);
 
-		} elseif(is_string($target)) {
-    		$className = reset($args);
-    		self::authorizeOrAbortByModelClass($ability, $className, ...$otherArgs);
+		} elseif ($args instanceof Model) {
+    		self::authorizeOrAbortByModelRec($ability, $args);
 
-		}else{
+		} elseif (is_array($args) && !empty($args)) {
+			$target 	= reset($args);
+			$otherArgs  = array_slice($args, 1);
+
+			if (is_string($target)) {
+    			self::authorizeOrAbortByModelClass($ability, $target, ...$otherArgs);
+
+			} elseif ($target instanceof Model) {
+				self::authorizeOrAbortByModelRec($ability, $target, ...$otherArgs);
+    			
+			} else {
+				abort(403, PermissionCheckMessageEnum::FORBIDDEN_MSG);
+
+			}
+
+		} else {
 			abort(403, PermissionCheckMessageEnum::FORBIDDEN_MSG);
-		}		
+
+		}	
 	}
 	
-	public static function getResponse(string $ability, ...$args): PermissionResponse {
-		$target 	= reset($args);
-		$otherArgs  = array_slice($args, 1);
-		
-		if ($target instanceof Model) {
-    		$model = reset($args);		
-    		return self::responseByModelRec($ability, $model, ...$otherArgs);
+	public static function getResponse(string $ability, $args = []): PermissionResponse {
+		if (is_string($args)) {
+			return self::responseByModelClass($ability, $args);
 
-		} elseif(is_string($target)) {
-    		$className = reset($args);
-    		return self::responseByModelClass($ability, $className, ...$otherArgs);
+		} elseif ($args instanceof Model) {
+    		return self::responseByModelRec($ability, $args);
 
-		}else{
+		} elseif (is_array($args) && !empty($args)) {
+			$target 	= reset($args);
+			$otherArgs  = array_slice($args, 1);
+
+			if (is_string($target)) {
+    			return self::responseByModelClass($ability, $target, ...$otherArgs);
+
+			} elseif ($target instanceof Model) {
+				return self::responseByModelRec($ability, $target, ...$otherArgs);
+    			
+			} else {
+				return self::forbiddenResponse();
+			}
+
+		} else {
 			return self::forbiddenResponse();
+
 		}
+
 	}
 
 
@@ -90,7 +112,7 @@ class PermissionChecker{
 		string $modelClassName, 
 		...$args
 	): PermissionResponse {
-
+		
 		if(!Sentinel::check())
            return self::noAuthResponse();
 
