@@ -50,7 +50,8 @@
                     :message2="$message2 ?? ''"  
                     :canClose="true" />
             @else                    
-                @isset($data)
+            @if(isset($data) && is_array($data))                    
+                @if(!empty($data))
                     <div class="ibox">
                         <div class="ibox-content">
 
@@ -112,8 +113,23 @@
 
                         </div>
                     </div>
-                @endisset
+                @else
+                    <x-flash-message 
+                        class="flash-info"  
+                        title="No Earnings!" 
+                        message=""  
+                        message2=""  
+                        :canClose="false" />
+                @endif
+            @else                
+                <x-flash-message 
+                    class="flash-danger"  
+                    title="Data not available!" 
+                    message="Earnings data is not available or not in correct format"  
+                    message2=""  
+                    :canClose="false" />                
             @endif
+            
 
             
 

@@ -26,81 +26,96 @@
                     :message2="Session::get('message2') ?? ''"  
                     :canClose="true" />
             @endif
-            
 
-            @if(isset($data))
-            <div class="ibox">
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table id="category-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Image</th>
-                                    <th>Status <small>(Published/Draft)</small></th>
-                                    <th class="text-right">Action</th>
-                                </tr>
-                            </thead>
+            @if(isset($data) && is_array($data))            
+                @if(!empty($data))    
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <table id="category-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Image</th>
+                                            <th>Status <small>(Published/Draft)</small></th>
+                                            <th class="text-right">Action</th>
+                                        </tr>
+                                    </thead>
 
-                            <tbody>
-                            @foreach($data as $item)
-                                <tr class="subject_{{$item['data']['id']}}">
-                                    <td>{{$item['data']['name']}}</td>
-                                    <td>{{mb_strimwidth($item['data']['description'], 0, 100, '...')}}</td>
+                                    <tbody>
+                                    @foreach($data as $item)
+                                        <tr class="subject_{{$item['data']['id']}}">
+                                            <td>{{$item['data']['name']}}</td>
+                                            <td>{{mb_strimwidth($item['data']['description'], 0, 100, '...')}}</td>
 
-                                    <td>
-                                        @if($item['data']['image'] != '')
-                                            <a class="no-clickable popup-img effect" href="{{$item['data']['image']}}" data-effect="mfp-zoom-in">
-                                                <img src="{{$item['data']['image']}}" width="100px" alt="">
-                                            </a>
-                                        @endif
-                                    </td>
+                                            <td>
+                                                @if($item['data']['image'] != '')
+                                                    <a class="no-clickable popup-img effect" href="{{$item['data']['image']}}" data-effect="mfp-zoom-in">
+                                                        <img src="{{$item['data']['image']}}" width="100px" alt="">
+                                                    </a>
+                                                @endif
+                                            </td>
 
-                                    <td>
-                                        @if($item['data']['status'] == App\Models\Subject::PUBLISHED)
-                                            <span class="label label-primary">Published</span>
-                                        @else
-                                            <span class="label label-disable">Draft</span>
-                                        @endif
-                                    </td>
+                                            <td>
+                                                @if($item['data']['status'] == App\Models\Subject::PUBLISHED)
+                                                    <span class="label label-primary">Published</span>
+                                                @else
+                                                    <span class="label label-disable">Draft</span>
+                                                @endif
+                                            </td>
 
-                                    <td class="text-right">
-                                        <div class="btn-group">
-                                            <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
-                                            
-                                            @can('update',$item['dbRec'])
-                                            <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
-                                            @endcan
-                                            
-                                            @can('delete',$item['dbRec'])
-                                            <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a>
-                                            @endcan
-                                        </div>
-                                        <form class="subject-destroy" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
-                                            @method('DELETE')
-                                            @csrf
-                                        </form>
-                                    </td>
+                                            <td class="text-right">
+                                                <div class="btn-group">
+                                                    <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                    
+                                                    @can('update',$item['dbRec'])
+                                                    <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+                                                    @endcan
+                                                    
+                                                    @can('delete',$item['dbRec'])
+                                                    <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a>
+                                                    @endcan
+                                                </div>
+                                                <form class="subject-destroy" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
+                                            </td>
 
-                                </tr>
-                            @endforeach
-                            </tbody>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
 
-                            <tfoot>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Image</th>
-                                    <th>Status <small>(Published/Draft)</small></th>
-                                    <th class="text-right">Action</th>
-                                </tr>
-                            </tfoot>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Image</th>
+                                            <th>Status <small>(Published/Draft)</small></th>
+                                            <th class="text-right">Action</th>
+                                        </tr>
+                                    </tfoot>
 
-                        </table>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                @else
+                    <x-flash-message 
+                        class="flash-info"  
+                        title="No Subjects!" 
+                        message=""  
+                        message2=""  
+                        :canClose="false" />
+                @endif
+            @else                
+                <x-flash-message 
+                    class="flash-danger"  
+                    title="Data not available!" 
+                    message="Subject list data is not available or not in correct format"  
+                    message2=""  
+                    :canClose="false" />                
             @endif
 
         </div>

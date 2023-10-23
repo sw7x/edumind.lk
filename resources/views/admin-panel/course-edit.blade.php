@@ -188,7 +188,7 @@
 
                     </x-slot>
                 </x-flash-message>            
-            @else
+            @endif
             
             
             @if(
@@ -281,12 +281,12 @@
                                                     @endforeach
                                                 </select>
                                                 <div class="error-msg"></div>
-
+                                                <?php //dd($teachers); ?>
                                                 @if(old('teacher'))
                                                     @foreach ($teachers as $teacher)
                                                         @if($teacher['id'] == old('teacher'))
                                                             <span class="block mt-1 @if($errors->infoErrMsgArr->has('teacher')) text-red-600 @else text-green-600 @endif
-                                                                text-xs font-bold">Previously you entered - {{$teacher['full_name']}}</span>
+                                                                text-xs font-bold">Previously you entered - {{$teacher['fullName']}}</span>
                                                         @endif
                                                     @endforeach    
                                                 @endif
@@ -700,8 +700,27 @@
                         </form>
                     </div>
                 </div>
+            
+            @else
+                <x-flash-message 
+                    class="flash-danger mt-3" 
+                    title="Error!" 
+                    message="Course data is not available or not in correct format" 
+                    :canClose="false">
+                    <x-slot name="insideContent">
+                        <br>
+                        @if(!isset($teachers) || !is_array($teachers) || empty($teachers))
+                            <p class="text-xs font-semibold">Unable to load teachers</p>
+                        @endif 
 
-            @endif
+                        @if(!isset($subjects) || !is_array($subjects) || empty($subjects))
+                            <p class="text-xs font-semibold">Unable to load subjects</p>
+                        @endif
+                    </x-slot>
+                </x-flash-message>
+            @endif    
+            
+
             
             
 
@@ -798,9 +817,9 @@
 
 @section('javascript')
     <script>
-        {{--
-        @if(!Session::has('message'))
-        --}}
+        
+        {{--@if(!Session::has('message'))--}}
+        
 
             (function () {
                 //We want to preview images, so we need to register the Image Preview plugin
@@ -2509,8 +2528,8 @@
 
             });
         
-        @endif
-        {{----}}
+        {{--@endif--}}
+        
 
     </script>
 @stop

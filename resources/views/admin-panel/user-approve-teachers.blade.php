@@ -36,7 +36,7 @@
                     :canClose="true" />
             @endif
 
-            @isset($teachers)
+            @if(isset($teachers) && isNotEmptyArray($teachers))              
                 <div class="ibox">
                     <div class="ibox-content">
                        
@@ -128,7 +128,14 @@
                         </div>
                     </div>
                 </div>
-            @endisset    
+            @else                
+                <x-flash-message 
+                    class="flash-danger"  
+                    title="Data not available!" 
+                    message="Teachers data is not available or not in correct format"  
+                    message2=""  
+                    :canClose="false" />                
+            @endif   
             
         </div>
     </div>

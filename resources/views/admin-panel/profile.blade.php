@@ -49,7 +49,7 @@
                         );                       
                     @endphp
 
-                    @if(isset($userData))                                                        
+                    @if(isset($userData) && isNotEmptyArray($userData))
                         <section class="tabs-section">
                             <div class="_container">
                                 <div class="row">

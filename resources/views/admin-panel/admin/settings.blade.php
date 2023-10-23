@@ -35,9 +35,11 @@
                     :canClose="true" />
             @endif
 
+    
             <div class="ibox">
                 <div class="ibox-content">
                     <form class="teacher-profile-edit" method="post" action="">                        
+                        
                         @if (count($errors) > 0)
                             <x-flash-message 
                                 style="margin-bottom:0px;"

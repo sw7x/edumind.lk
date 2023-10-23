@@ -42,7 +42,7 @@
                     :canClose="true" />            
             @endif    
             
-            @if(isset($coupon) && isNotEmptyArray($coupon))
+        	@if(isset($coupon) && isNotEmptyArray($coupon))
             	<!-- content -->
 	            <div class="ibox ">
 	                <div class="ibox-content">
@@ -190,8 +190,13 @@
 	                    </form>
 	                </div>
 	            </div>
+            @else
+            	<x-flash-message 
+                    class="flash-danger mt-3" 
+                    title="Data not available!" 
+                    message="Coupon code data is not available or not in correct format" 
+                    :canClose="false"/>
             @endif
-
 
         </div>
     </div>

@@ -22,78 +22,86 @@
                     :message2="Session::get('message2') ?? ''"  
                     :canClose="true" />
             @endif
+            
 
-            <!-- content -->
-            <div class="ibox ">
-                <div class="ibox-content">
-                    <h3>Update Subject</h3>
-                    <form class="edit-subject-form" id="edit-subject" action="{{route('admin.subjects.update',$subject['id'])}}" method="POST">
+            @if(isset($subject) && isNotEmptyArray($subject))
+                <div class="ibox ">
+                    <div class="ibox-content">
+                        <h3>Update Subject</h3>
+                        <form class="edit-subject-form" id="edit-subject" action="{{route('admin.subjects.update',$subject['id'])}}" method="POST">
 
-                        <div class="form-group  row">
-                            <label class="col-sm-4 col-form-label">Name</label>
-                            <div class="col-sm-8"><input type="text" name="name" class="form-control" required="required" value="{{$subject['name']}}"></div>
-                        </div>
-                        <div class="hr-line-dashed"></div>
-
-                        <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
-                            <div class="col-sm-8">
-                                <textarea rows="8" class="form-control" placeholder="Enter Description"  name="description" cols="50">{{$subject['description']}}</textarea>
+                            <div class="form-group  row">
+                                <label class="col-sm-4 col-form-label">Name</label>
+                                <div class="col-sm-8"><input type="text" name="name" class="form-control" required="required" value="{{$subject['name']}}"></div>
                             </div>
-                        </div>
-                        <div class="hr-line-dashed"></div>
+                            <div class="hr-line-dashed"></div>
 
-                        <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
-                            <div class="col-sm-8">
-                                {{--
-                                <input type="file" class="form-control" name="image">
-                                --}}
-                                <input type="file"
-                                       class="filepond-img"
-                                       name="image"
-                                       accept="image/webp, image/png, image/jpeg, image/gif"
-                                       data-max-file-size="1MB"/>
-                                <p>Image Size 300X350</p>
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed"></div>
-
-
-                        <input type="hidden" value="{{$subject['image']}}"
-                               name="hidden_subject_img" data-url="{{$subject['image']}}"/>
-                        <input type="hidden" value="{{$subject['image']}}"
-                               name="hidden_subject_img_url"/>
-                        <input type="hidden" value="1"
-                               name="hidden_file_add_count"/>
-
-
-                        <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">Submit status</label>
-                            <div class="col-sm-8">
-                                <div class="i-checks">
-                                    <label> <input type="radio" value="draft" name="status" {{$subject['status'] == App\Models\Subject::DRAFT ? 'checked':''}}> <i></i> Draft </label>
-                                </div>
-                                <div class="i-checks">
-                                    <label> <input type="radio" value="published" name="status" {{$subject['status'] == App\Models\Subject::PUBLISHED ? 'checked':''}}> <i></i> Published </label>
+                            <div class="form-group row"><label class="col-sm-4 col-form-label">Description</label>
+                                <div class="col-sm-8">
+                                    <textarea rows="8" class="form-control" placeholder="Enter Description"  name="description" cols="50">{{$subject['description']}}</textarea>
                                 </div>
                             </div>
-                        </div>
-                        <div class="hr-line-dashed"></div>
+                            <div class="hr-line-dashed"></div>
 
-
-
-                        <div class="form-group row">
-                            <div class="col-sm-4 offset-sm-4">
-                                <button class="btn btn-primary btn-sm" type="submit">Update changes</button>
-                                <a href="{{route('admin.subjects.index')}}" class="btn btn-danger btn-sm" type="reset">Cancel</a>
+                            <div class="form-group row"><label class="col-sm-4 col-form-label">Image</label>
+                                <div class="col-sm-8">
+                                    {{--
+                                    <input type="file" class="form-control" name="image">
+                                    --}}
+                                    <input type="file"
+                                           class="filepond-img"
+                                           name="image"
+                                           accept="image/webp, image/png, image/jpeg, image/gif"
+                                           data-max-file-size="1MB"/>
+                                    <p>Image Size 300X350</p>
+                                </div>
                             </div>
-                        </div>
-                        {{csrf_field ()}}
-                        <input name="_method" type="hidden" value="PUT">
+                            <div class="hr-line-dashed"></div>
 
-                    </form>
+
+                            <input type="hidden" value="{{$subject['image']}}"
+                                   name="hidden_subject_img" data-url="{{$subject['image']}}"/>
+                            <input type="hidden" value="{{$subject['image']}}"
+                                   name="hidden_subject_img_url"/>
+                            <input type="hidden" value="1"
+                                   name="hidden_file_add_count"/>
+
+
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Submit status</label>
+                                <div class="col-sm-8">
+                                    <div class="i-checks">
+                                        <label> <input type="radio" value="draft" name="status" {{$subject['status'] == App\Models\Subject::DRAFT ? 'checked':''}}> <i></i> Draft </label>
+                                    </div>
+                                    <div class="i-checks">
+                                        <label> <input type="radio" value="published" name="status" {{$subject['status'] == App\Models\Subject::PUBLISHED ? 'checked':''}}> <i></i> Published </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+
+
+
+                            <div class="form-group row">
+                                <div class="col-sm-4 offset-sm-4">
+                                    <button class="btn btn-primary btn-sm" type="submit">Update changes</button>
+                                    <a href="{{route('admin.subjects.index')}}" class="btn btn-danger btn-sm" type="reset">Cancel</a>
+                                </div>
+                            </div>
+                            {{csrf_field ()}}
+                            <input name="_method" type="hidden" value="PUT">
+
+                        </form>
+                    </div>
                 </div>
-            </div>
-
+            @else                
+                <x-flash-message 
+                    class="flash-danger"  
+                    title="Data not available!" 
+                    message="Subject data is not available or not in correct format"  
+                    message2=""  
+                    :canClose="false" />                
+            @endif    
 
 
 

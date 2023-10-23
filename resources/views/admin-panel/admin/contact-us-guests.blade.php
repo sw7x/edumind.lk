@@ -19,7 +19,7 @@
                     :canClose="true" />
             @endif
             
-            @isset($guestMessages)
+            @if(isset($guestMessages) && isNotEmptyArray($guestMessages)) 
                 <div class="ibox">                
                     <div class="ibox-content relative forum-post-container" id="ibox-content">
                         
@@ -88,7 +88,14 @@
 
                     </div>
                 </div>
-            @endisset
+            @else                
+                <x-flash-message 
+                    class="flash-danger"  
+                    title="Data not available!" 
+                    message="Guest messages are not available or not in correct format"  
+                    message2=""  
+                    :canClose="false" />                
+            @endif
                      
 
 

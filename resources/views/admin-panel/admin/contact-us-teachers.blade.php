@@ -19,7 +19,7 @@
                     :canClose="true" />
             @endif
             
-            @if(isset($teacherComments))
+            @if(isset($teacherComments) && isNotEmptyArray($teacherComments)) 
                 <div class="ibox ">                
                     <div class="ibox-content relative forum-post-container" id="ibox-content">
                         
@@ -95,6 +95,13 @@
 
                     </div>
                 </div>
+            @else                
+                <x-flash-message 
+                    class="flash-danger"  
+                    title="Data not available!" 
+                    message="Teachers messages are not available or not in correct format"  
+                    message2=""  
+                    :canClose="false" />                
             @endif
             
         </div>
