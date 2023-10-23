@@ -42,14 +42,6 @@
             @endphp           
             
             
-            @if(isset($message))
-                <x-flash-message  
-                    :class="$cls ?? 'flash-info'"  
-                    :title="$msgTitle ?? 'Info!'" 
-                    :message="$message ?? ''"  
-                    :message2="$message2 ?? ''"  
-                    :canClose="true" />
-            @else                    
             @if(isset($data) && is_array($data))                    
                 @if(!empty($data))
                     <div class="ibox">

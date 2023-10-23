@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\CustomException;
@@ -22,13 +21,6 @@ use Illuminate\Support\Arr;
 use App\Common\SharedServices\CourseSharedService;
 use App\Common\Utils\AlertDataUtil;
 
-//use Illuminate\Database\Eloquent\ModelNotFoundException;
-//use App\Services\TeacherService;
-//use App\Services\UserService;
-//use App\Common\Utils\FileUploadUtil;
-//use App\Common\Utils\UrlUtil;
-//use Illuminate\Support\Str;
-
 
 class CourseController extends Controller
 {
@@ -47,115 +39,49 @@ class CourseController extends Controller
     }
 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        try{
-            $this->authorize('viewAny',CourseModel::class);
+    public function index(){
+        //You dont have Permissions view all users
+        $this->authorize('viewAny',CourseModel::class);
 
-            $courses = $this->adminCourseService->loadAllCourses();
+        $courses = $this->adminCourseService->loadAllCourses();
 
-            $courseArr = AdminCourseDataFormatter::prepareCourseListData($courses);
-            return view('admin-panel.course-list')->withData($courseArr);
-
-        }catch(CustomException $e){
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.course-list');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.dashboard'))->with(
-                AlertDataUtil::error('You dont have Permissions view all users',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );            
-
-        }catch(\Exception $e){
-            session()->now('message','Failed to show courses');
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.course-list');
-
-        }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        try{
-
-            $this->authorize('create',CourseModel::class);
-
-            $teachersData = $this->adminTeacherService->loadAllAvailableTeachers();
-            $subjectsData = $this->adminSubjectService->loadAllAvailableSubjects();
-
-            $teachersArr = AdminCourseDataFormatter::prepareUserListData($teachersData);
-            $subjectsArr = AdminCourseDataFormatter::prepareSubjectListData($subjectsData);
-
-            return view('admin-panel.course-add')->with([
-                'teachers'       => $teachersArr,
-                //'teachers'       => [],
-                'subjects'       => $subjectsArr,
-                //'subjects'       => [],
-            ]);
-
-        }catch(CustomException $e){
-            //dd($e->getMessage());
-            session()->now('message',  $e->getMessage());
-            session()->now('cls',      'flash-danger');
-            session()->now('msgTitle', 'Error!');
-            return view('admin-panel.course-add');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.courses.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to create courses',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            session()->now('message',  'Failed to show course add form');
-            session()->now('cls',      'flash-danger');
-            session()->now('msgTitle', 'Error!');
-            return view('admin-panel.course-add');
-
-        }
+        $courseArr = AdminCourseDataFormatter::prepareCourseListData($courses);
+        return view('admin-panel.course-list')->withData($courseArr);
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    public function create(){
+        // You dont have Permissions to create courses
+        $this->authorize('create',CourseModel::class);
+
+        $teachersData = $this->adminTeacherService->loadAllAvailableTeachers();
+        $subjectsData = $this->adminSubjectService->loadAllAvailableSubjects();
+
+        $teachersArr = AdminCourseDataFormatter::prepareUserListData($teachersData);
+        $subjectsArr = AdminCourseDataFormatter::prepareSubjectListData($subjectsData);
+
+        return view('admin-panel.course-add')->with([
+            'teachers'       => $teachersArr,
+            //'teachers'       => [],
+            'subjects'       => $subjectsArr,
+            //'subjects'       => [],
+        ]);
+    }
+
+
     public function store(CourseStoreRequest $request){
-
-        //dd($request->all());
         try{
-
+            //You dont have Permissions to create Teachers !
             $this->authorize('create',CourseModel::class);
 
             $dbValidCourseContent   = $this->adminCourseService->validateCourseContentForDb($request);
             $request->merge(Arr::only($dbValidCourseContent, ['contentInputStr', 'topicsString', 'contentString']));
-
 
             /* creating validation errors for view*/
             $errors = Session::get('errors');
             $courseValErrors = null;
             if (!is_null($errors) && !is_null($errors->courseCreate))
                 $courseValErrors = $this->adminCourseService->getCourseValidationErrors($errors->courseCreate->getMessages());
-
 
             /* if have validation errors create text to display*/
             $valErrMsg = $dbValidCourseContent['validationErrMsg'];
@@ -164,202 +90,109 @@ class CourseController extends Controller
 
             if($valErrMsg)
                 throw new CustomException($valErrMsg . ' !');
-
+            
             $isSaved = $this->adminCourseService->saveDbRec($request);
             if (!$isSaved)
-                throw new CustomException("Course create failed");
- 
-            return redirect()->route('admin.courses.create')->with(
-                AlertDataUtil::sucess('Course created successfully')
-            );
+                abort(500, "Course create failed due to server error !");
 
-        }catch(CustomException $e){
+            return redirect()->route('admin.courses.create')
+                ->with(AlertDataUtil::sucess('Course created successfully'));
 
+        }catch(\Throwable $ex){
             /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
             then laravel automatically remove all duplicated message in one key element in array */
 
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Course create failed !';
             return redirect(route('admin.courses.create'))
                 ->withErrors($courseValErrors['contentMsg'] ?? [],'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [],'infoErrMsgArr')
                 ->withInput($request->input())
                 ->with(
-                    AlertDataUtil::error('You dont have Permissions to create Teachers !',[
-                        //'message'               => $e->getMessage(),
-                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
-                    ])
-                );
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.courses.create'))
-                ->with(
-                    AlertDataUtil::error('You dont have Permissions to create Teachers !',[
-                        'msgTitle'      => 'Permission Denied!',
-                        //'message2'    => $pwResetTxt,
-                    ])
-                );
-
-
-
-        }catch(\Exception $e){
-            /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
-            ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
-            then laravel automatically remove all duplicated message in one key element in array */
-
-            return redirect(route('admin.courses.create'))
-                ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
-                ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
-                ->withInput($request->input())
-                ->with(
-                    AlertDataUtil::error('Add Teacher Failed !',[
-                        //'message'             => $e->getMessage(),
-                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
+                    AlertDataUtil::error($msg,
+                        ['contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
                     ])
                 );
         }
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        try{
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
 
-            $courseData = $this->adminCourseService->findDbRec($id);
+    public function show($id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
 
-            $this->authorize('view',$courseData['dbRec']); //todo
+        $courseData = $this->adminCourseService->findDbRec($id);
 
-            if(is_null($courseData['dbRec']))
-                throw new CustomException('Course does not found');
+        //You dont have Permissions to view the course !
+        $this->authorize('view',$courseData['dbRec']); //todo
 
-            $courseContent      = $courseData['dto']->getContent();
-            $courseContentVal   = (new CourseSharedService())->validateCourseContent($courseContent);
+        if(is_null($courseData['dbRec']))
+            throw new CustomException('Course does not found');
 
+        $courseContent      = $courseData['dto']->getContent();
+        $courseContentVal   = (new CourseSharedService())->validateCourseContent($courseContent);
 
-            $courseDataArr   = array();
-            $courseDataArr[] = $courseData;
-            $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
-            //dd($courseArr);
+        $courseDataArr   = array();
+        $courseDataArr[] = $courseData;
+        $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
 
-            return view('admin-panel.course-view')->with([
-                'course'                 => reset($courseArr),
-                'courseContent'          => $courseContentVal['data'],
-                'courseContentInvFormat' => $courseContentVal['isInvFormat'],
-            ]);
-
-        }catch(CustomException $e){
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.course-view');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.courses.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to view the course !',[
-                    'msgTitle' => 'Permission Denied!',
-                ])
-            );
-
-        }catch(\Exception $e){
-            session()->now('message',$e->getMessage());
-            //session()->now('message','Course does not exist!');
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.course-view');
-
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        try{
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
-
-            $courseData = $this->adminCourseService->findDbRec($id);
-
-            $this->authorize('update',$courseData['dbRec']); //todo
-
-            if(is_null($courseData['dbRec']))
-                throw new CustomException('Course does not found');
-
-            //to display course content
-            $courseContent          = $courseData['dto']->getContent();
-            $validatedCourseContent =  (new CourseSharedService())->validateCourseContent($courseContent);
-            $courseContentStr       = json_encode($validatedCourseContent['data'], 512);
-            
-
-            // load teachers dropdown data
-            $teachersData   = $this->adminTeacherService->loadAllAvailableTeachers();
-            $teachersArr    = AdminCourseDataFormatter::prepareUserListData($teachersData);
-
-
-            // load subjects dropdown data
-            $subjectsData   = $this->adminSubjectService->loadAllAvailableSubjects();
-            $subjectsArr    = AdminCourseDataFormatter::prepareSubjectListData($subjectsData);
-
-
-            //course data
-            $courseDataArr   = array();
-            $courseDataArr[] = $courseData;
-            $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
-
-            return view('admin-panel.course-edit')->with([
-                'course'        => reset($courseArr),
-                'courseContent' => $courseContentStr,
-                'teachers'      => $teachersArr,
-                //'teachers'    => [],
-                'subjects'      => $subjectsArr
-            ]);
-
-        }catch(CustomException $e){
-            $exData = $e->getData();
-            session()->now('message'  ,$e->getMessage());
-            session()->now('cls'      ,$exData['cls'] ?? "flash-danger");
-            session()->now('msgTitle' ,$exData['msgTitle']  ?? 'Error !');
-            return view('admin-panel.course-edit');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.courses.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to edit the course !',[
-                    'msgTitle' => 'Permission Denied!',
-                ])
-            );
-
-        }
-        catch(\Exception $e){            
-            //session()->now('message'  ,'Failed to load course edit form!');
-            session()->now('message'  ,$e->getMessage());
-            session()->now('cls'      ,'flash-danger');
-            session()->now('msgTitle' ,'Error!');
-            return view('admin-panel.course-edit');
-        }
+        return view('admin-panel.course-view')->with([
+            'course'                 => reset($courseArr),
+            'courseContent'          => $courseContentVal['data'],
+            'courseContentInvFormat' => $courseContentVal['isInvFormat'],
+        ]);
 
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(CourseUpdateRequest $request, $id)
-    {
+
+    public function edit($id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $courseData = $this->adminCourseService->findDbRec($id);
+
+        //You dont have Permissions to edit the course !
+        $this->authorize('update',$courseData['dbRec']); //todo
+
+        if(is_null($courseData['dbRec']))
+            throw new CustomException('Course does not found');
+
+        //to display course content
+        $courseContent          = $courseData['dto']->getContent();
+        $validatedCourseContent =  (new CourseSharedService())->validateCourseContent($courseContent);
+        $courseContentStr       = json_encode($validatedCourseContent['data'], 512);
+
+
+        // load teachers dropdown data
+        $teachersData   = $this->adminTeacherService->loadAllAvailableTeachers();
+        $teachersArr    = AdminCourseDataFormatter::prepareUserListData($teachersData);
+
+
+        // load subjects dropdown data
+        $subjectsData   = $this->adminSubjectService->loadAllAvailableSubjects();
+        $subjectsArr    = AdminCourseDataFormatter::prepareSubjectListData($subjectsData);
+
+
+        //course data
+        $courseDataArr   = array();
+        $courseDataArr[] = $courseData;
+        $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
+
+        return view('admin-panel.course-edit')->with([
+            'course'        => reset($courseArr),
+            'courseContent' => $courseContentStr,
+            'teachers'      => $teachersArr,
+            //'teachers'    => [],
+            'subjects'      => $subjectsArr
+        ]);
+
+    }
+
+
+    public function update(CourseUpdateRequest $request, $id){
         try{
+
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
 
@@ -367,11 +200,11 @@ class CourseController extends Controller
             if(is_null($courseData['dbRec']))
                 throw new CustomException('Course does not exist!');
 
+            //You dont have Permissions to update the course !
             $this->authorize('create', $courseData['dbRec']);
 
             $dbValidCourseContent   = $this->adminCourseService->validateCourseContentForDb($request);
             $request->merge(Arr::only($dbValidCourseContent, ['contentInputStr', 'topicsString', 'contentString']));
-
 
             /* creating validation eroors for view*/
             $errors = Session::get('errors');
@@ -379,60 +212,33 @@ class CourseController extends Controller
             if (!is_null($errors) && !is_null($errors->courseCreate))
                 $courseValErrors = $this->adminCourseService->getCourseValidationErrors($errors->courseCreate->getMessages());
 
-
             /* if have validation errors create text to display */
-            $valErrMsg = $dbValidCourseContent['validationErrMsg'];            
+            $valErrMsg = $dbValidCourseContent['validationErrMsg'];
             if ( isset($request->validator) && $request->validator->fails())
                 $valErrMsg  .= (($valErrMsg != '') ? ' and ': '') . 'Form validation has failed';
 
-
             if($valErrMsg)
                 throw new CustomException($valErrMsg . ' !');
-
-
+            
             $isSaved = $this->adminCourseService->updateDbRec($request, $courseData['dbRec']);
             if (!$isSaved)
-                throw new CustomException("Course create failed");
-                      
-            return redirect()->route('admin.courses.index')->with(
-                AlertDataUtil::success('Course created successfully')    
-            );
+                abort(500, "Course update failed due to server error !");
 
-        }catch(CustomException $e){
-            //dump($request->input());
-            //dd($courseValErrors);
+            return redirect()->route('admin.courses.index')
+                ->with(AlertDataUtil::success('Course created successfully'));
 
+        }catch(\Throwable $ex){
             /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
             ->withErrors($courseContentLinkErrMsgArr,'courseContentLinkErrMsgArr')
             then laravel automatically remove all duplicated message in one key element in array */
-            return redirect(route('admin.courses.edit',$id))
+
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Course update failed !';
+            return redirect(route('admin.courses.edit', $id))
                 ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
                 ->withInput($request->input())
                 ->with(
-                    AlertDataUtil::error($e->getMessage(),[
-                        //'message'             => $e->getMessage(),
-                        'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
-                    ])
-                );
-
-        }catch(AuthorizationException $e){
-            return redirect()->route('admin.courses.index')
-                ->with(
-                    AlertDataUtil::error('You dont have Permissions to update the course !',[
-                        'msgTitle' => 'Permission Denied!',
-                    ])
-                );
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            return redirect(route('admin.courses.edit',$id))
-                ->withErrors($courseValErrors['contentMsg'] ?? [], 'contentErrMsgArr')
-                ->withErrors($courseValErrors['infoMsg'] ?? [], 'infoErrMsgArr')
-                ->withInput($request->input())
-                ->with(
-                    AlertDataUtil::error('Course update failed !',[
-                        //'message'             => $e->getMessage(),
+                    AlertDataUtil::error($ex->getMessage(),[
                         'contentLinksErrMsgArr' => $courseValErrors['contentLinksMsg'] ?? []
                     ])
                 );
@@ -440,47 +246,26 @@ class CourseController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(int $id)
     {
-        try{
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
 
-            $courseData = $this->adminSubjectService->findDbRec($id);
-            if(is_null($courseData['dbRec']))
-                throw new CustomException('Course does not exist!');
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
 
-            $this->authorize('delete', $courseData['dbRec']);
+        $courseData = $this->adminSubjectService->findDbRec($id);
+        if(is_null($courseData['dbRec']))
+            throw new CustomException('Course does not exist!');
 
-            $isDelete = $this->adminCourseService->deleteDbRec($courseData['dbRec']);
-            if (!$isDelete)
-                throw new CustomException("Course delete failed");
+        $this->authorize('delete', $courseData['dbRec']);
 
-            return redirect(route('admin.courses.index'))->with(
-                AlertDataUtil::success('successfully deleted the course')
-            );
+        $isDelete = $this->adminCourseService->deleteDbRec($courseData['dbRec']);
+        if (!$isDelete)
+            abort(500, "Course delete failed due to server error !");
 
-        }catch(CustomException $e){
-            //dd('CustomException');
-            $exData = $e->getData();            
-            return redirect(route('admin.courses.index'))->with(
-                AlertDataUtil::error($e->getMessage(),[
-                    'cls'         => $exData['cls'] ?? "flash-danger",
-                    'msgTitle'    => $exData['msgTitle']  ?? 'Error!'
-                ])
-            );
+        return redirect(route('admin.courses.index'))
+            ->with(AlertDataUtil::success('successfully deleted the course'));
 
-        }catch(\Exception $e){
-            return redirect(route('admin.courses.index'))->with(
-                AlertDataUtil::error('Course delete failed !')
-            );
-        }
     }
 
 
@@ -496,42 +281,19 @@ class CourseController extends Controller
             if(is_null($courseData['dbRec']))
                 throw new CustomException("Course does not exist!");
 
+            //You dont have Permissions to delete the course!
             //$this->authorize('delete', $courseData['dbRec']);
 
             $isEmpty = $this->adminCourseService->checkIsCourseEmpty($courseData['dbRec']);
 
-            return response()->json([
-                'message'  => $isEmpty,
-                'status' => 'success',
-            ]);
+            return response()->json(['status' => 'success', 'message' => $isEmpty]);
 
-        }catch(CustomException $e){
-            return response()->json([
-                'message'  => $e->getMessage(),
-                'status' => 'error',
-            ]);
-
-        }catch(AuthorizationException $e){
-            return response()->json([
-                'message'  => 'You dont have Permissions to delete the course!',
-                'status' => 'error',
-            ]);
-        }catch(\Exception $e){
-            return response()->json([
-                //'message' => $e->getMessage(),
-                'message'   => 'Course status check failed!',
-                'status'    => 'error',
-            ]);
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Course status check failed!';
+            return response()->json(['status' => 'error', 'message' => $msg]);
         }
+
     }
-
-
-
-    
-    
-
-
-    
 
 
     public function changeStatus(Request $request){
@@ -546,85 +308,64 @@ class CourseController extends Controller
             if(is_null($courseData['dbRec']))
                 throw new CustomException("Course does not exist!");
 
+            //You dont have Permissions to change the status of the course!
             $this->authorize('changeStatus',$courseData['dbRec']);
 
             $status = $request->input('status');
 
             $isUpdated = $this->adminCourseService->updateStatus($courseId, $status);
             if(!$isUpdated)
-                throw new CustomException("Course status update failed!");
+                abort(500, "Course status update failed due to server error !");
 
-            return response()->json([
-                'message'   => 'User status update success',
-                'status'    => 'success',
-            ]);
+            return response()->json(['status' => 'success', 'message' => 'User status update success']);
 
-        }catch(CustomException $e){
-            return response()->json([
-                'message'   => $e->getMessage(),
-                'status'    => 'error',
-            ]);
-
-        }catch(AuthorizationException $e){
-            return response()->json([
-                'message'   => 'You dont have Permissions to change the status of the course!',
-                'status'    => 'error',
-            ]);
-        }catch(\Exception $e){
-            return response()->json([
-                'message'   => $e->getMessage(),
-                //'message'  => 'User status update failed!',
-                'status'    => 'error',
-            ]);
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Course status update failed !';
+            return response()->json(['status' => 'error', 'message' => $msg]);
         }
-
     }
 
 
     public function viewCourseEnrollmentList(){
         if(!Sentinel::check())
             abort(403);
-            
-        $user            = Sentinel::getUser();            
+
+        $user            = Sentinel::getUser();
         $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-        $currentUserRole = optional($user->roles()->first())->name;        
+        $currentUserRole = optional($user->roles()->first())->name;
         if(!in_array($currentUserRole, $allRoles))
             abort(403);
-           
+
 
         // redirect users that have TEACHER, STUDENT roles
         $allowedRoles   = [RoleModel::ADMIN];
         if(!in_array($currentUserRole, $allowedRoles))
             abort(404);
-                    
+
         $data = CourseModel::orderBy('id')->get();
         return view('admin-panel.admin.course-enrollments')->withData($data);
     }
 
 
     public function viewCourseCompleteList(){
-        
+
         if(!Sentinel::check())
             abort(403);
-            
-        $user            = Sentinel::getUser();            
+
+        $user            = Sentinel::getUser();
         $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-        $currentUserRole = optional($user->roles()->first())->name;        
+        $currentUserRole = optional($user->roles()->first())->name;
         if(!in_array($currentUserRole, $allRoles))
             abort(403);
-           
+
 
         // redirect users that have TEACHER, STUDENT roles
         $allowedRoles   = [RoleModel::ADMIN];
         if(!in_array($currentUserRole, $allowedRoles))
             abort(404);
-                    
+
         $data = CourseModel::orderBy('id')->get();
         return view('admin-panel.admin.course-completions')->withData($data);
     }
-
-
-
-
 
 }

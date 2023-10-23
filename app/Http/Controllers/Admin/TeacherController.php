@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -8,9 +7,9 @@ use Sentinel;
 use App\Services\Admin\TeacherService as AdminTeacherService;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
-
 use App\Common\SharedServices\UserSharedService;
 use App\View\DataFormatters\Admin\TeacherDataFormatter as AdminTeacherDataFormatter;
+
 
 class TeacherController extends Controller
 {
@@ -30,29 +29,11 @@ class TeacherController extends Controller
         if(!(new UserSharedService)->hasRole($user, RoleModel::TEACHER))
             throw new CustomException('Wrong user type');
 
-            $teacherCourses    = $this->adminTeacherService->getAllCoursesByTeacher($user);
-            $teacherCoursesArr = AdminTeacherDataFormatter::prepareMyCourseData($teacherCourses);
+        $teacherCourses    = $this->adminTeacherService->getAllCoursesByTeacher($user);
+        $teacherCoursesArr = AdminTeacherDataFormatter::prepareMyCourseData($teacherCourses);
 
-        }catch(CustomException $e){
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            unset($teacherCoursesArr);
-
-        }catch(\Exception $e){
-            //session()->now('message','Failed to show your courses');
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            unset($teacherCoursesArr);
-        }
-
-        return view('admin-panel.teacher.my-courses')->with([
-            'teacher_courses'   => $teacherCoursesArr ?? null
-        ]);
+        return view('admin-panel.teacher.my-courses')->with(['teacher_courses' => $teacherCoursesArr]);
     }
-
-
 
 
     /*
@@ -61,14 +42,14 @@ class TeacherController extends Controller
     }
     */
 
-    
-
     // list-coupon-codes.blade
     // my-courses.blade
     // my-earnings.blade
 
 
     public function viewCourseEnrollmentList(){
+        //need login, need valid role, role need to be teacher 
+
         if(!Sentinel::check())
             abort(403);
             
@@ -86,6 +67,8 @@ class TeacherController extends Controller
 
 
     public function viewCourseCompleteList(){
+        //need login, need valid role, role need to be teacher 
+
         if(!Sentinel::check())
             abort(403);
             
@@ -104,10 +87,9 @@ class TeacherController extends Controller
     }
 
     
-
-
     public function viewMySalaries(){
-            
+        //need login, need valid role, role need to be teacher 
+    
         if(!Sentinel::check())
             abort(403);
             
@@ -125,8 +107,5 @@ class TeacherController extends Controller
                     
         return view('admin-panel.teacher.my-salary');
     }
-
     
 }
-
-

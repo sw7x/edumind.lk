@@ -34,7 +34,7 @@ class TeacherService
     public function loadTeacherDataByUserName(string $username) : array {
         $user = $this->userRepository->findUserByUsername($username);
         if(is_null($user))
-            throw new CustomException('Access denied');
+            abort(404,'Teacher not found');
 
         if(!(new UserSharedService)->hasRole($user, RoleModel::TEACHER))        
             throw new CustomException('Wrong user type');
@@ -47,12 +47,12 @@ class TeacherService
     }
 
     
-    public function loadPublishedCoursesByTeacher(UserModel $teacher){
+    public function loadPublishedCoursesByTeacher(UserModel $teacher) : array {
         $courses = $this->courseRepository->getPublishedCoursesByTeacher($teacher);
 
         $dataArr = array();
         $courses->each(function (CourseModel $record, int $key) use (&$dataArr){
-            $dataArr[]          = CourseDataTransformer::buildDto($record->toArray());
+            $dataArr[]  =  CourseDataTransformer::buildDto($record->toArray());
         });
         return $dataArr;
     }
@@ -69,13 +69,6 @@ class TeacherService
         });
         return $teachersDtoArr;
     }
-
-
-
-
-
-
-
 
 
     public function loadPopularTeachers() : array {

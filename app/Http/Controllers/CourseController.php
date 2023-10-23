@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,11 +18,6 @@ use App\View\DataFormatters\CourseDataFormatter;
 use App\View\DataFormatters\SubjectDataFormatter;
 use DB;
 use App\Common\Utils\AlertDataUtil;
-
-//use App\Repositories\CourseRepository;
-//use App\Common\Utils\ColorUtil;
-//use Illuminate\Support\Arr;
-
 use App\Common\SharedServices\UserSharedService;
 
 
@@ -43,7 +36,7 @@ class CourseController extends Controller
             throw new CustomException('Course id not provided');
 
         $courseData     = $this->courseService->loadCourseData($slug);
-        
+
         $courseDataArr  = CourseDataFormatter::prepareCourseData($courseData);
         $viewFile       = $courseData['viewFile'];
 
@@ -55,7 +48,6 @@ class CourseController extends Controller
 
             'courseContent'          => $courseData['courseContentData']['data'],
             'courseContentInvFormat' => $courseData['courseContentData']['isInvFormat'],
-
 
             'bgColor'                => $courseData['colors']['bgColor'],
             'txtColor'               => $courseData['colors']['txtColor'],
@@ -80,6 +72,8 @@ class CourseController extends Controller
         if(!$slug)
             throw new CustomException('Course id not provided');
 
+        //todo -need auth and permissions
+
         $courseData = $this->courseService->loadCourseWatchData($slug, $videoId);
         //$bannerColors = ColorUtil::generateBannerColors($course->image);
 
@@ -97,7 +91,7 @@ class CourseController extends Controller
     public function viewSearchPage(){
         $subjects        = $this->courseService->loadCourseSearchPageData();
         $subjectsDataArr = SubjectDataFormatter::prepareSubjectDataList($subjects);
-        return view('course-search')->with(['subjectData'=>$subjectsDataArr]);
+        return view('course-search')->with(['subjectData' => $subjectsDataArr]);
     }
 
 
@@ -126,8 +120,8 @@ class CourseController extends Controller
 
         $coursesArr     =   CourseDataFormatter::prepareCoursListData($coursesDtoArr);
         return  redirect(route('courses.search'))
-                    ->withInput($request->all())
-                    ->with(['courses' => $coursesArr]);
+            ->withInput($request->all())
+            ->with(['courses' => $coursesArr]);
 
     }
 
@@ -171,28 +165,30 @@ class CourseController extends Controller
 
             if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
                 abort(403, "You don't have permissions to enroll courses");
+
             $course = CourseModel::find($courseId);
+            if(is_null($course))
+                abort(404, 'Invalid course cannot enroll');
 
-            if($course != null){
+            $rec = CourseSelectionModel::create([
+                'cart_added_date'   => null,
+                'is_checkout'       => false,
+                'course_id'         => $courseId,
+                'student_id'        => $user->id
+            ]);
+            if(!$rec) //todo cehck is that rollback
+                abort(500, "Failed to enroll course due to server error !");
 
-                $rec = CourseSelectionModel::create([
-                    'cart_added_date'   => null,
-                    'is_checkout'       => false,
-                    'course_id'         => $courseId,
-                    'student_id'        => $user->id
-                ]);
+            $isSaved = EnrollmentModel::create([
+                'is_complete'           => 0,
+                'course_selection_id'   => $rec->id,
+            ]);
+            if(!$isSaved) //todo cehck is that rollback
+                abort(500, "Failed to enroll course due to server error !");
 
-                EnrollmentModel::create([
-                    'is_complete'           => 0,
-                    'course_selection_id'   => $rec->id,
-                ]);
-                return redirect()->back()->with(
-                    AlertDataUtil::success('Successfully enrolled to the course')
-                );
+            return redirect()->back()->with(AlertDataUtil::success('Successfully enrolled to the course'));
 
-            }else{
-                throw new ModelNotFoundException;
-            }
+
         }catch(CustomException $e){
             return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
@@ -212,36 +208,33 @@ class CourseController extends Controller
         $user     = Sentinel::getUser();
 
         try{
-            if(!filter_var($courseId, FILTER_VALIDATE_INT)){
+            if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-            }
 
-            if($user == null){
-                throw new CustomException('First login before enrolling');
-            }
+            if(is_null($user))
+                abort(401, 'First login before enrolling');
 
             if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
                 abort(403, "You don't have permissions to enroll courses");
 
             $course = CourseModel::find($courseId);
+            if(is_null($course))
+                abort(404, 'Invalid course cannot enroll');
 
-            if($course != null){
 
-                $CourseSelectionRecord = CourseSelectionModel::where('course_id',$course->id)->where('student_id',$user->id)->get()->first();
+            $CourseSelectionRecord = CourseSelectionModel::where('course_id',$course->id)->where('student_id',$user->id)->get()->first();
 
-                $enrollmentRecord   = EnrollmentModel::where('course_selection_id', $CourseSelectionRecord->id)->get()->first();
-                $enrollmentRecord->is_complete      = True;
-                $enrollmentRecord->complete_date    = Carbon::now();
-                $enrollmentRecord->save();
+            $enrollmentRecord  = EnrollmentModel::where('course_selection_id', $CourseSelectionRecord->id)->get()->first();
+            $enrollmentRecord->is_complete      = True;
+            $enrollmentRecord->complete_date    = Carbon::now();
+            $isSaved                            = $enrollmentRecord->save();
+            
+            if(!$isSaved) //todo cehck is that rollback
+                abort(500, "Failed to mark course as complete due to server error !");
 
-                return redirect()->back()->with(
-                    AlertDataUtil::success('Successfully listed course as completed')
-                );
+            return redirect()->back()->with(AlertDataUtil::success('Successfully listed course as completed'));
 
-            }else{
-                throw new ModelNotFoundException;
-            }
-        }catch(CustomException $e){           
+        }catch(CustomException $e){
             return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){

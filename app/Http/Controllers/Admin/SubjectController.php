@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
+
 use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
@@ -13,16 +13,6 @@ use App\Services\Admin\SubjectService as AdminSubjectService;
 use App\Common\Utils\AlertDataUtil;
 use App\View\DataFormatters\Admin\SubjectDataFormatter as AdminSubjectDataFormatter;
 
-/*
-use App\Common\Utils\FileUploadUtil;
-use App\Common\Utils\UrlUtil;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use \Cviebrock\EloquentSluggable\Services\SlugService;
-*/
 
 class SubjectController extends Controller
 {
@@ -33,208 +23,73 @@ class SubjectController extends Controller
         $this->adminSubjectService = $adminSubjectService;
     }
 
+    public function index(){
+        //You dont have Permissions view all subjects !
+        $this->authorize('viewAny',SubjectModel::class);
+        $subjectsData = $this->adminSubjectService->loadAllDbRecs();
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //dd('f');
-        try{
-            $this->authorize('viewAny',SubjectModel::class);
-            $subjectsData   = $this->adminSubjectService->loadAllDbRecs();
-
-            $filteredDataArr = AdminSubjectDataFormatter::prepareSubjectDataList($subjectsData);
-
-            return view ('admin-panel.subject-list')->withData($filteredDataArr);
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.dashboard'))->with(
-                AlertDataUtil::error('You dont have Permissions view all subjects !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            dump($e->getMessage());
-            session()->now('message','Failed to view all subjects');
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.subject-list');
-        }
+        $filteredDataArr = AdminSubjectDataFormatter::prepareSubjectDataList($subjectsData);
+        return view ('admin-panel.subject-list')->withData($filteredDataArr);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        try{
-            $this->authorize('create',SubjectModel::class);
-            return view('admin-panel.subject-add');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects.index'))->with(
-                AlertDataUtil::error('You dont have Permissions create new subject !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            session()->now('message',  'Failed to show subject add form');
-            session()->now('cls',      'flash-danger');
-            session()->now('msgTitle', 'Error!');
-            return view('admin-panel.subject-add');
-        }
-
+    public function create(){
+        //You dont have Permissions create new subject !
+        $this->authorize('create',SubjectModel::class);
+        return view('admin-panel.subject-add');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         try{
-
+            //You dont have Permissions create new subject
             $this->authorize('create',SubjectModel::class);
+            
             if(!$request->get('name'))
                 throw new CustomException('Subject name cannot be empty');
 
             $isSaved = $this->adminSubjectService->saveDbRec($request);
             if (!$isSaved)
-                throw new CustomException("Subject create failed");
+                abort(500, "Subject create failed due to server error !");
 
-            return redirect(route('admin.subjects.create'))->with(
-                 AlertDataUtil::success('Subject inserted successfully')
-             );
-
-        }catch(CustomException $e){
-            return redirect(route('admin.subjects.create'))->with(
-                AlertDataUtil::error($e->getMessage())
-            );
-
-            
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects.create'))->with(
-                 AlertDataUtil::error('You dont have Permissions create new subject !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-             );
-
-        }catch(\Exception $e){
-            return redirect(route('admin.subjects.create'))->with(
-                AlertDataUtil::error('Subject creation failed!',[
-                    //'message'  => $e->getMessage(),
-                ])
-            );
-        }
-
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(int $id)
-    {
-        try{
-
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
-
-            $subjectData = $this->adminSubjectService->findDbRec($id);
-
-            if(is_null($subjectData['dbRec']))
-                throw new CustomException('Subject does not exist!');
-
-            $this->authorize('view', $subjectData['dbRec']);
-
-            $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
-            return view('admin-panel.subject-view')->with(['subject'   => $subjectDataArr]);
+            return redirect(route('admin.subjects.create'))
+                ->with(AlertDataUtil::success('Subject inserted successfully'));
 
         }catch(CustomException $e){
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.subject-view');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to view the subject !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-        }catch(\Exception $e){
-            //session()->now('message',$e->getMessage());
-            session()->now('message','Cannot display subject info!');
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.subject-view');
+            return redirect(route('admin.subjects.create'))->with(AlertDataUtil::error($e->getMessage()));
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(int $id)
-    {
-        try{
+    public function show(int $id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
 
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
+        $subjectData = $this->adminSubjectService->findDbRec($id);
 
-            $subjectData = $this->adminSubjectService->findDbRec($id);
-            if(is_null($subjectData['dbRec']))
-                throw new CustomException('Subject does not exist!');
+        if(is_null($subjectData['dbRec']))
+            abort(404,'Subject does not exist!');
 
-            $this->authorize('update', $subjectData['dbRec']);
+        // You dont have Permissions to view the subject !
+        $this->authorize('view', $subjectData['dbRec']);
 
-            $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
-            return view('admin-panel.subject-edit')->with(['subject'   => $subjectDataArr]);
-
-        }catch(CustomException $e){
-            session()->now('message', $e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.subject-list');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.subjects-list'))->with(
-                AlertDataUtil::error('You dont have Permissions to update the subject !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-             );
-
-        }catch(\Exception $e){
-            session()->now('message','Resource not exist');
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.subject-list');
-
-        }
+        $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
+        return view('admin-panel.subject-view')->with(['subject' => $subjectDataArr]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, int $id)
-    {
+    public function edit(int $id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $subjectData = $this->adminSubjectService->findDbRec($id);
+        if(is_null($subjectData['dbRec']))
+            abort(404,'Subject does not exist!');
+
+        //You dont have Permissions to update the subject !
+        //$this->authorize('update', $subjectData['dbRec']);
+
+        $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
+        return view('admin-panel.subject-edit')->with(['subject' => $subjectDataArr]);
+    }
+
+    public function update(Request $request, int $id){
         try{
 
             if(!filter_var($id, FILTER_VALIDATE_INT))
@@ -245,89 +100,42 @@ class SubjectController extends Controller
 
             $subjectData = $this->adminSubjectService->findDbRec($id);
             if(is_null($subjectData['dbRec']))
-                throw new CustomException('Subject does not exist!');
+                abort(404,'Subject does not exist!');
 
+            //You dont have Permissions to update the subject !
             $this->authorize('update', $subjectData['dbRec']);
 
             $isUpdated = $this->adminSubjectService->updateDbRec($request, $subjectData['dbRec']);
             if (!$isUpdated)
-                throw new CustomException("Subject update failed");
+                abort(500, "Subject update failed due to server error !");
 
-            return redirect()->route('admin.subjects.index')->with(
-                AlertDataUtil::success('Subject inserted successfully')
-            );
+            return redirect()->route('admin.subjects.index')
+                ->with(AlertDataUtil::success('Subject inserted successfully'));
 
         }catch(CustomException $e){
-            return redirect()->route('admin.subjects.edit', $id)->with(
-                AlertDataUtil::error($e->getMessage())
-            );
-
-        }catch(AuthorizationException $e){
-            return redirect()->route('admin.subjects.index')->with(
-                 AlertDataUtil::error('You dont have Permissions to update the subject !',[
-                    'msgTitle' => 'Permission Denied!',
-                    //'message'  => $e->getMessage(),
-                ])
-             );
-
-        }catch(\Exception $e){
-            return redirect()->route('admin.subjects.edit', $id)->with(
-                AlertDataUtil::error('Subject update failed!',[
-                    //'message'  => $e->getMessage(),
-                ])
-            );
+            return redirect()->route('admin.subjects.edit', $id)->with(AlertDataUtil::error($e->getMessage()));
 
         }
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request, int $id)
-    {
-        try{
+    public function destroy(Request $request, int $id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
 
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
+        $subjectData = $this->adminSubjectService->findDbRec($id);
+        if(is_null($subjectData['dbRec']))
+            throw new CustomException('Subject does not exist!');
 
-            $subjectData = $this->adminSubjectService->findDbRec($id);
-            if(is_null($subjectData['dbRec']))
-                throw new CustomException('Subject does not exist!');
+        //You dont have Permissions to delete the subject !
+        $this->authorize('delete', $subjectData['dbRec']);
 
-            $this->authorize('delete', $subjectData['dbRec']);
+        $isDelete = $this->adminSubjectService->deleteDbRec($subjectData['dbRec']);
+        if (!$isDelete)
+            abort(500, "Subject delete failed due to server error !");
 
-            $isDelete = $this->adminSubjectService->deleteDbRec($subjectData['dbRec']);
-            if (!$isDelete)
-                throw new CustomException("Subject delete failed");
-
-            return redirect()->route('admin.subjects.index')->with(
-                AlertDataUtil::success('Subject inserted successfully')
-            );
-
-        }catch(CustomException $e){
-            $exData = $e->getData();
-            return redirect()->route('admin.subjects.index')->with(
-                AlertDataUtil::error($e->getMessage())
-            );
-
-        }catch(AuthorizationException $e){
-            return redirect()->route('admin.subjects.index')->with(
-                AlertDataUtil::error('You dont have Permissions to delete the subject !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            return redirect()->route('admin.subjects.index')->with(
-                AlertDataUtil::error('Subject delete failed!',[
-                    //'message'  => $e->getMessage(),
-                ])
-            );
-        }
-
+        return redirect()->route('admin.subjects.index')
+            ->with(AlertDataUtil::success('Subject inserted successfully'));
     }
 
 }

@@ -4,24 +4,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Sentinel;
 use App\Models\Role as RoleModel;
-use App\Exceptions\CustomException;
-use App\Exceptions\InvalidUserTypeException;
-
 use App\View\DataFormatters\ProfileDataFormatter;
 use App\Services\UserService;
 use App\Common\SharedServices\UserSharedService;
+//use App\Exceptions\CustomException;
 
-/*
-use Illuminate\Support\Facades\Session;
-use App\Builders\UserBuilder;
-use App\Repositories\UserRepository;
-*/
+
 class PageController extends Controller
 {
-
     private UserService $userService;
     private UserSharedService $userSharedService;
-
 
     function __construct(UserService $userService, UserSharedService $userSharedService){
         $this->userService          = $userService;
@@ -93,7 +85,7 @@ class PageController extends Controller
 
     public function viewDashboard(Request $request){
         $user = Sentinel::getUser();
-                        
+
         // redirect ADMIN, EDITOR, MARKETER, TEACHER users to dashboard of admin panel
         if(!$this->userSharedService->hasRole($user, RoleModel::STUDENT))
             return redirect()->route('admin.dashboard', []);

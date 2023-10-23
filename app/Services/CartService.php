@@ -44,10 +44,11 @@ class CartService
 
                 /* delete free cuses from cart */
                 $isRemove = $this->courseSelectionRepository->deleteById($cartItem->id);
-
+                if(!$isRemove)
+                    abort(500, "Failed to delete free courses from your cart due to server error !");
+                
                 // message for the user to tell about deleted courses
-                if($isRemove)
-                	return '<a href="'.route('courses.show',$freeCourse->slug).'">'.$freeCourse->name.'</a>';
+                return '<a href="'.route('courses.show',$freeCourse->slug).'">'.$freeCourse->name.'</a>';
             });
         }
         return array('rlsCourses' => $msgArr);
@@ -94,9 +95,11 @@ class CartService
                 	//'updated_at'              => now(),
 				], false);
 
-				// message for the user to tell about removed invalid coupons
-				if($isReset)
-					return $ccMsg;
+				if(!$isReset)
+                    abort(500, "Failed to remove invalid coupons from your cart due to server error !");
+
+                // message for the user to tell about removed invalid coupons
+				return $ccMsg;
             });
         }
         return array('invoiceCc' => $msgArr);
@@ -129,9 +132,11 @@ class CartService
                 	//'updated_at'              => now(),
 				], false);
 
+                if(!$isReset)
+                    abort(500, "Failed to remove non exist coupons from your cart due to server error !");
+
                 // message for the user to tell about removed non exist coupons
-                if($isReset)
-                	return $msg;
+                return $msg;
             });
         }
         return array('csWithoutCC' => $msgArr);
@@ -164,9 +169,11 @@ class CartService
                 	'timestamps' 			=> false
 				], false);
 
-				// message for the user to tell about removed valid coupons
-                if($isReset)
-                	return $valCcMsg;
+                if(!$isReset)
+                    abort(500, "Failed to remove applied multiple coupons from your cart due to server error !");
+                
+                // message for the user to tell about removed valid coupons
+                return $valCcMsg;
             });
         }
         return array('cartValidCc' => $msgArr);
@@ -245,6 +252,7 @@ class CartService
             'billing_info'  => $saveFormData,
             'is_checkout'   => false
         ]);
+
         return $dbRec;
     }
 

@@ -33,9 +33,11 @@ class CourseService
     }
 
     public function findDbRec(int $id) : ?array {
-        $dbRec  =   $this->courseRepository->findById($id);
-        $dto    =   $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
+        $dbRec = $this->courseRepository->findById($id);
+        if(is_null($dbRec))
+            abort(404,'Course does not exist');
 
+        $dto = $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
         return array(
             'dbRec' => $dbRec,
             'dto'   => $dto
@@ -45,9 +47,8 @@ class CourseService
     public function loadCourseData(string $slug) : array {
 
         $courseRec = $this->courseRepository->findByUrl($slug);
-
         if(is_null($courseRec))
-            throw new CustomException('Course does not exist');
+            abort(404, 'Course does not exist');
 
         if($courseRec->status != CourseModel::PUBLISHED)
             throw new CustomException('Course is temporary disabled');
@@ -56,15 +57,15 @@ class CourseService
 
         $currentUser    = Sentinel::getUser();
         $pageResult     = $this->loadCoursePage($currentUser, $courseRec);
-
         $viewFile       = $pageResult['view'];
+
         if($courseRec->price == 0)
             $viewFile = 'course-single-enrolled';
 
         //validate course content format
         $courseContentData  =  (new CourseSharedService())->validateCourseContent($courseRec->content);
 
-        $courseDto = CourseDataTransformer::buildDto($courseRec->toArray());
+        $courseDto          = CourseDataTransformer::buildDto($courseRec->toArray());
 
         return array(
             'dto'               => $courseDto,
@@ -79,9 +80,8 @@ class CourseService
 
     public function loadCourseWatchData(string $slug, $videoId) : array {
         $courseRec = $this->courseRepository->findByUrl($slug);
-
         if(is_null($courseRec))
-            throw new CustomException('Course does not exist');
+            abort(404, 'Course does not exist');
 
         if($courseRec->status != CourseModel::PUBLISHED)
             throw new CustomException('Course is temporary disabled');
@@ -232,7 +232,9 @@ class CourseService
             $enrollment     = optional($courseSelRec)->enrollment;
 
             if ($courseSelRec)
-                $status = ($enrollment) ? ($enrollment->is_complete ? 'COMPLETED' : 'ENROLLED') : 'ADDED_TO_CART';
+                $status =   $enrollment ? 
+                                ($enrollment->is_complete ? 'COMPLETED' : 'ENROLLED') : 
+                                'ADDED_TO_CART';
 
             return array(
                 'dto'                => CourseDataTransformer::buildDto($courseRec->toArray()),
@@ -260,8 +262,7 @@ class CourseService
 
     public function loadSearchResults(Request $request){
         $searchParams = $request->only(['subject', 'course-type', 'searchQueryInput', 'course-duration']);
-
-        $courses = $this->courseRepository->getSearchCourses($searchParams);
+        $courses      = $this->courseRepository->getSearchCourses($searchParams);
 
         $coursesDtoArr = array();
         $courses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\CustomException;
@@ -15,52 +14,15 @@ use App\Http\Requests\Admin\TeacherStoreRequest;
 use App\Http\Requests\Admin\TeacherUpdateRequest;
 use App\View\DataFormatters\Admin\UserDataFormatter as AdminUserDataFormatter;
 use App\Common\Utils\AlertDataUtil;
-
 use App\Services\Admin\UserService as AdminUserService;
-
 use Sentinel;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Models\Role as RoleModel;
+use App\Models\User as UserModel;
 
-
-
-/*
-
-use App\Common\Utils\FileUploadUtil;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB as DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-
-use Illuminate\Support\Collection;
-use App\Builders\UserBuilder;
-
-use App\Repositories\UserRepository;
-use App\Domain\Factories\UserFactory;
-use App\Domain\Factories\OrderFactory;
-
-use App\Mappers\UserMapper;
-use App\Mappers\OrderMapper;
-
-use App\Repositories\CourseItemRepository;
-use App\Repositories\EnrollmentRepository;
-use App\Repositories\CouponRepository;
-use App\Repositories\OrderRepository;
-use App\Repositories\AuthorSalaryRepository;
-
-
-
-use App\Builders\CourseItemBuilder;
-use App\Builders\EnrollmentBuilder;
-use App\Builders\CouponCodeBuilder;
-use App\Builders\OrderBuilder;
-
-use App\DataTransferObjects\Factories\OrderDtoFactory;
-*/
 
 class UserController extends Controller
 {
-
     // todo user role
     // todo reg activate
 
@@ -71,209 +33,101 @@ class UserController extends Controller
     }
 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
-    {
+    {                            
+        //You dont have Permissions view all users !
+        $this->authorize('viewAny', UserModel::class);
+        $userArr = $this->adminUserService->loadAllUserRecs();
+
+        $teachers   = AdminUserDataFormatter::prepareUserListData($userArr['teachersDtoArr']);
+        $students   = AdminUserDataFormatter::prepareUserListData($userArr['studentsDtoArr']);
+        $marketers  = AdminUserDataFormatter::prepareUserListData($userArr['marketersDtoArr']);
+        $editors    = AdminUserDataFormatter::prepareUserListData($userArr['editorsDtoArr']);
+
+        return view('admin-panel.user-list')->with([
+            'teachers'         => $teachers,
+            'students'         => $students,
+            'marketers'        => $marketers,
+            'editors'          => $editors,
+            
+            'canViewteachers'  => $userArr['canViewteachers'],//-----
+            'canViewstudents'  => $userArr['canViewstudents'],//------
+            'canViewmarketers' => $userArr['canViewmarketers'],//----------
+            'canVieweditors'   => $userArr['canVieweditors']//----------
+        ]);
         
-        try{
-
-            $this->authorize('viewAny',User::class);
-            $userArr = $this->adminUserService->loadAllUserRecs();
-
-            $teachers   = AdminUserDataFormatter::prepareUserListData($userArr['teachersDtoArr']);
-            $students   = AdminUserDataFormatter::prepareUserListData($userArr['studentsDtoArr']);
-            $marketers  = AdminUserDataFormatter::prepareUserListData($userArr['marketersDtoArr']);
-            $editors    = AdminUserDataFormatter::prepareUserListData($userArr['editorsDtoArr']);
-
-            //dd($teachers);
-            return view('admin-panel.user-list')->with([
-                'teachers'         => $teachers,
-                'canViewteachers'  => $userArr['canViewteachers'],
-
-                'students'         => $students,
-                'canViewstudents'  => $userArr['canViewstudents'],
-
-                'marketers'        => $marketers,
-                'canViewmarketers' => $userArr['canViewmarketers'],
-
-                'editors'          => $editors,
-                'canVieweditors'   => $userArr['canVieweditors']
-            ]);
-
-        }catch(CustomException $e){
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.user-list');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.dashboard'))->with(
-                AlertDataUtil::error('You dont have Permissions view all users !',[
-                    'msgTitle'  =>'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            //dd($e);
-            //session()->now('message','Failed to show all users');
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.user-list');
-        }
     }
 
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        try{
-            $this->authorize('create',User::class);
-            return view('admin-panel.user-add');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to create users',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            session()->now('message',  'Failed to show user add form');
-            session()->now('cls',      'flash-danger');
-            session()->now('msgTitle', 'Error!');
-            return view('admin-panel.user-add');
-        }
+    public function create(Request $request){
+        // You dont have Permissions to create users
+        $this->authorize('create', UserModel::class);
+        return view('admin-panel.user-add');       
     }
-
 
 
     public function storeTeacher(TeacherStoreRequest $request){
         try{
-
-            $this->authorize('createTeachers',User::class);
+            $this->authorize('createTeachers', UserModel::class);
 
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
-
+            
+            //You dont have Permissions to create Teachers !
             $result = $this->adminUserService->saveTeacherRec($request);
+            if(!$result)
+                abort(500, "Add Teacher failed due to server error !");
 
             return redirect(route('admin.users.create'))->with([
-                'teacher_submit_message'  => 'Add Teacher success',
-                'teacher_submit_message2' => $result['usernameMsg'],
-                //'teacher_submit_title'   => 'Student Registration submit page',
-                'teacher_submit_cls'     => 'flash-success',
-                'teacher_submit_msgTitle'=> 'Success',
+                'teacher_add_message'   => 'Add Teacher success',
+                'teacher_add_message2'  => $result['usernameMsg'],
+                'teacher_add_cls'       => 'flash-success',
+                'teacher_add_msgTitle'  => 'Success',
             ]);
 
         }catch(CustomException $e){
             return redirect(route('admin.users.create'))
-            ->withErrors($request->validator)
-            ->withInput()
-            ->with([
-                'teacher_submit_message'    => $e->getMessage(),
-                //'teacher_submit_message2' => $pwResetTxt,
-                //'teacher_submit_title'    => 'Student Registration submit page',
-                'teacher_submit_cls'        => $e->getData('cls') ?? 'flash-danger',
-                'teacher_submit_msgTitle'   => $e->getData('msgTitle') ?? 'Error !',
-            ]);
+                ->withErrors($request->validator)
+                ->withInput()
+                ->with([
+                    'teacher_add_message'    => $e->getMessage(),
+                    //'teacher_add_message2' => '',
+                    'teacher_add_cls'        => 'flash-danger',
+                    'teacher_add_msgTitle'   => 'Error !',
+                ]);
 
-        }catch(AuthorizationException $e){
-            //return redirect(url()->previous().'#tab-teachers')->with([
-            return redirect(route('admin.users.create').'#tab-teachers')
-            ->withErrors($request->validator)
-            ->withInput()
-            ->with([
-                'teacher_submit_message'  => 'You dont have Permissions to create Teachers !',
-                //'teacher_submit_message2' => $pwResetTxt,
-                //'teacher_submit_title'   => 'Student Registration submit page',
-                'teacher_submit_cls'     => 'flash-danger',
-                'teacher_submit_msgTitle'=> 'Permission Denied !',
-            ]);
-
-        }catch(\Exception $e){
-            return redirect(route('admin.users.create'))
-            ->withErrors($request->validator)
-            ->withInput()
-            ->with([
-                'teacher_submit_message'  => 'Add Teacher Failed !',
-                //'teacher_submit_message'  => $e->getMessage(),
-                //'teacher_submit_message2' => $pwResetTxt,
-                //'teacher_submit_title'   => 'Student Registration submit page',
-                'teacher_submit_cls'     => 'flash-danger',
-                'teacher_submit_msgTitle'=> 'Error !',
-            ]);
         }
     }
 
 
     public function storeStudent(StudentStoreRequest $request){
-
-        //dd($request->all());
         try{
 
-            $this->authorize('createStudents',User::class);
+            $this->authorize('createStudents', UserModel::class);
 
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
+            //You dont have Permissions to create students !
             $result = $this->adminUserService->saveStudentRec($request);
+            if(!$result)
+                abort(500, "Add Student failed due to server error !");
 
             return redirect(route('admin.users.create', []). '#tab-students')->with([
-                'student_submit_message'    => 'Add Student success',
-                'student_submit_message2'   => $result['usernameMsg'],
-                //'student_submit_title'    => 'Student Registration submit page',
-                'student_submit_cls'        => 'flash-success',
-                'student_submit_msgTitle'   => 'Success',
+                'student_add_message'    => 'Add Student success',
+                'student_add_message2'   => $result['usernameMsg'],
+                'student_add_cls'        => 'flash-success',
+                'student_add_msgTitle'   => 'Success',
             ]);
 
         }catch(CustomException $e){
-
             return redirect(route('admin.users.create', []). '#tab-students')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
-                    'student_submit_message'  => $e->getMessage(),
-                    //'student_submit_message2' => $pwResetTxt,
-                    //'student_submit_title'   => 'Student Registration submit page',
-                    'student_submit_cls'     => 'flash-danger',
-                    'student_submit_msgTitle'=> 'Error !',
-                ]);
-
-        }catch(AuthorizationException $e){
-
-            return redirect(route('admin.users.create', []). '#tab-students')
-            //return redirect(url()->previous().'#tab-students')
-                ->withErrors($request->validator)
-                ->withInput()
-                ->with([
-                    'student_submit_message'  => 'You dont have Permissions to create students !',
-                    //'student_submit_message2' => $pwResetTxt,
-                    //'student_submit_title'   => 'Student Registration submit page',
-                    'student_submit_cls'     => 'flash-danger',
-                    'student_submit_msgTitle'=> 'Permission Denied !',
-                ]);
-
-        }catch(\Exception $e){
-            return redirect(route('admin.users.create', []). '#tab-students')
-                ->withErrors($request->validator)
-                ->withInput()
-                ->with([
-                    'student_submit_message'  => 'Add Student Failed !',
-                    //'student_submit_message'  => $e->getMessage(),
-                    //'student_submit_message2' => $pwResetTxt,
-                    //'student_submit_title'   => 'Student Registration submit page',
-                    'student_submit_cls'     => 'flash-danger',
-                    'student_submit_msgTitle'=> 'Error !',
+                    'student_add_message'  => $e->getMessage(),
+                    'student_add_cls'     => 'flash-danger',
+                    'student_add_msgTitle'=> 'Error !',
                 ]);
         }
 
@@ -281,221 +135,113 @@ class UserController extends Controller
 
 
     public function storeMarketer(MarketerStoreRequest $request){
-        //dd($request->all());
-
         try{
-            $this->authorize('createMarketers',User::class);
+            $this->authorize('createMarketers', UserModel::class);
 
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
+            //You dont have Permissions to create marketers !
             $result = $this->adminUserService->saveMarketerRec($request);
+            if(!$result)
+                abort(500, "Add Marketer failed due to server error !");
 
             return redirect(route('admin.users.create', []). '#tab-marketers')->with([
-                'marketer_submit_message'   => 'Add Marketer success',
-                'marketer_submit_cls'       => 'flash-success',
-                'marketer_submit_msgTitle'  => 'Success',
-                'marketer_submit_message2'  => $result['usernameMsg']
+                'marketer_add_message'   => 'Add Marketer success',
+                'marketer_add_cls'       => 'flash-success',
+                'marketer_add_msgTitle'  => 'Success',
+                'marketer_add_message2'  => $result['usernameMsg']
             ]);
 
         }catch(CustomException $e){
-
             return redirect(route('admin.users.create', []). '#tab-marketers')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
-                    'marketer_submit_message'   => $e->getMessage(),
-                    'marketer_submit_cls'       => 'flash-danger',
-                    'marketer_submit_msgTitle'  => 'Error !',
-                ]);
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.create', []). '#tab-marketers')
-            //return redirect(url()->previous().'#tab-marketers')
-                ->withErrors($request->validator)
-                ->withInput()
-                ->with([
-                    'marketer_submit_message'   => 'You dont have Permissions to create marketers !',
-                    //'marketer_submit_message2'=> $pwResetTxt,
-                    //'marketer_submit_title'   => 'Student Registration submit page',
-                    'marketer_submit_cls'       => 'flash-danger',
-                    'marketer_submit_msgTitle'  => 'Permission Denied !',
-                ]);
-
-        }catch(\Exception $e){
-            return redirect(route('admin.users.create', []). '#tab-marketers')
-                ->withErrors($request->validator)
-                ->withInput()
-                ->with([
-                    'marketer_submit_message'   => 'Add Marketer Failed !',
-                    'marketer_submit_cls'       => 'flash-danger',
-                    'marketer_submit_msgTitle'  => 'Error !',
+                    'marketer_add_message'   => $e->getMessage(),
+                    'marketer_add_cls'       => 'flash-danger',
+                    'marketer_add_msgTitle'  => 'Error !',
                 ]);
         }
     }
 
 
     public function storeEditor(EditorStoreRequest $request){
-        //dd($request->all());
         try{
-            $this->authorize('createEditors',User::class);
+            $this->authorize('createEditors', UserModel::class);
 
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
+            // You dont have Permissions to create editors !
             $result = $this->adminUserService->saveEditorRec($request);
+            if(!$result)
+                abort(500, "Add Editor failed due to server error !");
 
             return redirect(route('admin.users.create', []). '#tab-editor')->with([
-                'editor_submit_message'   => 'Add editor success',
-                'editor_submit_cls'       => 'flash-success',
-                'editor_submit_msgTitle'  => 'Success',
-                'editor_submit_message2'  => $result['usernameMsg']
+                'editor_add_message'   => 'Add editor success',
+                'editor_add_cls'       => 'flash-success',
+                'editor_add_msgTitle'  => 'Success',
+                'editor_add_message2'  => $result['usernameMsg']
             ]);
 
         }catch(CustomException $e){
-
             return redirect(route('admin.users.create', []). '#tab-editor')
                 ->withErrors($request->validator)
                 ->withInput()
                 ->with([
-                    'editor_submit_message'     => $e->getMessage(),
-                    'editor_submit_cls'         => 'flash-danger',
-                    'editor_submit_msgTitle'    => 'Error !',
-                ]);
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.create', []). '#tab-editor')
-            //return redirect(url()->previous().'#tab-editor')
-                ->withErrors($request->validator)
-                ->withInput()
-                ->with([
-                    'editor_submit_message'     => 'You dont have Permissions to create editors !',
-                    //'editor_submit_message2'  => $pwResetTxt,
-                    //'editor_submit_title'     => 'Student Registration submit page',
-                    'editor_submit_cls'         => 'flash-danger',
-                    'editor_submit_msgTitle'    => 'Permission Denied !',
-                ]);
-
-        }catch(\Exception $e){
-            return redirect(route('admin.users.create', []). '#tab-editor')
-                ->withErrors($request->validator)
-                ->withInput()
-                ->with([
-                    'editor_submit_message'     => $e->getMessage(),
-                    //'editor_submit_message'     => 'Add editor Failed !',
-                    'editor_submit_cls'         => 'flash-danger',
-                    'editor_submit_msgTitle'    => 'Error !',
+                    'editor_add_message'     => $e->getMessage(),
+                    'editor_add_cls'         => 'flash-danger',
+                    'editor_add_msgTitle'    => 'Error !',
                 ]);
         }
 
     }
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        try{
-            if(!filter_var($id, FILTER_VALIDATE_INT)){
-                throw new CustomException('Invalid id');
-            }
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+        
+        $userData = $this->adminUserService->findDbRec($id);
+        if(is_null($userData['dbRec']))
+            throw new CustomException('User does not exist!');
+        
+        //You dont have Permissions to view the user !
+        $this->authorize('view', $userData['dbRec']);
 
-            $userData = $this->adminUserService->findDbRec($id);
-            if(is_null($userData['dbRec']))
-                throw new CustomException('User does not exist!');
-
-            $this->authorize('view', $userData['dbRec']);
-
-            $filteredUserData   = AdminUserDataFormatter::prepareUserData($userData);
-
-            return view('admin-panel.user-view')->with([
-                'userData'   => $filteredUserData
-            ]);
-
-        }catch(CustomException $e){
-            session()->now('view_user_message',$e->getMessage());
-            session()->now('view_user_cls','flash-danger');
-            session()->now('view_user_msgTitle','Error!');
-            return view('admin-panel.user-view');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to view the user !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            session()->now('view_user_message','User does not exist');
-            //session()->now('view_user_message',$e->getMessage());
-            session()->now('view_user_cls','flash-danger');
-            session()->now('view_user_msgTitle','Error!');
-            return view('admin-panel.user-view');
-
-        }
+        $filteredUserData   = AdminUserDataFormatter::prepareUserData($userData);
+        return view('admin-panel.user-view')->with(['userData' => $filteredUserData]);        
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id){
-        try{
 
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
+    public function edit($id){        
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
 
-            $userData = $this->adminUserService->findDbRec($id);
-            if(is_null($userData['dbRec']))
-                throw new CustomException('User does not exist!');
+        $userData = $this->adminUserService->findDbRec($id);
+        if(is_null($userData['dbRec']))
+            throw new CustomException('User does not exist!');
 
-            $this->authorize('update', $userData['dbRec']);
+        // You dont have Permissions to edit the user !
+        $this->authorize('update', $userData['dbRec']);
 
-            if(empty($userData['dbRec']->getAllUserRoles()))
-                throw new CustomException('User have no role!');
+        if(empty($userData['dbRec']->getAllUserRoles()))
+            throw new CustomException('User have no role!');
 
-            $filteredUserData = AdminUserDataFormatter::prepareUserData($userData);
-            return view('admin-panel.user-edit')->with([
-                'userData'   => $filteredUserData,
-            ]);
-
-        }catch(CustomException $e){
-            //$exData = $e->getData();
-            session()->now('message',$e->getMessage());
-            session()->now('cls',$exData['cls'] ?? "flash-danger");
-            session()->now('msgTitle', $exData['msgTitle']  ?? 'Error !');
-            return view('admin-panel.user-edit');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to edit the user !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-             );
-
-        }
-        catch(\Exception $e){
-            session()->now('message','User edit failed');
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.user-edit');
-
-        }
+        $filteredUserData = AdminUserDataFormatter::prepareUserData($userData);
+        return view('admin-panel.user-edit')->with(['userData' => $filteredUserData]);        
 
     }
 
+    
     public function updateTeacher(TeacherUpdateRequest $request, $id){
 
         try{
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-
+            
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
@@ -503,52 +249,26 @@ class UserController extends Controller
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
 
+            //You dont have Permissions to update teacher user accounts !
             $this->authorize('updateTeachers',$userData['dbRec']);
 
             $isUpdated = $this->adminUserService->updateTeacherRec($request, $userData['dbRec']);
             if (!$isUpdated)
-                throw new CustomException("User update failed");
+                abort(500, "Teacher update failed due to server error !");
 
-            return redirect()->route('admin.users.index')->with(
-                AlertDataUtil::success('Teacher update success')
-            );
+            return redirect()->route('admin.users.index')->with(AlertDataUtil::success('Teacher update success'));
 
         }catch(CustomException $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => $e->getMessage(),
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
-        }catch(AuthorizationException $e){
-            //dd($e->getMessage());
-            return redirect(route('admin.users.index'))->with([
-            //return redirect()->back()->with([
-                'user_edit_message'     => 'You dont have Permissions to update teacher user accounts !',
-                'user_edit_cls'         => 'flash-danger',
-                'user_edit_msgTitle'    => 'Permission Denied !',
-            ]);
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => 'Add User Failed !',
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
         }
-
     }
 
 
     public function updateStudent(StudentUpdateRequest $request, $id){
-
         try{
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-
+            
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
@@ -556,43 +276,18 @@ class UserController extends Controller
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
 
+            //You dont have Permissions to update student user accounts !
             $this->authorize('updateStudents',$userData['dbRec']);
 
             $isUpdated = $this->adminUserService->updateStudentRec($request, $userData['dbRec']);
             if (!$isUpdated)
-                throw new CustomException("User update failed");
+                abort(500, "Student update failed due to server error !");
 
-            return redirect()->route('admin.users.index')->with(
-                AlertDataUtil::success('Student update success')
-            );
+            return redirect()->route('admin.users.index')->with(AlertDataUtil::success('Student update success'));
 
-        }catch(CustomException $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => $e->getMessage(),
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
-        }catch(AuthorizationException $e){
-            //dd($e->getMessage());
-            return redirect(route('admin.users.index'))->with([
-            //return redirect()->back()->with([
-                'user_edit_message'     => 'You dont have Permissions to update student user accounts !',
-                'user_edit_cls'         => 'flash-danger',
-                'user_edit_msgTitle'    => 'Permission Denied !',
-            ]);
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => 'User update Failed!',
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
+        }catch(CustomException $e){            
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
         }
-
     }
 
 
@@ -608,42 +303,18 @@ class UserController extends Controller
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
 
+            //You dont have Permissions to update student user accounts !
             $this->authorize('updateMarketers',$userData['dbRec']);
 
             $isUpdated = $this->adminUserService->updateMarketerRec($request, $userData['dbRec']);
             if (!$isUpdated)
-                throw new CustomException("User update failed");
-            return redirect()->route('admin.users.index')->with(
-                AlertDataUtil::success('Marketer update success')
-            );
+                abort(500, "Marketer update failed due to server error !");
+
+            return redirect()->route('admin.users.index')->with(AlertDataUtil::success('Marketer update success'));
 
         }catch(CustomException $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => $e->getMessage(),
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
-        }catch(AuthorizationException $e){
-            //dd($e->getMessage());
-            return redirect(route('admin.users.index'))->with([
-            //return redirect()->back()->with([
-                'user_edit_message'     => 'You dont have Permissions to update student user accounts !',
-                'user_edit_cls'         => 'flash-danger',
-                'user_edit_msgTitle'    => 'Permission Denied !',
-            ]);
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => 'User update Failed!',
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
         }
-
     }
 
 
@@ -659,44 +330,19 @@ class UserController extends Controller
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
 
+            //You dont have Permissions to update editor user accounts !
             $this->authorize('updateEditors',$userData['dbRec']);
 
             $isUpdated = $this->adminUserService->updateEditorRec($request, $userData['dbRec']);
             if (!$isUpdated)
-                throw new CustomException("User update failed");
+                abort(500, "Editor update failed due to server error !");
 
-            return redirect()->route('admin.users.index')->with(                
-                AlertDataUtil::success('Editor update success')
-            );
+            return redirect()->route('admin.users.index')->with(AlertDataUtil::success('Editor update success'));
 
         }catch(CustomException $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => $e->getMessage(),
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with([
-            //return redirect()->back()->with([
-                'user_edit_message'     => 'You dont have Permissions to update editor user accounts !',
-                'user_edit_cls'         => 'flash-danger',
-                'user_edit_msgTitle'    => 'Permission Denied !',
-            ]);
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            return redirect()->back()->with([
-                'user_edit_message'  => 'User update Failed!',
-                'user_edit_cls'     => 'flash-danger',
-                'user_edit_msgTitle'=> 'Error !',
-            ]);
-
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
         }
-
     }
-
 
 
     public function changeStatus(Request $request){
@@ -715,18 +361,12 @@ class UserController extends Controller
             $status     = (int)$request->status;
             $isUpdated  = $this->adminUserService->updateStatus($userData['dbRec']->id, $status);
             if(!$isUpdated)
-                throw new CustomException('User status update failed!');
+                abort(500, "User status update failed due to server error !");
 
-            return response()->json([
-                'message'  => 'User status update success',
-                'status' => 'success',
-            ]);
+            return response()->json(['status' => 'success', 'message'  => 'User status update success']);
 
         }catch(CustomException $e){
-            return response()->json([
-                'message'  => $e->getMessage(),
-                'status' => 'error',
-            ]);
+            return response()->json(['status' => 'error', 'message'  => $e->getMessage()]);
 
         }catch(AuthorizationException $e){
             return response()->json(
@@ -738,124 +378,69 @@ class UserController extends Controller
         }
         catch(\Exception $e){
             return response()->json([
-                'message'  => $e->getMessage(),
-                //'message'  => 'User status update failed!',
-                'status' => 'error',
+                'status'    => 'error',
+                'message'   => 'User status update failed!',
+                //'message' => $e->getMessage(),
             ]);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request, $id){
         //todo delete image
-        try{
-
-            switch ($request->userType) {
-                case "teacher":
-                    $hash = '#tab-teachers';
-                    $redirectRoute = 'admin.user.index';
-                    break;
-                case "approve.teacher":
-                    $hash = '#tab-teachers';
-                    $redirectRoute = 'admin.user.un-approved-teachers-list';
-                    break;
-                case "student":
-                    $hash = '#tab-students';
-                    $redirectRoute = 'admin.user.index';
-                    break;
-                case "marketer":
-                    $hash = '#tab-marketers';
-                    $redirectRoute = 'admin.user.index';
-                    break;
-                case "editor":
-                    $hash = '#tab-editors';
-                    $redirectRoute = 'admin.user.index';
-                    break;
-                default:
-                    $hash = '';
-                    $redirectRoute = 'admin.user.index';
-            }
-
-            if(!filter_var($id, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id',$eArr);
-
-            $userData = $this->adminUserService->findDbRec($id);
-            if(is_null($userData['dbRec']))
-                throw new CustomException('User does not exist!',$eArr);
-
-            $this->authorize('delete', $userData['dbRec']);
-
-            $isDelete = $this->adminUserService->deleteDbRec($userData['dbRec']);
-            if (!$isDelete)
-                throw new CustomException("User delete failed",$eArr);
-
-            return redirect(route($redirectRoute, []). $hash)->with(                
-                AlertDataUtil::success('successfully deleted the user record')
-            );
-
-        }catch(CustomException $e){
-            return redirect(route('admin.users.index',[]).$hash)->with(
-                AlertDataUtil::error($e->getMessage())
-            );
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to delete the user !',[
-                    'msgTitle' => 'Permission Denied !',
-                ])
-            );
-        }catch(\Exception $e){
-            return redirect(route('admin.users.index',[]).$hash)->with(
-                AlertDataUtil::error('User delete failed !',[
-                    //'message' => $e->getMessage(),
-                ])
-            );
+        switch ($request->userType) {
+            case "teacher":
+                $hash = '#tab-teachers';
+                $redirectRoute = 'admin.user.index';
+                break;
+            case "approve.teacher":
+                $hash = '#tab-teachers';
+                $redirectRoute = 'admin.user.un-approved-teachers-list';
+                break;
+            case "student":
+                $hash = '#tab-students';
+                $redirectRoute = 'admin.user.index';
+                break;
+            case "marketer":
+                $hash = '#tab-marketers';
+                $redirectRoute = 'admin.user.index';
+                break;
+            case "editor":
+                $hash = '#tab-editors';
+                $redirectRoute = 'admin.user.index';
+                break;
+            default:
+                $hash = '';
+                $redirectRoute = 'admin.user.index';
         }
 
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id', $eArr);
+
+        $userData = $this->adminUserService->findDbRec($id);
+        if(is_null($userData['dbRec']))
+            throw new CustomException('User does not exist!',$eArr);
+
+        //You dont have Permissions to delete the user !
+        $this->authorize('delete', $userData['dbRec']);
+
+        $isDelete = $this->adminUserService->deleteDbRec($userData['dbRec']);
+        if (!$isDelete)
+            abort(500, "User delete failed due to server error !");
+
+        return redirect(route($redirectRoute, []). $hash)
+            ->with(AlertDataUtil::success('successfully deleted the user record'));
     }
-
-
 
 
     public function viewUnApprovedTeachersList(){
+        //todo
+        //You dont have Permissions to view the user !
+        //$this->authorize('delete', $userData['dbRec']);
 
-        try{
-            //todo
-            //$this->authorize('delete', $userData['dbRec']);
+        $unApprovedTeachers = $this->adminUserService->findUnApprovedTeachers();
 
-            $unApprovedTeachers = $this->adminUserService->findUnApprovedTeachers();
-
-            $teachersArr = AdminUserDataFormatter::prepareUnApprovedTeachers($unApprovedTeachers);
-            return view('admin-panel.user-approve-teachers')->with([
-                'teachers'   => $teachersArr,
-            ]);
-
-        }catch(CustomException $e){
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.user-approve-teachers');
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.users.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to view the user !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
-
-        }catch(\Exception $e){
-            session()->now('message','User does not exist');
-            //session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.user-approve-teachers');
-
-        }
+        $teachersArr = AdminUserDataFormatter::prepareUnApprovedTeachers($unApprovedTeachers);
+        return view('admin-panel.user-approve-teachers')->with(['teachers' => $teachersArr]);        
     }
 
 
@@ -870,6 +455,7 @@ class UserController extends Controller
                 throw new CustomException('User does not exist!');
 
             //todo
+            //You dont have Permissions to view the user !
             //$this->authorize('view', $userData['dbRec']);
 
             if(empty($userData['dbRec']->getAllUserRoles()))
@@ -882,30 +468,10 @@ class UserController extends Controller
                 throw new CustomException("Account already activated");
 
             $filteredUserData   = AdminUserDataFormatter::prepareUserData($userData);
-
-            return view('admin-panel.teacher.approve-account')->with([
-                'userData'   => $filteredUserData,
-            ]);
+            return view('admin-panel.teacher.approve-account')->with(['userData' => $filteredUserData]);
 
         }catch(CustomException $e){
-            return view('admin-panel.teacher.approve-account')->with([
-                AlertDataUtil::error($e->getMessage())
-            ]);
-
-        }catch(AuthorizationException $e){            
-            return redirect(route('admin.users.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to view the user !',[
-                    'msgTitle' => 'Permission Denied !',
-                ])
-            );
-
-        }catch(\Exception $e){
-            return redirect(route('admin-panel.teacher.approve-account'))->with(
-                AlertDataUtil::error('Failed to load Un Approved Teachers!',[
-                    //'message' => $e->getMessage(),
-                ])
-            );
-            
+            return view('admin-panel.teacher.approve-account')->with([AlertDataUtil::error($e->getMessage())]);
         }
     }
 
@@ -913,10 +479,4 @@ class UserController extends Controller
         return view('admin-panel.user-changes-approve');
     }
 
-
-
-
 }
-
-
-

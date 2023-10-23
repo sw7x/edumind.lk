@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -16,9 +15,7 @@ use App\Repositories\CourseRepository;
 use App\Models\Role as RoleModel;
 use App\Common\Utils\AlertDataUtil;
 
-//use App\Models\Coupon;
-//use Illuminate\Support\Collection;
-//use App\Models\Course;
+
 class CouponController extends Controller
 {
 
@@ -29,14 +26,7 @@ class CouponController extends Controller
     }
 
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(){
-
         $courses    =   (new CourseRepository())->getAllPaidCourses();
         $teachers   =   (new UserRepository())->findAllAvailableTeachers();
         $marketers  =   (new UserRepository())->findAllAvailableMarketers();
@@ -48,170 +38,82 @@ class CouponController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(CouponStoreRequest $request)
-    //public function store(Request $request)
-    {
-        //dd($request->all());
-
+    
+    public function store(CouponStoreRequest $request){
         try{
             //todo
+            //You dont have Permissions to create Coupons !
             //$this->authorize('create',$course);
-
-
+            
             /* creating validation errors for view*/
-            $errors                 =   Session::get('errors');
-            $couponCreateValErrors  =   null;
+            $errors = Session::get('errors');            
             if (!is_null($errors) && !is_null($errors->couponCreate))
-                $couponCreateValErrors  =   $errors->couponCreate->getMessages();
-
+                $couponCreateValErrors = $errors->couponCreate->getMessages();
 
             /* if have validation errors */
-            if (isset($request->validator) && $request->validator->fails()) {
-                $validationErrMsg = 'Form validation is failed !';
-                throw new CustomException($validationErrMsg);
-            }
-
-
+            if (isset($request->validator) && $request->validator->fails())
+                throw new CustomException('Form validation is failed !');
+            
             $isSaved = $this->adminCouponService->saveCoupon($request);
             if (!$isSaved)
-                throw new CustomException("Coupon create failed");
+                abort(500, "Coupon create failed due to server error !");
 
             return redirect()->route('admin.coupon-codes.create')->with(
                 AlertDataUtil::success('Coupon created successfully')
             );
 
-        }catch(CustomException $e){
-
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Coupon create failed !';
             return redirect(route('admin.coupon-codes.create'))
                 ->withErrors($couponCreateValErrors ?? [],'couponCreateError')
                 ->withInput($request->input())
-                ->with(AlertDataUtil::error($e->getMessage()));
-
-        }catch(AuthorizationException $e){
-            return redirect(route('admin.coupon-codes.create'))
-                ->with(
-                    AlertDataUtil::error('You dont have Permissions to create Coupons !', [
-                        //'message' => $e->getMessage(),
-                        'msgTitle'  => 'Permission Denied!'
-                    ])
-                );
-
-        }catch(\Exception $e){
-            return redirect(route('admin.coupon-codes.create'))
-                ->withErrors($couponCreateValErrors ?? [],'couponCreateError')
-                ->withInput($request->input())
-                ->with(
-                    AlertDataUtil::error('Coupon create Failed !', [
-                        //'message' => $e->getMessage(),
-                    ])
-                );
+                ->with(AlertDataUtil::error($msg));         
         }
-
-
     }
 
 
+    public function show(string $code){
+        $validator = Validator::make(['code' => $code], [
+            'code' => 'required|regex:/^[a-zA-Z0-9]+$/|size:6'
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Coupon  $coupon
-     * @return \Illuminate\Http\Response
-     */
-    public function show(string $code)
-    {
-        try{
-            $validator = Validator::make(['code' => $code], [
-                'code' => 'required|regex:/^[a-zA-Z0-9]+$/|size:6'
-            ]);
+        if ($validator->fails())
+            throw new CustomException('Invalid code');
 
-            if ($validator->fails())
-                throw new CustomException('Invalid code');
+        $couponCodeData = $this->adminCouponService->findDbRec($code);
+        if(is_null($couponCodeData['dbRec']))
+            throw new CustomException('Coupon code does not exist !');
 
-            $couponCodeData     =   $this->adminCouponService->findDbRec($code);
+        //todo
+        //You dont have Permissions to view the user !
+        //$this->authorize('view', $couponCodeData['dbRec']);
 
-            if(is_null($couponCodeData['dbRec']))
-                throw new CustomException('Coupon code does not exist!');
-
-            //todo
-            //$this->authorize('view', $couponCodeData['dbRec']);
-
-            $couponDataArr = AdminCouponCodeDataFormatter::prepareCouponData($couponCodeData);
-
-            return view('admin-panel.coupon-code-view')->with([
-                'coupon'   => $couponDataArr,
-            ]);
-
-        }catch(CustomException $e){
-            session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.coupon-code-view');
-
-        }catch(AuthorizationException $e){
-            /*return redirect(route('admin.users.index'))->with(
-                AlertDataUtil::error('You dont have Permissions to view the user !',[
-                    'msgTitle'    => 'Permission Denied !'
-                ])
-            );*/
-
-        }catch(\Exception $e){
-            session()->now('message','Coupon code does not exist');
-            //session()->now('message',$e->getMessage());
-            session()->now('cls','flash-danger');
-            session()->now('msgTitle','Error!');
-            return view('admin-panel.coupon-code-view');
-        }
-
+        $couponDataArr = AdminCouponCodeDataFormatter::prepareCouponData($couponCodeData);
+        return view('admin-panel.coupon-code-view')->with(['coupon' => $couponDataArr]);
     }
 
     //public function edit(Coupon $coupon){}
     //public function update(Request $request, Coupon $coupon){}
     //public function destroy(Coupon $coupon){}
 
-
-
-
-
     public function generateCode(){
-
         try{
-
             $couponCode     =   '';
             $couponCode     =   $this->adminCouponService->createUniqueCode();
 
             if(!$couponCode)
-                throw new Exception("Coupon code generate failed!");
+                abort(500, "Coupon code generate failed due to server error !");
 
-            return response()->json([
-                'code'      => $couponCode,
-                'status'    => 'success',
-            ]);
+            return response()->json(['status' => 'success', 'code' => $couponCode]);
 
-        }catch(CustomException $e){
-            return response()->json([
-                'message'   => $e->getMessage(),
-                'status'    => 'error',
-            ]);
-
-        }catch(\Exception $e){
-            return response()->json([
-                'message'   => 'Coupon code generate failed!',
-                'status'    => 'error',
-            ]);
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Coupon code generate failed !';
+            return response()->json(['status' => 'error','message' => $msg]);
         }
     }
 
 
-
     public function fillBeneficiaries(Request $request){
-
         try{
 
             $courseId   = $request->get('courseId');
@@ -221,31 +123,17 @@ class CouponController extends Controller
                 throw new CustomException('Invalid id');
 
             $beneficiaries  =   $this->adminCouponService->loadBeneficiaries($courseId);
-            //dd($beneficiaries);
             return response()->json([
                 'marketers' => $beneficiaries['marketers'],
                 'teachers'  => $beneficiaries['teachers'],
                 'status'    => 'success',
             ]);
 
-        }catch(CustomException $e){
-            return response()->json([
-                'message'   => $e->getMessage(),
-                'status'    => 'error',
-            ]);
-
-        }catch(\Exception $e){
-            return response()->json([
-                'message'   => $e->getMessage(),
-                //'message'   => 'Beneficiaries loading failed!',
-                'status'    => 'error',
-            ]);
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Beneficiaries loading failed !';
+            return response()->json(['status' => 'error','message' => $msg]);
         }
-
-
     }
-
-
 
 
     public function loadMarketerCoupons(){
@@ -269,10 +157,7 @@ class CouponController extends Controller
     }
 
 
-
     public function myCoupons(){
-
-
         if(!Sentinel::check())
             abort(403);
 
@@ -296,13 +181,5 @@ class CouponController extends Controller
         // load page with data for EDITOR / MARKETER user roles
         return view($view);
     }
-
-
-
-
-
-
-
-
 
 }

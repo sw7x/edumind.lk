@@ -11,16 +11,6 @@
     <div class="row" id="">
         <div class="col-lg-12">            
 
-            @if(Session::has('message'))
-                <x-flash-message  
-                    :class="Session::get('cls', 'flash-info')"  
-                    :title="Session::get('msgTitle') ?? 'Info!'" 
-                    :message="Session::get('message') ?? ''"  
-                    :message2="Session::get('message2') ?? ''"  
-                    :canClose="true" />            
-            @endif
-
-            
             @if(isset($subject) && isNotEmptyArray($subject))            
                 <div class="ibox ">
                     <div class="ibox-content px-3">                  

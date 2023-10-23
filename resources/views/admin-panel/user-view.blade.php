@@ -10,15 +10,6 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
-            
-            @if(Session::has('message'))
-                <x-flash-message  
-                    :class="Session::get('cls', 'flash-info')"  
-                    :title="Session::get('msgTitle') ?? 'Info!'" 
-                    :message="Session::get('message') ?? ''"  
-                    :message2="Session::get('message2') ?? ''"  
-                    :canClose="true" />
-            @else
                        
             @if(isset($userData) && isNotEmptyArray($userData))
                 <div class="ibox">  
@@ -121,7 +112,6 @@
                                 @endif
                             </label>
                         </div>
-            @endif
                         <div class="hr-line-dashed"></div>
 
                         @if(array_key_exists("isActivated",$userData))

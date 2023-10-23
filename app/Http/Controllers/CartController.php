@@ -1,13 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Sentinel;
 
 use App\Exceptions\CustomException;
-
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -30,13 +27,7 @@ use Cookie;
 use App\Common\Utils\AlertDataUtil;
 use App\Common\SharedServices\UserSharedService;
 use App\Services\CartService;
-
-//use App\Repositories\CouponRepository;
-//use App\Models\User as UserModel;
-//use Illuminate\Support\Facades\URL;
-//use Illuminate\Validation\ValidationException;
-//use Illuminate\Http\Response;
-//use App\Builders\CouponCodeBuilder;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CartController extends Controller
 {
@@ -77,15 +68,16 @@ class CartController extends Controller
                 'cart_re_init_msg_arr'  => $msgArr
             ]);;
 
-        } catch (\Exception $e) {
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof HttpException) ? $ex->getMessage() : 'Form submission failed !';
             return view('student.cart.cart-page')->with([
                 //'cart_re_init_message'  => 'Cart reinitialization failed',
-                'cart_re_init_message'  => $e->getMessage(),
+                'cart_re_init_message'  => $ex->getMessage(),
                 'cart_re_init_cls'      => 'flash-danger',
                 'cart_re_init_msgTitle' => 'Error',
                 'cart_re_init_msg_arr'  => []
             ]);
-
+        
         }
 
     }
@@ -94,7 +86,7 @@ class CartController extends Controller
     public function loadBillingInfoForm(Request $request){
         $user = Sentinel::getUser();
         if(is_null($user))
-            abort(403, "You don't have permissions to access this page");
+            abort(401, "You need to login before access this page");
 
         $arr = $this->cartService->loadBillingInfoData($request);
         return view('student.cart.bill-info')->with($arr);
@@ -106,26 +98,26 @@ class CartController extends Controller
         try{
             $user = Sentinel::getUser();
             if(is_null($user))
-                throw new CustomException("You don't have permissions to submit billing info form");
+                abort(401, "You need to login before submit billing info form");
 
-            $errMessageBag  = optional(Session::get('errors'))->billingInfo;
-
+            $errMessageBag = optional(Session::get('errors'))->billingInfo;
             if(!is_null(optional($errMessageBag)->getMessages()))
-                $billingInfoValErrors   = $errMessageBag->getMessages();
+                $billingInfoValErrors = $errMessageBag->getMessages();
 
             /* if have validation errors */
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation is failed');
 
-            $cartCourseCount    =   $this->cartService->getCartItemCountByStudent($user);
+            $cartCourseCount = $this->cartService->getCartItemCountByStudent($user);
             if($cartCourseCount <= 0)
-                return  redirect()->route('view-cart')->with(
+                return redirect()->route('view-cart')->with(
                     AlertDataUtil::error('Your cart is empty therefore cannot submit billing info !')
                 );
-            
 
             $saveFormData   = json_encode($request->except(['from','_token']));
             $dbRec          = $this->cartService->saveBillingInfoData($saveFormData, $user);
+            if(!$dbRec)
+                abort(500, "Failed to save Billing Info form due to server error!");    
 
             $randomId       = substr(md5(mt_rand()), 0, 5);
             $viewDataArr    = array(
@@ -134,33 +126,23 @@ class CartController extends Controller
                 'code'  =>  base64_encode($randomId)
             );
 
-            return  redirect()->to(route('load-checkout', $viewDataArr))
-                        ->withCookie('USER_B_INFO', Crypt::encryptString($saveFormData));
+            return redirect()->to(route('load-checkout', $viewDataArr))
+                ->withCookie('USER_B_INFO', Crypt::encryptString($saveFormData));
 
-        }catch(CustomException $e){
-            //dd('CustomException');
-            return  redirect()->back()
-                        ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
-                        ->withInput($request->input())
-                        ->with(AlertDataUtil::error($e->getMessage()));
-
-        }catch(\Exception $e){
-            //dd($e->getMessage());
-            return  redirect()->back()
-                        ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
-                        ->withInput($request->input())
-                        ->with(
-                            AlertDataUtil::error('Form submission failed !',[
-                                //'message'     => $e->getMessage(),
-                            ])
-                        );
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Form submission failed !';
+            return redirect()->back()
+                ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
+                ->withInput($request->input())
+                ->with(AlertDataUtil::error($msg));
+        
         }
 
     }
 
 
     public function loadCheckout(Request $request){
-        $user   = Sentinel::getUser();
+        $user = Sentinel::getUser();
         if(is_null($user))
             abort(403);
 
@@ -190,6 +172,8 @@ class CartController extends Controller
         //dd($id);
 
         $user = Sentinel::getUser();
+        if(is_null($user))
+            abort(401, "You need to login before remove items from cart");
 
         //dump($id);
         //dump($user->id);
@@ -202,24 +186,19 @@ class CartController extends Controller
 
 
        //dd($isDelete);
+        if(!$isDelete) //abort 500 ???
+            return redirect(route('view-cart'))->with(AlertDataUtil::error('Course remove from cart failed!'));
 
 
-       if($isDelete){
-
-            if($request->get('page') == 'cart'){
-                return redirect(route('view-cart'));
-            }else{
-                return redirect()->back();;
-            }
-
-       }else{
-            return redirect(route('view-cart'))->with(
-                AlertDataUtil::error('Course remove from cart failed!')
-            );
-       }
-
+        if($request->get('page') == 'cart'){
+            return redirect(route('view-cart'));
+        }else{
+            return redirect()->back();
+        }
     }
 
+
+    //???????????????????
     public function checkoutCart()
     {
         //dump('checkoutCart');
@@ -230,71 +209,71 @@ class CartController extends Controller
         	$courseInfoArr 	= array();
         	$invoiceRec;
 
-	        if($user && ($user->roles()->first()->slug == RoleModel::STUDENT)){
+	        if($user && ($user->roles()->first()->slug == RoleModel::STUDENT))
+                abort(403, "You don't have permissions to checkout cart");
 
-	        	DB::transaction(function () use ($user, &$courseInfoArr, &$invoiceRec) {
-				    $courseSelections = CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
-				        ->where('course_selections.is_checkout', 0)
-				        ->where('course_selections.student_id', $user->id)
-				        ->where('courses.price', '!=', 0)
-				        ->get('course_selections.*');
+        	DB::transaction(function () use ($user, &$courseInfoArr, &$invoiceRec) {
+			    $courseSelections = CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
+			        ->where('course_selections.is_checkout', 0)
+			        ->where('course_selections.student_id', $user->id)
+			        ->where('courses.price', '!=', 0)
+			        ->get('course_selections.*');
 
-				    $now 		= Carbon::now();
-				    /**/
-				    $invoice   	= InvoiceModel::create([
-			            'checkout_date' => $now,
-			            'billing_info' 	=> 'mm',
+			    $now 		= Carbon::now();
+			    /**/
+			    $invoice   	= InvoiceModel::create([
+		            'checkout_date' => $now,
+		            'billing_info' 	=> 'mm',
+		        ]);
+                
+                if(!$invoice) //todo cehck is that rollback
+                    abort(500, "Checkout failed due to server error !");
+
+		        // re-retrieve the instance to get all of the fields in the table.
+				$invoiceRec = $invoice->fresh();
+
+
+			    foreach ($courseSelections as $selection) {
+			        // upda course_selections table record
+			        $selection->is_checkout 	= 1;
+			        $selection->cart_added_date = $now;
+			        $selection->save();
+
+			        $isInsert = EnrollmentModel::create([
+			            'course_selection_id' 	=> $selection->id,
+			            'is_complete' 			=> false,
+			            'invoice_id'			=> $invoiceRec->id
 			        ]);
+			        
+                    if(!$isInsert) //todo cehck is that rollback
+                        abort(500, "Checkout failed due to server error !");
 
-			        // re-retrieve the instance to get all of the fields in the table.
-					$invoiceRec = $invoice->fresh();
+			        $courseInfoArr[] = array(
+			        	'name' => $selection->course->name,
+						'url' => route('courses.show',$selection->course->slug)
+			        );
+			    }
+			});
 
-
-				    foreach ($courseSelections as $selection) {
-				        // upda course_selections table record
-				        $selection->is_checkout 	= 1;
-				        $selection->cart_added_date = $now;
-				        $selection->save();
-
-				        EnrollmentModel::create([
-				            'course_selection_id' 	=> $selection->id,
-				            'is_complete' 			=> false,
-				            'invoice_id'			=> $invoiceRec->id
-				        ]);
-				        /**/
-
-				        $courseInfoArr[] = array(
-				        	'name' => $selection->course->name,
-							'url' => route('courses.show',$selection->course->slug)
-				        );
+            //dump($invoice->id);
+           	//dump($courseInfoArr);
+            //dd();
 
 
 
-
-				    }
-				});
-
-	            //dump($invoice->id);
-	           	//dump($courseInfoArr);
-	            //dd();
+            return view('student.checkout-complete')->with([
+            	'invoiceId' => $invoiceRec->id,
+            	'courses'	=> $courseInfoArr
+            ]);
 
 
-
-	            return view('student.checkout-complete')->with([
-	            	'invoiceId' => $invoiceRec->id,
-	            	'courses'	=> $courseInfoArr
-	            ]);
-
-	        }else{
-	        	throw new CustomException('Invalid user');
-	        }
 
         }catch(CustomException $e){
-			dd($e->getMessage());
+			//dd($e->getMessage());
             return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
-        	dd($e->getMessage());
+        	//dd($e->getMessage());
             return redirect()->back()->with(
                 AlertDataUtil::error('Checkout failed !',[
                     //'message'     => $e->getMessage(),
@@ -334,18 +313,14 @@ class CartController extends Controller
                 $returnUrl = '';
             }
 
-
             /* if have validation errors */
-            if (isset($request->validator) && $request->validator->fails()) {
-                $validationErrMsg = 'Invalid credit card information';
-                throw new CustomException($validationErrMsg);
-            }
-
+            if (isset($request->validator) && $request->validator->fails())
+                throw new CustomException('Invalid credit card information');
 
             //throw new \Exception('cc the provided credit card information is invalid.');
-            if($cardNumber != env('DUMMY_CREDIT_CARD_NUMBERUC') || $cvc != env('DUMMY_CVC')){
+            if($cardNumber != env('DUMMY_CREDIT_CARD_NUMBERUC') || $cvc != env('DUMMY_CVC'))
                 throw new CustomException("Payment Failed: unable to process your payment.");
-            }
+
 
 
             // if user cart has no courses then
@@ -360,12 +335,9 @@ class CartController extends Controller
             if($courseInCart->count() <= 0)
                 throw new CustomException('Your cart is empty therefore cannot checkout');
 
-
-
             $billingInfoArr;
             $InvoiceId;
             $courseArr = array();
-
 
             //database changes when user checkout
             DB::transaction(function () use ($orderId, $courseInCart, &$billingInfoArr, &$InvoiceId, &$courseArr){
@@ -384,6 +356,9 @@ class CartController extends Controller
                     'billing_info'  => $tempRec->billing_info,
                     'paid_amount'   => 0
                 ]);
+                if(!$invoice) //todo cehck is that rollback
+                    abort(500, "Checkout failed due to server error !");
+
                 $InvoiceId = $invoice->id;
                 $totalPaidAmount    = 0;
 
@@ -407,13 +382,19 @@ class CartController extends Controller
                     }
 
                     $courseRecord->is_checkout = true;
-                    $courseRecord->save();
+                    $isSaved = $courseRecord->save();
+                    
+                    if(!$isSaved) //todo cehck is that rollback
+                        abort(500, "Checkout failed due to server error !");
 
                     // create enrollments for each course
-                    EnrollmentModel::create([
+                    $isSaved = EnrollmentModel::create([
                         'course_selection_id'   => $courseRecord->id,
                         'invoice_id'            => $InvoiceId
                     ]);
+
+                    if(!$isSaved) //todo cehck is that rollback
+                        abort(500, "Checkout failed due to server error !");
 
                     $totalPaidAmount += $courseRecord->revised_price;
                 }
@@ -467,46 +448,44 @@ class CartController extends Controller
         $user     = Sentinel::getUser();
 
         try{
-            if(!filter_var($courseId, FILTER_VALIDATE_INT)){
+            if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-            }
 
-            if($user == null){
-                throw new CustomException('First login before enrolling');
-            }
+            if(is_null($user))
+                abort(401,'First login before enrolling');
 
             if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
                 throw new CustomException('Invalid user');
 
             $course = CourseModel::find($courseId);
+            if(is_null($course))
+                abort(404,'Course does not exists in database');
 
-            if($course != null){
+        	if($course->price == 0)
+        		throw new CustomException('This is free course cannot add to cart');
 
-            	if($course->price == 0){
-            		throw new CustomException('This is free course cannot add to cart');
-            	}
+            $isCreated = CourseSelectionModel::create([
+                'cart_added_date'   => Carbon::now(),
+                'is_checkout'       => false,
+                'course_id'         => $courseId,
+                'student_id'        => $user->id,
+            	'edumind_amount' 	=> $course->price * ((100-$course->author_share_percentage)/100),
+				'author_amount' 	=> $course->price * ($course->author_share_percentage/100),
 
-                CourseSelectionModel::create([
-                    'cart_added_date'   => Carbon::now(),
-                    'is_checkout'       => false,
-                    'course_id'         => $courseId,
-                    'student_id'        => $user->id,
-                	'edumind_amount' 	=> $course->price * ((100-$course->author_share_percentage)/100),
-					'author_amount' 	=> $course->price * ($course->author_share_percentage/100),
+                'used_coupon_code'          => null,
+                'discount_amount'           => 0,
+				'revised_price'    	        => $course->price,
+                'edumind_lose_amount'       => 0,
+                'beneficiary_earn_amount'   => 0
+            ]);
 
-                    'used_coupon_code'          => null,
-                    'discount_amount'           => 0,
-					'revised_price'    	        => $course->price,
-                    'edumind_lose_amount'       => 0,
-                    'beneficiary_earn_amount'   => 0
-                ]);
+            if(!$isCreated) //todo cehck is that rollback
+                abort(500, "Course add to cart failed due to server error !");
 
-                return  redirect()->back()
-                            ->with(AlertDataUtil::success('Successfully added course to your cart'));
+            return  redirect()->back()
+                        ->with(AlertDataUtil::success('Successfully added course to your cart'));
 
-            }else{
-                throw new ModelNotFoundException;
-            }
+
         }catch(CustomException $e){
             return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
@@ -527,32 +506,31 @@ class CartController extends Controller
     		$couponCode     = $request->get('cc');
 	    	$courseSelId 	= $request->get('courseSelectionId');
 
-    		if(!$user){
-    			throw new CustomException("Invalid user - you dont have permissions to do this task");
-    		}
+    		if(is_null($user))
+                abort(401,'You must log in to complete this action.');
 
-    		if (Str::length($couponCode) !== 6 || !preg_match('/^[A-Za-z0-9]+$/', $couponCode)) {
-	    		// String does not have six characters or does not contain only letters and numbers
-				throw new CustomException('Invalid coupon code');
-			}
-
-    		if(!filter_var($courseSelId, FILTER_VALIDATE_INT)){
-                //throw new CustomException('Invalid id');
-                throw new CustomException('Invalid coupon code');
-            }
-
-	    	$csRec = CourseSelectionModel::where('student_id',$user->id)->where('id',$courseSelId)->first();
-
-	    	if(!$csRec){
+           // String does not have six characters or does not contain only letters and numbers
+    		if (Str::length($couponCode) !== 6 || !preg_match('/^[A-Za-z0-9]+$/', $couponCode))
 	    		throw new CustomException('Invalid coupon code');
-	    	}
+
+    		if(!filter_var($courseSelId, FILTER_VALIDATE_INT))
+                throw new CustomException('Invalid coupon code');
+
+
+	    	$csRec = CourseSelectionModel::where('student_id', $user->id)->where('id', $courseSelId)->first();
+
+	    	if(!$csRec)
+                abort(404, 'Invalid coupon code');
+
 
 	    	$csRec->used_coupon_code 		= null;
 			$csRec->discount_amount 		= 0;
 			$csRec->revised_price 			= $csRec->course->price;
 			$csRec->edumind_lose_amount 	= 0;
 			$csRec->beneficiary_earn_amount = 0;
-			$csRec->save();
+			$isSaved = $csRec->save();
+            if(!$isSaved) //todo cehck is that rollback
+                abort(500, "Course add to cart failed due to server error  !");
 
 			return   redirect()->route('view-cart')
                         ->with(AlertDataUtil::success('Successfully removed coupon from your cart'));
@@ -584,33 +562,26 @@ class CartController extends Controller
 			$user = Sentinel::getUser();
 			$couponCode = $request->get('coupon_code');
 
-			if(!$couponCode){
+			if(!$couponCode)
 				throw new CustomException('Invalid coupon code');
-			}
 
-			if (Str::length($couponCode) !== 6 || !preg_match('/^[A-Za-z0-9]+$/', $couponCode)) {
-	    		// String does not have six characters or does not contain only letters and numbers
+            // String does not have six characters or does not contain only letters and numbers
+			if (Str::length($couponCode) !== 6 || !preg_match('/^[A-Za-z0-9]+$/', $couponCode))
 				throw new CustomException('Invalid coupon code');
-			}
 
 			$ccRec = CouponModel::find($couponCode);
-			if(!$ccRec){
-				throw new CustomException('Invalid coupon code');
-			}
+			if(!$ccRec)
+				abort(404,'Coupon code does not exists');
 
-			if(!$ccRec->is_enabled){
-				//throw new CustomException('Invalid coupon code');
+			if(!$ccRec->is_enabled)
 				throw new CustomException('This coupon code is no longer valid.');
-			}
 
-			if(!($ccRec->total_count > $ccRec->used_count)){
-				//throw new CustomException('Invalid coupon code');
+			if(!($ccRec->total_count > $ccRec->used_count))
 				throw new CustomException('Coupon code usage limit reached.');
-			}
 
-			if($ccRec->discount_percentage <= 0){
+			if($ccRec->discount_percentage <= 0)
 				throw new CustomException('Invalid coupon code');
-			}
+
 
 			$cartItemsQuery = 	CourseSelectionModel::join('courses', 'course_selections.course_id', '=', 'courses.id')
 							        ->where('course_selections.is_checkout', 0)
@@ -629,9 +600,9 @@ class CartController extends Controller
 							    		->where('course_selections.used_coupon_code', $ccRec->code)
 							    		->count();
 
-			if($ccUsedCountInCart >= 1){
+			if($ccUsedCountInCart >= 1)
 				throw new CustomException('Coupon code already used in your cart');
-			}
+
 
 			/*=== remove all previous coupon codes and apply new coupon ===*/
 			DB::transaction(function () use ($cartItemsOrigQuery, $ccRec){
@@ -675,7 +646,10 @@ class CartController extends Controller
 				$ccAppliedCrtItem->revised_price 			= ($ccAppliedCourse->price - $discountAmount);
 				$ccAppliedCrtItem->edumind_lose_amount 	 	= ($discountAmount/100) * (100 + $commisionPercentage);
 				$ccAppliedCrtItem->beneficiary_earn_amount 	= $discountAmount * ($commisionPercentage/100);
-				$ccAppliedCrtItem->save();
+				$isSaved                                    = $ccAppliedCrtItem->save();
+
+                if(!$isSaved) //todo cehck is that rollback
+                    abort(500, "Course add to cart failed due to server error !");
 			});
 
             return redirect()->route('view-cart')->with(
