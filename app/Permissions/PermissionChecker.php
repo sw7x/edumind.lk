@@ -151,7 +151,7 @@ class PermissionChecker{
             abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);       
 	}	
 
-	public static function haveValidRole(): void {		
+	public static function authorizeValidRole(): void {		
 		if(!Sentinel::check())
             abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);
 
