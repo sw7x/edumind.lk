@@ -18,6 +18,9 @@ use App\Services\AuthService;
 class ForgotPasswordController extends Controller
 {
     private AuthService $authService;
+
+    public function __construct(AuthService $authService){
+        $this->authService = $authService;
     public function resetPasswordReq(){
         if(Sentinel::check())
             return redirect(route('home'))
