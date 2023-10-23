@@ -12,6 +12,7 @@ use App\Exceptions\CustomException;
 
 class ActivationController extends Controller
 {
+    public function __construct(){   
     }
 
     public function activate(string $encryptedEmail, string $activationCode){        

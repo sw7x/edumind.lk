@@ -12,6 +12,10 @@ use App\Common\Utils\AlertDataUtil;
 class ChangePasswordController extends Controller
 {
 
+    public function __construct(){
+    }
+
+
     public function changePassword(Request $request) {
         //todo - need login
         return view ('auth.form-change-password');

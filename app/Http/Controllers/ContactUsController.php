@@ -20,9 +20,6 @@ class ContactUsController extends Controller
 
     public function __construct(ContactUsService $contactUsService){
         $this->contactUsService = $contactUsService;
-        $this->middleware('auth');
-
-        //$this->middleware('withOutUserRoles:RoleModel::ADMIN');
     }
 
     public function viewContactUs(){

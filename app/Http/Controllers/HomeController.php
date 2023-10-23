@@ -25,15 +25,6 @@ class HomeController extends Controller
     function __construct(CourseService $courseService, TeacherService $teacherService){
         $this->courseService    = $courseService;
         $this->teacherService   = $teacherService;
-
-        /*
-            $this->middleware('auth');
-
-            $this->middleare(function($request,$next){
-                $this->user=Auth::user(); // here the user should exist from the session
-                return $next($request);
-            });
-        */
     }
 
 
