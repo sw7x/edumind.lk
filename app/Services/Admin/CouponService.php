@@ -98,7 +98,7 @@ class CouponService
     public function saveCoupon(Request $request) : CouponModel {
 
         /* check already coupon code exists*/
-        $couponCount    =   $this->couponRepository->findByCode($request->get('cc-code'));
+        $couponCount = $this->couponRepository->findByCode($request->get('cc-code'));
         if (!is_null($couponCount))
             throw new CustomException('Coupon code already exists!');
 

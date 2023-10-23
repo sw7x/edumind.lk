@@ -79,8 +79,7 @@ class UserService
 
 
     public function saveDbRec(Request $request) : SubjectModel {
-        $subjectCount       = $this->subjectRepository->findByName($request->get('name'))->count();
-
+        $subjectCount = $this->subjectRepository->findByName($request->get('name'))->count();
         if ($subjectCount > 0)
             throw new CustomException('Subject name already exists!');
 
@@ -190,11 +189,11 @@ class UserService
     public function loadLoggedInUserData() : array {
         $user = Sentinel::getUser();
         if(is_null($user))
-            throw new CustomException('Access denied');
+            abort(401, 'You need to login before access this page');
 
         return array(
             'dto'   =>  UserDataTransformer::buildDto($user->toArray()),
-            'dbRec' =>  $user,
+            'dbRec' =>  $user
         );
     }
 
@@ -229,7 +228,7 @@ class UserService
         //DB::enableQueryLog();
 
         $username    = $this->generateUniqueUsername($request->get('teacher_uname'));
-        $usernameMsg = ($username != $request->get('teacher_uname'))?"Given username is already there, ∴ system updated username to {$username}":'';
+        $usernameMsg = ($username != $request->get('teacher_uname')) ? "Given username is already there, ∴ system updated username to {$username}" : '';
 
         $teacher = [
             'full_name'         => $request->get('teacher_name'),

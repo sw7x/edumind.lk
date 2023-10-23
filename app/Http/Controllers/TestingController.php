@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 
 use App\Repositories\CourseSelectionRepository;
 use App\Repositories\OrderRepository;
@@ -32,7 +30,6 @@ use App\Domain\Factories\InvoiceFactory;
 use App\Domain\Factories\AuthorFeeFactory;
 use App\Domain\Factories\EdumindFeeFactory;
 
-
 use App\DataTransferObjects\Factories\UserDtoFactory;
 use App\DataTransferObjects\Factories\SubjectDtoFactory;
 use App\DataTransferObjects\Factories\InvoiceDtoFactory;
@@ -44,7 +41,6 @@ use App\DataTransferObjects\Factories\ContactUsMessageDtoFactory;
 use App\DataTransferObjects\Factories\EnrollmentDtoFactory;
 use App\DataTransferObjects\Factories\CourseItemDtoFactory;
 use App\DataTransferObjects\Factories\OrderDtoFactory;
-
 
 use App\Mappers\SubjectMapper;
 use App\Mappers\ContactUsMapper;
@@ -962,8 +958,5 @@ class TestingController extends Controller
 
         echo $html;
     }
-
-
-
 
 }

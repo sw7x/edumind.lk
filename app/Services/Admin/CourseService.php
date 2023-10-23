@@ -104,7 +104,6 @@ class CourseService
             $contentString    = '';
         }
 
-
         return array(
             'topicsString'      => $topicsString,
             'contentString'     => $contentString,

@@ -67,7 +67,7 @@ class SubjectService
             throw new CustomException('Subject name already exists!');
 
         $file       = $request->input('image');
-        $imgDest    = (isset($file))? FileUploadUtil::upload($file,'subjects/') : null;
+        $imgDest    = (isset($file)) ? FileUploadUtil::upload($file,'subjects/') : null;
 
         $urlString  = UrlUtil::wordsToUrl($request->name,15);
         $slug       = UrlUtil::generateSubjectUrl($urlString);

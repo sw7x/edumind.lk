@@ -6,7 +6,7 @@ use App\Repositories\UserRepository;
 use Sentinel;
 use App\Exceptions\CustomException;
 use App\Models\User as UserModel;
-use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\UserDataTransformer;
 
 
 class UserService
@@ -21,25 +21,30 @@ class UserService
 
     public function findDbRec(int $id) : array {
         $dbRec  =   $this->userRepository->findById($id);
-        $dto    =   $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
+        if(is_null($dbRec))
+            abort(404,'User not found');
         
+        $dto    =   $dbRec ? UserDataTransformer::buildDto($dbRec->toArray()) : null;        
         return array(
             'dbRec' => $dbRec,
             'dto'   => $dto
         );
     }
 
+
+
+
+    /*    
     public function loadLoggedInUserData() : array {
         $user = Sentinel::getUser();
         if(is_null($user))
             throw new CustomException('Access denied');
 
         return array(
-            'dto'   =>  CourseDataTransformer::buildDto($user->toArray()),
+            'dto'   =>  UserDataTransformer::buildDto($user->toArray()),
             'dbRec' =>  $user,
         );
     }    
-
 
     public function loadUserData() : array {
         $user = Sentinel::getUser();
@@ -47,18 +52,13 @@ class UserService
             throw new CustomException('Access denied');
 
         return array(
-            'dto'   =>  CourseDataTransformer::buildDto($user->toArray()),
+            'dto'   =>  UserDataTransformer::buildDto($user->toArray()),
             'dbRec' =>  $user,
         );
     }
 
     
 
-
-
-
-
-    /*
     private $userRepository;
 
     public function __construct(UserRepository $userRepository) {

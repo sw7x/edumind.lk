@@ -43,8 +43,7 @@ class StudentService
 			throw new CustomException('User is not a student');
         
 		$studentCourses = (new CourseRepository())->getEnrolledCoursesByStudent($student);
-		//dd($studentCourses);
-
+		
 		$dataArr = array();
         $studentCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
             $tempArr 				= [];

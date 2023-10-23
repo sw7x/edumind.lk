@@ -58,7 +58,7 @@ class SubjectService
 
 
     public function loadSubjectDataByUrl(string $url) : array {
-        $subjectRec    = $this->subjectRepository->findAvailableByUrl($url);
+        $subjectRec = $this->subjectRepository->findAvailableByUrl($url);
         if(!$subjectRec)
             abort(404,'Subject not found');
 

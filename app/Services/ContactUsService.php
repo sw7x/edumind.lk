@@ -17,8 +17,8 @@ class ContactUsService
 
 
     public function saveContactUsMsg(Request $request) : ContactUsModel {
-        $g_recaptcha_response = $request->input('g-recaptcha-response');
-        $body = RecaptchaUtil::validate($g_recaptcha_response);
+        $captcha_response   = $request->input('g-recaptcha-response');
+        $body               = RecaptchaUtil::validate($captcha_response);
 
         if($body->success !== true)
             throw new CustomException('Recaptcha validation failed');

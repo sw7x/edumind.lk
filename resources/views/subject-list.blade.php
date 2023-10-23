@@ -22,7 +22,7 @@
                 </div>
             @else
                 <x-flash-message 
-                    class="flash-danger"  
+                    class="flash-info"  
                     title="No subjects!" 
                     message=""  
                     message2=""  

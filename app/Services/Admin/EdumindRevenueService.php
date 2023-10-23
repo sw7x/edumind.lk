@@ -68,13 +68,13 @@ class EdumindRevenueService
 
         $edumindRevenueArr = array();
         foreach ($enrollmentsRecArr as $enrollmentRec) {
-            $enrollmentDto          = EnrollmentDataTransformer::buildDto($enrollmentRec->toArray());
+            $enrollmentDto          =   EnrollmentDataTransformer::buildDto($enrollmentRec->toArray());
 
-            $invoiceId              = $enrollmentRec['invoiceId'];
-            $invoiceDataArr         = (new InvoiceRepository())->findDataArrById($invoiceId);
-            $invoiceEntityDataArr   = InvoiceMapper::dbRecConvertToEntityArr($invoiceDataArr);
-            $invoiceEntity          = (new InvoiceFactory())->createObjTree($invoiceEntityDataArr);
-            $invoiceDto             = InvoiceDtoFactory::fromArray($invoiceEntity->toArray());
+            $invoiceId              =   $enrollmentRec['invoiceId'];
+            $invoiceDataArr         =   (new InvoiceRepository())->findDataArrById($invoiceId);
+            $invoiceEntityDataArr   =   InvoiceMapper::dbRecConvertToEntityArr($invoiceDataArr);
+            $invoiceEntity          =   (new InvoiceFactory())->createObjTree($invoiceEntityDataArr);
+            $invoiceDto             =   InvoiceDtoFactory::fromArray($invoiceEntity->toArray());
             ////dump($invoiceDto);
 
 
