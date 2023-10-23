@@ -31,35 +31,28 @@
 
                 <h1 class="lg:text-2xl text-xl font-semibold mb-6">Teacher Registration</h1>
 
-                @if ($errors->teacherReg->getMessages())
-                    <x-flash-message 
-                        style="margin-bottom:0px;"
-                        class="flash-danger rounded-none"  
-                        title="Form submit error!" 
-                        message=""  
-                        message2=""  
-                        :canClose="true" >
-                        <x-slot name="insideContent">
-                            <ul class="list-disc">
-                                @foreach ($errors->teacherReg->getMessages() as  $field => $errorMsgArr)
-                                    @foreach ($errorMsgArr as $errorMsg)
-                                        <li class="text-sm ml-3">{{ $errorMsg }}</li>
-                                    @endforeach
-                                @endforeach
-                            </ul>   
-                        </x-slot>    
-                    </x-flash-message>
-                @endif
-
                 @if(Session::has('message'))
-                    <x-flash-message  
+                    <x-flash-message 
+                        style="margin-bottom:0px;" 
                         :class="Session::get('cls', 'flash-info').' rounded-none'"  
                         :title="Session::get('msgTitle') ?? 'Info!'" 
                         :message="Session::get('message') ?? ''"  
                         :message2="Session::get('message2') ?? ''"  
-                        :canClose="true" />
+                        :canClose="true">
+                        <x-slot name="insideContent">
+                            @if($errors->teacherReg->getMessages())
+                                <br>
+                                <ul class="list-disc">
+                                    @foreach ($errors->teacherReg->getMessages() as  $field => $errorMsgArr)
+                                        @foreach ($errorMsgArr as $errorMsg)
+                                            <li class="text-sm ml-3">{{ $errorMsg }}</li>
+                                        @endforeach
+                                    @endforeach
+                                </ul>
+                            @endif    
+                        </x-slot>    
+                    </x-flash-message>
                 @endif
-
 
                 <div class="text-base"><span class="font-bold text-red-500 text-lg">*</span> - Required Information </div>
 

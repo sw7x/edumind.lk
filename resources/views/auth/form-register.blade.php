@@ -24,37 +24,30 @@
 @section('content')
     <div class="main-container container">
         <div class="__lg:p-12 max-w-xl lg:my-0 my-12 mx-auto __p-6 space-y-">
-            
-            @if ($errors->studentReg->getMessages())
-                <x-flash-message 
-                    style="margin-bottom:0px;"
-                    class="flash-danger rounded-none"  
-                    title="Form submit error!" 
-                    message=""  
-                    message2=""  
-                    :canClose="true" >
-                    <x-slot name="insideContent">
-                        <ul class="list-disc">
-                            @foreach ($errors->studentReg->getMessages() as  $field => $errorMsgArr)
-                                @foreach ($errorMsgArr as $errorMsg)
-                                    <li class="text-sm ml-3">{{ $errorMsg }}</li>
-                                @endforeach
-                            @endforeach
-                        </ul>
-                    </x-slot>    
-                </x-flash-message>
-            @endif
-
+                        
             @if(Session::has('message'))
-                <x-flash-message  
+                <x-flash-message 
+                    style="margin-bottom:0px;" 
                     :class="Session::get('cls', 'flash-info').' rounded-none'"  
                     :title="Session::get('msgTitle') ?? 'Info!'" 
                     :message="Session::get('message') ?? ''"  
                     :message2="Session::get('message2') ?? ''"  
-                    :canClose="true" />
+                    :canClose="true">
+                    <x-slot name="insideContent">
+                        @if($errors->studentReg->getMessages())
+                            <br>
+                            <ul class="list-disc">
+                                @foreach ($errors->studentReg->getMessages() as  $field => $errorMsgArr)
+                                    @foreach ($errorMsgArr as $errorMsg)
+                                        <li class="text-sm ml-3">{{ $errorMsg }}</li>
+                                    @endforeach
+                                @endforeach
+                            </ul>
+                        @endif    
+                    </x-slot>    
+                </x-flash-message>
             @endif
-            
-            
+                        
             <form class="lg:p-10 p-6 space-y-3 relative bg-white shadow-xl rounded-md __uk-form student-reg"
                   method="post" action="{{route('auth.register-submit')}}">
 

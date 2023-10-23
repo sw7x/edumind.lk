@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
@@ -10,117 +9,76 @@ use Sentinel;
 use Activation;
 use App\Mail\StudentRegMail;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Crypt;
 use App\Common\Utils\FileUploadUtil;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use GuzzleHttp\Client;
-use App\Models\User as UserModel;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
 use App\Common\Utils\AlertDataUtil;
+use App\Common\Utils\RecaptchaUtil;
+use App\Http\Requests\StudentRegisterRequest;
+use App\Http\Requests\TeacherRegisterRequest;
+use App\Services\AuthService;
 
-//use Swift_TransportException;
 
 class RegistrationController extends Controller
 {
+    private AuthService $authService;
 
-    public function __construct(){        
-        $this->middleware('checkGuest',
-            ['only' => ['register','teacherRegister']]
-        );
+    public function __construct(AuthService $authService){
+        $this->authService = $authService;    
     }
-    
 
     public function register(){
        return view ('auth.form-register');
     }
 
-
-    public function postRegister(Request $request){
+    public function postRegister(StudentRegisterRequest $request){
 
         try {
 
-            $validator = Validator::make($request->all(), [
-                'full_name'             =>'required|min:3|max:100|unique:users,full_name',
-                'email'                 =>'required|email|unique:users,email',
-                'username'              =>'nullable|sometimes|unique:users,username',
-                'password'              =>'required|min:6|max:12',
-                'phone'                 =>'required|unique:users,phone',
-                'gender'                =>'required',
-                'g-recaptcha-response'  =>'required',
-                'dob_year'              =>'required|digits:4|integer|min:'.(date('Y')-100).'|max:'.date('Y'),
-            ],[
-                'full_name.unique'              => 'This full name is already been used',
-                'email.unique'                  => 'This Email is already been used',
-                'phone.unique'                  => 'This phone number is already been used',
-                'message.required'              => 'Message field is required.',
-                'g-recaptcha-response.required' => 'Recaptcha is required.',
-                'dob_year.digits'               => 'Date of birth year format is invalid.',
-            ]);
+            $formErrors = optional(Session::get('errors'))->studentReg;
+            if (isset($request->validator) && $request->validator->fails())
+                throw new CustomException('Form validation is failed');
 
-            if ($validator->fails())
-                return back()->withErrors($validator,'studentReg')->withInput();
-
-            if($request->input('username') == null){            
-                //if username empty then username = email
-                $username   = strstr($request->input('email'),'@',true);
-
-                // check username alredy used in DB
-                $unameCount =   UserModel::withoutGlobalScope('active')->where('username', '=', $username)->count();
-                if ($unameCount > 0)
-                    throw new CustomException("username - {$username} not available to use");
-
-                $request->merge(['username'  =>  $username]);
+            if($request->input('username') == null){
+                $username = $this->authService->generateUsername($request);
+                $request->merge(['username' => $username]);
             }
-            
+
             // validate recaptcha
-            $client = new Client;
-            $response = $client->post(
-                'https://www.google.com/recaptcha/api/siteverify',[
-                    'form_params' =>    [
-                            'secret'    => config('services.recaptcha.secret-key'),
-                            'response'  => $request->input('g-recaptcha-response')
-                        ]
-                ]
-            );
-            $body = json_decode((string)$response->getBody());
-
-            if($body->success){
-
-                //throw new \Exception("error sending student");
-                $user       = Sentinel::register($request->all());
-                $activation = Activation::create($user);
-
-                $role = Sentinel::findRoleBySlug(RoleModel::STUDENT);
-                $role->users()->attach($user);
-
-                //send mail
-                $email          = $user->email;
-                $encryptedEmail = Crypt::encrypt($email);
-                $activationCode = $activation->code;
-                $siteAddress    = url('/');
-                $link           = "{$siteAddress}/activate/{$encryptedEmail}/{$activationCode}";
-                $username       = $request->input('username');
-                Mail::to($email)->send(new StudentRegMail($link,$username));
-
-
-                return view('form-submit-page')->with(
-                    AlertDataUtil::success('Successfully registered, check you emails to use account activation link')
-                );
-
-            }else{
+            $body = RecaptchaUtil::validate($request->input('g-recaptcha-response'));
+            if(!$body->success)
                 return back()->with(AlertDataUtil::error('Recaptcha validation failed'));
-            }
+
+            //register, activate and assign role for the account
+            $user       = Sentinel::register($request->all());
+            $activation = Activation::create($user);
+            $role       = Sentinel::findRoleBySlug(RoleModel::STUDENT);
+            $role->users()->attach($user);
+
+            //send mail
+            $email          = $user->email;
+            $username       = $request->input('username');
+            $activationLink = $this->authService->createActivationLink($user, $activation->code);
+            Mail::to($email)->send(new StudentRegMail($activationLink, $username));
+
+            return view('form-submit-page')->with(
+                AlertDataUtil::success('Successfully registered, check you emails to use account activation link')
+            );
 
         }catch(CustomException $e){
-            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
+            return redirect()->back()
+                ->withErrors($formErrors)
+                ->withInput()
+                ->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             //return redirect()->route('auth.register');
-            return redirect()->back()->with(AlertDataUtil::error('Error in registration process'));                        
+            return redirect()->back()
+                ->withErrors($formErrors)
+                ->withInput()
+                ->with(AlertDataUtil::error('Error in registration process'));
         }
-        
 
     }
 
@@ -130,110 +88,72 @@ class RegistrationController extends Controller
     }
 
 
-    public function postTeacherRegister(Request $request){
+    public function postTeacherRegister(TeacherRegisterRequest $request){
 
         try {
 
-            $validator = Validator::make($request->all(), [
-                'full_name'             =>'required|min:3|max:100|unique:users,full_name',
-                'email'                 =>'required|email|unique:users,email',
-                'username'              =>'nullable|sometimes|unique:users,username',
-                'password'              =>'required|min:6|max:12',
-                'phone'                 =>'required|unique:users,phone',
-                'gender'                =>'required',
-                'g-recaptcha-response'  =>'required',
-                'dob_year'              =>'required|digits:4|integer|min:'.(date('Y')-100).'|max:'.date('Y'),
-            ],[
-                'full_name.required'            => 'Full name field is required.',
-                'full_name.unique'              => 'This full name is already been used',
-                'email.unique'                  => 'This Email is already been used',
-                'phone.unique'                  => 'This phone number is already been used',
-                'message.required'              => 'Message field is required.',
-                'g-recaptcha-response.required' => 'Recaptcha is required.',
-                'dob_year.digits'               => 'Date of birth year format is invalid.',
-            ]);            
-
-            if ($validator->fails())
-                return back()->withErrors($validator, 'teacherReg')->withInput();
+            $formErrors = optional(Session::get('errors'))->teacherReg;
+            if (isset($request->validator) && $request->validator->fails())
+                throw new CustomException('Form validation is failed');
 
             if($request->input('username') == null){
-                //if username empty then username = email
-                $username = strstr($request->input('email'),'@',true);
-
-                // check username alredy used in DB
-                $unameCount =   UserModel::withoutGlobalScope('active')->where('username', '=', $username)->count();
-                if ($unameCount > 0)
-                    throw new CustomException("username - {$username} not available to use");
-
-                $request->merge(['username'  =>  $username]);
+                $username = $this->authService->generateUsername($request);
+                $request->merge(['username' => $username]);
             }
 
             // validate recaptcha
-            $client = new Client;
-            $response = $client->post(
-                'https://www.google.com/recaptcha/api/siteverify',[
-                    'form_params' =>    [
-                            'secret'    => config('services.recaptcha.secret-key'),
-                            'response'  => $request->input('g-recaptcha-response')
-                        ]
-                ]
-            );
-            $body = json_decode((string)$response->getBody());
-
-            // recaptcha validate success
-            if($body->success){
-
-                $file = $request->input('profile_pic');
-                $destination = isset($file) ? FileUploadUtil::upload($file,'users/teachers/') : null;
-
-                $reqData = $request->all();
-                $reqData['profile_pic'] = $destination;
-
-                $user = Sentinel::register($reqData);
-                //$user = Sentinel::register($request->all());
-
-                $activation = Activation::create($user);
-
-                $role = Sentinel::findRoleBySlug(RoleModel::TEACHER);
-                $role->users()->attach($user);
-
-                //send mail
-                $email          = $user->email;
-                $encryptedEmail = Crypt::encrypt($email);
-                $activationCode = $activation->code;
-                $siteAddress    = url('/');
-                $link           = "{$siteAddress}/activate/{$encryptedEmail}/{$activationCode}";
-                $username       = $request->input('username');
-                Mail::to($email)->send(new TeacherRegMail($link,$username));
-
-                return view('form-submit-page')->with(
-                    AlertDataUtil::success('Successfully registered, check you emails to use account activation link',[
-                        'title' => 'Teacher registration submit page'
-                    ])
-                );
-
-            }else{
+            $body = RecaptchaUtil::validate($request->input('g-recaptcha-response'));
+            if(!$body->success)
                 return back()->with(AlertDataUtil::error('Recaptcha validation failed'));
-            }
+
+            // upload profile picture
+            $file        = $request->input('profile_pic');
+            $destination = isset($file) ? FileUploadUtil::upload($file,'users/teachers/') : null;
+
+            $reqData = $request->all();
+            $reqData['profile_pic'] = $destination;
+
+            //register, activate and assign role for the account
+            $user       = Sentinel::register($reqData);
+            $activation = Activation::create($user);
+            $role       = Sentinel::findRoleBySlug(RoleModel::TEACHER);
+            $role->users()->attach($user);
+
+            //send mail
+            $email          = $user->email;
+            $username       = $request->input('username');
+            $activationLink = $this->authService->createActivationLink($user, $activation->code);
+            Mail::to($email)->send(new TeacherRegMail($activationLink, $username));
+
+            return view('form-submit-page')->with(
+                AlertDataUtil::success('Successfully registered, check you emails to use account activation link',[
+                    'title' => 'Teacher registration submit page'
+                ])
+            );
 
         }catch(CustomException $e){
             if(isset($destination) && ($destination != false))
                 Storage::disk('public')->delete($destination);
-            
-            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
+
+            return redirect()->back()
+                ->withErrors($formErrors)
+                ->withInput()
+                ->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             if(isset($destination) && ($destination != false))
                 Storage::disk('public')->delete($destination);
-            
+
             //return redirect()->route('auth.register');
-            return redirect()->back()->with(
-                AlertDataUtil::error('Error in registration process',[
-                    //'message'   => $e->getMessage(),
-                ])
-            );
+            return redirect()->back()
+                ->withErrors($formErrors)
+                ->withInput()
+                ->with(AlertDataUtil::error('Error in registration process',[
+                        //'message'   => $e->getMessage(),
+                    ])
+                );
         }
-        
+
 
     }
 
