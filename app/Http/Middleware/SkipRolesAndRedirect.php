@@ -45,7 +45,7 @@ class SkipRolesAndRedirect
             ]);
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
             return redirect()->route('home')->with([
                 'message'   => 'The page you are trying to access is inaccessible because your user role is not valid.',
                 'cls'       => 'flash-warning',
@@ -58,7 +58,7 @@ class SkipRolesAndRedirect
                 abort(404, 'This page has nothing to do with your user role.');
             */
 
-            if((new UserSharedService)->isAllowed($user, $roleArr))
+            if((new UserSharedService)->hasAnyRole($user, $roleArr))
                 return redirect()->route('home')->with([
                     'message'   => 'The page you are trying to access is inaccessible because you dont have permissions.',
                     'cls'       => 'flash-warning',

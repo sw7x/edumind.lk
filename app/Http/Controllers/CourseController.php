@@ -25,6 +25,7 @@ use App\Common\Utils\AlertDataUtil;
 //use App\Common\Utils\ColorUtil;
 //use Illuminate\Support\Arr;
 
+use App\Common\SharedServices\UserSharedService;
 
 
 class CourseController extends Controller
@@ -132,15 +133,14 @@ class CourseController extends Controller
 
 
     public function index(){
-
         $user       = Sentinel::getUser();
-        $userRoles  = optional($user)->roles();
-        $role       = optional($userRoles)->first();
 
-        if ($user && $role && optional($role)->slug == RoleModel::STUDENT) {
+        if ((new UserSharedService)->hasRole($user, RoleModel::STUDENT)) {
             $courses = $this->courseService->loadAllCoursesForStudent($user->id);
+
         } else {
             $courses = $this->courseService->loadAllCourses();
+
         }
 
         $courseDataArr  = CourseDataFormatter::prepareCoursListData($courses);
@@ -165,13 +165,12 @@ class CourseController extends Controller
         try{
             if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-            
-            if($user == null)
-                throw new CustomException('First login before enrolling');
-            
-            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT)
-                throw new CustomException('Invalid user');
-            
+
+            if(is_null($user))
+                abort(401, 'First login before enrolling');
+
+            if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
+                abort(403, "You don't have permissions to enroll courses");
             $course = CourseModel::find($courseId);
 
             if($course != null){
@@ -221,9 +220,8 @@ class CourseController extends Controller
                 throw new CustomException('First login before enrolling');
             }
 
-            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT){
-                throw new CustomException('Invalid user');
-            }
+            if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
+                abort(403, "You don't have permissions to enroll courses");
 
             $course = CourseModel::find($courseId);
 

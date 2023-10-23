@@ -86,7 +86,7 @@ class PermissionChecker{
             abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
             throw new InvalidUserTypeException(PermissionCheckMessageEnum::INVALID_ROLE_MSG);
 
         if(!Gate::allows($ability, [$modelClassName, ...$args]))
@@ -98,7 +98,7 @@ class PermissionChecker{
             abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
             throw new InvalidUserTypeException(PermissionCheckMessageEnum::INVALID_ROLE_MSG);
 
 		if(!Gate::allows($ability, [$model, ...$args]))
@@ -117,7 +117,7 @@ class PermissionChecker{
            return self::noAuthResponse();
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
 			return self::invalidRoleResponse();	
 
 		if(!Gate::allows($ability, [$modelClassName, ...$args]))
@@ -136,7 +136,7 @@ class PermissionChecker{
             return self::noAuthResponse();
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
 			return self::invalidRoleResponse();	
 
 		if(!Gate::allows($ability, [$model, ...$args]))
@@ -145,6 +145,7 @@ class PermissionChecker{
 		return self::successResponse();	
 	}
 
+	
 	public static function auth(): void {		
 		if(!Sentinel::check())
             abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);       
@@ -199,5 +200,6 @@ class PermissionChecker{
 			null
 		);
 	}
+
 
 }

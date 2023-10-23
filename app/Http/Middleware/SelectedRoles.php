@@ -41,7 +41,7 @@ class SelectedRoles
             abort(401, 'Authentication is required To access this page');
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
             throw new InvalidUserTypeException('The page you are trying to access is inaccessible because your user role is not valid.');
 
         if(!empty($roleArr)){
@@ -50,7 +50,7 @@ class SelectedRoles
                 abort(404, 'This page has nothing to do with your user role.');
             */
 
-            if(!(new UserSharedService)->isAllowed($user, $roleArr))
+            if(!(new UserSharedService)->hasAnyRole($user, $roleArr))
                 abort(403, 'The page you are trying to access is inaccessible because you dont have permissions.');
         }
 

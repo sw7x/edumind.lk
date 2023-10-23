@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Role as RoleModel;
 //use Illuminate\Support\Facades\Auth;
 use App\Common\Utils\AlertDataUtil;
+use App\Common\SharedServices\UserSharedService;
 
 class LoginController extends Controller
 {
@@ -48,23 +49,23 @@ class LoginController extends Controller
             
             if(is_null($user))
                 throw new CustomException('Invalid user or account diabled');
-           
-            $role = $user->roles()->first()->slug;
-            /*if($role != RoleModel::TEACHER && $role != RoleModel::STUDENT)
-                throw new WrongUserTypeException('You dont have permission to login here');*/
-           
-            $arr =  ['login' => $request->email, 'password'  => $request->password];
-            if(Sentinel::authenticate($arr, $remember_me)){                
-                $role = Sentinel::getUser()->roles()->first()->slug;               
 
-                if($role == RoleModel::TEACHER){
-                    return redirect()->route('teacher.my-profile', []);
-                }else if($role == RoleModel::STUDENT){
+            
+            $arr = ['login' => $request->email, 'password' => $request->password];
+            if(Sentinel::authenticate($arr, $remember_me)){
+                $userSharedSvc  = new UserSharedService();
+                $currentUser    = Sentinel::getUser();
+
+                if($userSharedSvc->hasRole($currentUser, RoleModel::TEACHER)){
+                    return redirect()->route('admin.profile', []);
+
+                }else if($userSharedSvc->hasRole($currentUser, RoleModel::STUDENT)){
                     return redirect()->route('dashboard', []);
+
                 }else{
                     //throw new WrongUserTypeException('You dont have permission to login here');
                     return redirect()->route('admin.dashboard');
-                }                
+                }
 
             }else{                
                 $pwResetTxt = "if you dont remember your password then you can reset it in here <a class='text-blue-600' href='".route("auth.reset-password-req-page")."'>Reset</a>";

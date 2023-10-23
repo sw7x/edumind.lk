@@ -26,7 +26,7 @@ class ValidRole
             abort(401, 'Authentication is required To access this page');
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
             throw new InvalidUserTypeException('The page you are trying to access is inaccessible because your user role is not valid.');
 
         return $next($request);

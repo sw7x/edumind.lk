@@ -30,7 +30,7 @@ class ValidRoleUnlessRedirect
             ]);
 
         $user = Sentinel::getUser();
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
             return redirect()->route('home')->with([
                 'message'   => 'The page you are trying to access is inaccessible because your user role is not valid.',
                 'cls'       => 'flash-warning',

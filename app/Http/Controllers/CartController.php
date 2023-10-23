@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Crypt;
 
 use Cookie;
 use App\Common\Utils\AlertDataUtil;
+use App\Common\SharedServices\UserSharedService;
 use App\Services\CartService;
 
 //use App\Repositories\CouponRepository;
@@ -474,9 +475,8 @@ class CartController extends Controller
                 throw new CustomException('First login before enrolling');
             }
 
-            if(Sentinel::getUser()->roles()->first()->slug != RoleModel::STUDENT){
+            if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
                 throw new CustomException('Invalid user');
-            }
 
             $course = CourseModel::find($courseId);
 

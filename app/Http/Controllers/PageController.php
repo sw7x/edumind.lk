@@ -55,15 +55,17 @@ class PageController extends Controller
 
 
 
-    public function viewProfileEdit(Request $request){      
-        $user            = Sentinel::getUser();        
-        $currentUserRole = $this->userSharedService->getRoleByUser($user);
-        
-        if($currentUserRole == RoleModel::STUDENT)
+    public function viewProfileEdit(Request $request){
+        $user               = Sentinel::getUser();
+        $userSharedService  = new UserSharedService();
+
+        if($userSharedService->hasRole($user, RoleModel::STUDENT))
             return view('student.profile-edit');
 
-        if($currentUserRole == RoleModel::TEACHER)
+        if($userSharedService->hasRole($user, RoleModel::TEACHER))
             return redirect()->route('admin.profile-edit', []);
+
+        abort(404,'This page is not available for your user role');
 
         //$userData   =   $this->userService->findDbRec($user->id);
         //$userArr    = ProfileDataFormatter::prepareUserData($userData);
@@ -73,14 +75,14 @@ class PageController extends Controller
 
     public function viewProfile(Request $request){
         $user = Sentinel::getUser();
-                
+
         // redirect ADMIN, EDITOR, MARKETER, TEACHER users to profile page in admin panel
-        if(!$this->userSharedService->isAllowed($user, [RoleModel::STUDENT]))
+        if(!$this->userSharedService->hasRole($user, RoleModel::STUDENT))
             return redirect()->route('admin.profile', []);
 
-        $userData   =   $this->userService->findDbRec($user->id);
+        $userData   = $this->userService->findDbRec($user->id);
         $userArr    = ProfileDataFormatter::prepareUserData($userData);
-        return view('student.my-profile')->with(['userData' => $userArr]);       
+        return view('student.my-profile')->with(['userData' => $userArr]);
     }
 
 
@@ -93,7 +95,7 @@ class PageController extends Controller
         $user = Sentinel::getUser();
                         
         // redirect ADMIN, EDITOR, MARKETER, TEACHER users to dashboard of admin panel
-        if(!$this->userSharedService->isAllowed($user, [RoleModel::STUDENT]))
+        if(!$this->userSharedService->hasRole($user, RoleModel::STUDENT))
             return redirect()->route('admin.dashboard', []);
 
         //$userData   =   $this->userService->findDbRec($user->id);

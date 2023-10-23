@@ -26,28 +26,27 @@ class UserSharedService
         return $userRole;
     }
     
-
-    public function checkUserHaveValidRole(UserModel $userRec) : bool {
+    public function isHaveValidRole(UserModel $userRec) : bool {
         $userRole   = $this->getRoleByUser($userRec);
         return in_array($userRole, $this->allRoles);
     }
-
     
-    public function isAllowed(UserModel $userRec, array $allowedRoles) : bool {
-        $userRole   = $this->getRoleByUser($userRec);
-        return in_array($userRole, $allowedRoles);
-    }    
-
+    public function getUserInfoArr(?UserModel $userRec) : array {
+        $userArr = (is_null($userRec)) ? [] : $userRec->toArray();
+        return $userArr;
+    }  
+    
+    
     public function hasRole(UserModel $userRec, string $role) : bool {
         $userRole   = $this->getRoleByUser($userRec);
         return ($userRole === $role);
     }
 
+    public function hasAnyRole(UserModel $userRec, array $roleArr) : bool {
+        $userRole   = $this->getRoleByUser($userRec);
+        return in_array($userRole, $roleArr);
+    }
 
-    public function getUserInfoArr(?UserModel $userRec) : array {
-        $userArr = (is_null($userRec)) ? [] : $userRec->toArray();
-        return $userArr;
-    }  
 
     
 

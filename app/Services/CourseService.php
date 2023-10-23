@@ -20,6 +20,7 @@ use App\Common\SharedServices\CourseSharedService;
 //use Illuminate\Support\Str;
 use App\DataTransformers\Database\CourseDataTransformer;
 use App\DataTransformers\Database\SubjectDataTransformer;
+use App\Common\SharedServices\UserSharedService;
 
 
 class CourseService
@@ -148,11 +149,9 @@ class CourseService
         when status = COMPLETED      then display 'course completed' messeage
     */
     private function loadCoursePage(?UserModel $user, CourseModel $courseRec) : array {
-        $userRoles  = optional($user)->roles();
-        $roleArr    = optional($userRoles)->first();
-        $userRole   = optional($roleArr)->slug;
+        $usrSvc = new UserSharedService();
 
-        if($userRole == RoleModel::STUDENT){
+        if($usrSvc->hasRole($user, RoleModel::STUDENT)){
             $courseSelection = $user->course_selections()->where('course_id', $courseRec->id)->first();
 
             if(is_null($courseSelection)){
@@ -190,20 +189,20 @@ class CourseService
                 }
             }
 
-        }elseif ($userRole == RoleModel::TEACHER){
+        }elseif ($usrSvc->hasRole($user, RoleModel::TEACHER)){
             $isAuthor   = $courseRec->teacher()->where('id', $user->id)->first();
             $viewFile   = ($isAuthor) ? 'course-single-enrolled' : 'course-single-before-enrolled';
             $status     =  null;
 
-        }elseif ($userRole == RoleModel::MARKETER){
+        }elseif ($usrSvc->hasRole($user, RoleModel::MARKETER)){
             $viewFile   = 'course-single-before-enrolled';
             $status     =  null;
 
-        }elseif ($userRole == RoleModel::EDITOR){
+        }elseif ($usrSvc->hasRole($user, RoleModel::EDITOR)){
             $viewFile   = 'course-single-enrolled';
             $status     =  null;
 
-        }elseif ($userRole == RoleModel::ADMIN){
+        }elseif ($usrSvc->hasRole($user, RoleModel::ADMIN)){
             $viewFile   = 'course-single-enrolled';
             $status     =  null;
 

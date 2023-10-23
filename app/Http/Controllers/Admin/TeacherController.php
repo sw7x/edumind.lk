@@ -9,6 +9,7 @@ use App\Services\Admin\TeacherService as AdminTeacherService;
 use App\Exceptions\CustomException;
 use App\Models\Role as RoleModel;
 
+use App\Common\SharedServices\UserSharedService;
 use App\View\DataFormatters\Admin\TeacherDataFormatter as AdminTeacherDataFormatter;
 
 class TeacherController extends Controller
@@ -21,19 +22,13 @@ class TeacherController extends Controller
     }
 
 
+    public function viewMyCourses(){       
+        $user = Sentinel::getUser();
+        if(is_null($user))
+            throw new CustomException('Invalid page');
 
-    public function viewMyCourses(){
-        //dd('hh');
-    	try{
-            $user = Sentinel::getUser();
-
-            if(is_null($user))
-                throw new CustomException('Invalid page');
-
-            $role = is_null($user->roles()->first()) ? null : $user->roles()->first()->name;
-
-            if($role != RoleModel::TEACHER)
-                throw new CustomException('Wrong user type');
+        if(!(new UserSharedService)->hasRole($user, RoleModel::TEACHER))
+            throw new CustomException('Wrong user type');
 
             $teacherCourses    = $this->adminTeacherService->getAllCoursesByTeacher($user);
             $teacherCoursesArr = AdminTeacherDataFormatter::prepareMyCourseData($teacherCourses);
@@ -77,17 +72,14 @@ class TeacherController extends Controller
         if(!Sentinel::check())
             abort(403);
             
-        $user            = Sentinel::getUser();            
-        $allRoles        = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER, RoleModel::STUDENT];
-        $currentUserRole = optional($user->roles()->first())->name;        
-        if(!in_array($currentUserRole, $allRoles))
-            abort(403);
-           
+        $user = Sentinel::getUser();            
+        
+        if(!(new UserSharedService)->isHaveValidRole($user))
+           abort(403);
 
         // redirect users that have TEACHER, STUDENT roles
-        $allowedRoles   =   [RoleModel::TEACHER];
-        if(!in_array($currentUserRole, $allowedRoles))
-            abort(404);
+        if(!(new UserSharedService)->hasRole($user, RoleModel::TEACHER))
+           abort(403);
                     
         return view('admin-panel.teacher.course-enrollments');
     }

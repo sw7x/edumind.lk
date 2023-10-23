@@ -17,6 +17,7 @@ use App\Models\Role as RoleModel;
 
 use App\DataTransformers\Database\CourseDataTransformer;
 use App\DataTransformers\Database\UserDataTransformer;
+use App\Common\SharedServices\UserSharedService;
 
 class TeacherService
 {
@@ -35,8 +36,7 @@ class TeacherService
         if(is_null($user))
             throw new CustomException('Access denied');
 
-        $role = optional($user->roles()->first())->name;
-        if($role != RoleModel::TEACHER)
+        if(!(new UserSharedService)->hasRole($user, RoleModel::TEACHER))        
             throw new CustomException('Wrong user type');
 
         return array(

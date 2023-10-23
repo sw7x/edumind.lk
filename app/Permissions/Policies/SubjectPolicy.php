@@ -151,10 +151,10 @@ class SubjectPolicy
         if(is_null($user)) 
             abort(401, 'Authentication is required To access this page');
         
-        if(!(new UserSharedService)->checkUserHaveValidRole($user))
+        if(!(new UserSharedService)->isHaveValidRole($user))
             //throw new InvalidUserTypeException('Your user role is not valid for access this page.');
         
-        if(!(new UserSharedService)->isAllowed($user, [RoleModel::TEACHER, RoleModel::STUDENT]))
+        if(!(new UserSharedService)->hasAnyRole($user, [RoleModel::TEACHER, RoleModel::STUDENT]))
             //abort(403);
             
         dump('dfdfdfdfd');

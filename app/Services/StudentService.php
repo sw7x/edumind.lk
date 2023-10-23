@@ -14,20 +14,19 @@ use App\Repositories\UserRepository;
 //use App\DataTransferObjects\UserDto;
 use App\DataTransformers\Database\CourseDataTransformer;
 use App\DataTransformers\Database\UserDataTransformer;
+use App\Common\SharedServices\UserSharedService;
 
 class StudentService
 {
-
     
 	public function loadStudentDataByUserName(string $username) : array {
 		$user = (new UserRepository())->findUserByUsername($username);
 		if(is_null($user))
-			throw new CustomException('Access denied');
+			abort(404, 'Student not found');
 
-        $role = optional($user->roles()->first())->name;
-        if($role != RoleModel::STUDENT)
-			throw new CustomException('Wrong user type');
-
+       	if(!(new UserSharedService)->hasAnyRole($user, [RoleModel::STUDENT]))
+			throw new CustomException('This user is not a student.');       
+			
 		return array(
 			'dto' 		=> UserDataTransformer::buildDto($user->toArray()),
 			'createdAt' => $user->created_at
@@ -40,10 +39,9 @@ class StudentService
 		if(is_null($student))
             abort(404, 'Student not found');
 
-		$role = optional($student->roles()->first())->name;
-		if($role !=RoleModel::STUDENT)
-			throw new CustomException('Invalid user type');
-
+		if(!(new UserSharedService)->hasRole($student, RoleModel::STUDENT))
+			throw new CustomException('User is not a student');
+        
 		$studentCourses = (new CourseRepository())->getEnrolledCoursesByStudent($student);
 		//dd($studentCourses);
 
