@@ -68,26 +68,26 @@
                                 :message="$cart_re_init_message">                                
                                 
                                 <x-slot name="insideContent">
-                                    <div class="inside-content ml-5">                                        
+                                    <div class="inside-content">                                        
                                         @if(isset($cart_re_init_msg_arr) && isNotEmptyArray($cart_re_init_msg_arr))
-                                            
-                                            @foreach ($cart_re_init_msg_arr as $msgArr)                                                                                                 
-                                                <div class="mb-2 py-2">
-                                                    @if (isset($msgArr['errArr'])) 
-                                                        <p class="text-sm mb-1 text-red-500">{{$msgArr['errTitle']}}</p>
-                                                    @endif
-                                                    
-                                                    @if (isset($msgArr['errArr']) && $msgArr['errArr']->isNotEmpty())                                                                             
-                                                        <ul class="mt-1 mb-1 ml-8 list-disc text-sm __text-yellow-500 __font-semibold">                                        
-                                                            @foreach ($msgArr['errArr'] as $errMsg)
-                                                                <li class="text-sm">{!! $errMsg !!}</li>
-                                                            @endforeach                                      
-                                                        </ul>                                                   
-                                                    @endif
-                                                </div>                                                
-                                                @if(!$loop->last && !empty($msgArr)) <hr> @endif                                                
-                                            @endforeach
-                                                                           
+                                            <div class='ml-5'>
+                                                @foreach ($cart_re_init_msg_arr as $msgArr)                                                                                                 
+                                                    <div class="mb-2 py-2">
+                                                        @if (isset($msgArr['errArr'])) 
+                                                            <p class="text-sm mb-1 text-red-500">{{$msgArr['errTitle']}}</p>
+                                                        @endif
+                                                        
+                                                        @if (isset($msgArr['errArr']) && $msgArr['errArr']->isNotEmpty())                                                                             
+                                                            <ul class="mt-1 mb-1 ml-8 list-disc text-sm __text-yellow-500 __font-semibold">                                        
+                                                                @foreach ($msgArr['errArr'] as $errMsg)
+                                                                    <li class="text-sm">{!! $errMsg !!}</li>
+                                                                @endforeach                                      
+                                                            </ul>                                                   
+                                                        @endif
+                                                    </div>                                                
+                                                    @if(!$loop->last && !empty($msgArr)) <hr> @endif                                                
+                                                @endforeach
+                                            </div>                               
                                         @else
                                             <div class="my-5">
                                                 <x-flash-message 

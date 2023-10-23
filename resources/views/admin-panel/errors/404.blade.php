@@ -10,22 +10,20 @@
 
                     <div class="middle-box text-center animated fadeInDown mt-0 pt-1 mb-3 text-red-500">
                         <h1 class="font-semibold">404</h1>
-                        <h3 class="font-bold text-3xl">Page Not Found</h3>
-                            @php
-                                //dump($errMsg);
-                            @endphp
+                        <h3 class="font-bold text-3xl">
+                            @if(isset($errMsg) && $errMsg)
+                                {{$errMsg}}
+                            @else
+                                Sorry, but the page you are looking for has note been found.
+                            @endif
+                        </h3>
+                        <br>
+                        
+                        @php
+                            //dump($errMsg);
+                        @endphp
 
                         <div class="error-desc mb-10">
-                            <div class="text-base">
-                                @if(isset($errMsg) && $errMsg)
-                                    {{$errMsg}}
-                                @else
-                                    Sorry, but the page you are looking for has note been found. Try checking 
-                                    the URL for error, then hit the refresh button on your browser or try found 
-                                    something else in our app.
-                                @endif
-                            </div>                        
-                            <br>
                             <div class="mt-2">
                                 <div>
                                     <a class="btn btn-danger mb-2" href="{{ url()->previous() }}">Go back</a>

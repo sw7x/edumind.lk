@@ -9,10 +9,10 @@
                 <div class="ibox-content">
                     <div class="middle-box text-center animated fadeInDown mt-0 pt-1 mb-0 text-red-500">
                         <h1 class="font-semibold">403</h1>
-                        <h3 class="font-bold text-3xl">Access Denied</h3>
+                        <h3 class="font-bold text-3xl">Permission Denied !</h3>
 
                         <div class="error-desc">
-                            <div class="text-base">
+                            <div class="text-xl">
                                 @if(isset($errMsg) && $errMsg)
                                     {{$errMsg}}    
                                 @else

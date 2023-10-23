@@ -11,23 +11,11 @@
 
     <!-- Date Range Picker CSS file-->
     <link rel="stylesheet" type="text/css" href="{{asset('admin/plugins/daterangepicker/css/daterangepicker.css')}}" />
-
-
 @stop
 
 
 @section('page-css')
     <style>
-
-
-
-
-
-
-
-
-
-
 
     </style>
 @stop
@@ -53,8 +41,6 @@
                 <div class="ibox-content px-3">
 
                     <form class="edit-user-form" id="add-subject" action="{{route('admin.subjects.store')}}" method="POST">
-
-
 
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Select Teacher <span class="text-red-500 text-sm font-bold">*</span></label>

@@ -16,9 +16,7 @@
                     <div class="lg:w-3/12 space-y-4 lg:block mb-3 lg:mb-1">
 
                         <div>
-                            <h4 class="font-semibold text-base mb-2"> Categories </h4>
-                            
-                            @if(count($subjectData)>0)
+                            <h4 class="font-semibold text-base mb-2"> Categories </h4>                            
                             <select class="selectpicker default" name="subject">
                                 <option value="0" @if(!old('subject')) selected @endif>All Categories</option>                              
                                 @foreach($subjectData as $subject)
@@ -26,10 +24,7 @@
                                         {{$subject['name']}}
                                     </option>                                   
                                 @endforeach  
-                                <option value="ddd">ddd</option>
-                            </select>
-                            @endif
-
+                            </select>                          
                         </div>
 
                         <!--

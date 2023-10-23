@@ -12,7 +12,7 @@
                         <h3 class="font-bold text-3xl">419 Page expired</h3>
 
                         <div class="error-desc">
-                            <div class="text-base">
+                            <div class="text-xl">
                                 @if(isset($errMsg) && $errMsg)
                                     {{$errMsg}}    
                                 @else

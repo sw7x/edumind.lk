@@ -12,7 +12,7 @@
                         <h3 class="font-bold text-3xl">Internal Server Error</h3>
 
                         <div class="error-desc mb-10">
-                            <div class="text-base">
+                            <div class="text-xl">
                                 @if(isset($errMsg) && $errMsg)
                                     {{$errMsg}}
                                 @else

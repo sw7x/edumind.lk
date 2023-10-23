@@ -50,8 +50,8 @@
                                 
                             <div role="tabpanel" id="tab-teachers" class="tab-pane __active">
                                 <div class="panel-body">
-                                    @if(isset($teachers) && !empty($teachers))
-                                        @if($canViewteachers)                                                
+                                    @if(isset($teachers) && is_array($teachers))
+                                        @if(!empty($teachers))                                                    
                                             <div class="table-responsive">
                                                 <table id="user-list-teacher" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                                                     <thead>
@@ -140,12 +140,18 @@
                                                 </table>
                                             </div>                                                     
                                         @else
-                                            <x-flash-message class="flash-danger mt-3"  title="Permission Denied!" 
-                                                message="You dont have Permissions view teachers" :canClose="false"/>
+                                            <x-flash-message 
+                                                class="flash-info mt-3"  
+                                                title="No Teachers!" 
+                                                message="" 
+                                                :canClose="false"/>
                                         @endif
                                     @else
-                                    <x-flash-message class="flash-danger mt-3" title="Error!" 
-                                        message="No teacher records" :canClose="false"/>
+                                        <x-flash-message 
+                                            class="flash-danger mt-3" 
+                                            title="Data not available!" 
+                                            message="Teacher records are not available or not in correct format" 
+                                            :canClose="false"/>
                                     @endif      
                                 </div>
                             </div>
@@ -154,8 +160,8 @@
 
                             <div role="tabpanel" id="tab-students" class="tab-pane">
                                 <div class="panel-body">
-                                    @if(isset($students) && !empty($students))
-                                        @if($canViewstudents)                                            
+                                    @if(isset($students) && is_array($students))
+                                        @if(!empty($students))     
                                             <div class="table-responsive">
                                                 <table id="user-list-stud" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                                                     <thead>
@@ -226,12 +232,18 @@
                                                 </table>
                                             </div>                                            
                                         @else
-                                            <x-flash-message class="flash-danger mt-3"  title="Permission Denied!" 
-                                                message="You dont have Permissions view students" :canClose="false"/>
+                                            <x-flash-message 
+                                                class="flash-info mt-3"  
+                                                title="No Students!" 
+                                                message="" 
+                                                :canClose="false"/>
                                         @endif
                                     @else
-                                        <x-flash-message class="flash-danger mt-3" title="Error!"
-                                            message="No student records" :canClose="false"/>
+                                        <x-flash-message 
+                                            class="flash-danger mt-3" 
+                                            title="Data not available!" 
+                                            message="Student records are not available or not in correct format" 
+                                            :canClose="false"/>
                                     @endif
                                 </div>
                             </div>                                    
@@ -240,8 +252,8 @@
 
                             <div role="tabpanel" id="tab-marketers" class="tab-pane">
                                 <div class="panel-body">
-                                    @if(isset($marketers) && !empty($marketers))
-                                        @if($canViewmarketers)    
+                                    @if(isset($marketers) && is_array($marketers))
+                                        @if(!empty($marketers))    
                                             <div class="table-responsive">
                                                 <table id="user-list-marketer" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                                                     <thead>
@@ -313,18 +325,17 @@
                                             </div>                                            
                                         @else
                                             <x-flash-message 
-                                                class="flash-danger mt-3"  
-                                                title="Permission Denied!" 
-                                                message="You dont have Permissions view marketers"
+                                                class="flash-info mt-3"  
+                                                title="No Marketers!" 
                                                 message="" 
-                                                :canClose="false" />
+                                                :canClose="false"/>
                                         @endif
                                     @else
                                         <x-flash-message 
                                             class="flash-danger mt-3" 
-                                            title="Error!"
-                                            message="No marketers records" 
-                                            :canClose="false" />
+                                            title="Data not available!" 
+                                            message="Marketer records are not available or not in correct format" 
+                                            :canClose="false"/>
                                     @endif
                                 </div>
                             </div>
@@ -333,8 +344,8 @@
 
                             <div role="tabpanel" id="tab-editors" class="tab-pane">
                                 <div class="panel-body">
-                                    @if(isset($editors) && !empty($editors))
-                                        @if($canVieweditors)    
+                                    @if(isset($editors) && is_array($editors))
+                                        @if(!empty($editors))    
                                             <div class="table-responsive">
                                                 <table id="user-list-editors" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
                                                     <thead>
@@ -403,14 +414,20 @@
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                            </div>                                                
+                                            </div>                                           
                                         @else
-                                            <x-flash-message class="flash-danger mt-3"  title="Permission Denied!" 
-                                                message="You dont have Permissions view editors" :canClose="false"/>
+                                            <x-flash-message 
+                                                class="flash-info mt-3"  
+                                                title="No Editors!" 
+                                                message="" 
+                                                :canClose="false"/>
                                         @endif
                                     @else
-                                        <x-flash-message class="flash-danger mt-3" title="Error!"
-                                            message="No editor records" :canClose="false"/>
+                                        <x-flash-message 
+                                            class="flash-danger mt-3" 
+                                            title="Data not available!" 
+                                            message="Editor records are not available or not in correct format" 
+                                            :canClose="false"/>
                                     @endif
                                 </div>
                             </div>                                       

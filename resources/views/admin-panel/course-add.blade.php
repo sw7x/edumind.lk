@@ -588,11 +588,11 @@
                     </div>
                 </div>
             @else
-
-
                 <x-flash-message 
-                    class="flash-danger mt-3" title="Error!" 
-                    message="Failed to show course add form" :canClose="false">
+                    class="flash-danger mt-3" 
+                    title="Error!" 
+                    message="Failed to show course add form" 
+                    :canClose="false">
                     <x-slot name="insideContent">
                         <br>
                         @if(!isset($teachers) || !is_array($teachers) || empty($teachers))

@@ -149,7 +149,7 @@
                         <x-flash-message  
                             class="flash-danger"  
                             title="Error!" 
-                            message="User Profile does not exist!"  
+                            message="User profile does not exist!"  
                             message2=""  
                             :canClose="false" />
                     @endif

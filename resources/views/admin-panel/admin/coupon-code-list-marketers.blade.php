@@ -183,70 +183,64 @@
 					<div class="table-responsive">
 						<table id="coupon-code-list-tbl" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
 							<thead>
-							<tr>
-								<th></th>
-								<th>Code</th>
-								<th>Discount</th>
-								<th>Works for</th>
-								<th>Used</th>
-								<th>Available</th>
-								<th>Total</th>
-								<th>Created Date/time</th>
-								<th>Claimed discount</th>
-								<th>Status</th>
-								<th>Action</th>
-							</tr>
+								<tr>
+									<th></th>
+									<th>Code</th>
+									<th>Discount</th>
+									<th>Works for</th>
+									<th>Used</th>
+									<th>Available</th>
+									<th>Total</th>
+									<th>Created Date/time</th>
+									<th>Claimed discount</th>
+									<th>Status</th>
+									<th>Action</th>
+								</tr>
 							</thead>
 
 							<tbody>
                             <?php
                             $arr = ['Any course','Maths 101','Multiple courses (3)'];
-
-                            for ($x = 0; $x <= 100; $x+=1): ?>
-
-							<tr>
-								<td></td>
-								<td>ABC<?php echo $x; ?></td>
-								<td><?php echo $x; ?>%</td>
-								<td><?php echo $arr[array_rand($arr)];?></td>
-								<td><?php echo $x*100; ?></td>
-								<td><?php echo $x*20; ?></td>
-								<td><?php echo $x; ?></td>
-								<td>2022/7/16 06:45 PM</td>
-								<td><?php echo 'RS '.$x.'000.00'; ?></td>
-								<td>
-                                    <input type="checkbox" class="js-switch1" checked />
-                                </td>
-								<td>
-									<div class="btn-group">
-                                        <button class="btn-white btn btn-xs">View</button>
-                                        <button class="btn-white btn btn-xs">Edit</button>
-                                        <button class="btn-white btn btn-xs">Delete</button>
-                                    </div>
-                                </td>
-
-
-
-
-
-							</tr>
+                            for ($x = 0; $x <= 100; $x+=1): 
+                            ?>
+								<tr>
+									<td></td>
+									<td>ABC<?php echo $x; ?></td>
+									<td><?php echo $x; ?>%</td>
+									<td><?php echo $arr[array_rand($arr)];?></td>
+									<td><?php echo $x*100; ?></td>
+									<td><?php echo $x*20; ?></td>
+									<td><?php echo $x; ?></td>
+									<td>2022/7/16 06:45 PM</td>
+									<td><?php echo 'RS '.$x.'000.00'; ?></td>
+									<td>
+	                                    <input type="checkbox" class="js-switch1" checked />
+	                                </td>
+									<td>
+										<div class="btn-group">
+	                                        <button class="btn-white btn btn-xs">View</button>
+	                                        <button class="btn-white btn btn-xs">Edit</button>
+	                                        <button class="btn-white btn btn-xs">Delete</button>
+	                                    </div>
+	                                </td>
+								</tr>
                             <?php endfor;  ?>
 							</tbody>
 
 							<tfoot>
-							<tr>
-								<th></th>
-								<th>Code</th>
-								<th>Discount</th>
-								<th>Works for</th>
-								<th>Used</th>
-								<th>Available</th>
-								<th>Total</th>
-								<th>Created Date/time</th>
-								<th>Claimed discount</th>
-								<th>Status</th>
-								<th>Action</th>
-							</tr>
+								<tr>
+									<th></th>
+									<th>Code</th>
+									<th>Discount</th>
+									<th>Works for</th>
+									<th>Used</th>
+									<th>Available</th>
+									<th>Total</th>
+									<th>Created Date/time</th>
+									<th>Claimed discount</th>
+									<th>Status</th>
+									<th>Action</th>
+								</tr>
 							</tfoot>
 
 						</table>

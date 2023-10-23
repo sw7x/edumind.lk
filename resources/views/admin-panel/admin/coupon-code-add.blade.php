@@ -50,8 +50,6 @@
             ?>
 
 
-
-
             <div class="ibox ">
                 <div class="ibox-content">
                     <h3>Add coupon code</h3>
