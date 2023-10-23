@@ -133,17 +133,25 @@ class UserRepository extends BaseRepository implements IGetDataRepository{
     public function findUserByEmail(String $email) : ?UserModel{
         return $this->model->withoutGlobalScope('active')->where('email',$email)->first();
     }
+    public function findUserCountByEmail(String $email) : int{
+        return $this->model->withoutGlobalScope('active')->where('email',$email)->count();
+    }    
     public function findAvailableUserByEmail(String $email) : ?UserModel{
         return $this->model->where('email',$email)->first();
     }
 
+    
     public function findUserByUsername(String $username) : ?UserModel{
         return $this->model->withoutGlobalScope('active')->where('username',$username)->first();
+    }    
+    public function findUserCountByUsername(String $username) : int{
+        return $this->model->withoutGlobalScope('active')->where('username',$username)->count();
     }
     public function findAvailableUserByUsername(String $username) : ?UserModel{
         return $this->model->where('username',$username)->first();
     }    
 
+    
     public function findDuplicateCountByName(string $fullName, int $id) : int {
         return $this->model->withoutGlobalScope('active')->where('id', '!=', $id)->where('full_name', '=', $fullName)->count();
     }

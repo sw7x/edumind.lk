@@ -10,9 +10,9 @@ use App\Exceptions\WrongUserTypeException;
 use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Role as RoleModel;
-//use Illuminate\Support\Facades\Auth;
 use App\Common\Utils\AlertDataUtil;
 use App\Common\SharedServices\UserSharedService;
+
 
 class LoginController extends Controller
 {
@@ -29,24 +29,24 @@ class LoginController extends Controller
 
     //todo
     public function loginSubmit(Request $request){
-            
+
         try{
-            
+
             $validator = Validator::make($request->all(), [
                 'email'     =>'required',
                 'password'  =>'required|min:6|max:12',
             ],[
                 'email.required'    => 'Username or Email is required.',
                 'password.required' => 'password field is required.',
-            ]);            
+            ]);
 
             if ($validator->fails())
                 return redirect()->back()->withErrors($validator,'loginForm')->withInput();
-        
+
             $remember_me = isset($request->remeber_me) ? true : false;
-            $credentials = ['login'    => $request->email];
+            $credentials = ['login' => $request->email];
             $user        = Sentinel::findByCredentials($credentials);
-            
+
             if(is_null($user))
                 throw new CustomException('Invalid user or account diabled');
 
@@ -67,14 +67,10 @@ class LoginController extends Controller
                     return redirect()->route('admin.dashboard');
                 }
 
-            }else{                
+            }else{
                 $pwResetTxt = "if you dont remember your password then you can reset it in here <a class='text-blue-600' href='".route("auth.reset-password-req-page")."'>Reset</a>";
-                return redirect()->back()->with(
-                    AlertDataUtil::error('Wrong credentials',[
-                        'message2' => $pwResetTxt
-                        //'title'    => 'Student Registration submit page',
-                    ])
-                );
+                return redirect()->back()
+                    ->with(AlertDataUtil::error('Wrong credentials',['message2' => $pwResetTxt]));
             }
 
         }
@@ -83,13 +79,13 @@ class LoginController extends Controller
             return redirect()->back()->with(
                 AlertDataUtil::error("You are banned for {$delay} seconds",[
                     //'title'   => 'Student Registration submit page'
-                ])                
+                ])
             );
 
         }catch(NotActivatedException $e){
             return redirect()->back()->with(
                 AlertDataUtil::warning('You account is not activated',[
-                    //'title'   => 'Student Registration submit page'                    
+                    //'title'   => 'Student Registration submit page'
                 ])
             );
 
@@ -114,7 +110,7 @@ class LoginController extends Controller
         catch(\Exception $e){
             return redirect()->back()->with(
                 AlertDataUtil::error('Something is wrong in login',[
-                    //'message' => $e->getMessage(),
+                    'message' => $e->getMessage(),
                     //'title'   => 'Student Registration submit page'
                 ])
             );
@@ -123,21 +119,11 @@ class LoginController extends Controller
 
     }
 
-    
+
     //todo
     public function logout(Request $request){
-
         if(sentinel::check()){
-            //$role = Sentinel::getUser()->roles()->first()->slug;
             Sentinel::logout();
-            /*
-            //if($role == 'admin' || $role == 'editor' || $role == RoleModel::MARKETER){
-            if($role == RoleModel::ADMIN || $role == RoleModel::EDITOR || $role == RoleModel::MARKETER){
-                return redirect()->route('admin.login');
-            }else{
-                return redirect()->route('home');
-            }
-            */
         }else{
             //return redirect()->route('auth.login');
         }
