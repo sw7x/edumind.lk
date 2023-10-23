@@ -145,6 +145,19 @@ class PermissionChecker{
 		return self::successResponse();	
 	}
 
+	public static function auth(): void {		
+		if(!Sentinel::check())
+            abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);       
+	}	
+
+	public static function haveValidRole(): void {		
+		if(!Sentinel::check())
+            abort(401, PermissionCheckMessageEnum::NO_AUTH_MSG);
+
+        $user = Sentinel::getUser();
+        if(!(new UserSharedService)->isHaveValidRole($user))
+            throw new InvalidUserTypeException(PermissionCheckMessageEnum::INVALID_ROLE_MSG);
+	}
 
 
 	private static function noAuthResponse(): PermissionResponse {
