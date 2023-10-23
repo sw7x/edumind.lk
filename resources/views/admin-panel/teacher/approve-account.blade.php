@@ -10,7 +10,7 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
-approve-account.blade
+            approve-account.blade
             @if(Session::has('message'))
                 <x-flash-message  
                     :class="Session::get('cls', 'flash-info')"  
@@ -32,7 +32,8 @@ approve-account.blade
             
             <div class="ibox">               
                 <div class="ibox-content feedback-container forum-post-container mb-5">
-                    @if(isset($userData))
+                    @if(isset($userData) && isNotEmptyArray($userData))
+                    
                         @if(isset($userData['fullName']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
@@ -85,7 +86,6 @@ approve-account.blade
                             <div class="hr-line-dashed"></div>
                         @endif
 
-
                         @if(isset($userData['eduQualifications']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Education qualifications</label>
@@ -102,7 +102,6 @@ approve-account.blade
                             <div class="hr-line-dashed"></div>
                         @endif
 
-
                         @if(isset($userData['profilePic']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Profile image</label>
@@ -114,7 +113,6 @@ approve-account.blade
                             </div>
                             <div class="hr-line-dashed"></div>
                         @endif
-
 
                         @if(isset($userData['gender']))
                             <div class="form-group  row">
@@ -150,7 +148,6 @@ approve-account.blade
                             <div class="hr-line-dashed"></div>
                         @endif
 
-
                         @if(isset($userData['lastLogin']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Last login</label>
@@ -165,7 +162,17 @@ approve-account.blade
                                 <a class="btn btn-danger btn-sm font-semibold"  type="submit" href="{{route('admin.users.index')}}">Go back</a>
                             </div>
                         </div>              
+                    
+                    @else
+                        <x-flash-message 
+                            class="flash-danger mt-3" 
+                            title="Data not available!" 
+                            message="User Data is not available or not in correct format" 
+                            :canClose="false"/>
                     @endif
+
+
+
                 </div>
             </div>
             
