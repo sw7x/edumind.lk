@@ -63,7 +63,7 @@ class Kernel extends HttpKernel
         'auth.basic'            => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers'         => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can'                   => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'                 => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        //'guest'                 => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'password.confirm'      => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed'                => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle'              => \Illuminate\Routing\Middleware\ThrottleRequests::class,
@@ -71,7 +71,7 @@ class Kernel extends HttpKernel
         
         
         
-        'auth'                          => \App\Http\Middleware\Auth::class,
+        'AbortIfAuth'                   => \App\Http\Middleware\AbortIfAuth::class,
         'authUnlessRedirect'            => \App\Http\Middleware\AuthUnlessRedirect::class,        
         'guest'                         => \App\Http\Middleware\Guest::class,
         'guestUnlessRedirect'           => \App\Http\Middleware\GuestUnlessRedirect::class,

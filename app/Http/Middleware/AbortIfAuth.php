@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Sentinel;
 
 
-class Auth
+class AbortIfAuth
 {
     /**
      * Handle an incoming request.

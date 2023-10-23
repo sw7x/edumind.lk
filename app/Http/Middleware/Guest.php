@@ -22,7 +22,7 @@ class Guest
     {
         //if already logged in then pass request if not block
         if(Sentinel::check())
-            abort(403, 'The page you are trying to access is inaccessible to authenticated users.')
+            abort(403, 'The page you are trying to access is inaccessible to authenticated users.');
             
         return $next($request);
     }

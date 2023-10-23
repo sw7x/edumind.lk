@@ -36,7 +36,6 @@ class SkipRoles
                 $roleArr[] = $role;           
         }
         
-
         if(!Sentinel::check())
             abort(401, 'Authentication is required To access this page');
 
