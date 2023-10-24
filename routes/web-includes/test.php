@@ -73,3 +73,9 @@ Route::get ('/test/user-editor', [TestingController::class,'userEditor'])->name 
 Route::get ('/test/user-marketer', [TestingController::class,'userMarketer'])->name ('test.user-marketer');
 Route::get ('/test/user-teacher', [TestingController::class,'userTeacher'])->name ('test.user-teacher');
 Route::get ('/test/user-student', [TestingController::class,'userStudent'])->name ('test.user-student');
+
+
+
+
+
+Route::get ('/test/permissions', [TestingController::class,'permissions'])->name ('test.permissions');

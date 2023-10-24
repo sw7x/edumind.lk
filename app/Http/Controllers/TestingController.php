@@ -63,7 +63,6 @@ use App\Models\Course as CourseModel;
 /*
 use App\Models\CourseSelection as CourseSelectionModel;
 use App\Models\Invoice as InvoiceModel;
-use App\Models\ContactUs as ContactUsModel;
 use App\Models\Coupon as CouponModel;
 use App\Models\AuthorSalary as AuthorSalaryModel;
 use App\Models\Commission as CommissionModel;
@@ -73,6 +72,15 @@ use App\Models\User;
 use App\Models\Enrollment as EnrollmentModel;
 use Illuminate\Support\Facades\DB;
 */
+
+use Sentinel;
+use Illuminate\Support\Facades\Gate;
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\ContactUsAbility;
+use App\Models\ContactUs as ContactUsModel;
+
+
+
 
 
 class TestingController extends Controller
@@ -922,6 +930,96 @@ class TestingController extends Controller
 
         dump(Str::uuid()->toString());
     }
+    
+    public function permissions(){
+
+        //dd(Gate::allows('is_admin_aaa'));
+
+        $user = Sentinel::getUser();
+        
+
+        dd(PermissionChecker::getGateResponse(ContactUsAbility::SUBMIT_FORM));
+
+
+
+
+        //PermissionChecker::authorizeGate(ContactUsAbility::SUBMIT_FORM);
+        //dd('~authorizeGate');
+
+
+        //dd(optional($user)->can('create', SubjectModel::class));
+        dd(Gate::allows(ContactUsAbility::SUBMIT_FORM));
+        //Gate::allows('gate-name', [$param1, $param2]);
+
+
+        dd(
+            $user->can(ContactUsAbility::SUBMIT_FORM, ContactUsModel::class)
+        );
+
+
+
+        Gate::authorize(ContactUsAbility::SUBMIT_FORM);
+        
+
+        dd('~');
+
+
+        dd(PermissionChecker::getResponse(
+            ContactUsAbility::SUBMIT_FORM, 
+            ContactUsModel::class
+        ));
+        
+        PermissionChecker::authorize(
+            ContactUsAbility::VIEW_PAGE, 
+            ContactUsModel::class
+        );
+
+        dd('~~~');
+
+        
+        
+
+
+
+
+
+        //dd(Gate::allows(ContactUsAbility::VIEW_PAGE, ContactUsModel::class));
+        dd(Gate::allows(ContactUsAbility::VIEW_ADMIN_PANEL_GUEST_MESSAGES, ContactUsModel::class));
+        //dd(Gate::allows('xxx', ContactUsModel::class));
+
+
+        //PermissionChecker::authorize('abcTest1');
+        //PermissionChecker::authorize('abcTest1', SubjectModel::class);
+        //PermissionChecker::authorize('abcTest2', SubjectModel::find(1));
+        //PermissionChecker::authorize('abcTest4', [SubjectModel::class, CourseModel::find(1)]);
+        PermissionChecker::authorize('abcTest3', [SubjectModel::find(1), CourseModel::find(1)]);
+        //PermissionChecker::authorize('abcTest3', ['ddd','hh']);
+        dd('__');
+
+
+        //$response = PermissionChecker::getResponse('abcTest1');
+        //$response = PermissionChecker::getResponse('abcTest1', SubjectModel::class);
+        //$response = PermissionChecker::getResponse('abcTest2', SubjectModel::find(1));
+        //$response = PermissionChecker::getResponse('abcTest4', [SubjectModel::class, CourseModel::find(1)]);
+        //$response = PermissionChecker::getResponse('abcTest3', [SubjectModel::find(1), CourseModel::find(1)]);
+        //$response = PermissionChecker::getResponse('abcTest3', ['ddd','hh']);
+        //dd($response);
+
+        //dump($response->result());
+        //dump($response->allowed());
+        //dump($response->message());
+        //dump($response->code());
+        //dump($response->redirectRoute());
+        //dd();
+
+
+        /*if(!$response->allowed())
+            return  redirect()
+                    ->route($response->redirectRoute())
+                    ->with(AlertDataUtil::error($response->message()));*/
+    }
+
+
 
 
     public function etc(){
@@ -955,6 +1053,11 @@ class TestingController extends Controller
         $html .= '<a href="'.route('test.user-marketer').'">Marketer user</a><br>';
         $html .= '<a href="'.route('test.user-teacher').'">Teacher user</a><br>';
         $html .= '<a href="'.route('test.user-student').'">Student user</a><br>';
+
+
+
+        $html .= '<br>';
+        $html .= '<a href="'.route('test.permissions').'">permission check user</a><br>';
 
         echo $html;
     }
