@@ -1,9 +1,10 @@
-<?php $page = ''; ?>
-@include('includes.header')
-<!--         <header  uk-sticky>
-            <div class="header_inner">
-                <div class="left-side"> -->
+@extends('layouts.master')
+@section('title','Error')
 
+
+
+
+@section('content')
     <div class="main-container container">
         <div class="max-w-5xl md:p-5 mx-auto">
             <div class="---lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
@@ -22,8 +23,7 @@
                             @else
                                 <h1 class="font-semibold mb-2 text-xl text-center">Your user role is not valid for this platform. Please log out and log in with a valid user role.</h1>
                             @endif
-                            
-                            
+                                                        
                             <div class="flex mt-5 justify-center">
                                 @if(Sentinel::check())
                                     <div class="mr-5">
@@ -43,6 +43,7 @@
                                     <a href="{{route('home')}}" title="" class="btn bg-green-500 hover:bg-green-600 font-semibold p-2.5 hover:text-white rounded-md text-center text-white w-full">Go to Home</a>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -50,5 +51,4 @@
             </div>
         </div>
     </div>
-
-@include('includes.footer')
+@stop

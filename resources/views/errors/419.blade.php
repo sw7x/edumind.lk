@@ -1,9 +1,10 @@
-<?php $page = ''; ?>
-@include('includes.header')
-<!--         <header  uk-sticky>
-            <div class="header_inner">
-                <div class="left-side"> -->
+@extends('layouts.master')
+@section('title','419 Page expired')
 
+
+
+
+@section('content')
     <div class="main-container container">
         <div class="max-w-5xl md:p-5 mx-auto">
             <div class="---lg:flex lg:space-x-10 bg-white rounded-md shadow max-w-3x  mx-auto md:p-8 p-3">
@@ -13,10 +14,7 @@
                         <h2 class="font-semibold mb-3 text-xl lg:text-3xl">419 Page expired</h2>
                         <hr class="mb-5">
                         <!-- <h4 class="font-semibold mb-2 text-base"> 403 page </h4> -->
-
-                        
-                            
-                        
+                                                    
                         <div class="content centered">
                          	<img class="align-center m-auto" style="width:500px;" src="{{asset('images/errors/page-expired.png')}}">
                             
@@ -42,13 +40,10 @@
                             </div>
                         </div>
 
-
-
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
-
-@include('includes.footer')
+@stop
