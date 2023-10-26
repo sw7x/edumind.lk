@@ -4,8 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate as GateFacade;
-
-
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use App\Models\User as UserModel;
@@ -30,23 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         //'Sentinel'            => 'App\Policies\UserPolicy',
         'App\Models\Subject'    => 'App\Permissions\Policies\SubjectPolicy',
     ];
-
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
     
-    public function boot()
-    {
-        $this->registerPolicies();
-
-        //
-    } 
-    */
-
-
-
-
     /**
      * Register any application authentication / authorization services.
      *
@@ -55,13 +37,16 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(GateContract $gate)
     {
-        $this->registerPolicies($gate);
-        
-        /*GateFacade::define('is-admin', function(UserModel $user) {
-            return $user->isAdmin();
-        });*/
+        $this->registerPolicies();
+        //$this->registerPolicies($gate);
 
-        //require base_path('app/Permissions/admin-gates.php');
+        $this->registerGates();
+        
+        /*
+        GateFacade::define('is-admin', function(UserModel $user) {
+            return $user->isAdmin();
+        });
+        */   
     }
 
     /**
@@ -80,34 +65,24 @@ class AuthServiceProvider extends ServiceProvider
         //dd($this->app['sentinel']);
 
         $this->app->singleton(GateContract::class, function ($app) {
-
             //dd($this->app['sentinel']);
-
-
             return new Gate($app, function () use ($app) {
                 return $this->app['sentinel']->getUser();
             });
-        });
-
-        
-
-
+        });        
 
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+    public function registerGates()
+    {
+        $gatesFolder = base_path('app/Permissions/Gates');
+        
+        require_once $gatesFolder .'/contact-us-gates.php';
+        require_once $gatesFolder .'/auth-gates.php';
+        require_once $gatesFolder .'/cart-gates.php';        
+        require_once $gatesFolder .'/admin-gates.php';
+    }
 
 }

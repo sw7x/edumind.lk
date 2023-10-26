@@ -7,12 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Sentinel;
 
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\AuthAbilities;
+
 
 class ChangeAdminPasswordController extends Controller
 {
 
     public function changePassword(Request $request) {
+        
         try{
+            $response = PermissionChecker::getGateResponse(AuthAbilities::CHANGE_PASSWORD);
+            if (!$response->allowed())
+                throw new CustomException($response->message() ?? 'Permission denied');
 
             $oldPassword    = $request->old_password;
             $password       = $request->password;

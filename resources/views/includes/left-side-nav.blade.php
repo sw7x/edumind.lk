@@ -1,5 +1,7 @@
 @php    
     use App\Permissions\Abilities\ContactUsAbilities;
+    use App\Permissions\Abilities\AuthAbilities;
+    use App\Permissions\Abilities\AdminPanelAbilities;
 @endphp         
                 <div class="left-side">
 
@@ -98,16 +100,28 @@
                                     </ul>
                                 </li>
 
-                                @if(!Sentinel::check())
+                                @canany([
+                                    AuthAbilities::STUDENT_REGISTER,
+                                    AuthAbilities::TEACHER_REGISTER
+                                ])                                
                                     <li class="uk-parent">
                                         <a href="#">Register</a>
                                         <ul class="uk-nav-sub uk-nav-parent-icon" uk-nav>
-                                            <li><a href="{{route('auth.register')}}">Register as Student</a></li><li><hr></li>
-                                            <li><a href="{{route('auth.teacher-register')}}">Register as Teacher</a></li>
+                                            @can(AuthAbilities::STUDENT_REGISTER)
+                                                <li><a href="{{route('auth.register')}}">Register as Student</a></li><li><hr></li>
+                                            @endcan
+
+                                            @can(AuthAbilities::TEACHER_REGISTER)
+                                                <li><a href="{{route('auth.teacher-register')}}">Register as Teacher</a></li>
+                                            @endcan
+
                                         </ul>
                                     </li>
-                                @endif
-
+                                @endcan
+                                
+                                @can(AdminPanelAbilities::ACCESS)
+                                    <li><a href="{{route('admin.dashboard')}}">Admin panel</a></li>
+                                @endcan   
                             </ul>
                         </div>
                     </div>
@@ -225,38 +239,43 @@
                                 </div>
                             </li>
 
-                            @if(!Sentinel::check())
+                            @canany([
+                                AuthAbilities::STUDENT_REGISTER,
+                                AuthAbilities::TEACHER_REGISTER
+                            ])                            
                                 <li>
                                     <a href="#">Register</a>
                                     <div uk-drop="mode: hover;animation:uk-animation-slide-top-medium" class="xdropdown">
                                         <ul>
+                                            @can(AuthAbilities::STUDENT_REGISTER)
                                             <li><a href="{{route('auth.register')}}">Register as Student</a></li>
+                                            @endcan
+                                            
+                                            @can(AuthAbilities::TEACHER_REGISTER)
                                             <li><a href="{{route('auth.teacher-register')}}">Register as Teacher</a></li>
+                                            @endcan
                                         </ul>
                                     </div>
                                 </li>
-                            @endif
+                            @endcanany
 
-                            @if(Sentinel::check())
-                                @if(Sentinel::getUser()->isUserCanAccessAdminPanel())
-                                    <li><a href="{{route('admin.dashboard')}}">Admin panel</a></li>
-                                @endif
-                            @endif
+                            @can(AdminPanelAbilities::ACCESS)
+                                <li><a href="{{route('admin.dashboard')}}">Admin panel</a></li>
+                            @endcan    
+                                                        
+                            {{--
+                                @can('is_admin')
+                                <li>eeeeeeeeeeeee</li>
+                                @endcan
+                                 
+                                @can('viewAny','App\Models\ContactUs')                            
+                                <li>ffff</li>
+                                @endcan
 
-                            
-                        {{--
-                            @can('is_admin')
-                            <li>eeeeeeeeeeeee</li>
-                            @endcan
-                             
-                            @can('viewAny','App\Models\ContactUs')                            
-                            <li>ffff</li>
-                            @endcan
-
-                            @can('viewAny',App\Models\ContactUs::class)                            
-                            <li>gggg</li>
-                            @endcan 
-                        --}}
+                                @can('viewAny',App\Models\ContactUs::class)                            
+                                <li>gggg</li>
+                                @endcan 
+                            --}}
 
                         </ul>
                     </nav>

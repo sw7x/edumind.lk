@@ -19,6 +19,9 @@ use App\Http\Requests\StudentRegisterRequest;
 use App\Http\Requests\TeacherRegisterRequest;
 use App\Services\AuthService;
 
+use App\Permissions\Abilities\AuthAbilities;
+use App\Permissions\PermissionChecker;
+
 
 class RegistrationController extends Controller
 {
@@ -29,11 +32,13 @@ class RegistrationController extends Controller
     }
 
     public function register(){
-       return view ('auth.form-register');
+        PermissionChecker::authorizeGate(AuthAbilities::STUDENT_REGISTER);
+        return view ('auth.form-register');
     }
 
     public function postRegister(StudentRegisterRequest $request){
-
+        PermissionChecker::authorizeGate(AuthAbilities::STUDENT_REGISTER);
+        
         try {
 
             $formErrors = optional(Session::get('errors'))->studentReg;
@@ -84,11 +89,13 @@ class RegistrationController extends Controller
 
 
     public function teacherRegister(Request $request){
+        PermissionChecker::authorizeGate(AuthAbilities::TEACHER_REGISTER);
         return view ('auth.form-teacher-register');
     }
 
 
     public function postTeacherRegister(TeacherRegisterRequest $request){
+        PermissionChecker::authorizeGate(AuthAbilities::TEACHER_REGISTER);
 
         try {
 

@@ -11,6 +11,11 @@
 </style>
 @stop
 
+@php
+    use App\Permissions\Abilities\AuthAbilities;
+@endphp
+
+
 @section('content')
     <div class="main-container container">
         <div class="__lg:p-12 max-w-xl lg:my-0 my-12 mx-auto __p-6 space-y-">
@@ -104,9 +109,10 @@
                 </div>
 
                 {{csrf_field ()}}
-
-                <div class="font-semibold text-center text-sm">So you can’t get in to your account? Did you <a class="text-blue-600" href="{{route('auth.reset-password-req-page')}}">forget your password</a></div>
-
+                
+                @can(AuthAbilities::RESET_PASSWORD_REQUEST)
+                    <div class="font-semibold text-center text-sm">So you can’t get in to your account? Did you <a class="text-blue-600" href="{{route('auth.reset-password-req-page')}}">forget your password</a></div>
+                @endcan
             </form>
 
         </div>

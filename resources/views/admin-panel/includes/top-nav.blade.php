@@ -1,4 +1,9 @@
-		<div class="row border-bottom">
+@php
+    use App\Permissions\Abilities\AuthAbilities;
+    use App\Models\Role as RoleModel;
+@endphp
+        
+        <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
@@ -12,10 +17,10 @@
                     --> 
                 </div>
                 
-                @if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != App\Models\Role::STUDENT))
+                @if(Sentinel::check())
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
-                        <span class="m-r-sm text-muted welcome-message">Welcome {{Sentinel::getUser()->username}}</span>
+                        <span class="m-r-sm text-muted welcome-message">Welcome {{optional($currentUser)->username}}</span>
                     </li>
                     <li class="dropdown">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -119,17 +124,21 @@
                         <i class="fa fa-unlock" ></i>Change Password</a>
                     </li>
                     --}}
-
+                    @can(AuthAbilities::CHANGE_PASSWORD)
                     <li>
                         <a href="{{route('auth.change-password')}}" class="mb-control">
                         <i class="fa fa-unlock" ></i>Change Password</a>
                     </li>
+                    @endcan
+                    
+                    @can(AuthAbilities::LOGOUT)
+                        <li>
+                            <a href="#" class="mb-control" id="signoutlink">
+                                <i class="fa fa-sign-out"></i>Log out
+                            </a>
+                        </li>
+                    @endcan
 
-                    <li>
-                        <a href="#" class="mb-control" id="signoutlink">
-                            <i class="fa fa-sign-out"></i>Log out
-                        </a>
-                    </li>
                 </ul>
                 @endif
 

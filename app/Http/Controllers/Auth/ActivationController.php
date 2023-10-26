@@ -9,13 +9,18 @@ use App\Common\Utils\AlertDataUtil;
 //use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
 
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\AuthAbilities;
 
 class ActivationController extends Controller
 {
     public function __construct(){   
+        
     }
 
     public function activate(string $encryptedEmail, string $activationCode){        
+        PermissionChecker::authorizeGate(AuthAbilities::ACTIVATE);
+
         try {
             
             $email = Crypt::decrypt($encryptedEmail);

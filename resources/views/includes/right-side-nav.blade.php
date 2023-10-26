@@ -1,12 +1,15 @@
+@php
+    use App\Permissions\Abilities\CartAbilities;
+    use App\Permissions\Abilities\AuthAbilities;
+    use App\Permissions\Abilities\AdminPanelAbilities;
+    use App\Models\Role as RoleModel;
+@endphp
                 <div class="right-side">
-
 
                     <a href="{{route('courses.search')}}" class="-mr-2 text-2xl header_widgets text-blue-700" title="search">
                         <i class="icon-feather-search font-semibold" aria-hidden="true"></i>
                     </a>
                     
-
-
                     <!--
                     <a href="" title="search" class="text-2xl icon-feather-search"></a>
 
@@ -16,20 +19,21 @@
                     -->
 
 
-                    <!-- <div class="nav-search">
+                    <!-- 
+                    <div class="nav-search">
                         <form class="searchbox">
                             <input type="search" placeholder="Search......" name="search" class="searchbox-input" onkeyup="buttonUp();" required>
                             <input type="submit" class="searchbox-submit" value="">
                             <span class="searchbox-icon"><i class="fa fa-search" aria-hidden="true"></i></span>
                         </form>
-                    </div> -->
+                    </div>
+                     -->
 
 
-            
                     @if(Sentinel::check())
 
                         <!-- cart -->
-                        @if(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
+                        @can(CartAbilities::VIEW_CART)                            
                             <a href="#" class="header_widgets">
                                 <ion-icon name="cart-outline" class="is-icon"></ion-icon>
                                 <span>{{$cartCourseCount}}</span>
@@ -111,7 +115,7 @@
                                     <!-- <h2> Total :  <strong> $ 320</strong> </h2> -->
                                 </div>                          
                             </div>                      
-                        @endif
+                        @endcan
 
 
                         <!-- profile -->
@@ -124,29 +128,36 @@
                                 <li>
                                     <a href="#" class="user">
                                         <div class="user_avatar">
-                                            @if(Sentinel::getUser()->profile_pic)
-                                                <img src="{{Sentinel::getUser()->profile_pic}}" class="" alt="">
+                                            @if($currentUser->profile_pic)
+                                                <img src="{{$currentUser->profile_pic}}" class="" alt="">
+                                            
                                             @else
-                                                @if( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
+                                                @if( $currentUserRole == RoleModel::STUDENT)
                                                     <img src="{{asset('images/default-images/student.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::TEACHER)
+                                                
+                                                @elseif( $currentUserRole == RoleModel::TEACHER)
                                                     <img src="{{asset('images/default-images/teacher.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::MARKETER)
+                                                
+                                                @elseif( $currentUserRole == RoleModel::MARKETER)
                                                     <img src="{{asset('images/default-images/marketer.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::EDITOR)
+                                                
+                                                @elseif( $currentUserRole == RoleModel::EDITOR)
                                                     <img src="{{asset('images/default-images/editor.png')}}" class="" alt="">
-                                                @elseif( optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::ADMIN)
+                                                
+                                                @elseif( $currentUserRole == RoleModel::ADMIN)
                                                     <img src="{{asset('images/default-images/admin.png')}}" class="" alt="">
+                                                
                                                 @else
                                                     <img src="{{asset('images/default-images/user.png')}}" class="" alt="">
+                                                
                                                 @endif
                                             @endif
                                             {{--<img src="{{asset('images/avatars/avatar-2.jpg')}}" alt="">--}}
                                         </div>
                                         <div class="user_name">
-                                            <div>{{Sentinel::getUser()->full_name}}</div>
-                                            <span class="text-base">{{Sentinel::getUser()->username}}</span>
-                                            <span class="text-base">({{optional(Sentinel::getUser()->roles()->first())->slug}})</span>
+                                            <div>{{$currentUser->full_name}}</div>
+                                            <span class="text-base">{{$currentUser->username}}</span>
+                                            <span class="text-base">({{$currentUserRole}})</span>
                                         </div>
                                     </a>
                                 </li>
@@ -155,7 +166,7 @@
                                 </li>
 
 
-                                @if(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::STUDENT)
+                                @if($currentUserRole == RoleModel::STUDENT)
                                     <li>
                                         <a href="{{route('enrolled-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>Enrolled Courses</span></a>
                                     </li>
@@ -177,11 +188,13 @@
                                         <a href="{{route('help')}}"><ion-icon name="help-circle" class="is-icon"></ion-icon> <span>Help</span></a>
                                     </li>
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::TEACHER)
-                                    <li>
-                                        <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></a>
-                                    </li><li><hr></li>
-                                    {{-- todo-undo--}}
+                                @elseif($currentUserRole == RoleModel::TEACHER)
+                                    @can(AdminPanelAbilities::ACCESS)
+                                        <li>
+                                            <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></a>
+                                        </li><li><hr></li>
+                                    @endcan
+                                    
                                     <li>
                                         <a href="{{route('admin.my-courses')}}"><ion-icon name="documents" class="is-icon"></ion-icon> <span>My Courses</span></a>
                                     </li>
@@ -203,32 +216,41 @@
                                         <a href="{{route('admin.my-earnings')}}"><ion-icon name="cash" class="is-icon"></ion-icon> <span>My Earnings</span></a>
                                     </li>
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::MARKETER)
+                                @elseif($currentUserRole == RoleModel::MARKETER)
                                     {{--todo create routes for marketer dashboard, and other pages--}}
-                                    <li>
-                                        <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
-                                    </li><li><hr></li>                                    
+                                    @can(AdminPanelAbilities::ACCESS)
+                                        <li>
+                                            <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
+                                        </li><li><hr></li> 
+                                    @endcan 
+
                                     <li>
                                         <a href="{{route('admin.profile')}}">
                                             <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
                                         </a>
                                     </li>
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::EDITOR)
+                                @elseif($currentUserRole == RoleModel::EDITOR)
                                     {{--todo create route for editor dashboard, and other pages--}}
-                                    <li>
-                                        <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
-                                    </li><li><hr></li>
+                                    @can(AdminPanelAbilities::ACCESS)
+                                        <li>
+                                            <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
+                                        </li><li><hr></li>
+                                    @endcan
+
                                     <li>
                                         <a href="{{route('admin.profile')}}">
                                             <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
                                         </a>
                                     </li>
 
-                                @elseif(optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::ADMIN)
-                                    <li>
-                                        <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
-                                    </li><li><hr></li>
+                                @elseif($currentUserRole == RoleModel::ADMIN)
+                                    @can(AdminPanelAbilities::ACCESS)
+                                        <li>
+                                            <a href="{{route('admin.dashboard')}}" class="is-link"><ion-icon name="reader" class="is-icon"></ion-icon> <span class="font-semibold">Admin Panel <small>(Dashboard)</small></span></span></a>
+                                        </li><li><hr></li>
+                                    @endcan
+
                                     <li>
                                         <a href="{{route('profile')}}">
                                             <ion-icon name="person-circle" class="is-icon"></ion-icon> <span>My profile</span>
@@ -239,10 +261,13 @@
 
                                 @endif
                                 <li><hr></li>
-                                <li>
-                                    <a href="{{route('auth.change-password')}}"><ion-icon name="lock-open" class="is-icon"></ion-icon> <span>Change Password</span></a>
-                                </li>
-                                <li><hr></li>
+                                
+                                @can(AuthAbilities::CHANGE_PASSWORD)
+                                    <li>
+                                        <a href="{{route('auth.change-password')}}"><ion-icon name="lock-open" class="is-icon"></ion-icon> <span>Change Password</span></a>
+                                    </li>
+                                    <li><hr></li>
+                                @endcan
 
                                 {{--
                                 <li>
@@ -256,6 +281,7 @@
                                 </li>
                                 --}}
 
+                                @can(AuthAbilities::LOGOUT)    
                                 <li>
                                     <form action="{{route('auth.logout')}}" method="post" class='logout-form'>
                                         {{csrf_field ()}}
@@ -265,20 +291,22 @@
                                         </a>
                                     </form>
                                 </li>
+                                @endcan
+
                             </ul>
                         </div>
                     @endif
 
 
-                    @if(Sentinel::check())
+                    @can(AuthAbilities::LOGIN)
+                        <a href="{{route('auth.login')}}" class="text-blue-400 font-semibold ml-3">Login</a>
+                    @else
                         <form action="{{route('auth.logout')}}" method="post" class='logout-form'>
                             {{csrf_field ()}}
                             <a href="" class="text-blue-400 font-semibold ml-3">Log Out</a>
                         </form>
-                    @else
-                        <a href="{{route('auth.login')}}" class="text-blue-400 font-semibold ml-3">Login</a>
-                    @endif
-
+                    @endcan
+        
                     <button class="toggle-btn-div">
                         <div class="one"></div>
                         <div class="two"></div>

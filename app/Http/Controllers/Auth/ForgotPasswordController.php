@@ -13,24 +13,32 @@ use Sentinel;
 use App\Common\Utils\AlertDataUtil;
 use App\Services\AuthService;
 
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\AuthAbilities;
 
-//todo cant reset password editor,marketers,admin
+
 class ForgotPasswordController extends Controller
 {
     private AuthService $authService;
 
     public function __construct(AuthService $authService){
-        $this->authService = $authService;
+        $this->authService = $authService;        
+    }
+
     public function resetPasswordReq(){
+        PermissionChecker::authorizeGate(AuthAbilities::RESET_PASSWORD_REQUEST);
+        /*        
         if(Sentinel::check())
             return redirect(route('home'))
                 ->with(AlertDataUtil::warning('Logout first, then request reset password !'));
+        */
 
         return view ('auth.form-forget-password-request');
     }
 
 
     public function resetPasswordReqSubmit(Request $request){
+        PermissionChecker::authorizeGate(AuthAbilities::RESET_PASSWORD_REQUEST);
 
         try {
 
@@ -92,6 +100,8 @@ class ForgotPasswordController extends Controller
 
 
     public function resetConfirm($encryptedEmail, $resetCode){
+        PermissionChecker::authorizeGate(AuthAbilities::RESET_PASSWORD_CONFIRM);
+
         try{
 
             if(Sentinel::check())
@@ -142,6 +152,8 @@ class ForgotPasswordController extends Controller
 
 
     public function resetConfirmSubmit(Request $request, $encryptedEmail, $resetCode){
+        PermissionChecker::authorizeGate(AuthAbilities::RESET_PASSWORD_CONFIRM);
+
         try{
 
             if(Sentinel::check())

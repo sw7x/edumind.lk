@@ -8,21 +8,27 @@ use Illuminate\Support\Facades\Validator;
 use Sentinel;
 use App\Common\Utils\AlertDataUtil;
 
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\AuthAbilities;
+
 
 class ChangePasswordController extends Controller
 {
 
     public function __construct(){
+
     }
 
 
     public function changePassword(Request $request) {
-        //todo - need login
+        PermissionChecker::authorizeGate(AuthAbilities::CHANGE_PASSWORD);
         return view ('auth.form-change-password');
     }
 
 
     public function postChangePassword(Request $request) {
+        PermissionChecker::authorizeGate(AuthAbilities::CHANGE_PASSWORD);
+
         try{
 
             $validator = Validator::make($request->all(), [
