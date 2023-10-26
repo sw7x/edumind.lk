@@ -37,12 +37,12 @@ class UserSharedService
     }  
     
     
-    public function hasRole(UserModel $userRec, string $role) : bool {
+    public function hasRole(?UserModel $userRec, string $role) : bool {
         $userRole   = $this->getRoleByUser($userRec);
         return ($userRole === $role);
     }
 
-    public function hasAnyRole(UserModel $userRec, array $roleArr) : bool {
+    public function hasAnyRole(?UserModel $userRec, array $roleArr) : bool {
         $userRole   = $this->getRoleByUser($userRec);
         return in_array($userRole, $roleArr);
     }
