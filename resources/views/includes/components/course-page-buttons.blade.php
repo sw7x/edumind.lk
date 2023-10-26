@@ -1,12 +1,7 @@
-
 <?php  
-    //dump(Sentinel::check());
-   // dump(Sentinel::getUser()->roles()->first()->slug);
-   // dump($data_arr);
-   // dump($data_arr['price']);
-   // dump($enroll_status);
-   
-    //dd();
+    use App\Models\Role as RoleModel;
+    use App\Data\RoleEnum;
+    use App\Permissions\Abilities\CartAbilities;
 ?>
 
 
@@ -14,22 +9,30 @@
 {{-- [page - {{$page}}] --}}
 
 @if(Sentinel::check())
-    @if(Sentinel::getUser()->roles()->first()->slug == App\Models\Role::STUDENT)
+    @if($currentUserRole == RoleEnum::STUDENT)
 
         @if($data_arr['price'] != 0)                                 
             @if ($enroll_status == 'FRESH')
-                <form action="{{route('course.addToCart')}}" method="post" class='course-enroll-form'>
-                    {{csrf_field ()}}
-                    <div class="mt-4">
-                        <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
-                    </div>
-                    <input name="courseId" type="hidden" value="{{$data_arr['id']}}">
-                </form>
+                
+                @can(CartAbilities::ADD_TO_CART)
+                    <form action="{{route('course.addToCart')}}" method="post" class='course-enroll-form'>
+                        {{csrf_field ()}}
+                        <div class="mt-4">
+                            <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
+                        </div>
+                        <input name="courseId" type="hidden" value="{{$data_arr['id']}}">
+                    </form>
+                @endcan
+
             @elseif ($enroll_status =='ADDED_TO_CART')                                    
-                <div class="mt-4">
-                    <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white"
-                            onclick='window.location=`{{ route("view-cart")}}`'>View Cart</button>
-                </div>                                       
+                
+                @can(CartAbilities::VIEW_CART)
+                    <div class="mt-4">
+                        <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white"
+                                onclick='window.location=`{{ route("view-cart")}}`'>View Cart</button>
+                    </div>  
+                @endcan
+
             @else                                       
             @endif
         @else
@@ -65,12 +68,16 @@
     @endif
 @else
     @if($data_arr['price'] != 0)                               
-        <form action="{{route('courses.guest-enroll')}}" method="get" class='course-enroll-form'>
-            {{csrf_field ()}}
-            <div class="mt-4">
-                <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
-            </div>
-        </form>
+        
+        @can(CartAbilities::ADD_TO_CART)
+            <form action="{{route('courses.guest-enroll')}}" method="get" class='course-enroll-form'>
+                {{csrf_field ()}}
+                <div class="mt-4">
+                    <button type="submit" class="w-full h-9 px-6 rounded-md bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Add to Cart</button>
+                </div>
+            </form>
+        @endcan
+
     @else                                
         <form action="{{route('courses.guest-enroll')}}" method="get" class='course-enroll-form'>
             {{csrf_field ()}}
