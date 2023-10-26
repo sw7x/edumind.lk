@@ -6,6 +6,7 @@ use App\Models\ContactUs as ContactUsModel;
 use App\Models\User as UserModel;
 use Sentinel;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class ContactUsPolicy
 {
@@ -19,7 +20,7 @@ class ContactUsPolicy
      */
     public function viewAny(UserModel $user)
     {
-        return $user->isAdmin();
+        return optional($user)->isAdmin();
     }
 
     /**
@@ -30,21 +31,7 @@ class ContactUsPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(UserModel $user, ContactUsModel $contactUs)
-    {
-        
-        //dd($user);
-        //dump($user->isAdmin());
-        //$userRole = $user->roles()->first()->slug;
-        //dump($userRole);
-
-
-        //dump($contactUs);
-        //dump($user);
-        //dd('view');
-        //die('ssssssssssssssssss');
-
-        //dd('666666666');
-        //return true;
+    {        
         //return false;
     }
 
@@ -55,9 +42,13 @@ class ContactUsPolicy
      * @param  \App\Models\User as UserModel  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(UserModel $user)
+    public function create(?UserModel $user)
     {
-        return !$user->isAdmin();
+        // Guest user
+        if (is_null($user))
+            return true;
+        
+        return !optional($user)->isAdmin();
 
     }
 
@@ -80,8 +71,16 @@ class ContactUsPolicy
      * @param  \App\Models\ContactUs as ContactUsModel  $contactUs
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(UserModel $user, ContactUsModel $contactUs)
-    {
+    //public function delete(UserModel $user, ContactUsModel $contactUs)
+    public function delete(UserModel $user)
+    {        
+        /*
+        $response = $user->isAdmin() ? Response::allow('sss') : Response::deny('111 You do not own this post.');
+        return $response;
+        
+        $response = $user->isAdmin() ? $this->allow() : $this->deny('Sorry, your level is not high enough to do that!');
+        return $response;
+        */
         return $user->isAdmin();
     }
 

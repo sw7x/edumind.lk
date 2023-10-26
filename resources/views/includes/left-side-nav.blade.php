@@ -1,3 +1,6 @@
+@php    
+    use App\Permissions\Abilities\ContactUsAbilities;
+@endphp         
                 <div class="left-side">
 
                     <!-- Logo -->
@@ -36,7 +39,9 @@
 
                                 <li><a href="{{route('instructions')}}">Teach on Udemy</a></li>
 
-                                <li><a href="{{route('contact-us.view')}}">Contact</a></li>
+                                @can(ContactUsAbilities::SUBMIT_FORM)
+                                    <li><a href="{{route('contact-us.view')}}">Contact</a></li>
+                                @endcan 
 
                                 <li class="uk-parent">
                                     <a href="#">Pages</a>
@@ -132,10 +137,10 @@
 
                             <li><a href="{{route('instructions')}}">Teach on Udemy</a></li>
                             
-                            @unless(Sentinel::check() && optional(Sentinel::getUser()->roles()->first())->slug == App\Models\Role::ADMIN)
-                                <li><a href="{{ route('contact-us.view') }}">Contact</a></li>
-                            @endunless
-                            
+                            @can(ContactUsAbilities::SUBMIT_FORM)
+                                <li><a href="{{route('contact-us.view')}}">Contact</a></li>
+                            @endcan 
+                                                        
                             <li>
                                 <a href="#">Pages</a>
                                 <div uk-drop="mode:hover;animation:uk-animation-slide-top-medium" class="xdropdown">

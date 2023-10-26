@@ -1,4 +1,7 @@
-
+@php    
+    use App\Permissions\Abilities\ContactUsAbilities;
+    use App\Permissions\Abilities\CartAbilities;
+@endphp 
         <!-- Footer -->
         <footer class="footer-area footer--light">
             <div class="footer-big">
@@ -81,7 +84,10 @@
                                         <li><a href="{{route('home')}}">Home</a></li>
                                         <li><a href="{{route('subjects.index')}}">Subject List</a></li>
                                         <li><a href="{{route('courses.search')}}">Search</a></li>
+
+                                        @can(CartAbilities::VIEW_CART)
                                         <li> <a href="{{route('view-cart')}}">cart</a></li>
+                                        @endcan
                                     </ul>
                                 </div>
                                 <!-- end /.footer-menu -->
@@ -100,7 +106,10 @@
                                         <li><a href="{{route('terms-and-services')}}">ලබාගත හැකි ආදායම</a></li>
                                         <li><a href="{{route('why-choose-us')}}">ප්රතිලාභ</a></li>
                                         <li><a href="{{route('instructions')}}">Teach on Udemy</a></li>
-                                        <li><a href="{{route('contact-us.view')}}">Contact</a></li>
+                                        
+                                        @can(ContactUsAbilities::SUBMIT_FORM)
+                                            <li><a href="{{route('contact-us.view')}}">Contact</a></li>
+                                        @endcan                
                                     </ul>
                                 </div>
                                 <!-- end /.footer-menu -->

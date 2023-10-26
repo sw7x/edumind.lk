@@ -12,6 +12,9 @@ use App\Http\Requests\ContactUsFormRequest;
 use Illuminate\Support\Facades\Session;
 use App\Common\Utils\AlertDataUtil;
 
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\ContactUsAbilities;
+
 
 class ContactUsController extends Controller
 {
@@ -19,19 +22,21 @@ class ContactUsController extends Controller
     private ContactUsService $contactUsService;
 
     public function __construct(ContactUsService $contactUsService){
-        $this->contactUsService = $contactUsService;
+        $this->contactUsService = $contactUsService;        
     }
 
     public function viewContactUs(){
+        PermissionChecker::authorizeGate(ContactUsAbilities::VIEW_PAGE);       
+
         $user    = Sentinel::getUser();
         $userArr = (new UserSharedService)->getUserInfoArr($user);
         return view('contact')->with('userArr', $userArr);
     }
 
     public function submitContactForm(ContactUsFormRequest $request){
+        PermissionChecker::authorizeGate(ContactUsAbilities::SUBMIT_FORM);
 
         try{
-
             $formErrors = optional(Session::get('errors'))->contactUsForm;
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation is failed !');
@@ -46,13 +51,13 @@ class ContactUsController extends Controller
 
         }catch(CustomException $e){
             return back()
-                ->withErrors($formErrors)
+                ->withErrors($formErrors ?? null)
                 ->withInput()
                 ->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             return back()
-                ->withErrors($formErrors)
+                ->withErrors($formErrors ?? null)
                 ->withInput()
                 ->with(AlertDataUtil::error('Form submit failed',['message'=> $e->getMessage()]));
         }

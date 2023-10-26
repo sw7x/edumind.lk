@@ -1,3 +1,7 @@
+@php    
+    use App\Permissions\Abilities\ContactUsAbilities;
+@endphp
+
 @extends('admin-panel.layouts.master')
 @section('title','Guest feedback')
 
@@ -18,11 +22,11 @@
                     :message2="Session::get('message2') ?? ''"  
                     :canClose="true" />
             @endif
-            
+
             @if(isset($guestMessages) && isNotEmptyArray($guestMessages)) 
                 <div class="ibox">                
                     <div class="ibox-content relative forum-post-container" id="ibox-content">
-                        
+                                                
                         <div class="text-center p-2 absolute top-1 right-1">
                             <span> Change the orientation : </span>
                             <a href="#" class="min-size ml-3 btn btn-xs btn-info" id="change-view">Left</a>
@@ -57,16 +61,17 @@
                                             </span>
                                         @endif
 
-                                        <a href="#" data-id="{{$comment['id']}}" class="absolute top-0.5 right-1 rounded text-danger text-lg delete-feedback">
-                                            <i class="text-3xl fa fa-times-circle-o"></i>
-                                        </a>
-                                        <form class="comment-destroy" action="{{ route('admin.feedbacks.delete-comment', $comment['id']) }}" method="POST">
-                                            @method('DELETE')
-                                            <input name="commentId" type="hidden" value="{{$comment['id']}}">
-                                            <input name="userType" type="hidden" value="guest">
-                                            @csrf
-                                        </form>
-                                        
+                                        @can(ContactUsAbilities::DELETE_MESSAGES)
+                                            <a href="#" data-id="{{$comment['id']}}" class="absolute top-0.5 right-1 rounded text-danger text-lg delete-feedback">
+                                                <i class="text-3xl fa fa-times-circle-o"></i>
+                                            </a>
+                                            <form class="comment-destroy" action="{{ route('admin.feedbacks.delete-comment', $comment['id']) }}" method="POST">
+                                                @method('DELETE')
+                                                <input name="commentId" type="hidden" value="{{$comment['id']}}">
+                                                <input name="userType" type="hidden" value="guest">
+                                                @csrf
+                                            </form>
+                                        @endcan
                                     </div>
                                 </div>
                             @endforeach                        

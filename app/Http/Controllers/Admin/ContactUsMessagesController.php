@@ -9,6 +9,9 @@ use Illuminate\Auth\Access\AuthorizationException;
 use App\Services\Admin\ContactUsService as AdminContactUsService;
 use App\View\DataFormatters\Admin\ContactUsDataFormatter as AdminContactUsDataFormatter;
 use App\Common\Utils\AlertDataUtil;
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\ContactUsAbilities;
+
 
 
 class ContactUsMessagesController extends Controller
@@ -20,7 +23,7 @@ class ContactUsMessagesController extends Controller
     }
 
     public function viewStudentMessages(){
-        $this->authorize('viewAny',ContactUsModel::class);
+        PermissionChecker::authorize(ContactUsAbilities::VIEW_ADMIN_PANEL_STUDENT_MESSAGES);
 
         $studentCommentsDtoArr  = $this->adminContactUsService->loadStudentMessages();
         $studentCommentsArr     = AdminContactUsDataFormatter::prepareData($studentCommentsDtoArr);
@@ -31,7 +34,7 @@ class ContactUsMessagesController extends Controller
     }
 
     public function viewTeacherMessages(){
-        $this->authorize('viewAny',ContactUsModel::class);
+        PermissionChecker::authorize(ContactUsAbilities::VIEW_ADMIN_PANEL_TEACHER_MESSAGES);
 
         $teacherCommentsDtoArr  = $this->adminContactUsService->loadTeacherMessages();
         $teacherCommentsArr     = AdminContactUsDataFormatter::prepareData($teacherCommentsDtoArr);
@@ -42,7 +45,7 @@ class ContactUsMessagesController extends Controller
     }
 
     public function viewOtherUserMessages(){
-        $this->authorize('viewAny',ContactUsModel::class);
+        PermissionChecker::authorize(ContactUsAbilities::VIEW_ADMIN_PANEL_OTHER_USER_MESSAGES);
 
         $otherUserCommentsDtoArr  = $this->adminContactUsService->loadOtherUserMessages();
         $otherUserCommentsArr     = AdminContactUsDataFormatter::prepareData($otherUserCommentsDtoArr);
@@ -54,7 +57,7 @@ class ContactUsMessagesController extends Controller
     }
 
     public function viewGuestMessages(){
-        $this->authorize('viewAny',ContactUsModel::class);
+        PermissionChecker::authorize(ContactUsAbilities::VIEW_ADMIN_PANEL_GUEST_MESSAGES);
 
         $guestCommentsDtoArr  = $this->adminContactUsService->loadGuestMessages();
         $guestCommentsArr     = AdminContactUsDataFormatter::prepareData($guestCommentsDtoArr);
@@ -66,6 +69,7 @@ class ContactUsMessagesController extends Controller
     }
 
     public function deleteComment(Request $request, int $id){
+        PermissionChecker::authorize(ContactUsAbilities::DELETE_MESSAGES);
 
         try{
             $userType = isset($request->userType) ? $request->userType : null;

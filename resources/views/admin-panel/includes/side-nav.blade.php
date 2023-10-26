@@ -1,3 +1,7 @@
+@php    
+    use App\Permissions\Abilities\ContactUsAbilities;
+@endphp
+
     <nav class="sidebar navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
@@ -6,15 +10,14 @@
                 <li class="nav-header">
                     <div class="dropdown profile-element">
                         <img alt="image" class="_bg-white _rounded-circle" src="{{asset('admin/img/3logo.png')}}"/>                        
-                        @if(Sentinel::check() && (Sentinel::getUser()->roles()->first()->slug != App\Models\Role::STUDENT))
-                        <a class="dropdown-toggle" href="#">
-                            <span class="mt-1 text-white text-center text-lg __text-muted text-xs block">{{Sentinel::getUser()->username}}</span>
-                        </a>
-                        <div class="text-center">
-                            <small class="text-white">( {{Sentinel::getUser()->roles()->first()->slug}} )</small>
-                        </div>
-                        
-                        @endif                        
+                        @if(Sentinel::check())
+                            <a class="dropdown-toggle" href="#">
+                                <span class="mt-1 text-white text-center text-lg __text-muted text-xs block">{{optional($currentUser)->username}}</span>
+                            </a>
+                            <div class="text-center">
+                                <small class="text-white">( {{$currentUserRole}} )</small>
+                            </div>                        
+                        @endif                       
                     </div>
                     <div class="logo-element"><small>Edumind</small></div>
                 </li>
@@ -128,19 +131,36 @@
                     </ul>
                 </li>
 
-                
-                @can('viewAny',App\Models\ContactUs::class)
-                <li class="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'active current' : '' }}">
-                    <a href="#" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <i class="fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.feedbacks.guest') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.guest')}}">Guest - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedbacks.student') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.student')}}">Student - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedbacks.teacher') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.teacher')}}">Teacher - Messages</a></li>
-                        <li class="{{ Route::is('admin.feedbacks.other-user') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.other-user')}}">Other User Messages</a></li>
-                    </ul>
-                </li>
+                        
+
+                @canany([                   
+                    ContactUsAbilities::VIEW_ADMIN_PANEL_GUEST_MESSAGES,
+                    ContactUsAbilities::VIEW_ADMIN_PANEL_STUDENT_MESSAGES,
+                    ContactUsAbilities::VIEW_ADMIN_PANEL_TEACHER_MESSAGES,
+                    ContactUsAbilities::VIEW_ADMIN_PANEL_OTHER_USER_MESSAGES
+                ])
+                    <li class="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'active current' : '' }}">
+                        <a href="#" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                            <i class="fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
+                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_GUEST_MESSAGES)
+                                <li class="{{ Route::is('admin.feedbacks.guest') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.guest')}}">Guest - Messages</a></li>
+                            @endcan                        
+                            
+                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_STUDENT_MESSAGES)
+                                <li class="{{ Route::is('admin.feedbacks.student') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.student')}}">Student - Messages</a></li>
+                            @endcan
+                            
+                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_TEACHER_MESSAGES)
+                                <li class="{{ Route::is('admin.feedbacks.teacher') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.teacher')}}">Teacher - Messages</a></li>
+                            @endcan
+                            
+                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_OTHER_USER_MESSAGES)
+                                <li class="{{ Route::is('admin.feedbacks.other-user') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.other-user')}}">Other User Messages</a></li>
+                            @endcan
+                        </ul>
+                    </li>
                 @endcan
                 
                 <li class="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'active current' : '' }}">
