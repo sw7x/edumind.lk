@@ -42,7 +42,7 @@
 
 
 @php
-    //dd($cartCourses);
+    use App\Permissions\Abilities\CartAbilities;
 @endphp
 
 
@@ -184,15 +184,17 @@
                                                             <div class="">{{$course['revised_price']}}</div>
                                                         </td>
                                                         <td>                                                        
-                                                            <form action="{{route('remove-cart',$course['id'])}}" method="post" class='course-enroll-form'>
-                                                                {{csrf_field ()}}
-                                                                <div class="mt-4">
-                                                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full" style="width:40px; height: 40px">
-                                                                        <i class="align-middle text-2xl font-bold icon-feather-x leading-4"></i>
-                                                                    </button>
-                                                                </div>
-                                                                <input type="hidden" name="page" value="cart">
-                                                            </form>                                                        
+                                                            @can(CartAbilities::REMOVE_FROM_CART)
+                                                                <form action="{{route('remove-cart',$course['id'])}}" method="post" class='course-enroll-form'>
+                                                                    {{csrf_field ()}}
+                                                                    <div class="mt-4">
+                                                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full" style="width:40px; height: 40px">
+                                                                            <i class="align-middle text-2xl font-bold icon-feather-x leading-4"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <input type="hidden" name="page" value="cart">
+                                                                </form>
+                                                            @endcan                                                      
                                                         </td>
                                                     </tr>
                                                 @endforeach                                    
@@ -211,12 +213,14 @@
                                                 
                                                 <form action="{{route('apply-coupon')}}" method="post" id="apply-cc">
                                                     @csrf
-                                                    <div class="w-full flex justify-content-between">                                               
-                                                        <input type="text" placeholder="Coupon code" name="coupon_code"
-                                                            class="w-3/5 mr-1 shadow-none with-border coupon_code" maxlength="6">
-                                                        <button type="submit" class="w-2/5 bg-blue-500 hover:bg-blue-700 text-sm text-white font-bold px-3 py-1 rounded">Apply coupon</button>
-                                                    </div>
-                                                
+                                                    
+                                                    @can(CartAbilities::APPLY_COUPON)    
+                                                        <div class="w-full flex justify-content-between">                                               
+                                                            <input  type="text" placeholder="Coupon code" name="coupon_code"
+                                                                    class="w-3/5 mr-1 shadow-none with-border coupon_code" maxlength="6">
+                                                            <button type="submit" class="w-2/5 bg-blue-500 hover:bg-blue-700 text-sm text-white font-bold px-3 py-1 rounded">Apply coupon</button>
+                                                        </div>
+                                                    @endcan    
                                                 
                                                 
 
@@ -227,11 +231,13 @@
                                                             @foreach($cartDiscountedCourses as $discountedCourse)                                                                    
                                                                 <div class="flex items-center justify-between border rounded p-1 border-gray-500">
                                                                     <span class="inline-block px-5 py-2 font-semibold leading-none bg-gray-500 text-white rounded-sm mr-1 cc-code">{{$discountedCourse->used_coupon_code}}</span>
-                                                                    
-                                                                    <button class="text-gray-600 hover:text-gray-800 text-base pr-1 remove-cc" 
-                                                                            data-cc="{{$discountedCourse->used_coupon_code}}" data-course-selection-id="{{$discountedCourse->id}}">
-                                                                        <i class="fa fa-times"></i>                                                                            
-                                                                    </button>                                                                        
+                                                                    @can(CartAbilities::REMOVE_FROM_CART)
+                                                                        <button class="text-gray-600 hover:text-gray-800 text-base pr-1 remove-cc" 
+                                                                                data-cc="{{$discountedCourse->used_coupon_code}}" 
+                                                                                data-course-selection-id="{{$discountedCourse->id}}">
+                                                                            <i class="fa fa-times"></i>                                                                            
+                                                                        </button>
+                                                                    @endcan                                                                       
                                                                 </div>                                                                   
                                                             @endforeach
 
