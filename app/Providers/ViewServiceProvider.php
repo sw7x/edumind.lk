@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\View\Composers\TopSubjectsComposer;
 use App\View\Composers\CartComposer;
+use App\View\Composers\UserInfoComposer;
 
 
 use Illuminate\Support\Facades\View;
@@ -52,6 +53,13 @@ class ViewServiceProvider extends ServiceProvider
         view::composer (['includes.header','student.cart.cart-page'],CartComposer::class);
         //view::composer (['student.cart.cart-page'],CartComposer::class);
 
+        view::composer ([
+            'includes.right-side-nav',
+            'includes.left-side-nav',
+            'includes.components.course-page-buttons',
+            'admin-panel.includes.top-nav',
+            'admin-panel.includes.side-nav',
+        ],UserInfoComposer::class);
 
 
     }
