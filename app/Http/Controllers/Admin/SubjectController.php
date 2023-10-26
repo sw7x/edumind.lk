@@ -13,6 +13,9 @@ use App\Services\Admin\SubjectService as AdminSubjectService;
 use App\Common\Utils\AlertDataUtil;
 use App\View\DataFormatters\Admin\SubjectDataFormatter as AdminSubjectDataFormatter;
 
+use App\Permissions\PermissionChecker;
+use App\Permissions\Abilities\SubjectAbilities;
+       
 
 class SubjectController extends Controller
 {
@@ -24,24 +27,24 @@ class SubjectController extends Controller
     }
 
     public function index(){
-        //You dont have Permissions view all subjects !
-        $this->authorize('viewAny',SubjectModel::class);
-        $subjectsData = $this->adminSubjectService->loadAllDbRecs();
-
+        PermissionChecker::authorize(SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT_LIST);
+        
+        $subjectsData    = $this->adminSubjectService->loadAllDbRecs();
         $filteredDataArr = AdminSubjectDataFormatter::prepareSubjectDataList($subjectsData);
         return view ('admin-panel.subject-list')->withData($filteredDataArr);
     }
 
     public function create(){
-        //You dont have Permissions create new subject !
+        PermissionChecker::authorize(SubjectAbilities::CREATE);
+
         $this->authorize('create',SubjectModel::class);
         return view('admin-panel.subject-add');
     }
 
     public function store(Request $request){
+        PermissionChecker::authorize(SubjectAbilities::CREATE);
+        
         try{
-            //You dont have Permissions create new subject
-            $this->authorize('create',SubjectModel::class);
             
             if(!$request->get('name'))
                 throw new CustomException('Subject name cannot be empty');
@@ -59,6 +62,8 @@ class SubjectController extends Controller
     }
 
     public function show(int $id){
+        PermissionChecker::authorize(SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT);        
+
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
@@ -66,10 +71,7 @@ class SubjectController extends Controller
 
         if(is_null($subjectData['dbRec']))
             abort(404,'Subject does not exist!');
-
-        // You dont have Permissions to view the subject !
-        $this->authorize('view', $subjectData['dbRec']);
-
+        
         $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
         return view('admin-panel.subject-view')->with(['subject' => $subjectDataArr]);
     }
@@ -82,8 +84,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             abort(404,'Subject does not exist!');
 
-        //You dont have Permissions to update the subject !
-        //$this->authorize('update', $subjectData['dbRec']);
+        PermissionChecker::authorize(SubjectAbilities::EDIT, $subjectData['dbRec']);
 
         $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
         return view('admin-panel.subject-edit')->with(['subject' => $subjectDataArr]);
@@ -91,10 +92,9 @@ class SubjectController extends Controller
 
     public function update(Request $request, int $id){
         try{
-
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-
+        
             if(!$request->input('name'))
                 throw new CustomException('Subject name cannot be empty');
 
@@ -102,8 +102,7 @@ class SubjectController extends Controller
             if(is_null($subjectData['dbRec']))
                 abort(404,'Subject does not exist!');
 
-            //You dont have Permissions to update the subject !
-            $this->authorize('update', $subjectData['dbRec']);
+            PermissionChecker::authorize(SubjectAbilities::EDIT, $subjectData['dbRec']);
 
             $isUpdated = $this->adminSubjectService->updateDbRec($request, $subjectData['dbRec']);
             if (!$isUpdated)
@@ -119,7 +118,7 @@ class SubjectController extends Controller
 
     }
 
-    public function destroy(Request $request, int $id){
+    public function destroy(Request $request, int $id){        
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
@@ -127,8 +126,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             throw new CustomException('Subject does not exist!');
 
-        //You dont have Permissions to delete the subject !
-        $this->authorize('delete', $subjectData['dbRec']);
+        PermissionChecker::authorize(SubjectAbilities::DELETE, $subjectData['dbRec']);
 
         $isDelete = $this->adminSubjectService->deleteDbRec($subjectData['dbRec']);
         if (!$isDelete)

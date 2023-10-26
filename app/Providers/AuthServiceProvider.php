@@ -83,6 +83,7 @@ class AuthServiceProvider extends ServiceProvider
         require_once $gatesFolder .'/auth-gates.php';
         require_once $gatesFolder .'/cart-gates.php';        
         require_once $gatesFolder .'/admin-gates.php';
+        require_once $gatesFolder .'/subject-gates.php';
     }
 
 }

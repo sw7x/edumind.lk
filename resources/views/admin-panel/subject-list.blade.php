@@ -1,3 +1,7 @@
+@php
+    use App\Permissions\Abilities\SubjectAbilities;
+@endphp
+
 @extends('admin-panel.layouts.master')
 @section('title','Subject list')
 
@@ -69,18 +73,22 @@
                                                 <div class="btn-group">
                                                     <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                     
-                                                    @can('update',$item['dbRec'])
+                                                    @can(SubjectAbilities::EDIT, $item['dbRec'])
                                                     <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                     @endcan
                                                     
-                                                    @can('delete',$item['dbRec'])
+                                                    @can(SubjectAbilities::DELETE, $item['dbRec'])
                                                     <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a>
                                                     @endcan
                                                 </div>
-                                                <form class="subject-destroy" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
-                                                    @method('DELETE')
-                                                    @csrf
-                                                </form>
+                                                
+                                                @can(SubjectAbilities::DELETE, $item['dbRec'])
+                                                    <form class="subject-destroy" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
+                                                        @method('DELETE')
+                                                        @csrf
+                                                    </form>
+                                                @endcan
+
                                             </td>
 
                                         </tr>
@@ -229,7 +237,7 @@
                     }
                 }
                 */
-                @can('create',"App\Models\Subject")
+                @can(SubjectAbilities::CREATE)
 				{
 					text: 'Add subject',
 					action: function ( e, dt, node, config ) {

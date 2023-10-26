@@ -1,5 +1,6 @@
 @php    
     use App\Permissions\Abilities\ContactUsAbilities;
+    use App\Permissions\Abilities\SubjectAbilities;
 @endphp
 
     <nav class="sidebar navbar-default navbar-static-side" role="navigation">
@@ -27,17 +28,21 @@
                     <a href="{{route('admin.dashboard')}}"><i class="fa fa-desktop text-lg"></i> <span class="nav-label">Dashboard</span></a>
                 </li>
 
-                @canany(['viewAny', 'create'], App\Models\Subject::class)
+                
+                @canany([                   
+                    SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT_LIST,
+                    SubjectAbilities::CREATE,
+                ])
                 <li class="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="#" class="" aria-expanded="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-book"></i><span class="nav-label">Subject</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level" aria-expanded="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        @can('viewAny',App\Models\Subject::class)
+                        @can(SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT_LIST)
                             <li class="{{ Route::is('admin.subjects.index') ? 'current' : '' }}"><a href="{{route('admin.subjects.index')}}">Subject list</a></li>
                         @endcan                       
                         
-                        @can('create',App\Models\Subject::class)
+                        @can(SubjectAbilities::CREATE)
                             <li class="{{ Route::is('admin.subjects.create') ? 'current' : '' }}"><a href="{{route('admin.subjects.create')}}">Create subject</a></li>
                         @endcan
                         

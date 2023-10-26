@@ -10,7 +10,7 @@ use App\Permissions\PermissionCheckRedirectEnum;
 
 class PermissionResponseMessages {
 
-	private static function noAuthResponse(): PermissionResponse {
+	public static function noAuthResponse(): PermissionResponse {
 		return 	new PermissionResponse(
 			PermissionCheckResultEnum::NO_AUTH,
 			false,
@@ -20,7 +20,7 @@ class PermissionResponseMessages {
 		);
 	}
 
-	private static function invalidRoleResponse(): PermissionResponse {
+	public static function invalidRoleResponse(): PermissionResponse {
 		return 	new PermissionResponse(
 			PermissionCheckResultEnum::INVALID_ROLE, 
 			false, 
@@ -30,7 +30,7 @@ class PermissionResponseMessages {
 		);
 	}
 
-	private static function forbiddenResponse(?string $msg): PermissionResponse {
+	public static function forbiddenResponse(?string $msg): PermissionResponse {
 		return new PermissionResponse(
 			PermissionCheckResultEnum::FORBIDDEN, 
 			false, 
@@ -40,7 +40,7 @@ class PermissionResponseMessages {
 		);
 	}
 
-	private static function successResponse(): PermissionResponse {
+	public static function successResponse(): PermissionResponse {
 		return new PermissionResponse(
 			PermissionCheckResultEnum::SUCCESS, 
 			true, 

@@ -39,9 +39,7 @@ class SubjectPolicy
      */
     public function viewAny(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER]);
-        //return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]);
+        return true;
     }
 
     /**
@@ -53,9 +51,7 @@ class SubjectPolicy
      */
     public function view(UserModel $user, SubjectModel $subject)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER]);
-        //return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]);
+        return true;
     }
 
     /**
@@ -64,11 +60,10 @@ class SubjectPolicy
      * @param  \App\Models\User as UserModel  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(UserModel $user)
+    public function create(?UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER]);
-        //return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]);
+        $allowedRoles = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER];
+        return (new UserSharedService)->hasAnyRole($user, $allowedRoles);
     }
 
     /**
@@ -80,9 +75,14 @@ class SubjectPolicy
      */
     public function update(UserModel $user, SubjectModel $subject)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
-                ($userRole == RoleModel::TEACHER && $user->isSubjectCreator($subject));
+        $userSharedService  = new UserSharedService();
+
+        $hasAllowedRoles    = $userSharedService->hasAnyRole($user, [RoleModel::ADMIN, RoleModel::EDITOR]);
+        
+        $isSubjectCreator   = $userSharedService->hasRole($user, RoleModel::TEACHER) && $user->isSubjectCreator($subject);
+
+        return ($hasAllowedRoles || $isSubjectCreator);
+
     }
 
     /**
@@ -94,9 +94,14 @@ class SubjectPolicy
      */
     public function delete(UserModel $user, SubjectModel $subject)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
-                ($userRole == RoleModel::TEACHER && $user->isSubjectCreator($subject));
+        $userSharedService  = new UserSharedService();
+
+        $allowedRoles       = [RoleModel::ADMIN, RoleModel::EDITOR];
+        $hasAllowedRoles    = $userSharedService->hasAnyRole($user, $allowedRoles);
+
+        $isSubjectCreator   = $userSharedService->hasRole($user, RoleModel::TEACHER) && $user->isSubjectCreator($subject);
+
+        return ($hasAllowedRoles || $isSubjectCreator);
     }
 
     /**
@@ -124,11 +129,6 @@ class SubjectPolicy
     }
 
 
-    public function viewAllInSiteFrontend(UserModel $user)
-    {
-        return true;
-    }
-
     
     public function viewSingleInSiteFrontend(UserModel $user, SubjectModel $subject)
     {       
@@ -137,55 +137,12 @@ class SubjectPolicy
         // return $this->deny('Sorry, your level is not high enough to do that!');
         // return $this->allow('Sorry, your level is not high enough to do that!');
         return true;
-    }
-    
-    public function testSubject(?UserModel $user, string $hhh)
-    {
-        dump($hhh);
-        dd($user);
-        //return $this->deny('Sorry, your level is not high enough to do that!');
-        //abort(419, 'xx-Authentication is required To access this page');
 
-        
-        //dd($user);
-        if(is_null($user)) 
-            abort(401, 'Authentication is required To access this page');
-        
-        if(!(new UserSharedService)->isHaveValidRole($user))
-            //throw new InvalidUserTypeException('Your user role is not valid for access this page.');
-        
-        if(!(new UserSharedService)->hasAnyRole($user, [RoleModel::TEACHER, RoleModel::STUDENT]))
-            //abort(403);
-            
-        dump('dfdfdfdfd');
-        abort(401, 'Authentication is required To access this page');
-
-        
         //throw new AuthorizationException('You are not authorized to update this post.');
         //--throw new AuthenticationException('You are not authorized to update this post.');
         //throw new ModelNotFoundException('You are not authorized to update this post.');
         //throw new QueryException('You are not authorized to update this post.');
         //throw new TokenMismatchException('You are not authorized to update this post.');
-
-            //abort(401);
-        return true;
     }
     
-    public function testSubject2(UserModel $user, SubjectModel $subject)
-    //public function testSubject2(UserModel $user, SubjectModel $subject, string $hhh)
-    {
-        //dump($subject);
-        //dump($user);
-        //dd($hhh);
-        abort(401, 'Authentication is required To access this page');
-
-
-        return 0;
-    }
-
-    public function test(UserModel $user){
-        dd("ggggg");
-    }
-
-
 }
