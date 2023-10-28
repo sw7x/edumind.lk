@@ -9,7 +9,7 @@ use App\Models\Enrollment as EnrollmentModel;
 use App\Models\User as UserModel;
 use Illuminate\Database\Eloquent\Builder;
 
-use App\Casts\Percentage;
+use App\Eloquent\Casts\Percentage;
 use Ramsey\Uuid\Uuid;
 
 

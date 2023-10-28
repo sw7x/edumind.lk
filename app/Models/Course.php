@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-use App\Casts\Json;
+use App\Eloquent\Casts\Json;
 
 use Illuminate\Database\Eloquent\Builder;
 
