@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Scopes\CheckoutScope;
+use App\Models\Scopes\CheckoutScope;
 
 
 class Order extends Model
