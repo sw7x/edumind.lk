@@ -313,12 +313,4 @@ class Course extends Entity
         return $edumindAmount->isHigher($edumindLoseAmount);
     }
 
-
-
-    
-
-
 }
-
-
-

@@ -4,16 +4,14 @@ namespace App\Permissions\Abilities;
 
 class ContactUsAbilities{
 
-	const VIEW_PAGE   							 = 'view_page';
-	const SUBMIT_FORM 							 = 'submit_form';
+	const VIEW_PAGE   				= 'view_contact_page';
+	const SUBMIT_FORM 				= 'submit_contact_form';
 
-	const VIEW_ADMIN_PANEL_GUEST_MESSAGES 		 = 'view_admin_panel_guest_messages';
-	const VIEW_ADMIN_PANEL_STUDENT_MESSAGES 	 = 'view_admin_panel_student_messages';
-	const VIEW_ADMIN_PANEL_TEACHER_MESSAGES 	 = 'view_admin_panel_teacher_messages';
-	const VIEW_ADMIN_PANEL_OTHER_USER_MESSAGES 	 = 'view_admin_panel_other_user_messages';
+	const VIEW_GUEST_MESSAGES 		= 'admin_panel_view_guest_messages';
+	const VIEW_STUDENT_MESSAGES 	= 'admin_panel_view_student_messages';
+	const VIEW_TEACHER_MESSAGES	 	= 'admin_panel_view_teacher_messages';
+	const VIEW_OTHER_USER_MESSAGES 	= 'admin_panel_view_other_user_messages';
 
-	const DELETE_MESSAGES 	 					 = 'delete_messages';	
-
-	const TEST 	 					 			 = 'test';
+	const DELETE_CONTACT_MESSAGES 	= 'admin_panel_delete_contact_messages';	
 
 }

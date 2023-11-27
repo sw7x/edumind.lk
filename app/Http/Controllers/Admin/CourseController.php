@@ -21,9 +21,14 @@ use Illuminate\Support\Arr;
 use App\Common\SharedServices\CourseSharedService;
 use App\Common\Utils\AlertDataUtil;
 
+use App\Permissions\Abilities\CourseAbilities;
+use App\Permissions\Traits\PermissionCheck;
 
 class CourseController extends Controller
 {
+    
+    use PermissionCheck;
+
     private AdminCourseService  $adminCourseService;
     private AdminTeacherService $adminTeacherService;
     private AdminSubjectService $adminSubjectService;
@@ -40,19 +45,16 @@ class CourseController extends Controller
 
 
     public function index(){
-        //You dont have Permissions view all users
-        $this->authorize('viewAny',CourseModel::class);
+        $this->hasPermission(CourseAbilities::ADMIN_PANEL_VIEW_COURSE_LIST);
 
         $courses = $this->adminCourseService->loadAllCourses();
-
         $courseArr = AdminCourseDataFormatter::prepareCourseListData($courses);
         return view('admin-panel.course-list')->withData($courseArr);
     }
 
 
     public function create(){
-        // You dont have Permissions to create courses
-        $this->authorize('create',CourseModel::class);
+        $this->hasPermission(CourseAbilities::CREATE_COURSES);
 
         $teachersData = $this->adminTeacherService->loadAllAvailableTeachers();
         $subjectsData = $this->adminSubjectService->loadAllAvailableSubjects();
@@ -71,8 +73,7 @@ class CourseController extends Controller
 
     public function store(CourseStoreRequest $request){
         try{
-            //You dont have Permissions to create Teachers !
-            $this->authorize('create',CourseModel::class);
+            $this->hasPermission(CourseAbilities::CREATE_COURSES);
 
             $dbValidCourseContent   = $this->adminCourseService->validateCourseContentForDb($request);
             $request->merge(Arr::only($dbValidCourseContent, ['contentInputStr', 'topicsString', 'contentString']));
@@ -124,8 +125,7 @@ class CourseController extends Controller
 
         $courseData = $this->adminCourseService->findDbRec($id);
 
-        //You dont have Permissions to view the course !
-        $this->authorize('view',$courseData['dbRec']); //todo
+        $this->hasPermission(CourseAbilities::ADMIN_PANEL_VIEW_COURSE, $courseData['dbRec']);
 
         if(is_null($courseData['dbRec']))
             throw new CustomException('Course does not found');
@@ -149,11 +149,10 @@ class CourseController extends Controller
     public function edit($id){
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
-
+        
         $courseData = $this->adminCourseService->findDbRec($id);
 
-        //You dont have Permissions to edit the course !
-        $this->authorize('update',$courseData['dbRec']); //todo
+        $this->hasPermission(CourseAbilities::EDIT_COURSE, $courseData['dbRec']);
 
         if(is_null($courseData['dbRec']))
             throw new CustomException('Course does not found');
@@ -200,8 +199,7 @@ class CourseController extends Controller
             if(is_null($courseData['dbRec']))
                 throw new CustomException('Course does not exist!');
 
-            //You dont have Permissions to update the course !
-            $this->authorize('create', $courseData['dbRec']);
+            $this->hasPermission(CourseAbilities::EDIT_COURSE, $courseData['dbRec']);
 
             $dbValidCourseContent   = $this->adminCourseService->validateCourseContentForDb($request);
             $request->merge(Arr::only($dbValidCourseContent, ['contentInputStr', 'topicsString', 'contentString']));
@@ -247,8 +245,7 @@ class CourseController extends Controller
     }
 
 
-    public function destroy(int $id)
-    {
+    public function destroy(int $id){
 
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
@@ -257,7 +254,7 @@ class CourseController extends Controller
         if(is_null($courseData['dbRec']))
             throw new CustomException('Course does not exist!');
 
-        $this->authorize('delete', $courseData['dbRec']);
+        $this->hasPermission(CourseAbilities::DELETE_COURSE, $courseData['dbRec']);
 
         $isDelete = $this->adminCourseService->deleteDbRec($courseData['dbRec']);
         if (!$isDelete)
@@ -269,8 +266,7 @@ class CourseController extends Controller
     }
 
 
-    public function checkEmpty(Request $request)
-    {
+    public function checkEmpty(Request $request){
         try{
             $courseId = $request->input('courseId');
             if(!filter_var($courseId, FILTER_VALIDATE_INT))
@@ -308,8 +304,7 @@ class CourseController extends Controller
             if(is_null($courseData['dbRec']))
                 throw new CustomException("Course does not exist!");
 
-            //You dont have Permissions to change the status of the course!
-            $this->authorize('changeStatus',$courseData['dbRec']);
+            $this->hasPermission(CourseAbilities::CHANGE_COURSE_STATUS, $courseData['dbRec']);
 
             $status = $request->input('status');
 

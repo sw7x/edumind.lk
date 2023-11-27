@@ -5,6 +5,8 @@ namespace App\Permissions\Policies;
 use App\Models\User as UserModel;
 use App\Models\Role as RoleModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Common\SharedServices\UserSharedService;
+        
 
 class UserPolicy
 {
@@ -17,9 +19,9 @@ class UserPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(UserModel $user)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN || $userRole== RoleModel::EDITOR);
+    {        
+        $allowedRoles = [RoleModel::ADMIN, RoleModel::EDITOR];
+        return (new UserSharedService)->hasAnyRole($user, $allowedRoles);
     }
 
     /**
@@ -29,29 +31,16 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(UserModel $user, UserModel $model)
+    public function view(UserModel $user, UserModel $givenUserModel)
     {
-        $currentUserRole   = $user->roles()->first()->slug;
-        $givenUserRole     = $model->roles()->first() ? $model->roles()->first()->slug : null;
+        $userSharedService  = new UserSharedService();
+                
+        $isAdmin            = $userSharedService->hasRole($user, RoleModel::ADMIN);        
+        $isEditor           = $userSharedService->hasRole($user, RoleModel::EDITOR);
 
-        if($currentUserRole == RoleModel::ADMIN){       
-            return true;
+        $isGivenTeacher     = $userSharedService->hasRole($givenUserModel, RoleModel::TEACHER);
 
-        }elseif($currentUserRole == RoleModel::EDITOR){        
-            return ($givenUserRole == RoleModel::TEACHER);
-
-        }elseif($currentUserRole == RoleModel::TEACHER){        
-            return false;
-
-        }elseif($currentUserRole == RoleModel::STUDENT){        
-            return false;
-
-        }elseif($currentUserRole == RoleModel::MARKETER){        
-            return false;
-
-        }else{
-            return false;
-        }
+        return ($isAdmin || ($isEditor && $isGivenTeacher));
     }
 
     /**
@@ -62,8 +51,7 @@ class UserPolicy
      */
     public function create(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;
-        return ($userRole == RoleModel::ADMIN);
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);
     }
 
     /**
@@ -73,10 +61,11 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(UserModel $user, UserModel $model)
+    public function update(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;
-        return ($userRole == RoleModel::ADMIN);
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);
+        //return (new UserSharedService)->hasAnyRole($user, [RoleModel::TEACHER,RoleModel::EDITOR]);
+
     }
 
     /**
@@ -86,10 +75,9 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(UserModel $user, UserModel $model)
+    public function delete(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);
     }
 
     /**
@@ -117,99 +105,72 @@ class UserPolicy
     }
 
 
+    public function viewTeachers(UserModel $user)
+    {
+        return (new UserSharedService)->hasAnyRole($user, [RoleModel::ADMIN, RoleModel::EDITOR]);        
+    }
+
+    public function viewStudents(UserModel $user)
+    {
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
+    }
+
+    public function viewEditors(UserModel $user)
+    {
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);       
+    }
     
+    public function viewMarketers(UserModel $user)
+    {
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
+    }    
+
+
     public function createTeachers(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
     }
 
     public function createStudents(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
     }
 
     public function createEditors(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);       
     }
     
     public function createMarketers(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
     }
 
 
-
-
-
-    
-    public function updateTeachers(UserModel $user, UserModel $model)
+    public function updateTeachers(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN); 
     }
 
-    public function updateStudents(UserModel $user, UserModel $model)
+    public function updateStudents(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
     }
 
-    public function updateEditors(UserModel $user, UserModel $model)
+    public function updateEditors(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
     }
     
-    public function updateMarketers(UserModel $user, UserModel $model)
+    public function updateMarketers(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
-    }
-
-    
-
-
-    public function changeUserStatus(UserModel $user, UserModel $model)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);        
     }
 
 
-
-    /*
-    public function viewTeachers(UserModel $user, UserModel $model)
+    public function changeUserStatus(UserModel $user)
     {
-        $currentUserRole   = $user->roles()->first()->slug;
-        $givenUserRole     = $model->roles()->first()->slug;
-           
-        return  ($currentUserRole == RoleModel::ADMIN) || 
-                ($currentUserRole == RoleModel::EDITOR && $givenUserRole == RoleModel::TEACHER);        
+        return (new UserSharedService)->hasRole($user, RoleModel::ADMIN);
     }
-
-    public function viewStudents(UserModel $user, UserModel $model)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
-    }
-
-    public function viewEditors(UserModel $user, UserModel $model)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
-    }
-    
-    public function viewMarketers(UserModel $user, UserModel $model)
-    {
-        $userRole = $user->roles()->first()->slug;   
-        return ($userRole == RoleModel::ADMIN);        
-    }
-    */
-
     
 }

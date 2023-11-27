@@ -79,11 +79,27 @@ class AuthServiceProvider extends ServiceProvider
     {
         $gatesFolder = base_path('app/Permissions/Gates');
         
-        require_once $gatesFolder .'/contact-us-gates.php';
+        require_once $gatesFolder .'/contact-us-gates.php';        
         require_once $gatesFolder .'/auth-gates.php';
         require_once $gatesFolder .'/cart-gates.php';        
-        require_once $gatesFolder .'/admin-gates.php';
-        require_once $gatesFolder .'/subject-gates.php';
+        require_once $gatesFolder .'/course-gates.php';
+        
+
+        
+        /* admin panel gates */
+        require_once $gatesFolder .'/admin/admin-panel-gates.php';
+        
+        require_once $gatesFolder .'/admin/contact-us-gates.php';
+        require_once $gatesFolder .'/admin/user-manage-gates.php';
+        require_once $gatesFolder .'/admin/subject-gates.php';        
+
+        require_once $gatesFolder .'/admin/course-gates.php';
+        require_once $gatesFolder .'/admin/coupon-gates.php';
+        require_once $gatesFolder .'/admin/paying-gates.php';
+        require_once $gatesFolder .'/admin/revenue-gates.php';
+        require_once $gatesFolder .'/admin/settings-gates.php';
+
+
     }
 
 }

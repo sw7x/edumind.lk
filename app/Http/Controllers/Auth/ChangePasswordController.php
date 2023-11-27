@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Validator;
 use Sentinel;
 use App\Common\Utils\AlertDataUtil;
 
-use App\Permissions\PermissionChecker;
 use App\Permissions\Abilities\AuthAbilities;
+use App\Permissions\Traits\GateCheck;
 
 
 class ChangePasswordController extends Controller
 {
+    use GateCheck;
 
     public function __construct(){
 
@@ -21,14 +22,14 @@ class ChangePasswordController extends Controller
 
 
     public function changePassword(Request $request) {
-        PermissionChecker::authorizeGate(AuthAbilities::CHANGE_PASSWORD);
+        $this->hasGateAllowed(AuthAbilities::CHANGE_PASSWORD);
         return view ('auth.form-change-password');
     }
 
 
     public function postChangePassword(Request $request) {
-        PermissionChecker::authorizeGate(AuthAbilities::CHANGE_PASSWORD);
-
+        $this->hasGateAllowed(AuthAbilities::CHANGE_PASSWORD);
+        
         try{
 
             $validator = Validator::make($request->all(), [

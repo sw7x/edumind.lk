@@ -20,9 +20,15 @@ use Illuminate\Auth\Access\AuthorizationException;
 use App\Models\Role as RoleModel;
 use App\Models\User as UserModel;
 
+use App\Permissions\Abilities\UserManageAbilities;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Permissions\Traits\PermissionCheck;
+
 
 class UserController extends Controller
 {
+    use PermissionCheck;
+
     // todo user role
     // todo reg activate
 
@@ -33,40 +39,35 @@ class UserController extends Controller
     }
 
 
-    public function index()
-    {                            
-        //You dont have Permissions view all users !
-        $this->authorize('viewAny', UserModel::class);
+    public function index(){    
+        $this->hasPermission(UserManageAbilities::ADMIN_PANEL_VIEW_USER_LIST);
+
         $userArr = $this->adminUserService->loadAllUserRecs();
 
         $teachers   = AdminUserDataFormatter::prepareUserListData($userArr['teachersDtoArr']);
         $students   = AdminUserDataFormatter::prepareUserListData($userArr['studentsDtoArr']);
         $marketers  = AdminUserDataFormatter::prepareUserListData($userArr['marketersDtoArr']);
         $editors    = AdminUserDataFormatter::prepareUserListData($userArr['editorsDtoArr']);
-
+        
         return view('admin-panel.user-list')->with([
             'teachers'         => $teachers,
             'students'         => $students,
             'marketers'        => $marketers,
-            'editors'          => $editors,
-            
-            'canViewteachers'  => $userArr['canViewteachers'],//-----
-            'canViewstudents'  => $userArr['canViewstudents'],//------
-            'canViewmarketers' => $userArr['canViewmarketers'],//----------
-            'canVieweditors'   => $userArr['canVieweditors']//----------
+            'editors'          => $editors
         ]);
         
     }
 
 
     public function create(Request $request){
-        // You dont have Permissions to create users
-        $this->authorize('create', UserModel::class);
-        return view('admin-panel.user-add');       
+        $this->hasPermission(UserManageAbilities::VIEW_CREATE_PAGE);
+        return view('admin-panel.user-add');    
     }
 
 
     public function storeTeacher(TeacherStoreRequest $request){
+        $this->hasPermission(UserManageAbilities::CREATE_TEACHERS);
+              
         try{
             $this->authorize('createTeachers', UserModel::class);
 
@@ -101,8 +102,9 @@ class UserController extends Controller
 
 
     public function storeStudent(StudentStoreRequest $request){
-        try{
+        $this->hasPermission(UserManageAbilities::CREATE_STUDENTS);
 
+        try{
             $this->authorize('createStudents', UserModel::class);
 
             if (isset($request->validator) && $request->validator->fails())
@@ -135,13 +137,14 @@ class UserController extends Controller
 
 
     public function storeMarketer(MarketerStoreRequest $request){
+        $this->hasPermission(UserManageAbilities::CREATE_MARKETERS);
+
         try{
             $this->authorize('createMarketers', UserModel::class);
 
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
-            //You dont have Permissions to create marketers !
             $result = $this->adminUserService->saveMarketerRec($request);
             if(!$result)
                 abort(500, "Add Marketer failed due to server error !");
@@ -167,13 +170,14 @@ class UserController extends Controller
 
 
     public function storeEditor(EditorStoreRequest $request){
+        $this->hasPermission(UserManageAbilities::CREATE_EDITORS);
+
         try{
             $this->authorize('createEditors', UserModel::class);
 
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
-            // You dont have Permissions to create editors !
             $result = $this->adminUserService->saveEditorRec($request);
             if(!$result)
                 abort(500, "Add Editor failed due to server error !");
@@ -199,34 +203,31 @@ class UserController extends Controller
     }
 
 
-    public function show($id)
-    {
+    public function show($id){        
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
-        
+                        
         $userData = $this->adminUserService->findDbRec($id);
         if(is_null($userData['dbRec']))
             throw new CustomException('User does not exist!');
         
-        //You dont have Permissions to view the user !
-        $this->authorize('view', $userData['dbRec']);
+        $this->hasPermission(UserManageAbilities::ADMIN_PANEL_VIEW_USERS, $userData['dbRec']);
 
         $filteredUserData   = AdminUserDataFormatter::prepareUserData($userData);
         return view('admin-panel.user-view')->with(['userData' => $filteredUserData]);        
     }
 
 
-    public function edit($id){        
+    public function edit($id){       
+        $this->hasPermission(UserManageAbilities::VIEW_EDIT_PAGE);
+        
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
         $userData = $this->adminUserService->findDbRec($id);
         if(is_null($userData['dbRec']))
             throw new CustomException('User does not exist!');
-
-        // You dont have Permissions to edit the user !
-        $this->authorize('update', $userData['dbRec']);
-
+        
         if(empty($userData['dbRec']->getAllUserRoles()))
             throw new CustomException('User have no role!');
 
@@ -236,22 +237,20 @@ class UserController extends Controller
     }
 
     
-    public function updateTeacher(TeacherUpdateRequest $request, $id){
-
+    public function updateTeacher(TeacherUpdateRequest $request, $id){       
         try{
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
             
+            $this->hasPermission(UserManageAbilities::EDIT_TEACHERS);
+
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
             $userData = $this->adminUserService->findDbRec($id);
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
-
-            //You dont have Permissions to update teacher user accounts !
-            $this->authorize('updateTeachers',$userData['dbRec']);
-
+            
             $isUpdated = $this->adminUserService->updateTeacherRec($request, $userData['dbRec']);
             if (!$isUpdated)
                 abort(500, "Teacher update failed due to server error !");
@@ -269,15 +268,14 @@ class UserController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
             
+            $this->hasPermission(UserManageAbilities::EDIT_STUDENTS);
+
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
             $userData = $this->adminUserService->findDbRec($id);
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
-
-            //You dont have Permissions to update student user accounts !
-            $this->authorize('updateStudents',$userData['dbRec']);
 
             $isUpdated = $this->adminUserService->updateStudentRec($request, $userData['dbRec']);
             if (!$isUpdated)
@@ -296,16 +294,15 @@ class UserController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
 
+            $this->hasPermission(UserManageAbilities::EDIT_MARKETERS);
+
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
             $userData = $this->adminUserService->findDbRec($id);
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
-
-            //You dont have Permissions to update student user accounts !
-            $this->authorize('updateMarketers',$userData['dbRec']);
-
+            
             $isUpdated = $this->adminUserService->updateMarketerRec($request, $userData['dbRec']);
             if (!$isUpdated)
                 abort(500, "Marketer update failed due to server error !");
@@ -323,15 +320,14 @@ class UserController extends Controller
             if(!filter_var($id, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
 
+            $this->hasPermission(UserManageAbilities::EDIT_EDITORS);
+
             if (isset($request->validator) && $request->validator->fails())
                 throw new CustomException('Form validation failed');
 
             $userData = $this->adminUserService->findDbRec($id);
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
-
-            //You dont have Permissions to update editor user accounts !
-            $this->authorize('updateEditors',$userData['dbRec']);
 
             $isUpdated = $this->adminUserService->updateEditorRec($request, $userData['dbRec']);
             if (!$isUpdated)
@@ -346,17 +342,16 @@ class UserController extends Controller
 
 
     public function changeStatus(Request $request){
-
         try{
-
+            $this->hasPermission(UserManageAbilities::CHANGE_USERS_STATUS);
+            
             if(!filter_var($request->userId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id - User status update failed');
 
             $userData = $this->adminUserService->findDbRec($request->input('userId'));
             if(is_null($userData['dbRec']))
                 throw new CustomException('User does not exist!');
-
-            $this->authorize('changeUserStatus',$userData['dbRec']);
+            
 
             $status     = (int)$request->status;
             $isUpdated  = $this->adminUserService->updateStatus($userData['dbRec']->id, $status);
@@ -368,24 +363,20 @@ class UserController extends Controller
         }catch(CustomException $e){
             return response()->json(['status' => 'error', 'message'  => $e->getMessage()]);
 
-        }catch(AuthorizationException $e){
-            return response()->json(
-                AlertDataUtil::error('You dont have Permissions to update user status !',[
-                    'msgTitle' => 'Permission Denied!'
-                ])
-            );
+        }catch(\Exception $e){
+            $msg = ($e instanceof HttpException) ? $e->getMessage() : 'User status update failed !';
 
-        }
-        catch(\Exception $e){
             return response()->json([
                 'status'    => 'error',
-                'message'   => 'User status update failed!',
+                'message'   => $msg,
                 //'message' => $e->getMessage(),
             ]);
         }
     }
 
     public function destroy(Request $request, $id){
+        $this->hasPermission(UserManageAbilities::DELETE_USERS);
+
         //todo delete image
         switch ($request->userType) {
             case "teacher":
@@ -421,7 +412,7 @@ class UserController extends Controller
             throw new CustomException('User does not exist!',$eArr);
 
         //You dont have Permissions to delete the user !
-        $this->authorize('delete', $userData['dbRec']);
+        //$this->authorize('delete', $userData['dbRec']);
 
         $isDelete = $this->adminUserService->deleteDbRec($userData['dbRec']);
         if (!$isDelete)

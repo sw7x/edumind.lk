@@ -9,17 +9,20 @@ use App\Common\Utils\AlertDataUtil;
 //use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
 
-use App\Permissions\PermissionChecker;
 use App\Permissions\Abilities\AuthAbilities;
+use App\Permissions\Traits\GateCheck;
+
 
 class ActivationController extends Controller
 {
+    use GateCheck;
+
     public function __construct(){   
         
     }
 
     public function activate(string $encryptedEmail, string $activationCode){        
-        PermissionChecker::authorizeGate(AuthAbilities::ACTIVATE);
+        $this->hasGateAllowed(AuthAbilities::ACTIVATE);
 
         try {
             

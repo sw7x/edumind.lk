@@ -13,25 +13,27 @@ use App\Models\Role as RoleModel;
 use App\Common\Utils\AlertDataUtil;
 use App\Common\SharedServices\UserSharedService;
 
-use App\Permissions\PermissionChecker;
 use App\Permissions\Abilities\AuthAbilities;
+use App\Permissions\Traits\GateCheck;
 
 
 class LoginController extends Controller
 {
+    use GateCheck;
+
     public function __construct(){
         
     }
 
 
     public function login(){
-        PermissionChecker::authorizeGate(AuthAbilities::LOGIN);
+        $this->hasGateAllowed(AuthAbilities::LOGIN);
         return view ('auth.form-login');
     }
 
     
     public function loginSubmit(Request $request){
-        PermissionChecker::authorizeGate(AuthAbilities::LOGIN);
+        $this->hasGateAllowed(AuthAbilities::LOGIN);
 
         try{
 
@@ -125,7 +127,7 @@ class LoginController extends Controller
 
     //todo
     public function logout(Request $request){
-        PermissionChecker::authorizeGate(AuthAbilities::LOGOUT);
+        $this->hasGateAllowed(AuthAbilities::LOGOUT);
 
         if(sentinel::check()){
             Sentinel::logout();

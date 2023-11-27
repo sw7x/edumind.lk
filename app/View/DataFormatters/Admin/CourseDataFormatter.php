@@ -6,6 +6,7 @@ namespace App\View\DataFormatters\Admin;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
+
 class CourseDataFormatter{
 
     public static function prepareCourseListData(array $courseDataArr) : array {
@@ -20,47 +21,50 @@ class CourseDataFormatter{
             $subjectDto  = $courseDto->getSubjectDto();
             $teacherDto  = $courseDto->getAuthorDto();
 
-            $tempArr     = $courseDto->toArray();
+            $tempArr['data']     = $courseDto->toArray();
 
-            $tempArr['subjectId']        = $subjectDto->getId();
-            $tempArr['subjectName']      = $subjectDto->getName();
-            $tempArr['subjectSlug']      = $subjectDto->getSlug();
+            $tempArr['data']['subjectId']        = $subjectDto->getId();
+            $tempArr['data']['subjectName']      = $subjectDto->getName();
+            $tempArr['data']['subjectSlug']      = $subjectDto->getSlug();
 
-            $tempArr['teacherId']        = $teacherDto->getId();
-            $tempArr['teacherName']      = $teacherDto->getFullName();
-            $tempArr['teacherUserName']  = $teacherDto->getUserName();
+            $tempArr['data']['teacherId']        = $teacherDto->getId();
+            $tempArr['data']['teacherName']      = $teacherDto->getFullName();
+            $tempArr['data']['teacherUserName']  = $teacherDto->getUserName();
 
-            $tempArr['price']            = number_format( $tempArr['price'], 2, '.', '' );
+            $tempArr['data']['price']            = number_format( $tempArr['data']['price'], 2, '.', '' );
 
 
 
             // using duration string located in database get hour, minute count
-            $dur_parts                  = array_map('trim', Str::of($tempArr['duration'])->explode(':')->toArray());
-            $tempArr['durationHours']   = intval(Str::of($dur_parts[0])->before('Hour')->trim()->__toString());
-            $tempArr['durationMinutes'] = intval(Str::of($dur_parts[1])->before('Minute')->trim()->__toString());
+            $dur_parts                  = array_map('trim', Str::of($tempArr['data']['duration'])->explode(':')->toArray());
+            $tempArr['data']['durationHours']   = intval(Str::of($dur_parts[0])->before('Hour')->trim()->__toString());
+            $tempArr['data']['durationMinutes'] = intval(Str::of($dur_parts[1])->before('Minute')->trim()->__toString());
 
-
+            if(isset($courseData['dbRec'])){
+                $tempArr['dbRec'] = $courseData['dbRec'];
+            }
 
 
             //dump($courseData['createdAt']);
-            if(isset($courseData['dbRec']->created_at) || isset($courseData['createdAt'])){
-                $createdAt               = $courseData['createdAt'] ?? $courseData['dbRec']->created_at;
-                $tempArr['createdAt']    = $createdAt->format('Y/m/d H:i');
-                $tempArr['createdAtAgo'] = $createdAt->diffForHumans();
+            if(isset($courseData['dbRec']->created_at)){
+                $createdAt                          = $courseData['dbRec']->created_at;
+                $tempArr['data']['createdAt']       = $createdAt->format('Y/m/d H:i');
+                $tempArr['data']['createdAtAgo']    = $createdAt->diffForHumans();
             }
 
-            if(isset($courseData['dbRec']->updated_at) || isset($courseData['updatedAt'])){
-                $updatedAt               = $courseData['updatedAt'] ?? $courseData['dbRec']->updated_at;
-                $tempArr['updatedAt']    = $updatedAt->format('Y/m/d H:i');
-                $tempArr['updatedAtAgo'] = $updatedAt->diffForHumans();
+            if(isset($courseData['dbRec']->updated_at)){
+                $updatedAt               = $courseData['dbRec']->updated_at;
+                $tempArr['data']['updatedAt']    = $updatedAt->format('Y/m/d H:i');
+                $tempArr['data']['updatedAtAgo'] = $updatedAt->diffForHumans();
             }
 
-
-
-            $arr[] = $tempArr;
+        
+            $arr[]  =   $tempArr;
         }
         return $arr;
     }
+
+
 
 
 

@@ -9,15 +9,18 @@ use Sentinel;
 
 use App\Permissions\PermissionChecker;
 use App\Permissions\Abilities\AuthAbilities;
+use App\Permissions\Traits\GateCheck;
 
 
 class ChangeAdminPasswordController extends Controller
 {
+    use GateCheck;
 
     public function changePassword(Request $request) {
         
         try{
-            $response = PermissionChecker::getGateResponse(AuthAbilities::CHANGE_PASSWORD);
+            $response = $this->hasGateAllowedResponse(AuthAbilities::CHANGE_PASSWORD);
+
             if (!$response->allowed())
                 throw new CustomException($response->message() ?? 'Permission denied');
 

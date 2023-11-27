@@ -2,10 +2,10 @@
 
 namespace App\Permissions;
 
-use App\Permissions\PermissionCheckResultEnum;
-use App\Permissions\PermissionCheckMessageEnum;
+use App\Permissions\Settings\PermissionCheckResultEnum;
+use App\Permissions\Settings\PermissionCheckMessageEnum;
 use App\Permissions\PermissionResponse;
-use App\Permissions\PermissionCheckRedirectEnum;
+use App\Permissions\Settings\PermissionCheckRedirectEnum;
 
 
 class PermissionResponseMessages {

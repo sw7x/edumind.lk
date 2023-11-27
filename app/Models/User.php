@@ -337,10 +337,36 @@ class User extends CartalystUser
         return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::MARKETER, RoleModel::TEACHER]);
     }
 
+    
+
     public function isAdmin(){
         $userRole = $this->roles()->first()->slug;    
         return ($userRole == RoleModel::ADMIN);
+    }    
+
+    public function isEditor(){
+        $userRole = $this->roles()->first()->slug;    
+        return ($userRole == RoleModel::EDITOR);
+    }    
+
+    public function isMarketer(){
+        $userRole = $this->roles()->first()->slug;    
+        return ($userRole == RoleModel::MARKETER);
+    }    
+
+    public function isTeacher(){
+        $userRole = $this->roles()->first()->slug;    
+        return ($userRole == RoleModel::TEACHER);
+    }    
+
+    public function isStudent(){
+        $userRole = $this->roles()->first()->slug;    
+        return ($userRole == RoleModel::STUDENT);
     }
+
+
+    
+
 
 
     public function isSubjectCreator(SubjectModel $subject){        

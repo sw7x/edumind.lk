@@ -42,38 +42,34 @@ class UserService
 
         $teachersDtoArr = array();
         $teachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
-            $teachersDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $teachersDtoArr[]   =   array('dto' => $dto, 'dbRec' => $record);
         });
 
         $studentsDtoArr = array();
         $students->each(function (UserModel $record, int $key) use (&$studentsDtoArr){
-            $studentsDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $studentsDtoArr[]   =   array('dto' => $dto, 'dbRec' => $record);
         });
 
         $marketersDtoArr = array();
         $marketers->each(function (UserModel $record, int $key) use (&$marketersDtoArr){
-            $marketersDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $marketersDtoArr[]  =   array('dto' => $dto, 'dbRec' => $record);
         });
 
         $editorsDtoArr = array();
         $editors->each(function (UserModel $record, int $key) use (&$editorsDtoArr){
-            $editorsDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $editorsDtoArr[]    =   array('dto' => $dto, 'dbRec' => $record);
         });
-
-        //dump($teachersDtoArr);dump($studentsDtoArr);dump($marketersDtoArr);dump($editorsDtoArr);dd();
-
+        
+        //dump($teachersDtoArr);dump($studentsDtoArr);dump($marketersDtoArr);dump($editorsDtoArr);dd();        
         return array(
             'teachersDtoArr'    => $teachersDtoArr,
-            'canViewteachers'   => Gate::allows('view', $teachers->first()),
-
             'studentsDtoArr'    => $studentsDtoArr,
-            'canViewstudents'   => Gate::allows('view', $students->first()),
-
             'marketersDtoArr'   => $marketersDtoArr,
-            'canViewmarketers'  => Gate::allows('view', $marketers->first()),
-
             'editorsDtoArr'     => $editorsDtoArr,
-            'canVieweditors'    => Gate::allows('view', $editors->first()),
         );
     }
 

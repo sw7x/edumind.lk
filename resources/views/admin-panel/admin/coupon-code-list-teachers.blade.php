@@ -217,7 +217,6 @@
 								<td>
 									<div class="btn-group">
                                         <button class="btn-white btn btn-xs">View</button>
-                                        <button class="btn-white btn btn-xs">Edit</button>
                                         <button class="btn-white btn btn-xs">Delete</button>
                                     </div>
                                 </td>

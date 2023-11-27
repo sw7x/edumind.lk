@@ -42,13 +42,11 @@ class CourseService
 
         $coursesDtoArr = array();
         $courses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){
-            $tempArr = array();
-            $tempArr['dto']         = CourseDataTransformer::buildDto($record->toArray());
-            $tempArr['updatedAt']   = $record->updated_at;
-
-            $coursesDtoArr[]        = $tempArr;
+            $coursesDtoArr[]    =   array(
+                                        'dto'   => CourseDataTransformer::buildDto($record->toArray()),
+                                        'dbRec' => $record
+                                    );
         });
-
         return $coursesDtoArr;
     }
 

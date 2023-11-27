@@ -19,7 +19,7 @@
 
                 <h1 class="lg:text-2xl text-xl font-semibold mb-6">401 Unauthorized</h1>
                 <?php   //dump($errMsg);    ?>
-                @if ($errors->loginForm->getMessages())                    
+                @if (isset($errors->loginForm) && $errors->loginForm->getMessages())                    
                     <x-flash-message 
                         style="margin-bottom:0px;"
                         class="flash-danger rounded-none"  

@@ -1,6 +1,9 @@
 @php    
     use App\Permissions\Abilities\ContactUsAbilities;
     use App\Permissions\Abilities\SubjectAbilities;
+    use App\Permissions\Abilities\SettingsAbilities;
+    use App\Permissions\Abilities\UserManageAbilities;
+    use App\Permissions\Abilities\CourseAbilities;    
 @endphp
 
     <nav class="sidebar navbar-default navbar-static-side" role="navigation">
@@ -30,19 +33,19 @@
 
                 
                 @canany([                   
-                    SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT_LIST,
-                    SubjectAbilities::CREATE,
+                    SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT_LIST,
+                    SubjectAbilities::CREATE_SUBJECTS,
                 ])
                 <li class="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="#" class="" aria-expanded="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-book"></i><span class="nav-label">Subject</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level" aria-expanded="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        @can(SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT_LIST)
+                        @can(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT_LIST)
                             <li class="{{ Route::is('admin.subjects.index') ? 'current' : '' }}"><a href="{{route('admin.subjects.index')}}">Subject list</a></li>
                         @endcan                       
                         
-                        @can(SubjectAbilities::CREATE)
+                        @can(SubjectAbilities::CREATE_SUBJECTS)
                             <li class="{{ Route::is('admin.subjects.create') ? 'current' : '' }}"><a href="{{route('admin.subjects.create')}}">Create subject</a></li>
                         @endcan
                         
@@ -52,17 +55,21 @@
                 </li>
                 @endcanany
 
-                @canany(['viewAny', 'create'], App\Models\User::class)
+                
+                @canany([                   
+                    UserManageAbilities::ADMIN_PANEL_VIEW_USER_LIST,
+                    UserManageAbilities::VIEW_CREATE_PAGE,
+                ])
                 <li class="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="" aria-expanded="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-user-circle-o"></i><span class="nav-label">Users</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        @can('viewAny',App\Models\User::class)
+                        @can(UserManageAbilities::ADMIN_PANEL_VIEW_USER_LIST)
                             <li class="{{ Route::is('admin.users.index') ? 'current' : '' }}"><a href="{{route('admin.users.index')}}">User list</a></li>
                         @endcan
 
-                        @can('create',App\Models\User::class)
+                        @can(UserManageAbilities::VIEW_CREATE_PAGE)
                             <li class="{{ Route::is('admin.users.create') ? 'current' : '' }}"><a href="{{route('admin.users.create')}}">Add user</a></li>
                         @endcan
 
@@ -71,16 +78,24 @@
                     </ul>
                 </li>
                 @endcanany
-
-
+                
+                
+                @canany([                   
+                    CourseAbilities::ADMIN_PANEL_VIEW_COURSE_LIST,
+                    CourseAbilities::CREATE_COURSES,
+                ])
                 <li class="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="" aria-expanded="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-graduation-cap"></i><span class="nav-label">Course</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.courses.index') ? 'current' : '' }}"><a href="{{route('admin.courses.index')}}">Course list</a></li>
-                        <li class="{{ Route::is('admin.courses.create') ? 'current' : '' }}"><a href="{{route('admin.courses.create')}}">Add course</a></li>
-                        
+                        @can(CourseAbilities::ADMIN_PANEL_VIEW_COURSE_LIST)
+                            <li class="{{ Route::is('admin.courses.index') ? 'current' : '' }}"><a href="{{route('admin.courses.index')}}">Course list</a></li>
+                        @endcan
+
+                        @can(CourseAbilities::CREATE_COURSES)
+                            <li class="{{ Route::is('admin.courses.create') ? 'current' : '' }}"><a href="{{route('admin.courses.create')}}">Add course</a></li>
+                        @endcan
                         {{--                        
                         <li class="{{ Route::is('admin.courses.content') ? 'current' : '' }}"><a href="{{route('admin.courses.content')}}">Course content (Add/Edit)</a></li>
                         --}}
@@ -91,8 +106,9 @@
                         <li class="{{ Route::is('admin.courses.complete-list') ? 'current' : '' }}"><a href="{{route('admin.courses.complete-list')}}">Completions</a></li>
                     </ul>
                 </li>
+                @endcanany
 
-
+                
                 <li class="{{ \Str::is('admin.revenue.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="" aria-expanded="{{ \Str::is('admin.revenue.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-usd"></i> <span class="nav-label">Revenue</span> <span class="fa arrow"></span>
@@ -105,7 +121,8 @@
                     </ul>
                 </li>
 
-				<li class="{{ \Str::is('admin.salary.*', Route::currentRouteName()) ? 'active current' : '' }}">
+				
+                <li class="{{ \Str::is('admin.salary.*', Route::currentRouteName()) ? 'active current' : '' }}">
 					<a href="" aria-expanded="{{ \Str::is('admin.salary.*', Route::currentRouteName()) ? 'true' : 'false' }}">
 						<i class="fa fa-money"></i><span class="nav-label">Paying</span> <span class="fa arrow"></span>
 					</a>
@@ -135,48 +152,59 @@
                         --}}
                     </ul>
                 </li>
-
-                        
+                      
 
                 @canany([                   
-                    ContactUsAbilities::VIEW_ADMIN_PANEL_GUEST_MESSAGES,
-                    ContactUsAbilities::VIEW_ADMIN_PANEL_STUDENT_MESSAGES,
-                    ContactUsAbilities::VIEW_ADMIN_PANEL_TEACHER_MESSAGES,
-                    ContactUsAbilities::VIEW_ADMIN_PANEL_OTHER_USER_MESSAGES
+                    ContactUsAbilities::VIEW_GUEST_MESSAGES,
+                    ContactUsAbilities::VIEW_STUDENT_MESSAGES,
+                    ContactUsAbilities::VIEW_TEACHER_MESSAGES,
+                    ContactUsAbilities::VIEW_OTHER_USER_MESSAGES
                 ])
                     <li class="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'active current' : '' }}">
                         <a href="#" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                             <i class="fa fa-comment-o"></i><span class="nav-label">Contact us</span> <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.feedbacks.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_GUEST_MESSAGES)
+                            @can(ContactUsAbilities::VIEW_GUEST_MESSAGES)
                                 <li class="{{ Route::is('admin.feedbacks.guest') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.guest')}}">Guest - Messages</a></li>
                             @endcan                        
                             
-                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_STUDENT_MESSAGES)
+                            @can(ContactUsAbilities::VIEW_STUDENT_MESSAGES)
                                 <li class="{{ Route::is('admin.feedbacks.student') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.student')}}">Student - Messages</a></li>
                             @endcan
                             
-                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_TEACHER_MESSAGES)
+                            @can(ContactUsAbilities::VIEW_TEACHER_MESSAGES)
                                 <li class="{{ Route::is('admin.feedbacks.teacher') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.teacher')}}">Teacher - Messages</a></li>
                             @endcan
                             
-                            @can(ContactUsAbilities::VIEW_ADMIN_PANEL_OTHER_USER_MESSAGES)
+                            @can(ContactUsAbilities::VIEW_OTHER_USER_MESSAGES)
                                 <li class="{{ Route::is('admin.feedbacks.other-user') ? 'current' : '' }}"><a href="{{route('admin.feedbacks.other-user')}}">Other User Messages</a></li>
                             @endcan
                         </ul>
                     </li>
                 @endcan
                 
+                
+                @canany([
+                    SettingsAbilities::VIEW_GENERAL_SETTINGS,
+                    SettingsAbilities::VIEW_ADVANCED_SETTINGS
+                ])  
                 <li class="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a aria-expanded="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'true' : 'false' }}">
                         <i class="fa fa-wrench"></i><span class="nav-label">Settings</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level collapse" aria-expanded="{{ \Str::is('admin.settings.*', Route::currentRouteName()) ? 'true' : 'false' }}">
-                        <li class="{{ Route::is('admin.settings.general') ? 'current' : '' }}"><a href="{{route('admin.settings.general')}}">General - Settings</a></li>
-                        <li class="{{ Route::is('admin.settings.advanced') ? 'current' : '' }}"><a href="{{route('admin.settings.advanced')}}">Advanced - Settings</a></li>
+                        @can(SettingsAbilities::VIEW_GENERAL_SETTINGS)
+                            <li class="{{ Route::is('admin.settings.general') ? 'current' : '' }}"><a href="{{route('admin.settings.general')}}">General - Settings</a></li>
+                        @endcan
+                        
+                        @can(SettingsAbilities::VIEW_ADVANCED_SETTINGS)
+                            <li class="{{ Route::is('admin.settings.advanced') ? 'current' : '' }}"><a href="{{route('admin.settings.advanced')}}">Advanced - Settings</a></li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
+
 
                 <li class="back-to-home">
                     <a href="{{route('home')}}" class="bg-red-900 hover:bg-red-100"><i class="fa fa-external-link _text-xl _mr-3"></i> <span class="nav-label">Back to site Home</span></a>

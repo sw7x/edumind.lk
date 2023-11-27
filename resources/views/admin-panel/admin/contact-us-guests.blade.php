@@ -61,7 +61,7 @@
                                             </span>
                                         @endif
 
-                                        @can(ContactUsAbilities::DELETE_MESSAGES)
+                                        @can(ContactUsAbilities::DELETE_CONTACT_MESSAGES)
                                             <a href="#" data-id="{{$comment['id']}}" class="absolute top-0.5 right-1 rounded text-danger text-lg delete-feedback">
                                                 <i class="text-3xl fa fa-times-circle-o"></i>
                                             </a>

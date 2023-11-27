@@ -8,13 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use App\Common\SharedServices\UserSharedService;
 use App\Exceptions\InvalidUserTypeException;
 use Illuminate\Support\Facades\Gate;
-use App\Permissions\PermissionCheckResultEnum;
-use App\Permissions\PermissionCheckMessageEnum;
+use App\Permissions\Settings\PermissionCheckMessageEnum;
 use App\Permissions\PermissionResponse;
-use App\Permissions\PermissionCheckRedirectEnum;
-use \BadMethodCallException;
-use \ArgumentCountError;
 use App\Permissions\PermissionResponseMessages as PermRespMessages;
+
 
 class PermissionChecker{
 
@@ -64,7 +61,7 @@ class PermissionChecker{
 
 		$user = Sentinel::getUser();
         if(!(new UserSharedService)->isHaveValidRole($user))
-            return PermMessages::invalidRoleResponse();
+            return PermRespMessages::invalidRoleResponse();
 
 		return PermRespMessages::successResponse();
 	}

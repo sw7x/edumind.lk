@@ -29,12 +29,13 @@ use App\Common\SharedServices\UserSharedService;
 use App\Services\CartService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-use App\Permissions\PermissionChecker;
 use App\Permissions\Abilities\CartAbilities;
+use App\Permissions\Traits\PermissionCheck;
 
 
 class CartController extends Controller
 {
+    use PermissionCheck;
 
     private CartService $cartService;
 
@@ -45,7 +46,7 @@ class CartController extends Controller
 
 
     public function viewCart(){
-        PermissionChecker::authorize(CartAbilities::VIEW_CART);
+        $this->hasPermission(CartAbilities::VIEW_CART);
 
         try {
             $msgArr = [];
@@ -91,7 +92,7 @@ class CartController extends Controller
 
 
     public function loadBillingInfoForm(Request $request){
-        PermissionChecker::authorize(CartAbilities::VIEW_CART);
+        $this->hasPermission(CartAbilities::VIEW_CART);
 
         $user = Sentinel::getUser();
         if(is_null($user))
@@ -103,7 +104,7 @@ class CartController extends Controller
 
 
     public function submitBillingInfo(BillingInfoRequest $request){
-        PermissionChecker::authorize(CartAbilities::VIEW_CART);
+        $this->hasPermission(CartAbilities::VIEW_CART);
 
         try{
             $user = Sentinel::getUser();
@@ -152,8 +153,8 @@ class CartController extends Controller
 
 
     public function loadCheckout(Request $request){
-        PermissionChecker::authorize(CartAbilities::VIEW_CART);
-        
+        $this->hasPermission(CartAbilities::VIEW_CART);
+
         $user = Sentinel::getUser();
         if(is_null($user))
             abort(403);
@@ -180,7 +181,7 @@ class CartController extends Controller
 
 
     public function removeFromCart(Request $request, $id){
-        PermissionChecker::authorize(CartAbilities::REMOVE_FROM_CART);
+        $this->hasPermission(CartAbilities::REMOVE_FROM_CART);
 
         //dump($request->get('page'));
         //dd($id);
@@ -216,7 +217,7 @@ class CartController extends Controller
     public function checkoutCart()
     {
         //dump('checkoutCart');
-        PermissionChecker::authorize(CartAbilities::CHECKOUT);
+        $this->hasPermission(CartAbilities::CHECKOUT);
 
         try{
 
@@ -300,7 +301,7 @@ class CartController extends Controller
 
 
     public function checkout(CreditCardDetailsRequest $request){
-        PermissionChecker::authorize(CartAbilities::CHECKOUT);
+        $this->hasPermission(CartAbilities::CHECKOUT);
 
         //dump('checkout');
         //dump($request->cookie('nameppp'));
@@ -458,7 +459,7 @@ class CartController extends Controller
 
 
     public function addToCart(Request $request){
-        PermissionChecker::authorize(CartAbilities::ADD_TO_CART);
+        $this->hasPermission(CartAbilities::ADD_TO_CART);
 
         //dd('ss');
         $courseId = $request->input('courseId');
@@ -516,7 +517,7 @@ class CartController extends Controller
     }
 
     public function removeCoupon(Request $request){
-        PermissionChecker::authorize(CartAbilities::REMOVE_COUPON);
+        $this->hasPermission(CartAbilities::REMOVE_COUPON);
 
     	try{
 
@@ -572,7 +573,7 @@ class CartController extends Controller
 
 
     public function applyCoupon(Request $request){
-        PermissionChecker::authorize(CartAbilities::APPLY_COUPON);
+        $this->hasPermission(CartAbilities::APPLY_COUPON);
 
     	//remove multiple applied cc
 		//dump($cartItemsQuery->where('used_coupon_code','!=',null)->count());

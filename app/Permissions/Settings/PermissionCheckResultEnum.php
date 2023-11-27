@@ -1,5 +1,5 @@
 <?php
-namespace App\Permissions;
+namespace App\Permissions\Settings;
 
 class PermissionCheckResultEnum {
     

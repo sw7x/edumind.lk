@@ -11,8 +11,9 @@ use App\Common\SharedServices\UserSharedService;
 
 
 
+
 GateFacade::define(
-	SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT_LIST, function(?UserModel $user) {
+	SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT_LIST, function(?UserModel $user) {
 	
 	$allowedRoles 	= 	[RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER];
     $response       =   (new UserSharedService)->hasAnyRole($user, $allowedRoles) ? 
@@ -23,7 +24,7 @@ GateFacade::define(
 
 
 GateFacade::define(
-	SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT, function(?UserModel $user) {
+	SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECTS, function(?UserModel $user) {
 	
 	$allowedRoles 	= 	[RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER];
     $response       =   (new UserSharedService)->hasAnyRole($user, $allowedRoles) ? 
@@ -37,7 +38,7 @@ GateFacade::define(
 
 
 GateFacade::define(
-	SubjectAbilities::CREATE, function(?UserModel $user) {
+	SubjectAbilities::CREATE_SUBJECTS, function(?UserModel $user) {
 	
 	return (new SubjectPolicy)->create($user) ? 
 		Response::allow() : 
@@ -46,9 +47,8 @@ GateFacade::define(
 
 
 
-
 GateFacade::define(
-	SubjectAbilities::EDIT, function(?UserModel $user, SubjectModel $subject) {
+	SubjectAbilities::EDIT_SUBJECTS, function(?UserModel $user, SubjectModel $subject) {
 	
 	//dd((new SubjectPolicy)->update($user, $subject));
 	return (new SubjectPolicy)->update($user, $subject) ? 
@@ -57,7 +57,7 @@ GateFacade::define(
 });
 
 GateFacade::define(
-	SubjectAbilities::DELETE, function(?UserModel $user, SubjectModel $subject) {
+	SubjectAbilities::DELETE_SUBJECTS, function(?UserModel $user, SubjectModel $subject) {
 	
 	return (new SubjectPolicy)->delete($user, $subject) ? 
 		Response::allow() : 

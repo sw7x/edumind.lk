@@ -2,7 +2,7 @@
 namespace App\Permissions;
 //use Illuminate\Auth\Access\Response;
 //use Illuminate\Contracts\Support\Arrayable;
-use App\Permissions\PermissionCheckResultEnum;
+use App\Permissions\Settings\PermissionCheckResultEnum;
 use Illuminate\Auth\Access\AuthorizationException;
 
 

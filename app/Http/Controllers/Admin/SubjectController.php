@@ -13,12 +13,13 @@ use App\Services\Admin\SubjectService as AdminSubjectService;
 use App\Common\Utils\AlertDataUtil;
 use App\View\DataFormatters\Admin\SubjectDataFormatter as AdminSubjectDataFormatter;
 
-use App\Permissions\PermissionChecker;
 use App\Permissions\Abilities\SubjectAbilities;
-       
+use App\Permissions\Traits\PermissionCheck;
+   
 
 class SubjectController extends Controller
 {
+    use PermissionCheck;
 
     private AdminSubjectService $adminSubjectService;
 
@@ -27,22 +28,20 @@ class SubjectController extends Controller
     }
 
     public function index(){
-        PermissionChecker::authorize(SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT_LIST);
-        
+        $this->hasPermission(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT_LIST);
+
         $subjectsData    = $this->adminSubjectService->loadAllDbRecs();
         $filteredDataArr = AdminSubjectDataFormatter::prepareSubjectDataList($subjectsData);
         return view ('admin-panel.subject-list')->withData($filteredDataArr);
     }
 
     public function create(){
-        PermissionChecker::authorize(SubjectAbilities::CREATE);
-
-        $this->authorize('create',SubjectModel::class);
+        $this->hasPermission(SubjectAbilities::CREATE_SUBJECTS);
         return view('admin-panel.subject-add');
     }
 
     public function store(Request $request){
-        PermissionChecker::authorize(SubjectAbilities::CREATE);
+        $this->hasPermission(SubjectAbilities::CREATE_SUBJECTS);
         
         try{
             
@@ -62,8 +61,8 @@ class SubjectController extends Controller
     }
 
     public function show(int $id){
-        PermissionChecker::authorize(SubjectAbilities::VIEW_ADMIN_PANEL_SUBJECT);        
-
+        $this->hasPermission(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECTS);
+     
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
@@ -84,7 +83,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             abort(404,'Subject does not exist!');
 
-        PermissionChecker::authorize(SubjectAbilities::EDIT, $subjectData['dbRec']);
+        $this->hasPermission(SubjectAbilities::EDIT_SUBJECTS, $subjectData['dbRec']);
 
         $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
         return view('admin-panel.subject-edit')->with(['subject' => $subjectDataArr]);
@@ -102,7 +101,7 @@ class SubjectController extends Controller
             if(is_null($subjectData['dbRec']))
                 abort(404,'Subject does not exist!');
 
-            PermissionChecker::authorize(SubjectAbilities::EDIT, $subjectData['dbRec']);
+            $this->hasPermission(SubjectAbilities::EDIT_SUBJECTS, $subjectData['dbRec']);
 
             $isUpdated = $this->adminSubjectService->updateDbRec($request, $subjectData['dbRec']);
             if (!$isUpdated)
@@ -126,7 +125,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             throw new CustomException('Subject does not exist!');
 
-        PermissionChecker::authorize(SubjectAbilities::DELETE, $subjectData['dbRec']);
+        $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS, $subjectData['dbRec']);
 
         $isDelete = $this->adminSubjectService->deleteDbRec($subjectData['dbRec']);
         if (!$isDelete)

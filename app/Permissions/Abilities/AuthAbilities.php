@@ -16,5 +16,4 @@ class AuthAbilities{
 
 	const STUDENT_REGISTER 		 = 'student_register';
 	const TEACHER_REGISTER 		 = 'teacher_register';
-
 }

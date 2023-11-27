@@ -12,21 +12,21 @@ use App\Http\Requests\ContactUsFormRequest;
 use Illuminate\Support\Facades\Session;
 use App\Common\Utils\AlertDataUtil;
 
-use App\Permissions\PermissionChecker;
+use App\Permissions\Traits\GateCheck;
 use App\Permissions\Abilities\ContactUsAbilities;
-
 
 class ContactUsController extends Controller
 {
+    use PermissionCheck,GateCheck;
 
     private ContactUsService $contactUsService;
 
     public function __construct(ContactUsService $contactUsService){
-        $this->contactUsService = $contactUsService;        
+        $this->contactUsService = $contactUsService;     
     }
 
-    public function viewContactUs(){
-        PermissionChecker::authorizeGate(ContactUsAbilities::VIEW_PAGE);       
+    public function viewContactUs(){        
+        $this->hasGateAllowed(ContactUsAbilities::VIEW_PAGE);
 
         $user    = Sentinel::getUser();
         $userArr = (new UserSharedService)->getUserInfoArr($user);
@@ -34,7 +34,7 @@ class ContactUsController extends Controller
     }
 
     public function submitContactForm(ContactUsFormRequest $request){
-        PermissionChecker::authorizeGate(ContactUsAbilities::SUBMIT_FORM);
+        $this->hasGateAllowed(ContactUsAbilities::SUBMIT_FORM);
 
         try{
             $formErrors = optional(Session::get('errors'))->contactUsForm;

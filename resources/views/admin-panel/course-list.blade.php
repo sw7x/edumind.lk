@@ -1,3 +1,8 @@
+@php    
+	use App\Permissions\Abilities\CourseAbilities;
+@endphp
+
+
 @extends('admin-panel.layouts.master')
 @section('title','Course list')
 
@@ -58,98 +63,113 @@
 	                    <div class="table-responsive">
 	                        <table id="course-list" class="display dataTable table-striped table-h-bordered _table-hover" style="width:100%">
 	                            <thead>
-	                            <tr>
-	                                <th>Course</th>
-	                                <th>Subject</th>
-	                                <!-- <th>Teacher</th> -->
-	                                <th>
-	                                    Teacher<br>
-	                                    Enrolled <small>(count)</small><br>
-	                                    Completed <small>(count)</small><br>
-	                                    Rating
-	                                </th>
-	                                <!-- <th>Last updated</th> -->
-	                                <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
-	                                <th>Status</th>
-	                                <th class="text-right">Action</th>
-	                            </tr>
+		                            <tr>
+		                                <th>Course</th>
+		                                <th>Subject</th>
+		                                <!-- <th>Teacher</th> -->
+		                                <th>
+		                                    Teacher<br>
+		                                    Enrolled <small>(count)</small><br>
+		                                    Completed <small>(count)</small><br>
+		                                    Rating
+		                                </th>
+		                                <!-- <th>Last updated</th> -->
+		                                <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
+		                                <th>Status</th>
+		                                <th class="text-right">Action</th>
+		                            </tr>
 	                            </thead>
 
 	                            <tbody>
+		                            @foreach($data as $item)
+		                            	@can(CourseAbilities::ADMIN_PANEL_VIEW_COURSE, $item['dbRec'])
+				                            <tr class="course_{{$item['data']['id']}}">
 
-	                            @foreach($data as $item)
-	                            <tr class="course_{{$item['id']}}">
+				                                {{-- // todo add frontend link--}}
+				                                <td width="22%"><a href="" target="_blank">{{ $item['data']['name']}}</a></td>
 
-	                                {{-- // todo add frontend link--}}
-	                                <td width="22%"><a href="" target="_blank">{{ $item['name']}}</a></td>
+				                                {{-- // todo add frontend link--}}
+				                                <td><a href="" target="_blank">{{$item['data']['subjectName']}}</a></td>
 
-	                                {{-- // todo add frontend link--}}
-	                                <td><a href="" target="_blank">{{$item['subjectName']}}</a></td>
+				                                <td>{{$item['data']['teacherName']}}<br>
+				                                    {{--   todo
+				                                    123 <small>(Enrolled)</small><br>
+				                                    345 <small>(Completed)</small><br>
+				                                    4.9/5.0
+				                                    --}}
+				                                </td>
 
-	                                <td>{{$item['teacherName']}}<br>
-	                                    {{--   todo
-	                                    123 <small>(Enrolled)</small><br>
-	                                    345 <small>(Completed)</small><br>
-	                                    4.9/5.0
-	                                    --}}
-	                                </td>
+				                                <!-- <td>12/04/2015</td>-->
+				                                <td>
+				                                    @if(isset($item['data']['price']))
+				                                        Rs {{$item['data']['price']}}<br>
+				                                    @endif
 
-	                                <!-- <td>12/04/2015</td>-->
-	                                <td>
-	                                    @if(isset($item['price']))
-	                                        Rs {{$item['price']}}<br>
-	                                    @endif
+				                                    @if(isset($item['data']['duration']))
+				                                    {{$item['data']['duration']}}<br>
+				                                    @endif
 
-	                                    @if(isset($item['duration']))
-	                                    {{$item['duration']}}<br>
-	                                    @endif
+				                                    @if(isset($item['data']['videoCount']))
+				                                        {{$item['data']['videoCount']}} <small>(videos)</small><br>
+				                                    @endif
 
-	                                    @if(isset($item['videoCount']))
-	                                        {{$item['videoCount']}} <small>(videos)</small><br>
-	                                    @endif
+				                                    @if(isset($item['data']['updatedAtAgo']))
+				                                    	{{--$item->updated_at--}}
+				                                    	{{$item['data']['updatedAtAgo']}}
+				                                    @endif
+				                                </td>
+				                                
+				                                <td>				                                    
+				                                	@can(CourseAbilities::CHANGE_COURSE_STATUS, $item['dbRec'])
+				                                    	<input type="checkbox" class="js-switch-course"
+				                                           courseId="{{$item['data']['id']}}" {{($item['data']['status'] === App\Models\Course::PUBLISHED)?'checked':''}}/>
+				                                	@else
+				                                		{{($item['data']['status'] === App\Models\Course::PUBLISHED)?'published' : 'Draft'}}
+				                                	@endcan
+				                                </td>
 
-	                                    @if(isset($item['updatedAtAgo']))
-	                                    	{{--$item->updated_at--}}
-	                                    	{{$item['updatedAtAgo']}}
-	                                    @endif
-	                                </td>
-	                                <td>
-	                                    <input type="checkbox" class="js-switch-course"
-	                                           courseId="{{$item['id']}}" {{($item['status'] === App\Models\Course::PUBLISHED)?'checked':''}}/>
-	                                </td>
+				                                <td class="text-right">
+				                                    <div class="btn-group">
+				                                        @can(CourseAbilities::ADMIN_PANEL_VIEW_COURSE, $item['dbRec'])
+				                                        	<a href="{{route ('admin.courses.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
+				                                        @endcan
+														
+														@can(CourseAbilities::EDIT_COURSE, $item['dbRec'])
+				                                        	<a href="{{route ('admin.courses.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+				                                        @endcan
+														
+														@can(CourseAbilities::DELETE_COURSE, $item['dbRec'])
+				                                        	<a href="javascript:void(0);" data-courseId="{{$item['data']['id']}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
+				                                    	@endcan
+				                                    </div>
+				                                    @can(CourseAbilities::DELETE_COURSE, $item['dbRec'])
+					                                    <form class="course-destroy" action="{{ route('admin.courses.destroy', $item['data']['id']) }}" method="POST">
+					                                        @method('DELETE')
+					                                        <input name="courseId" type="hidden" value="{{$item['data']['id']}}">
+					                                        @csrf
+					                                    </form>
+				                                    @endcan
+				                                </td>
 
-	                                <td class="text-right">
-	                                    <div class="btn-group">
-	                                        <a href="{{route ('admin.courses.show',$item['id'])}}" class="btn-white btn btn-xs">View</a>
-	                                        <a href="{{route ('admin.courses.edit',$item['id'])}}" class="btn btn-blue btn-xs">Edit</a>
-	                                        <a href="javascript:void(0);" data-courseId="{{$item['id']}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
-	                                    </div>
-	                                    <form class="course-destroy" action="{{ route('admin.courses.destroy', $item['id']) }}" method="POST">
-	                                        @method('DELETE')
-	                                        <input name="courseId" type="hidden" value="{{$item['id']}}">
-	                                        @csrf
-	                                    </form>
-	                                </td>
-
-	                            </tr>
-	                            @endforeach
-
+				                            </tr>
+			                            @endcan
+		                            @endforeach
 	                            </tbody>
 
 	                            <tfoot>
-	                            <th>Course</th>
-	                            <th>Subject</th>
-	                            <!-- <th>Teacher</th> -->
-	                            <th>
-	                                Teacher<br>
-	                                Enrolled <small>(count)</small><br>
-	                                Ecomplete <small>(count)</small><br>
-	                                Rating
-	                            </th>
-	                            <!-- <th>Last updated</th> -->
-	                            <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
-	                            <th>Status</th>
-	                            <th class="text-right">Action</th>
+		                            <th>Course</th>
+		                            <th>Subject</th>
+		                            <!-- <th>Teacher</th> -->
+		                            <th>
+		                                Teacher<br>
+		                                Enrolled <small>(count)</small><br>
+		                                Ecomplete <small>(count)</small><br>
+		                                Rating
+		                            </th>
+		                            <!-- <th>Last updated</th> -->
+		                            <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
+		                            <th>Status</th>
+		                            <th class="text-right">Action</th>
 	                            </tfoot>
 
 	                        </table>
@@ -304,16 +324,20 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [{
-				text: 'Add course',
-				action: function ( e, dt, node, config ) {
-					//$('#addProjectModal').modal('show');
-					//$('#add-modal').modal('show');
-					window.location = '{{route ('admin.courses.create')}}';
-					//  alert( 'Button activated' );
-				},
-				className: 'add-ct mb-3 btn-green '
-			}],
+			buttons: [
+			@can(CourseAbilities::CREATE_COURSES)
+				{
+					text: 'Add course',
+					action: function ( e, dt, node, config ) {
+						//$('#addProjectModal').modal('show');
+						//$('#add-modal').modal('show');
+						window.location = '{{route ('admin.courses.create')}}';
+						//  alert( 'Button activated' );
+					},
+					className: 'add-ct mb-3 btn-green '
+				}
+			@endcan
+			],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5],
 				"searchable": false

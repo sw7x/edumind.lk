@@ -73,16 +73,16 @@
                                                 <div class="btn-group">
                                                     <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                     
-                                                    @can(SubjectAbilities::EDIT, $item['dbRec'])
+                                                    @can(SubjectAbilities::EDIT_SUBJECTS, $item['dbRec'])
                                                     <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                     @endcan
                                                     
-                                                    @can(SubjectAbilities::DELETE, $item['dbRec'])
+                                                    @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
                                                     <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a>
                                                     @endcan
                                                 </div>
                                                 
-                                                @can(SubjectAbilities::DELETE, $item['dbRec'])
+                                                @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
                                                     <form class="subject-destroy" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
                                                         @method('DELETE')
                                                         @csrf
@@ -237,7 +237,7 @@
                     }
                 }
                 */
-                @can(SubjectAbilities::CREATE)
+                @can(SubjectAbilities::CREATE_SUBJECTS)
 				{
 					text: 'Add subject',
 					action: function ( e, dt, node, config ) {

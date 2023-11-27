@@ -6,6 +6,7 @@ use App\Models\Course as CourseModel;
 use App\Models\User as UserModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Role as RoleModel;
+use App\Common\SharedServices\UserSharedService;
 
 class CoursePolicy
 {
@@ -19,8 +20,7 @@ class CoursePolicy
      */
     public function viewAny(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER, RoleModel::MARKETER]);
+        return true;
     }
 
     /**
@@ -32,8 +32,7 @@ class CoursePolicy
      */
     public function view(UserModel $user, CourseModel $course)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER, RoleModel::MARKETER]);
+        return true;
     }
 
     /**
@@ -44,8 +43,10 @@ class CoursePolicy
      */
     public function create(UserModel $user)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER]);
+        $userSharedService  = new UserSharedService();
+        $allowedRoles       = [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER];
+        $hasAllowedRole     = $userSharedService->hasAnyRole($user, $allowedRoles);
+        return $hasAllowedRole;
     }
 
     /**
@@ -57,9 +58,15 @@ class CoursePolicy
      */
     public function update(UserModel $user, CourseModel $course)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
-                ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));
+        
+        $userSharedService  = new UserSharedService();
+        $allowedRoles       = [RoleModel::ADMIN, RoleModel::EDITOR];
+        $hasAllowedRole     = $userSharedService->hasAnyRole($user, $allowedRoles);
+        
+        $isTeacher          = $userSharedService->hasRole($user, RoleModel::TEACHER);
+        $isCourseAuthor     = $isTeacher ? $user->isCourseAuthor($course) : false;
+
+        return ($hasAllowedRole || $isCourseAuthor);
     }
 
     /**
@@ -71,9 +78,15 @@ class CoursePolicy
      */
     public function delete(UserModel $user, CourseModel $course)
     {
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
-                ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));
+        
+        $userSharedService  = new UserSharedService();
+        $allowedRoles       = [RoleModel::ADMIN, RoleModel::EDITOR];
+        $hasAllowedRole     = $userSharedService->hasAnyRole($user, $allowedRoles);
+        
+        $isTeacher          = $userSharedService->hasRole($user, RoleModel::TEACHER);
+        $isCourseAuthor     = $isTeacher ? $user->isCourseAuthor($course) : false;
+
+        return ($hasAllowedRole || $isCourseAuthor);
     }
 
     /**
@@ -100,44 +113,16 @@ class CoursePolicy
         //
     }
 
-    public function watch(UserModel $user, CourseModel $course)
-    {
-        /*
-
-        $userRole = $user->roles()->first()->slug;
-        if(in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]))
-
-        if($userRole == RoleModel::TEACHER)    
-        if user student and student enrolled 
         
-
-        if($userRole == RoleModel::TEACHER)    
-    
-        if user teacher and teacher owned 
-
-        admin/editor
-        */
-
-
-        $userRole = $user->roles()->first()->slug;   
-        return  
-            in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
-            ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));
-            ($userRole == RoleModel::STUDENT && $user->isCourseAuthor($course));
-
-
-
-
-
-        $userRole = $user->roles()->first()->slug;   
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER, RoleModel::MARKETER]);
-    }
-
-    
     public function changeStatus(UserModel $user, CourseModel $course)
     {
-        $userRole = $user->roles()->first()->slug;
-        return in_array($userRole, [RoleModel::ADMIN, RoleModel::EDITOR]) || 
-                ($userRole == RoleModel::TEACHER && $user->isCourseAuthor($course));        
+        $userSharedService  = new UserSharedService();
+        $allowedRoles       = [RoleModel::ADMIN, RoleModel::EDITOR];
+        $hasAllowedRole     = $userSharedService->hasAnyRole($user, $allowedRoles);
+        
+        $isTeacher          = $userSharedService->hasRole($user, RoleModel::TEACHER);
+        $isCourseAuthor     = $isTeacher ? $user->isCourseAuthor($course) : false;
+
+        return ($hasAllowedRole || $isCourseAuthor);
     }
 }

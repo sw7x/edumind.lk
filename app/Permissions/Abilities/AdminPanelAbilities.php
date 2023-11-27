@@ -4,7 +4,5 @@ namespace App\Permissions\Abilities;
 
 class AdminPanelAbilities{
 
-	const ACCESS = 'access';
-	
-
+	const ACCESS = 'admin_panel_access';
 }

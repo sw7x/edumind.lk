@@ -7,11 +7,15 @@ use Carbon\Carbon;
 
 class UserDataFormatter{
     
-    public static function prepareUserListData(array $userDtoArr) : array {
+    public static function prepareUserListData(array $userDataArr) : array {
         $arr = array();
         
-        foreach ($userDtoArr as $userDto) {
-            $tempArr    = $userDto->toArray();
+        foreach ($userDataArr as $userData) {
+            $tempArr = array();
+
+            $tempArr['data']    = ($userData['dto'])->toArray();
+            $tempArr['dbRec']   = $userData['dbRec'];
+
             $arr[]      = $tempArr;
         }
         return $arr;
