@@ -8,14 +8,14 @@ use App\DataTransferObjects\UserDto;
 use App\DataTransferObjects\Factories\UserDtoFactory;
 use App\Mappers\UserMapper;
 use App\Domain\Factories\UserFactory;
+use App\Repositories\CourseSelectionRepository;
+use App\Models\Role as RoleModel;
 
-//use App\Repositories\UserRepository;
 
 class UserDataTransformer{
 
 	public static function buildDto(array $userRecData) : UserDto {
-
-        $userEntity = self::buildEntity($userRecData);
+        $userEntity = self::buildEntity($userRecData);        
         $userDto    = UserDtoFactory::fromArray($userEntity->toArray());
 		return $userDto;
 
@@ -30,20 +30,26 @@ class UserDataTransformer{
 				        			"uuid" 	=> $userRecData['roles'][0]['uuid'],
 				        			"slug" 	=> $userRecData['roles'][0]['slug'],
 				        			"name" 	=> $userRecData['roles'][0]['name'],
-				        		);
+				        		);    	
         	}else{
         		$roleArr = [];
         	}
 
 			$userRecData['role_arr'] = $roleArr;
-
         }
 
-        //dd($userRecData);
-        $userEntityArr 	= UserMapper::dbRecConvertToEntityArr($userRecData);
-        $userEntity      = (new UserFactory())->createObjTree($userEntityArr);
-        return $userEntity;
+        
+        if(!isset($userRecData['cart_items_arr'])){
+            if(isset($userRecData['id'])){
+            	if(isset($userRecData['role_arr']['name']) && $userRecData['role_arr']['name'] == RoleModel::STUDENT){
+            		$userRecData['cart_items_arr'] = (new CourseSelectionRepository())->cartItemsByStudentId($userRecData['id']);
+            	}
+            }
+        }
 
+        $userEntityArr 	= UserMapper::dbRecConvertToEntityArr($userRecData);        
+        $userEntity     = (new UserFactory())->createObjTree($userEntityArr);
+        return $userEntity;
 	}
     
 

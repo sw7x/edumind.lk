@@ -49,19 +49,27 @@ class Cart extends Entity{
     // toArray method
     public function toArray() : array {
         
-        /*$courseItemArr = [];
+        /*
+        $courseItemArr = [];
         foreach ($this->courseItems as $courseItem) {
             $courseItemArr[] = $courseItem->toArray();
-        }*/
+        }
+        */
 
+        /*
         return [
             //'id'            => $this->id,
             //'uuid'          => $this->uuid,
 
             //'cartOwner'     => $this->cartOwner ? $this->cartOwner->toArray() : [],
             //'courseItems'   => $this->courseItems ? $this->courseItems->toArray() : [],
-            'courseItems'     => parent::ObjArrConvertToData($this->courseItems),
+            //'courseItems'     => parent::ObjArrConvertToData($this->courseItems),
+            parent::ObjArrConvertToData($this->courseItems),
         ];
+        */
+
+
+        return parent::ObjArrConvertToData($this->courseItems);
     }
 
 

@@ -19,8 +19,14 @@ use App\Domain\Types\UserTypesEnum;
 use App\Domain\Types\GenderTypesEnum;
 
 use App\Domain\Factories\IFactory;
+use App\Domain\Factories\CourseItemFactory;
 
 use App\Domain\IEntity;
+use App\Mappers\CourseItemMapper;
+
+
+
+
 
 //class UserFactory {
 class UserFactory implements IFactory {
@@ -468,6 +474,15 @@ class UserFactory implements IFactory {
             if($userData['roleArr']['name'] == UserTypesEnum::STUDENT) $role->setSlug($userData['roleArr']['slug']);
             $studentUser->setRole($role);
         }
+
+        /* adding cart items to student entity object */
+        if(isset($userData['cartItemsArr']) && is_array($userData['cartItemsArr'])){
+            foreach ($userData['cartItemsArr'] as $cartItemData) {
+                $courseItemArr      =   CourseItemMapper::dbRecConvertToEntityArr($cartItemData);
+                $courseItemEntity   =  (new CourseItemFactory())->createObjTree($courseItemArr);
+                $studentUser->addToCart($courseItemEntity);
+            }
+        }    
 
         return $studentUser;
     }

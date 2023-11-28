@@ -22,6 +22,7 @@ class UserDto extends AbstractDto{
     private   ?string  $profileText;
     private   ?string  $eduQualifications;
     private   ?bool    $isActivated;
+    private   array    $cartItems;
 
     private   ?RoleDto $roleDto;
 
@@ -41,6 +42,7 @@ class UserDto extends AbstractDto{
         ?string  $profileText       = null,
         ?string  $eduQualifications = null,
         ?bool    $isActivated       = null,
+        array    $cartItems         = [],
 
         ?RoleDto $roleDto           = null
     ) {        
@@ -58,7 +60,7 @@ class UserDto extends AbstractDto{
         $this->profileText          = $profileText;     
         $this->eduQualifications    = $eduQualifications;
         $this->isActivated          = $isActivated;
-
+        $this->cartItems           = $cartItems;
         
         $this->roleDto              = $roleDto;
     }
@@ -114,6 +116,10 @@ class UserDto extends AbstractDto{
 
     public function getIsActivated() : ?bool {
         return $this->isActivated;
+    }    
+
+    public function getCartItems() : array {
+        return $this->cartItems;
     }
 
     public function getRoleDto() : ?RoleDto {
@@ -122,6 +128,13 @@ class UserDto extends AbstractDto{
 
 
     public function toArray() : array {
+
+        $cartItemsArr = [];
+        if(!empty($this->cartItems)){
+            foreach ($this->cartItems as $cartItem) {
+                $cartItemsArr[] = $cartItem->toArray();
+            }
+        }
 
         return [
             'id'                => $this->id,
@@ -137,7 +150,8 @@ class UserDto extends AbstractDto{
             'profileText'       => $this->profileText,
             'eduQualifications' => $this->eduQualifications,
             'isActivated'       => $this->isActivated,
-            
+            'cartItemsArr'      => $cartItemsArr,
+
             'roleArr'           => $this->roleDto ? $this->roleDto->toArray() : null,
             'roleId'            => $this->roleDto ? $this->roleDto->getId() : null,
         ];

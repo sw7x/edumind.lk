@@ -8,6 +8,7 @@ use App\Mappers\Mapper;
 
 use App\Mappers\CourseMapper;
 use App\Mappers\CouponMapper;
+use App\Mappers\UserMapper;
 
 
 
@@ -42,13 +43,13 @@ class CourseItemMapper extends Mapper{
 
             '__ARRAY__' => [
                 [
-                    "course_arr",       '=>',       "courseArr",    CourseMapper::mapper['DATABSE_MAP']
+                    "course_arr",       '=>',       "courseArr",       CourseMapper::mapper['DATABSE_MAP']
                 ],
                 [
-                    "used_coupon_arr", 	'=>',       "usedCouponArr",    CouponMapper::mapper['DATABSE_MAP']
+                    "used_coupon_arr", 	'=>',       "usedCouponArr",   CouponMapper::mapper['DATABSE_MAP']
                 ],                
 				[
-                    "student_arr", 		'=>',      "studentArr",    CouponMapper::mapper['DATABSE_MAP']
+                    "student_arr", 		'=>',      "studentArr",       UserMapper::mapper['DATABSE_MAP']
                 ]
             ]
         ], 
@@ -89,7 +90,7 @@ class CourseItemMapper extends Mapper{
                     "usedCouponArr",    '=>',       "used_coupon_arr",    CouponMapper::mapper['POST_MAP']
                 ],
                 [
-                    "studentArr",       '=>',       "student_arr",    CouponMapper::mapper['POST_MAP']
+                    "studentArr",       '=>',       "student_arr",    UserMapper::mapper['POST_MAP']
                 ]
             ]
         ],

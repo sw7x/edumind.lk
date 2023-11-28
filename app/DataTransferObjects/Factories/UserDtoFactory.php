@@ -13,6 +13,7 @@ use App\DataTransferObjects\UserDto;
 //use App\DataTransferObjects\RoleDto;
 use App\DataTransferObjects\Factories\AbstractDtoFactory;
 use App\DataTransferObjects\Factories\RoleDtoFactory;
+use App\DataTransferObjects\Factories\CourseItemDtoFactory;
 
 use Illuminate\Http\Request;
 use App\DataTransferObjects\Exceptions\MissingArgumentDtoException;
@@ -34,10 +35,14 @@ class UserDtoFactory extends AbstractDtoFactory{
 		
 		$roleDto    =   (isset($data['roleArr']) && !empty($data['roleArr'])) ? 
                             RoleDtoFactory::fromArray($data['roleArr']) : 
-                            (isset($data['roleId']) ? 
-                                (new RoleDtoFactory())->createDtoById($data['roleId']) : 
-                                null 
-                            );
+                            (isset($data['roleId']) ? (new RoleDtoFactory())->createDtoById($data['roleId']) : null);       
+
+        $cartItemsArr = [];
+        if(isset($data['cartItemsArr']) && is_array($data['cartItemsArr'])){
+            foreach ($data['cartItemsArr'] as $cartItemData) {    
+                $cartItemsArr[] = CourseItemDtoFactory::fromArray($cartItemData);
+            }
+        }                    
 
         return new UserDto(
             $data['fullName'],            
@@ -54,6 +59,7 @@ class UserDtoFactory extends AbstractDtoFactory{
             $data['profileText']?? null,            
             $data['eduQualifications']?? null,
             $data['isActivated']?? null,
+            $cartItemsArr,
 
             $roleDto                   
         );        

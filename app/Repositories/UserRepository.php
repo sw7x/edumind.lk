@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 
 use App\Repositories\BaseRepository;
+use App\Repositories\CourseSelectionRepository;
 use App\Models\Role as RoleModel;
 use App\Models\User as UserModel;
 
@@ -183,9 +184,14 @@ class UserRepository extends BaseRepository implements IGetDataRepository{
         }
 
         unset($userArr['roles']);
+
+        if(isset($userArr['role_arr']['name']) && $userArr['role_arr']['name'] == RoleModel::STUDENT){
+            $userArr['cart_items_arr'] = (new CourseSelectionRepository())->cartItemsByStudentId($userId);
+        }
+
         return $userArr;
     }
-    
+
     public function findDtoDataById(int $userId): array {
         $data = $this->findDataArrById($userId);
         return UserMapper::dbRecConvertToEntityArr($data);

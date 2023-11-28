@@ -6,6 +6,7 @@ namespace App\Domain\Users;
 use App\Domain\AbstractUser as AbstractUserEntity;
 use App\Domain\Users\User as UserEntity;
 use App\Domain\Cart as CartEntity;
+use App\Domain\CourseItem as CourseItemEntity;
 
 
 
@@ -90,7 +91,7 @@ class StudentUser extends UserEntity {
             'roleArr'       => $this->role ? $this->role->toArray() : null,
             'roleId'        => $this->role ? $this->role->getId()   : null,
 
-            'cartArr'       => $this->cart ? $this->cart->toArray() : null,
+            'cartItemsArr'  => $this->cart ? $this->cart->toArray() : null,
         ];
     }
 
@@ -98,7 +99,7 @@ class StudentUser extends UserEntity {
     
 
 
-    public function addToCart(CourseItem $courseItem) : void {
+    public function addToCart(CourseItemEntity $courseItem) : void {
         $this->cart->addToCart($courseItem);
     }
     

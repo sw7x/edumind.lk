@@ -3,6 +3,7 @@ namespace App\Mappers;
 
 use App\Mappers\Mapper;
 use App\Mappers\RoleMapper;
+use App\Mappers\CourseItemMapper;
 
 class UserMapper extends Mapper{
     
@@ -28,9 +29,12 @@ class UserMapper extends Mapper{
 
             ['role_id',            '=>',      'roleId'],
             ['is_activated',       '=>',      'isActivated'],
+            ['cart_items_arr',     '=>',      'cartItemsArr'],
+
+
             '__ARRAY__' => [
                 [
-                    "role_arr",    '=>',     "roleArr",    RoleMapper::mapper['DATABSE_MAP']
+                    "role_arr",    '=>',       "roleArr",     RoleMapper::mapper['DATABSE_MAP']
                 ]
             ],
 

@@ -12,7 +12,7 @@ use App\Domain\Exceptions\MissingArgumentDomainException;
 use App\Domain\Exceptions\InvalidArgumentDomainException;
 //use App\Domain\IEntity;
 use App\Domain\Types\SubjectStatusTypesEnum;
-
+use App\Domain\Factories\UserFactory;
 
 
 //class SubjectFactory {
