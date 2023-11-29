@@ -16,32 +16,31 @@ class Mapper{
     const POST_MAP      = 'POST_MAP';
     
 
-
     /*  DB Record  ===_convet_to_===>  ENTITY  */
-    public static function dbRecConvertToEntityArr(array $modelDataArr, bool $noStrict = true) : array {       
+    public static function dbRecConvertToEntityArr(array $modelDataArr, bool $doStrictMapping = true) : array {       
         $dbMapper     = static::mapper[self::DATABSE_MAP];              
-        return static::mapToMapperValues($dbMapper, $modelDataArr, $noStrict);
+        return static::mapToMapperValues($dbMapper, $modelDataArr, $doStrictMapping);
     }    
     
     /*  ENTITY  ===_convet_to_===> DB Record   */
-    public static function entityConvertToDbArr(array $entityDataArr, bool $noStrict = true) : array {        
+    public static function entityConvertToDbArr(array $entityDataArr, bool $doStrictMapping = true) : array {        
         $dbMapper   = static::mapper[self::DATABSE_MAP];
-        return static::mapToMapperKeys($dbMapper, $entityDataArr, $noStrict);
+        return static::mapToMapperKeys($dbMapper, $entityDataArr, $doStrictMapping);
     }
 
 
 
 
     /*  DTO  ===_convet_to_===>    ENTITY
-    public static function dtoConvertToEntityArr(array $dtoDataArr, bool $noStrict = true) : array {
+    public static function dtoConvertToEntityArr(array $dtoDataArr, bool $doStrictMapping = true) : array {
         $entityMapper   = static::mapper[self::ENTITY_MAP];          
-        return static::mapToMapperKeys($entityMapper, $dtoDataArr, $noStrict);
+        return static::mapToMapperKeys($entityMapper, $dtoDataArr, $doStrictMapping);
     }
     
     /*  ENTITY  ===_convet_to_===>  DTO  
-    public static function entityConvertToDtoArr(array $entityDataArr, bool $noStrict = true) : array {        
+    public static function entityConvertToDtoArr(array $entityDataArr, bool $doStrictMapping = true) : array {        
         $entityMapper  = static::mapper[self::ENTITY_MAP];
-        return static::mapToMapperValues($entityMapper, $entityDataArr, $noStrict);
+        return static::mapToMapperValues($entityMapper, $entityDataArr, $doStrictMapping);
     }
     */
     
@@ -49,15 +48,15 @@ class Mapper{
 
     
     /*  DTO  ===_convet_to_===>  Array(from frontend)  */
-    public function dtoConvertToArr(array $dtoDataArr, bool $noStrict = true) : array {
+    public function dtoConvertToArr(array $dtoDataArr, bool $doStrictMapping = true) : array {
         $postMapper   = static::mapper[self::POST_MAP];               
-        return static::mapToMapperValues($postMapper, $dtoDataArr, $noStrict);
+        return static::mapToMapperValues($postMapper, $dtoDataArr, $doStrictMapping);
     }
 
     /*  Array(from frontend)  ===_convet_to_===> DTO   */
-    public static function arrConvertToDtoArr(array $arr, bool $noStrict = true) : array {
+    public static function arrConvertToDtoArr(array $arr, bool $doStrictMapping = true) : array {
         $postMapper   = static::mapper[self::POST_MAP];             
-        return static::mapToMapperKeys($postMapper, $arr, $noStrict);
+        return static::mapToMapperKeys($postMapper, $arr, $doStrictMapping);
     }
     
 
@@ -104,7 +103,7 @@ class Mapper{
 
 
     
-    private static function mapToMapperValues(array $mapperArr, array $dataArr, bool $noStrict = true) : array {        
+    private static function mapToMapperValues(array $mapperArr, array $dataArr, bool $doStrictMapping = true) : array {        
         $data = [];
 
         $mapperKeyValueItemsArr = array_filter($mapperArr, function ($item, $key) {
@@ -121,7 +120,7 @@ class Mapper{
 				}
                 
                 $mapperArrkey = array_search ($dataKey, $mapperKeyValueItemsArr);				
-				if(($noStrict == false) && $mapperArrkey){
+				if(($doStrictMapping == false) && $mapperArrkey){
 					$data[$mapperKeyValueItemsArr[$mapperArrkey]] = $dataValue;
 				}			
 			}
@@ -142,7 +141,7 @@ class Mapper{
                             $data[end($mapperSubArr)] = $dataValue;
                         }
 						
-						if(($noStrict == false) && (end($mapperSubArr) == $dataKey)){
+						if(($doStrictMapping == false) && (end($mapperSubArr) == $dataKey)){
 							$data[end($mapperSubArr)] = $dataValue;
 						}
                     }
@@ -161,12 +160,12 @@ class Mapper{
 						
                         if ((reset($subArray) === $dataKey) && is_array($dataValue)){                            
                             $newKey        = $subArray[2];
-                            $data[$newKey] = static::mapToMapperValues(end($subArray), $dataValue, $noStrict);
+                            $data[$newKey] = static::mapToMapperValues(end($subArray), $dataValue, $doStrictMapping);
                         }
 
-						if(($noStrict == false) && ($subArray[2] === $dataKey) && is_array($dataValue)){
+						if(($doStrictMapping == false) && ($subArray[2] === $dataKey) && is_array($dataValue)){
 							$newKey        = $subArray[2];
-							$data[$newKey] = static::mapToMapperValues(end($subArray), $dataValue, $noStrict);
+							$data[$newKey] = static::mapToMapperValues(end($subArray), $dataValue, $doStrictMapping);
 						}
                     }                    
                 }
@@ -176,7 +175,7 @@ class Mapper{
     }
 
 
-    private static function mapToMapperKeys(array $mapperArr, array $dataArr, bool $noStrict = true) : array {        
+    private static function mapToMapperKeys(array $mapperArr, array $dataArr, bool $doStrictMapping = true) : array {        
         $data = [];
 
         /*
@@ -211,7 +210,7 @@ class Mapper{
                             $data[reset($mapperSubArr)] = $dataValue;
                         }
 						
-						if(($noStrict == false) && (reset($mapperSubArr) == $dataKey)){
+						if(($doStrictMapping == false) && (reset($mapperSubArr) == $dataKey)){
 							$data[reset($mapperSubArr)] = $dataValue;
 						}
                     }
@@ -230,12 +229,12 @@ class Mapper{
 						
 						if (($subArray[2] === $dataKey) && is_array($dataValue)){
                             $newKey        = reset($subArray);
-                            $data[$newKey] = static::mapToMapperKeys(end($subArray), $dataValue, $noStrict);
+                            $data[$newKey] = static::mapToMapperKeys(end($subArray), $dataValue, $doStrictMapping);
                         } 
 
-						if(($noStrict == false) && (reset($subArray) === $dataKey) && is_array($dataValue)){
+						if(($doStrictMapping == false) && (reset($subArray) === $dataKey) && is_array($dataValue)){
 							$newKey        = reset($subArray);
-                            $data[$newKey] = static::mapToMapperKeys(end($subArray), $dataValue, $noStrict);
+                            $data[$newKey] = static::mapToMapperKeys(end($subArray), $dataValue, $doStrictMapping);
 						}
                     }                    
                 }
