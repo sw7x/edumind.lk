@@ -51,7 +51,7 @@ class CartController extends Controller
         try {
             $msgArr = [];
             $user   = Sentinel::getUser();
-
+            
             //before load cart page view, resetting and remove invalid cart items in user's cart
             if($user && ($user->roles()->first()->slug == RoleModel::STUDENT)){
                 $freeCoursArr   = $this->cartService->removeFreeCourseFromCart($user);
@@ -85,7 +85,7 @@ class CartController extends Controller
                 'cart_re_init_msgTitle' => 'Error',
                 'cart_re_init_msg_arr'  => []
             ]);
-        
+
         }
 
     }
@@ -128,7 +128,7 @@ class CartController extends Controller
             $saveFormData   = json_encode($request->except(['from','_token']));
             $dbRec          = $this->cartService->saveBillingInfoData($saveFormData, $user);
             if(!$dbRec)
-                abort(500, "Failed to save Billing Info form due to server error!");    
+                abort(500, "Failed to save Billing Info form due to server error!");
 
             $randomId       = substr(md5(mt_rand()), 0, 5);
             $viewDataArr    = array(
@@ -146,7 +146,7 @@ class CartController extends Controller
                 ->withErrors($billingInfoValErrors ?? [],'billingInfoErrMsgArr')
                 ->withInput($request->input())
                 ->with(AlertDataUtil::error($msg));
-        
+
         }
 
     }
@@ -163,11 +163,85 @@ class CartController extends Controller
         return view('student.cart.pay-with-credit-card')->with($checkoutDataArr);
     }
 
+    
+    public function addToCart(Request $request){
+        $this->hasPermission(CartAbilities::ADD_TO_CART);
+
+        $courseId = $request->input('courseId');
+        $user     = Sentinel::getUser();
+
+        try{
+            if(!filter_var($courseId, FILTER_VALIDATE_INT))
+                throw new CustomException('Invalid id');
+
+            $course = CourseModel::find($courseId);
+            if(is_null($course))
+                abort(404,'Course does not exists in database');
+
+            if($course->price == 0)
+                throw new CustomException('This is free course cannot add to cart');
+                      
+            $insertedRec = $this->cartService->saveCartItem($course, $user);
+            if(!$insertedRec)
+                abort(500, "Course add to cart failed due to server error !");
+
+            return  redirect()->back()
+                        ->with(AlertDataUtil::success('Successfully added course to your cart'));
+
+        }catch(CustomException $e){
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
+
+        }catch(\Exception $e){
+            return redirect()->back()->with(
+                AlertDataUtil::error('Course add to cart failed !',[
+                    //'message'     => $e->getMessage(),
+                ])
+            );
+        }
+    }
+
+    
+    public function removeFromCart(Request $request, $id){
+        $this->hasPermission(CartAbilities::REMOVE_FROM_CART);
+
+        try{            
+            $user       = Sentinel::getUser();         
+            $isDelete   = $this->cartService->deleteCartItem($id, $user);
+
+            /*
+            if(!$isDelete)
+                abort(500, "Course delete from cart is failed due to server error !");
+            */
+            
+            if(!$isDelete)
+                return redirect(route('view-cart'))->with(AlertDataUtil::error('Course delete from cart is failed due to server error !'));
+
+            if($request->get('page') == 'cart'){
+                return redirect(route('view-cart'));
+            }else{
+                return redirect()->back();
+            }
+
+        }catch(CustomException $e){
+            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
+
+        }catch(\Exception $e){
+            return redirect()->back()->with(
+                AlertDataUtil::error('Course delete from cart is failed !',[
+                    'message'     => $e->getMessage(),
+                ])
+            );
+        }
+
+    }
+
+    
+
+    
 
 
 
-
-
+    
 
 
 
@@ -179,38 +253,6 @@ class CartController extends Controller
         ========================================================================= */
 
 
-
-    public function removeFromCart(Request $request, $id){
-        $this->hasPermission(CartAbilities::REMOVE_FROM_CART);
-
-        //dump($request->get('page'));
-        //dd($id);
-
-        $user = Sentinel::getUser();
-        if(is_null($user))
-            abort(401, "You need to login before remove items from cart");
-
-        //dump($id);
-        //dump($user->id);
-
-        $isDelete = CourseSelectionModel::Where('course_id',$id)
-                        ->where('student_id',$user->id)
-                        ->where('is_checkout',0)
-                        ->first()
-                        ->delete();
-
-
-       //dd($isDelete);
-        if(!$isDelete) //abort 500 ???
-            return redirect(route('view-cart'))->with(AlertDataUtil::error('Course remove from cart failed!'));
-
-
-        if($request->get('page') == 'cart'){
-            return redirect(route('view-cart'));
-        }else{
-            return redirect()->back();
-        }
-    }
 
 
     //???????????????????
@@ -241,7 +283,7 @@ class CartController extends Controller
 		            'checkout_date' => $now,
 		            'billing_info' 	=> 'mm',
 		        ]);
-                
+
                 if(!$invoice) //todo cehck is that rollback
                     abort(500, "Checkout failed due to server error !");
 
@@ -260,7 +302,7 @@ class CartController extends Controller
 			            'is_complete' 			=> false,
 			            'invoice_id'			=> $invoiceRec->id
 			        ]);
-			        
+
                     if(!$isInsert) //todo cehck is that rollback
                         abort(500, "Checkout failed due to server error !");
 
@@ -400,7 +442,7 @@ class CartController extends Controller
 
                     $courseRecord->is_checkout = true;
                     $isSaved = $courseRecord->save();
-                    
+
                     if(!$isSaved) //todo cehck is that rollback
                         abort(500, "Checkout failed due to server error !");
 
@@ -456,65 +498,7 @@ class CartController extends Controller
             );
         }
     }
-
-
-    public function addToCart(Request $request){
-        $this->hasPermission(CartAbilities::ADD_TO_CART);
-
-        //dd('ss');
-        $courseId = $request->input('courseId');
-        $user     = Sentinel::getUser();
-
-        try{
-            if(!filter_var($courseId, FILTER_VALIDATE_INT))
-                throw new CustomException('Invalid id');
-
-            if(is_null($user))
-                abort(401,'First login before enrolling');
-
-            if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
-                throw new CustomException('Invalid user');
-
-            $course = CourseModel::find($courseId);
-            if(is_null($course))
-                abort(404,'Course does not exists in database');
-
-        	if($course->price == 0)
-        		throw new CustomException('This is free course cannot add to cart');
-
-            $isCreated = CourseSelectionModel::create([
-                'cart_added_date'   => Carbon::now(),
-                'is_checkout'       => false,
-                'course_id'         => $courseId,
-                'student_id'        => $user->id,
-            	'edumind_amount' 	=> $course->price * ((100-$course->author_share_percentage)/100),
-				'author_amount' 	=> $course->price * ($course->author_share_percentage/100),
-
-                'used_coupon_code'          => null,
-                'discount_amount'           => 0,
-				'revised_price'    	        => $course->price,
-                'edumind_lose_amount'       => 0,
-                'beneficiary_earn_amount'   => 0
-            ]);
-
-            if(!$isCreated) //todo cehck is that rollback
-                abort(500, "Course add to cart failed due to server error !");
-
-            return  redirect()->back()
-                        ->with(AlertDataUtil::success('Successfully added course to your cart'));
-
-
-        }catch(CustomException $e){
-            return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
-
-        }catch(\Exception $e){
-            return redirect()->back()->with(
-                AlertDataUtil::error('Course add to cart failed !',[
-                    //'message'     => $e->getMessage(),
-                ])
-            );
-        }
-    }
+    
 
     public function removeCoupon(Request $request){
         $this->hasPermission(CartAbilities::REMOVE_COUPON);

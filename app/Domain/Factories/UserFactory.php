@@ -475,15 +475,15 @@ class UserFactory implements IFactory {
             $studentUser->setRole($role);
         }
 
+
         /* adding cart items to student entity object */
         if(isset($userData['cartItemsArr']) && is_array($userData['cartItemsArr'])){
             foreach ($userData['cartItemsArr'] as $cartItemData) {
-                $courseItemArr      =   CourseItemMapper::dbRecConvertToEntityArr($cartItemData);
+                $courseItemArr      =   CourseItemMapper::dbRecConvertToEntityArr($cartItemData, false);
                 $courseItemEntity   =  (new CourseItemFactory())->createObjTree($courseItemArr);
                 $studentUser->addToCart($courseItemEntity);
             }
         }    
-
         return $studentUser;
     }
 

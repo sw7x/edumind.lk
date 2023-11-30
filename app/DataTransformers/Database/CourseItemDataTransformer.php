@@ -43,9 +43,22 @@ class CourseItemDataTransformer{
         $courseItemEntity    = (new CourseItemFactory())->createObjTree($courseItemEntityArr);
         return $courseItemEntity;
 	}
+
+    public static function entityToDbRecArr(CourseItemEntity $courseItemEntity) : array {
+        $courseItemEntityArr    = $courseItemEntity->toArray();
+        $payloadArr             = CourseItemMapper::entityConvertToDbArr($courseItemEntityArr);
+        //unset($payloadArr['creator_arr']);
+        return $payloadArr;
+    }
+
+
+    public static function dtoToDbRecArr(CourseItemDto $courseItemDto) : array {
+        $courseItemEntity   = (new CourseItemFactory())->createObjTree($courseItemDto->toArray());
+        $payloadArr         = self::entityToDbRecArr($courseItemEntity);
+        return $payloadArr;
+    }
+
 } 	
-
-
 
 
 /*            
@@ -62,5 +75,3 @@ dump(CourseItemDataTransformer::buildDto($rr));
 dd('k');
 
 */
-
-

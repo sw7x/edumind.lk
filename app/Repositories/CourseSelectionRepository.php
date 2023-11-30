@@ -35,11 +35,11 @@ class CourseSelectionRepository extends BaseRepository{
     }
     
     /**
-    * @param array $columns
     * @param int $userModelId
-    * @return Collection
+    * @param array $columns
+    * @return array
     */
-    public function cartItemsByStudentId( int $userModelId, array $columns = ['*']) : array {
+    public function cartItemsByStudentId(int $userModelId, array $columns = ['course_selections.*']) : array {
         $cartRecords    =   $this->model
                                 ->join('courses', 'course_selections.course_id', '=', 'courses.id')
                                 ->where('course_selections.student_id', $userModelId)
@@ -47,7 +47,7 @@ class CourseSelectionRepository extends BaseRepository{
                                 ->where('course_selections.cart_added_date', '!=', null)
                                 ->where('courses.price', '!=', 0)
                                 ->orderBy('course_selections.cart_added_date','desc')
-                                ->get('course_selections.*');
+                                ->get($columns);
 
         $cartRecordsArr =   $cartRecords->toArray();
 
@@ -78,6 +78,30 @@ class CourseSelectionRepository extends BaseRepository{
 
         return $cartRecordsArr;
     }
+
+
+    /**
+    * @param array $columns
+    * @param int $courseModelId
+    * @param int $studentModelId
+    * @return CourseSelectionModel
+    */     
+    public function getStudentCartItemByCourseId(
+        int $courseModelId, 
+        int $studentModelId,
+        array $columns = ['course_selections.*']
+    ) : ?CourseSelectionModel {
+        return  $this->model
+                    ->join('courses', 'course_selections.course_id', '=', 'courses.id')
+                    ->where('course_selections.course_id', $courseModelId)
+                    ->where('course_selections.student_id', $studentModelId)
+                    ->where('course_selections.is_checkout', 0)
+                    ->where('course_selections.cart_added_date', '!=', null)
+                    ->where('courses.price', '!=', 0)
+                    ->first($columns);
+
+        return $cartRecArr;
+    }                        
 
 
     public function cartItemCountByStudent(UserModel $userRec) : int {

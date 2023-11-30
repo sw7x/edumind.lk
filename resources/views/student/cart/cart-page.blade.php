@@ -185,7 +185,7 @@
                                                         </td>
                                                         <td>                                                        
                                                             @can(CartAbilities::REMOVE_FROM_CART)
-                                                                <form action="{{route('remove-cart',$course['id'])}}" method="post" class='course-enroll-form'>
+                                                                <form action="{{route('remove-cart', $course['id'])}}" method="post" class='course-enroll-form'>
                                                                     {{csrf_field ()}}
                                                                     <div class="mt-4">
                                                                         <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full" style="width:40px; height: 40px">

@@ -7,6 +7,7 @@ use App\Repositories\CouponRepository;
 
 use App\Exceptions\CustomException;
 use App\Models\User as UserModel;
+use App\Models\Course as CourseModel;
 use App\Models\CourseSelection as CourseSelectionModel;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -16,6 +17,14 @@ use App\DataTransformers\Database\CouponCodeDataTransformer;
 
 //use App\Repositories\CourseRepository;
 //use App\Repositories\CourseItemRepository;
+//use App\DataTransferObjects\UserDto;
+//use App\DataTransferObjects\CourseItemDto;
+
+use App\Domain\CourseItem;
+use App\DataTransferObjects\Factories\CourseItemDtoFactory;
+use App\DataTransformers\Database\CourseItemDataTransformer;
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\Domain\ValueObjects\DateTimeVO;
 
 
 class CartService
@@ -255,6 +264,37 @@ class CartService
 
         return $dbRec;
     }
+
+
+
+
+
+
+    public function saveCartItem(CourseModel $course, UserModel $studentRec) : CourseSelectionModel {        
+        $courseEntity       = CourseDataTransformer::buildEntity($course->toArray());
+        $courseItemEntity   = new CourseItem($courseEntity, DateTimeVO::now(), false);
+        $courseItemDto      = CourseItemDtoFactory::fromArray($courseItemEntity->toArray());
+
+        $payloadArr = CourseItemDataTransformer::dtoToDbRecArr($courseItemDto);
+        unset($payloadArr['id']);
+        unset($payloadArr['uuid']);
+        $payloadArr['student_id'] = $studentRec->id;
+        
+        return $this->courseSelectionRepository->create($payloadArr);
+    }
+
+
+
+    public function deleteCartItem(int $courseId, UserModel $studentRec) : bool {
+        $courseSelRec = (new CourseSelectionRepository())->getStudentCartItemByCourseId($courseId, $studentRec->id);
+        if(is_null($courseSelRec))
+            throw new CustomException("We couldn't locate the item in your cart. Please check again.");
+
+        return $this->courseSelectionRepository->deleteById($courseSelRec->id);
+    }
+
+
+
 
 
 }
