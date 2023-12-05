@@ -171,6 +171,10 @@ class CouponCode extends Entity
     public function getAvailableCount() : ?int {
         return ($this->totalCount - $this->usedCount);
     }
+
+    public function increaseUsedCountByOne() : void {
+        $this->usedCount = $this->usedCount + 1;
+    }
     
     public function setEnable() : void {
         $this->isEnabled = true;

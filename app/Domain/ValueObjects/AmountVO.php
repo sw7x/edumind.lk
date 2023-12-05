@@ -2,7 +2,7 @@
 
 namespace App\Domain\ValueObjects;
 
-use App\Domain\Exceptions\InvalidArgumentDomainException;
+use App\Domain\Exceptions\ValueObjects\InvalidArgumentAmountVOException;
 use App\Domain\ValueObjects\IValueObject;
 use Money\Currency;
 use Money\Money;
@@ -22,7 +22,7 @@ class AmountVO implements IValueObject
     public function __construct(float $amount, string $currencyCode = 'LKR'){
         $newAmount = (int)($amount * 100);
         if ($amount < 0) {
-            throw new InvalidArgumentDomainException('Amount must be a non-negative integer.');
+            throw new InvalidArgumentAmountVOException('Amount must be a non-negative integer.');
         }
         $currency    = new Currency($currencyCode);
         $this->money = new Money($newAmount, $currency);
@@ -46,7 +46,7 @@ class AmountVO implements IValueObject
     public function subtract(self $other): self {        
         $result  = $this->money->subtract($other->money);
         if ($result->isNegative()) {
-            throw new InvalidArgumentDomainException('Subtraction result cannot be negative.');
+            throw new InvalidArgumentAmountVOException('Subtraction result cannot be negative.');
         }  
         $amount  = (float) ($result->getAmount() / 100);
         //$amount  = number_format($result->getValue() / 100, 2);
@@ -91,7 +91,6 @@ class AmountVO implements IValueObject
             'TRY' => '₺',
             'NZD' => 'NZ$',
             'LKR' => 'රු',
-            // ... and so on
         ];
         return $symbolMap[$currencyCode] ?? $currencyCode;
     }
@@ -135,7 +134,7 @@ class Amount{
     public function __construct(int $value)
     {
         if ($value < 0) {
-            throw new InvalidArgumentDomainException('Amount must be a non-negative integer.');
+            throw new InvalidArgumentAmountVOException('Amount must be a non-negative integer.');
         }
 
         $this->value = $value;
@@ -154,7 +153,7 @@ class Amount{
         $result = $this->value - $other->getValue();
 
         if ($result < 0) {
-            throw new InvalidArgumentDomainException('Subtraction result cannot be negative.');
+            throw new InvalidArgumentAmountVOException('Subtraction result cannot be negative.');
         }
 
         return new Amount($result);

@@ -178,7 +178,7 @@ class Order extends Entity{
             // $subTot += $course->getPrice();
 
             //$subTot += $courseItem->coursePrice();            
-            $subTotVO->add($courseItem->getRevisedPrice());
+            $subTotVO   = $subTotVO->add($courseItem->getRevisedPrice());
         }
         //return n$subTot;
         return $subTotVO;
@@ -192,7 +192,7 @@ class Order extends Entity{
         foreach ($this->enrollments as $enrollment) {
             $courseItem  = $enrollment->getCourseItem();
             //$total    += $courseItem->getRevisedPrice()->getV;
-            $totalVO->add($courseItem->getRevisedPrice());
+            $totalVO     = $totalVO->add($courseItem->getRevisedPrice());
         }
         return $totalVO;
     }
@@ -251,9 +251,9 @@ class Order extends Entity{
         $totEdumindVO = new AmountVO(0);
 
         foreach ($this->enrollments as $enrollment) {
-            $courseItem  = $enrollment->getCourseItem();
-            //$totEdumind += $courseItem->edumindEarnTotalAmount();
-            $totEdumindVO->add($courseItem->edumindEarnTotalAmount());
+            $courseItem     = $enrollment->getCourseItem();
+            //$totEdumind += $courseItem->edumindNetAmount();
+            $totEdumindVO   = $totEdumindVO->add($courseItem->edumindNetAmount());
         }
 
         //return $totEdumind; 
@@ -285,7 +285,7 @@ class Order extends Entity{
             if($author->getId() == $givenTeacher->getId()){
                 //$totAuthor   += $course->getPrice()*($course->getAuthorSharePercentage()/100);
                 $earnAmount     = $course->getPrice()->multiply($course->getAuthorSharePercentage()->asFraction()) ;
-                $totAuthorVO->add($earnAmount);
+                $totAuthorVO    = $totAuthorVO->add($earnAmount);
             }
         }
         //return $totAuthor; 
@@ -303,7 +303,7 @@ class Order extends Entity{
             $courseItem   = $enrollment->getCourseItem();
             //$discount  += $enrollment->course()->getPrice() - $courseItem->getRevisedPrice();            
             $discount     = $enrollment->course()->getPrice()->subtract($courseItem->getRevisedPrice());
-            $discountVO->add($discount);
+            $discountVO   = $discountVO->add($discount);
         }
         //return $discount;    
         return $discountVO;    

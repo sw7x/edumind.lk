@@ -52,7 +52,7 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
         $commissionFee      = $courseItemDto->getBeneficiaryEarnAmount();
         $commissionFeeDto   = CommissionFeeDtoFactory::fromArray(array('amount'=> $commissionFee));
         
-        $edumindFee         = $courseItemDto->edumindEarnTotalAmount();
+        $edumindFee         = $courseItemDto->edumindNetAmount();
         $edumindFeeDto      = EduminFeeDtoFactory::fromArray(array('amount'=> $edumindFee));
         
         
@@ -120,7 +120,7 @@ class EnrollmentDtoFactory extends AbstractDtoFactory
         $commissionFee      = $courseItemDto->getBeneficiaryEarnAmount();
         $commissionFeeDto   = CommissionFeeDtoFactory::fromArray(array('amount'=> $commissionFee));
         
-        $edumindFee         = $courseItemDto->edumindEarnTotalAmount();
+        $edumindFee         = $courseItemDto->edumindNetAmount();
         $edumindFeeDto      = EduminFeeDtoFactory::fromArray(array('amount'=> $edumindFee));
             
 

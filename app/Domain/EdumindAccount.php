@@ -66,7 +66,7 @@ class EdumindAccount extends Entity{
             if (!($edumindFee instanceof EdumindFeeEntity)) {
                 throw new InvalidTypeDomainException('Array contains objects that are not EdumindFee Entities.');
             }
-            $subTotal->add($edumindFee->getAmount());
+            $subTotal = $subTotal->add($edumindFee->getAmount());
         }
         return $subTotal;
     }

@@ -161,7 +161,7 @@ class AuthorSalary extends Entity{
             if (!($fee instanceof AuthorFeeEntity)) {
                 throw new DomainException('Array contains objects that are not AuthorFee Entities.');
             }
-            $subTotal->add($fee->getAmount());
+            $subTotal = $subTotal->add($fee->getAmount());
         }
         return $subTotal;
     }

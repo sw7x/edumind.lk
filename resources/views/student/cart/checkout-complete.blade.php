@@ -23,14 +23,14 @@
                         <div class="w-8/12 mx-auto">
                             <p class="mb-2 text-base __text-center">Thank you for your purchase</p>
 
-                            @isset($InvoiceId)
-                                <p class="mb-2 text-base __text-center">Your Invoice code : {{$InvoiceId}}</p>
+                            @isset($invoiceId)
+                                <p class="mb-2 text-base __text-center">Your Invoice code : {{$invoiceId}}</p>
                             @endisset
 
-                            @if(isset($billingInfoArr) && isNotEmptyArray($billingInfoArr))                                
+                            @if(isset($billingInfoArr) && isNotEmptyArray($billingInfoArr))
                             {{--
                             @if(isset($billingInfoArr) && is_array($billingInfoArr) && !empty($billingInfoArr))
-                            --}}                            
+                            --}}
                                 <p class="text-base">Your Billing information</p>
                                 <ul class="list-disc ml-10">
                                     @if($billingInfoArr['fullname'])
@@ -67,12 +67,10 @@
                                 <p class="text-base">You have purched following courses</p>
                                 <ul class="list-disc ml-10">
                                     @foreach($courseArr as $course)
-                                        <li><a href="{{$course['courseUrl']}}" class="text-blue-500">{{$course['courseName']}}</a></li>
+                                        <li><a href="{{route('courses.show', $course['slug'])}}" class="text-blue-500">{{$course['name']}}</a></li>
                                     @endforeach
                                 </ul>
                             @endif
-
-
                             <br>
                         </div>
 

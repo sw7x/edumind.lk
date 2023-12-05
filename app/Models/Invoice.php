@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Enrollment as EnrollmentModel;
 use Ramsey\Uuid\Uuid;
-
+use App\Models\Casts\Json;
 
 
 class Invoice extends Model
@@ -17,13 +17,16 @@ class Invoice extends Model
     protected $casts = [
         'checkout_date' => 'date:Y-m-d h:i:s',
         'created_at'    => 'date',
+        'billing_info'  => Json::class,
+
     ];
 
         
     protected $fillable = [        
         'uuid',
         'checkout_date',
-        'billing_info'
+        'billing_info',
+        'paid_amount'
     ];
 
     

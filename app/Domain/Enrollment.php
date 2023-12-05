@@ -52,9 +52,6 @@ class Enrollment extends Entity{
 
 
 
-
-
-
     public function __construct(CourseItemEntity $courseItem, StudentUserEntity $student){
         $this->courseItem     = $courseItem;
         // $this->order       = $order;
@@ -62,7 +59,7 @@ class Enrollment extends Entity{
 
         //$this->authorFee     = new AuthorFee($courseItem->getAuthorAmount());
         //$this->commissionFee = new CommissionFee($courseItem->getBeneficiaryEarnAmount());
-        //$this->edumindFee    = new EdumindFee($courseItem->edumindEarnTotalAmount());
+        //$this->edumindFee    = new EdumindFee($courseItem->edumindNetAmount());
             
         $this->authorFee      = (new AuthorFeeFactory())->createObj([
             'amount' => $courseItem->getAuthorAmount()->getValue()
@@ -73,8 +70,8 @@ class Enrollment extends Entity{
         ]);
 
         $edumindFee           = (new EdumindFeeFactory())->createObj([
-            'amount' => $courseItem->edumindEarnTotalAmount()->getValue()
-        ]);
+            'amount' => $courseItem->edumindNetAmount()->getValue()
+        ]);        
         $edumindFee->setDate(new DateTimeVO(now()));
         $this->edumindFee     = $edumindFee;
         

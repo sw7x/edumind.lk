@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Domain;
+
 use App\Domain\Types\CourseItemTypesEnum;
 use App\Domain\Interfaces\IEntity;
 use App\Domain\Entity;
@@ -9,6 +10,9 @@ use App\Domain\ValueObjects\AmountVO;
 use App\Domain\ValueObjects\DateTimeVO;
 
 use App\Domain\Exceptions\AttributeAlreadySetDomainException;
+//use App\Domain\Exceptions\InvalidArgumentDomainException;
+use App\Domain\Exceptions\InvalidCouponException;
+use App\Domain\Exceptions\ValueObjects\InvalidArgumentAmountVOException;
 
 
 use App\Domain\Course as CourseEntity;
@@ -165,45 +169,43 @@ class CourseItem extends Entity{
     }
 
 
-
+    public function markAsCheckout() : void {
+        $this->isCheckout = true;
+    }
 
 
 
 
     public function applyCouponCode(CouponCodeEntity $couponCode) : void {
-        $this->couponCode               = $couponCode;
+        $canCcApply = $this->canEdumindEarnAfterUsingCoupon($couponCode);        
+        if(!$canCcApply)
+            throw new InvalidCouponException("Edumind's net amount is zero if the given coupon code is used.");
         
-        //$this->discountAmount         =   $this->course->getPrice() * $couponCode->getDiscountPercentage()->asFraction();
-        $this->discountAmount           =   $this->course->getPrice()->multiply(
-                                                $couponCode->getDiscountPercentage()->asFraction()
-                                            );
+        $ccDiscountPercentage   =   $couponCode->getDiscountPercentage()->asFraction();
+        $discountAmount         =   $this->course->getPrice()->multiply($ccDiscountPercentage);
         
-        //$this->revisedPrice           = $this->course->getPrice() - $this->discountAmount;
-        $revisedPrice                   = $this->course->getPrice()->subtract($this->discountAmount);        
-        $this->revisedPrice             = $revisedPrice;
-        
-        
-        $commisionPercentage            = $couponCode->getCommisionPercentageFromDiscount();
-        //dump($couponCode);
-        //dd($commisionPercentage);
-                
-        //$this->edumindLoseAmount      = ($this->discountAmount/100) * (100 + $commisionPercentage);
-        $this->edumindLoseAmount        = $this->discountAmount->multiply(1 + $commisionPercentage->asFraction());
-                
-        //$this->beneficiaryEarnAmount  = $this->discountAmount * ($commisionPercentage/100);
-        $this->beneficiaryEarnAmount    = $this->discountAmount->multiply($commisionPercentage->asFraction());
-        
+        $revisedPrice   =   $this->course->getPrice()->subtract($discountAmount);        
         if($revisedPrice->isLower(new AmountVO(0)))
             throw new DomainException("After applying coupon, revised course price cannot be zero or minus value");
         
+        $commisionPercentage    =  $couponCode->getCommisionPercentageFromDiscount();                
+        $edumindLoseAmount      =  $discountAmount->multiply(1 + $commisionPercentage->asFraction());
+        $beneficiaryEarnAmount  =  $discountAmount->multiply($commisionPercentage->asFraction());
+                
+        $this->discountAmount        =  $discountAmount;
+        $this->revisedPrice          =  $revisedPrice;
+        $this->couponCode            =  $couponCode;
+        $this->edumindLoseAmount     =  $edumindLoseAmount;
+        $this->beneficiaryEarnAmount =  $beneficiaryEarnAmount;
     }
     
 
     public function removeCouponCode() : void {
-        $this->couponCode       = null;    
-        $this->discountAmount   = 0;
-        $this->revisedPrice     = $this->course->getPrice();
-        $this->edumindLoseAmount= 0;
+        $this->couponCode            = null;    
+        $this->discountAmount        = new AmountVO(0);;
+        $this->revisedPrice          = $this->course->getPrice();
+        $this->edumindLoseAmount     = new AmountVO(0);
+        $this->beneficiaryEarnAmount = new AmountVO(0);
     }
 
     public function type() : CourseItemTypesEnum {
@@ -215,8 +217,8 @@ class CourseItem extends Entity{
     // public function getCourse(){}
     
     public function checkCouponWorksforThis(CouponcodeEntity $givenCc) : bool {
-        $ccAssignedCourse   = $givenCc->getCourse();
-        $thisCourseId       = $this->course->getId();
+        $ccAssignedCourse   =   $givenCc->getCourse();
+        $thisCourseId       =   $this->course->getId();
         
         if(!$ccAssignedCourse){
             return true;
@@ -234,10 +236,43 @@ class CourseItem extends Entity{
         return new $course->getPrice();       
     }
 
-    public function edumindEarnTotalAmount() : AmountVO {
-        //return ($this->edumindAmount - $this->edumindLoseAmount);
+    public function edumindNetAmount() : AmountVO {
         return $this->edumindAmount->subtract($this->edumindLoseAmount);
     }
+
+
+   public function canEdumindEarnAfterUsingCoupon(CouponCodeEntity $couponCode) : bool {       
+        try {
+            
+            $isCouponWorks = $this->checkCouponWorksforThis($couponCode);
+            if(!$isCouponWorks)
+                throw new InvalidCouponException('Cannot apply provided Coupon code for this course');
+
+        
+            $ccDiscountPercentage   =   $couponCode->getDiscountPercentage()->asFraction();
+            $commisionPercentage    =   $couponCode->getCommisionPercentageFromDiscount();
+
+            $discountAmount         =   $this->course->getPrice()->multiply($ccDiscountPercentage);
+
+            $edumindLoseAmount      =   $discountAmount->multiply(1 + $commisionPercentage->asFraction());
+            
+            $edumindNetAmolunt      =   $this->edumindAmount->subtract($edumindLoseAmount);
+
+            $edumindCanEarn         =   $edumindNetAmolunt->isEqual(new AmountVO(0)) ? false : true;
+            if(!$edumindCanEarn)
+                throw new InvalidCouponException('Edumind have zero net amount when apply provided coupon code to this course');
+
+        } catch (InvalidCouponException $e) {
+            $edumindCanEarn         =   false;
+        } catch (InvalidArgumentAmountVOException $e) {
+            $edumindCanEarn         =   false;
+        }
+        return $edumindCanEarn;
+    }
+
+
+
+
 
     public function calcDiscount() : AmountVO {
         return $this->discountAmount;

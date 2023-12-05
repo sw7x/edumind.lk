@@ -115,7 +115,7 @@ class CourseItemDto extends AbstractDto{
         return $this->couponCodeDto;
     } 
 
-    public function edumindEarnTotalAmount() : ?float {
+    public function edumindNetAmount() : ?float {
         return ($this->edumindAmount - $this->edumindLoseAmount);
     }
 

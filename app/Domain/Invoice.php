@@ -78,7 +78,7 @@ class Invoice extends Entity
 
     public function setPaidAmount(AmountVO $paidAmount) : void {
         if($paidAmount->getValue() <= 0)
-            throw new DomainException("paidAmount cannot be zero or less");
+            throw new DomainException("paidAmount cannot be less than zero");
 
         $this->paidAmount = $paidAmount;
     }

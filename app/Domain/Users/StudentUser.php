@@ -7,13 +7,9 @@ use App\Domain\AbstractUser as AbstractUserEntity;
 use App\Domain\Users\User as UserEntity;
 use App\Domain\Cart as CartEntity;
 use App\Domain\CourseItem as CourseItemEntity;
-
-
+use App\Domain\Order as OrderEntity;
 
 use App\Domain\Exceptions\DomainException;
-
-
-
 
 
 class StudentUser extends UserEntity {
@@ -119,8 +115,9 @@ class StudentUser extends UserEntity {
         return $enrollment;
     }
 
-    public function checkoutCart() : void {
-        $this->cart->checkout($this);
+    public function checkoutCart(array $invoicData) : OrderEntity {
+        $order = $this->cart->checkout($this, $invoicData);
+        return $order;
     }
 
 
