@@ -13,8 +13,13 @@ class InvoiceFactory extends Factory
      */
     public function definition()
     {
+        
+        $dateTime = $this->faker->dateTimeBetween('-4 week', '-3 week');
+
         return [
-            'checkout_date'     =>  $this->faker->dateTimeBetween('-4 week', '-3 week'),            
+            //'checkout_date'   =>  $this->faker->dateTimeBetween('-4 week', '-3 week'),
+            'checkout_date'     =>  $dateTime->format('Y-m-d'),           
+            
             'billing_info'      =>  $this->faker->address(),
             'paid_amount'       =>  0,           
         ];
