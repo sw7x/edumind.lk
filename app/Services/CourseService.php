@@ -3,10 +3,9 @@ namespace App\Services;
 
 use App\Repositories\CourseRepository;
 use App\Repositories\SubjectRepository;
+use App\Repositories\EnrollmentRepository;
+use App\Repositories\CourseSelectionRepository;
 
-//use App\Builders\CourseBuilder;
-//use App\Builders\SubjectBuilder;
-use Illuminate\Support\Arr;
 use Sentinel;
 use App\Common\Utils\ColorUtil;
 
@@ -17,10 +16,24 @@ use App\Models\User as UserModel;
 use Illuminate\Http\Request;
 use App\Exceptions\CustomException;
 use App\Common\SharedServices\CourseSharedService;
-//use Illuminate\Support\Str;
+
 use App\DataTransformers\Database\CourseDataTransformer;
 use App\DataTransformers\Database\SubjectDataTransformer;
+use App\DataTransformers\Database\UserDataTransformer;
+use Illuminate\Support\Facades\DB;
+
+
 use App\Common\SharedServices\UserSharedService;
+
+use App\DataTransformers\Database\EnrollmentDataTransformer;
+use App\Domain\ValueObjects\DateTimeVO;
+use \DateTime;
+use App\Mappers\EnrollmentMapper;
+use App\Domain\CourseItem as CourseItemEntity;
+use App\Domain\Enrollment as EnrollmentEntity;
+
+use App\DataTransferObjects\Factories\CourseItemDtoFactory;
+use App\DataTransformers\Database\CourseItemDataTransformer;
 
 
 class CourseService
@@ -131,7 +144,7 @@ class CourseService
     public function loadPopularCourses(){
         $courseCount    = 5;
         $popularCourses = $this->courseRepository->getPopularCourses($courseCount);
-        
+
         $dataArr = array();
         $popularCourses->each(function (CourseModel $record, int $key) use (&$dataArr){
             $dataArr[]  =   CourseDataTransformer::buildDto($record->toArray());
@@ -232,8 +245,8 @@ class CourseService
             $enrollment     = optional($courseSelRec)->enrollment;
 
             if ($courseSelRec)
-                $status =   $enrollment ? 
-                                ($enrollment->is_complete ? 'COMPLETED' : 'ENROLLED') : 
+                $status =   $enrollment ?
+                                ($enrollment->is_complete ? 'COMPLETED' : 'ENROLLED') :
                                 'ADDED_TO_CART';
 
             return array(
@@ -278,9 +291,72 @@ class CourseService
     }
 
 
+    public function freeCourseEnroll(CourseModel $courseRec, UserModel $studentRec) : void {
+
+        DB::transaction(function () use ($courseRec, $studentRec){
+
+            $courseEntity       = CourseDataTransformer::buildEntity($courseRec->toArray());
+            $courseItemEntity   = new CourseItemEntity($courseEntity, DateTimeVO::now(), false);
+            $courseItemDto      = CourseItemDtoFactory::fromArray($courseItemEntity->toArray());
+            $payloadArr         = CourseItemDataTransformer::dtoToDbRecArr($courseItemDto);
+
+            $payloadArr['student_id'] = $studentRec->id;
+            unset($payloadArr['uuid']);
+
+            /*
+             workaround -
+                for free courses  CourseItemEntity attribute cartAddedDate need to be null,
+                but in CourseItemEntity class attribute cartAddedDate cannot be null
+            */
+            $payloadArr['cart_added_date'] = null;
+
+            $courseSelRec = (new CourseSelectionRepository())->create($payloadArr);
+            if(!$courseSelRec) //todo cehck is that rollback
+                abort(500, "Failed to enroll course due to server error  - unable to save Course Item record !");
+
+
+            $courseItemEntity->setId($courseSelRec->id);
+
+            $studentEntity      = UserDataTransformer::buildEntity($studentRec->toArray());
+            $enrollmentEntity   = new EnrollmentEntity($courseItemEntity, $studentEntity);
+            $enrollmentEntity->setIsComplete(false);
+            $enrollmentRecDBArr =  EnrollmentMapper::entityConvertToDbArr($enrollmentEntity->toArray());
+
+            unset($enrollmentRecDBArr['id']);
+            unset($enrollmentRecDBArr['uuid']);
+            unset($enrollmentRecDBArr['studentId']);
+            unset($enrollmentRecDBArr['course_item_id']);
+
+            $enrolledRec = (new EnrollmentRepository())->create($enrollmentRecDBArr);
+            if(!$enrolledRec) //todo cehck is that rollback
+                abort(500, "Failed to enroll course due to server error - unable to save enrollment record !");
+        });
+
+    }
+
+
+    public function saveCourseAsComplete(CourseModel $courseRec, UserModel $studentRec) : bool {
+
+        $enrolledRec = (new EnrollmentRepository())->getStudentEnrolledRecsByCourseId($studentRec, $courseRec);
+        if($enrolledRec->is_complete == true)
+            throw new CustomException('Course already marked as complete');
+
+        $enrollmentEntity = EnrollmentDataTransformer::buildEntity($enrolledRec->toArray());
+        $enrollmentEntity->setIsComplete(true);
+        $enrollmentEntity->setCompleteDate(new DateTimeVO(new Datetime()));
+
+        $arr = EnrollmentMapper::entityConvertToDbArr($enrollmentEntity->toArray());
+        unset($arr['student_id']);
+        unset($arr['course_item_id']);
+        unset($arr['rating']);
+        unset($arr['uuid']);
+        $payload    = $arr;
+        $isUpdated  = (new EnrollmentRepository())->update($payload['id'], $payload);
+
+        return $isUpdated;
+    }
 
 }
-
 
 
 //service only methods - not in entity
@@ -289,15 +365,10 @@ class CourseService
     //view all the courses by subject
     // enrolled courses by stud
 
-
     // getEnrollStudents
     // getCompleteStudents
 
     //viewCourseRating(Course $c)
 
-
-
 //methods - also in entity
     //change course status
-
-

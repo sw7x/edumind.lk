@@ -100,9 +100,7 @@ class CourseSelectionRepository extends BaseRepository{
                     ->where('courses.price', '!=', 0)
                     ->first($columns);
 
-        return $cartRecArr;
     }                        
-
 
     public function cartItemCountByStudent(UserModel $userRec) : int {
         return  $this->model

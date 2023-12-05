@@ -19,6 +19,7 @@ use App\View\DataFormatters\SubjectDataFormatter;
 use DB;
 use App\Common\Utils\AlertDataUtil;
 use App\Common\SharedServices\UserSharedService;
+use App\Repositories\CourseRepository;
 
 
 class CourseController extends Controller
@@ -142,17 +143,8 @@ class CourseController extends Controller
     }
 
 
-
-
-
-
-
-    /*  ================================================================
-        ================================================================= */
-
     public function freeEnroll(Request $request){
 
-        //dd('ss');
         $courseId = $request->input('courseId');
         $user     = Sentinel::getUser();
 
@@ -160,41 +152,30 @@ class CourseController extends Controller
             if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
 
+            
+            // to do permissions
             if(is_null($user))
                 abort(401, 'First login before enrolling');
 
             if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
                 abort(403, "You don't have permissions to enroll courses");
 
-            $course = CourseModel::find($courseId);
-            if(is_null($course))
+            
+
+            $courseRec = (new CourseRepository())->findByIdWithGlobalScope($courseId);
+            if(is_null($courseRec))
                 abort(404, 'Invalid course cannot enroll');
 
-            $rec = CourseSelectionModel::create([
-                'cart_added_date'   => null,
-                'is_checkout'       => false,
-                'course_id'         => $courseId,
-                'student_id'        => $user->id
-            ]);
-            if(!$rec) //todo cehck is that rollback
-                abort(500, "Failed to enroll course due to server error !");
-
-            $isSaved = EnrollmentModel::create([
-                'is_complete'           => 0,
-                'course_selection_id'   => $rec->id,
-            ]);
-            if(!$isSaved) //todo cehck is that rollback
-                abort(500, "Failed to enroll course due to server error !");
-
+            $this->courseService->freeCourseEnroll($courseRec, $user);
+            
             return redirect()->back()->with(AlertDataUtil::success('Successfully enrolled to the course'));
-
 
         }catch(CustomException $e){
             return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
         }catch(\Exception $e){
             return redirect()->back()->with(
-                AlertDataUtil::error('Course does not exist!',[
+                AlertDataUtil::error('aa Course does not exist!',[
                     //'message' => $e->getMessage()
                 ])
             );
@@ -211,25 +192,25 @@ class CourseController extends Controller
             if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
 
+            
+            //todo - add permissions
             if(is_null($user))
                 abort(401, 'First login before enrolling');
 
             if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
                 abort(403, "You don't have permissions to enroll courses");
 
-            $course = CourseModel::find($courseId);
-            if(is_null($course))
+            
+
+
+
+            $courseRec = (new CourseRepository())->findByIdWithGlobalScope($courseId);
+            if(is_null($courseRec))
                 abort(404, 'Invalid course cannot enroll');
 
 
-            $CourseSelectionRecord = CourseSelectionModel::where('course_id',$course->id)->where('student_id',$user->id)->get()->first();
-
-            $enrollmentRecord  = EnrollmentModel::where('course_selection_id', $CourseSelectionRecord->id)->get()->first();
-            $enrollmentRecord->is_complete      = True;
-            $enrollmentRecord->complete_date    = Carbon::now();
-            $isSaved                            = $enrollmentRecord->save();
-            
-            if(!$isSaved) //todo cehck is that rollback
+            $isUpdated = $this->courseService->saveCourseAsComplete($courseRec, $user);
+            if(!$isUpdated)
                 abort(500, "Failed to mark course as complete due to server error !");
 
             return redirect()->back()->with(AlertDataUtil::success('Successfully listed course as completed'));

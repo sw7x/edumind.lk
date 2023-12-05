@@ -35,6 +35,7 @@ class EnrollmentMapper extends Mapper{
             ['rating',              '<=>',      'rating'],
 
             ['course_item_id',      '<=>',      'courseItemId'],
+            ['course_selection_id', '<=',       'courseItemId'],
             
             ['student_id',          '<=>',      'studentId'],            
             

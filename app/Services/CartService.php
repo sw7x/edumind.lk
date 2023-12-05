@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\CourseSelectionRepository;
 use App\Repositories\CouponRepository;
 use App\Repositories\EnrollmentRepository;
+use App\Repositories\InvoiceRepository;
 
 use App\Exceptions\CustomException;
 use App\Models\User as UserModel;
@@ -26,7 +27,6 @@ use App\Mappers\CourseItemMapper;
 use App\Mappers\CouponMapper;
 use Illuminate\Support\Facades\DB;
 
-use App\Repositories\InvoiceRepository;
 use App\Mappers\InvoiceMapper;
 use App\DataTransferObjects\Factories\InvoiceDtoFactory;
 use App\DataTransferObjects\Factories\CourseDtoFactory;

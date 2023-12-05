@@ -87,6 +87,15 @@
             <div class="lg:flex lg:space-x-4 mt-4">
                 <div class="lg:w-8/12 space-y-4">
 
+                    @if(Session::has('message'))
+                        <x-flash-message  
+                            :class="Session::get('cls', 'flash-info')"  
+                            :title="Session::get('msgTitle') ?? 'Info!'" 
+                            :message="Session::get('message') ?? ''"  
+                            :message2="Session::get('message2') ?? ''"  
+                            :canClose="true" />
+                    @endif
+
                     <div class="tube-card z-20 mb-4 overflow-hidden uk-sticky" uk-sticky="cls-active:rounded-none ; media: 992 ; offset:70 ">
                         <nav class="cd-secondary-nav extanded ppercase nav-small">
                             <ul class="space-x-3" uk-scrollspy-nav="closest: li; scroll: true">

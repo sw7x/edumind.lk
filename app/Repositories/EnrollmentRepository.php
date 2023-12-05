@@ -18,6 +18,8 @@ use App\Mappers\EnrollmentMapper;
 //use Illuminate\Database\Eloquent\Model;
 //use App\Repositories\CourseSelectionRepository;
 //use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\User as UserModel; 
+use App\Models\Course as CourseModel;
 
 
 class EnrollmentRepository extends BaseRepository implements IGetDataRepository{
@@ -183,6 +185,43 @@ class EnrollmentRepository extends BaseRepository implements IGetDataRepository{
 
     public function findEnrollmentByStudent(array $columns = ['*']) : Collection {
 
+    }
+
+    
+    public function getStudentEnrolledRecsByCourseId(UserModel $studentRec, CourseModel $courseRec) : EnrollmentModel {
+        $enrolledRecs   =   $this->model->join('course_selections', function($join) use ($studentRec, $courseRec){
+                                $join->on('enrollments.course_selection_id','=','course_selections.id')
+                                    ->where('course_selections.student_id', '=', $studentRec->id)
+                                    ->where('course_selections.course_id', '=', $courseRec->id);
+                            })
+                            ->join('courses','course_selections.course_id','=','courses.id')
+                            ->where(function ($query) {
+                                $query->where(function ($query) {
+                                    // for paid courses
+                                    $query->whereNotNull('course_selections.cart_added_date')
+                                        ->where('course_selections.is_checkout', 1)
+                                        ->where('courses.price', '!=', 0);
+
+                                })->orWhere(function ($query) {
+                                    // for free courses
+                                    $query->whereNull('course_selections.cart_added_date')
+                                        ->where('course_selections.is_checkout', 0)
+                                        ->where('courses.price', '=', 0);
+                                });
+                            })
+                            ->latest('enrollments.id')                            
+                            ->first([
+                                //'course_selections.*',
+                                'enrollments.*',
+                                //'courses.*'
+                            ]);
+                            //->toArray()
+                            //->toSql();
+        
+        //dump($enrolledRecs->toSql());
+        //dump($enrolledRecs->getBindings());
+        //dd($enrolledRecs->get());
+        return $enrolledRecs;
     }
 
 
