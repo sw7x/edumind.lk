@@ -21,9 +21,14 @@ use App\Common\Utils\AlertDataUtil;
 use App\Common\SharedServices\UserSharedService;
 use App\Repositories\CourseRepository;
 
+use App\Permissions\Abilities\CourseAbilities;
+use App\Permissions\Traits\PermissionCheck;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 
 class CourseController extends Controller
 {
+    use PermissionCheck;
 
     private CourseService $courseService;
 
@@ -144,6 +149,7 @@ class CourseController extends Controller
 
 
     public function freeEnroll(Request $request){
+        $this->hasPermission(CourseAbilities::ENROLL_TO_COURSE);
 
         $courseId = $request->input('courseId');
         $user     = Sentinel::getUser();
@@ -151,17 +157,7 @@ class CourseController extends Controller
         try{
             if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-
             
-            // to do permissions
-            if(is_null($user))
-                abort(401, 'First login before enrolling');
-
-            if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
-                abort(403, "You don't have permissions to enroll courses");
-
-            
-
             $courseRec = (new CourseRepository())->findByIdWithGlobalScope($courseId);
             if(is_null($courseRec))
                 abort(404, 'Invalid course cannot enroll');
@@ -184,30 +180,18 @@ class CourseController extends Controller
 
 
     public function complete(Request $request){
-
         $courseId = $request->input('courseId');
         $user     = Sentinel::getUser();
 
         try{
             if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid id');
-
             
-            //todo - add permissions
-            if(is_null($user))
-                abort(401, 'First login before enrolling');
-
-            if(!(new UserSharedService)->hasRole($user, RoleModel::STUDENT))
-                abort(403, "You don't have permissions to enroll courses");
-
-            
-
-
-
             $courseRec = (new CourseRepository())->findByIdWithGlobalScope($courseId);
             if(is_null($courseRec))
                 abort(404, 'Invalid course cannot enroll');
-
+            
+            $this->hasPermission(CourseAbilities::MARK_COMPLETE, $courseRec);
 
             $isUpdated = $this->courseService->saveCourseAsComplete($courseRec, $user);
             if(!$isUpdated)
@@ -218,14 +202,15 @@ class CourseController extends Controller
         }catch(CustomException $e){
             return redirect()->back()->with(AlertDataUtil::error($e->getMessage()));
 
-        }catch(\Exception $e){
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof HttpException) ? $ex->getMessage() : 'Unable to mark course as completed !';
             return redirect()->back()->with(
-               AlertDataUtil::error('Course does not exist!', [
+               AlertDataUtil::error($msg, [
                 //'message' => $e->getMessage(),
                ])
            );
-
         }
+        
 
     }
 
