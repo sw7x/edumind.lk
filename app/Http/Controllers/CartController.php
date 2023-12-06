@@ -67,7 +67,8 @@ class CartController extends Controller
             $msg = ($ex instanceof HttpException) ? $ex->getMessage() : 'Form submission failed !';
             return view('student.cart.cart-page')->with([
                 //'cart_re_init_message'  => 'Cart reinitialization failed',
-                'cart_re_init_message'  => $ex->getMessage(),
+                //'cart_re_init_message'  => $ex->getMessage(),
+                'cart_re_init_message'  => $msg,                
                 'cart_re_init_cls'      => 'flash-danger',
                 'cart_re_init_msgTitle' => 'Error',
                 'cart_re_init_msg_arr'  => []
