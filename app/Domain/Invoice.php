@@ -19,15 +19,11 @@ class Invoice extends Entity
     private ?DateTimeVO $checkoutDate = null;
     private ?array      $billingInfo  = null;
     private ?AmountVO   $paidAmount   = null;
-
-    
-
-    
+        
     public function __construct() {
+    
     }
     
-    
-
 
     // Getters
     public function getId() : ?int {
@@ -50,8 +46,6 @@ class Invoice extends Entity
         return $this->paidAmount;
     }
     
-
-
 
     // Setters
     final public function setId(int $id) : void {
@@ -82,7 +76,6 @@ class Invoice extends Entity
 
         $this->paidAmount = $paidAmount;
     }
-
 
 
     // toArray method

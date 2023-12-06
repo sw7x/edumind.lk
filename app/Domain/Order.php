@@ -103,6 +103,7 @@ class Order extends Entity{
         $this->checkOutDate = $checkOutDate;
     }
     
+    
     /**
     * @param EnrollmentEntity[] $enrollments
     * @return void
@@ -130,19 +131,18 @@ class Order extends Entity{
         */
 
         return [            
-            'id'            => $this->id,
-            'uuid'          => $this->uuid,
-            'checkoutDate'  => $this->checkOutDate ? $this->checkOutDate->format() : null,
+            'id'             => $this->id,
+            'uuid'           => $this->uuid,
+            'checkoutDate'   => $this->checkOutDate ? $this->checkOutDate->format() : null,
             
-            'invoiceArr'    => $this->invoice ? $this->invoice->toArray() : null,
-            'invoiceId'     => $this->invoice ? $this->invoice->getId()   : null,
+            'invoiceArr'     => $this->invoice ? $this->invoice->toArray() : null,
+            'invoiceId'      => $this->invoice ? $this->invoice->getId()   : null,
 
-            //'enrollments' => $this->enrollments ? $this->enrollments->toArray() : null,
-            //'customer'    => $this->customer ? $this->customer->toArray() : null,
-            'enrollmentsArr'=> parent::ObjArrConvertToData($this->enrollments),
+            //'enrollments'  => $this->enrollments ? $this->enrollments->toArray() : null,
+            'enrollmentsArr' => parent::ObjArrConvertToData($this->enrollments),
             
-            'studentArr'   => $this->customer->toArray(),
-            'studentId'    => $this->customer->getId(),
+            'studentArr'     => $this->customer->toArray(),
+            'studentId'      => $this->customer->getId(),
         ];
     }
     

@@ -18,7 +18,7 @@ use App\Models\TempBillingInfo as TempBillingInfoModel;
 use App\DataTransformers\Database\CouponCodeDataTransformer;
 use App\DataTransformers\Database\UserDataTransformer;
 
-use App\Domain\CourseItem;
+use App\Domain\CourseItem as CourseItemEntity;
 use App\DataTransferObjects\Factories\CourseItemDtoFactory;
 use App\DataTransformers\Database\CourseItemDataTransformer;
 use App\DataTransformers\Database\CourseDataTransformer;
@@ -279,7 +279,7 @@ class CartService
 
     public function saveCartItem(CourseModel $course, UserModel $studentRec) : CourseSelectionModel {
         $courseEntity       = CourseDataTransformer::buildEntity($course->toArray());
-        $courseItemEntity   = new CourseItem($courseEntity, DateTimeVO::now(), false);
+        $courseItemEntity   = new CourseItemEntity ($courseEntity, DateTimeVO::now(), false);
         $courseItemDto      = CourseItemDtoFactory::fromArray($courseItemEntity->toArray());
 
         $payloadArr = CourseItemDataTransformer::dtoToDbRecArr($courseItemDto);
