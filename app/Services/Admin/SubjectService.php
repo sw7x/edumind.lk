@@ -61,7 +61,7 @@ class SubjectService
 
 
     public function saveDbRec(Request $request) : SubjectModel {
-        $subjectCount       = $this->subjectRepository->findByName($request->get('name'))->count();
+        $subjectCount = $this->subjectRepository->findByName($request->get('name'))->count();
 
         if ($subjectCount > 0)
             throw new CustomException('Subject name already exists!');
@@ -146,7 +146,7 @@ class SubjectService
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->subjectRepository->findById($id);
         $dto    =   $dbRec ? SubjectDataTransformer::buildDto($dbRec->toArray()) : null;
-        $entity    =   $dbRec ? SubjectDataTransformer::buildEntity($dbRec->toArray()) : null;
+        $entity =   $dbRec ? SubjectDataTransformer::buildEntity($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,

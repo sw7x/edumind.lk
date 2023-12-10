@@ -74,77 +74,6 @@ class UserService
     }
 
 
-    public function saveDbRec(Request $request) : SubjectModel {
-        $subjectCount = $this->subjectRepository->findByName($request->get('name'))->count();
-        if ($subjectCount > 0)
-            throw new CustomException('Subject name already exists!');
-
-        $file       = $request->input('image');
-        $imgDest    = (isset($file))? FileUploadUtil::upload($file,'subjects/') : null;
-
-        $urlString  = UrlUtil::wordsToUrl($request->name,15);
-        $slug       = UrlUtil::generateSubjectUrl($urlString);
-
-        $request->merge([
-            "creator_id" => Sentinel::getUser()->id,
-            'slug'       => $slug,
-            'image'      => $imgDest
-        ]);
-
-        $subjectDto     = SubjectDtoFactory::fromRequest($request);
-        $payloadArr     = UserDataTransformer::dtoToDbRecArr($subjectDto);
-        return $this->subjectRepository->create($payloadArr);
-    }
-
-
-    public function updateDbRec(Request $request, SubjectModel $subjectDbRec) : bool {
-
-        $isNameExists   =   $this->subjectRepository->findDuplicateCountByName(
-                                $request->get('name'),
-                                $subjectDbRec->id
-                            );
-        if($isNameExists)
-            throw new CustomException('Subject name already exists!');
-
-        $file           = $request->input('image');
-
-        if(!isset($file)){
-            // remove image and submit update
-            $imgDest = null;
-        }else{
-            /*  input filed hidden_file_add_count value equals 0 when initially filpond loads image
-                it means no change to previously upload image and submit edit form    */
-            if( $request->hidden_file_add_count == 0){
-                $defaultImgPath = asset('images/default-images/subject.png');
-                $imgUrl         = $request->hidden_subject_img_url;
-
-                if($imgUrl == $defaultImgPath){
-                    $imgDest = null;
-                }else{
-                    $imgDest = str_replace(asset('storage'), '/', $imgUrl);
-                    $imgDest = ltrim($imgDest, '/');
-                }
-
-            }else{
-                // previously image is uploaded and now change the image and upload
-                //todo delete prviously uploaded image
-                $imgDest        = FileUploadUtil::upload($file,'subjects/');
-            }
-        }
-
-        $request->merge(['image'      => $imgDest]);
-        $subjectDto = SubjectDtoFactory::fromRequest($request);
-        $payloadArr = UserDataTransformer::dtoToDbRecArr($subjectDto);
-        unset($payloadArr['id']);
-        unset($payloadArr['uuid']);
-        unset($payloadArr['slug']);
-        unset($payloadArr['author_id']);
-
-        return $subjectDbRec->update($payloadArr);
-    }
-
-
-
     public function deleteDbRec(UserModel $userDbRec) : bool {
         //return $subjectDbRec->delete();
         return $this->userRepository->deleteById($userDbRec->id);
@@ -485,7 +414,7 @@ class UserService
         $userId         = $userDbRec->id;
         $teacherName    = $request->get('editor_name');
 
-        $isNameExists   =   $this->userRepository->findDuplicateCountByName($teacherName, $userId);
+        $isNameExists   = $this->userRepository->findDuplicateCountByName($teacherName, $userId);
         if($isNameExists)
             throw new CustomException('Name already exists!');
 
