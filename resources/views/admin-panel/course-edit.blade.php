@@ -207,10 +207,10 @@
                 <div class="ibox">
                     <div class="ibox-content">
 
-                        <form id="course-edit-form" method="post" action="{{route('admin.courses.update',$course['id'])}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
+                        <form id="course-edit-form" method="post" action="{{route('admin.courses.update',$course['data']['id'])}}" class="wizard-big wizard clearfix" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="id" value="{{$course['id']}}">                      
+                            <input type="hidden" name="id" value="{{$course['data']['id']}}">                      
                             <h1>Details</h1>
                             <fieldset>
                                 <h2>Add course details</h2>
@@ -221,7 +221,7 @@
                                         <div class="form-group  row">
                                             <label class="col-sm-4 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>
                                             <div class="col-sm-8">
-                                                <input type="text" name="course-name" class="form-control" value="{{$course['name']}}">
+                                                <input type="text" name="course-name" class="form-control" value="{{$course['data']['name']}}">
                                                 <div class="error-msg"></div>
                                                 
                                                 @if (old('course-name'))
@@ -246,7 +246,7 @@
                                                 <select class="form-control m-b" id="subject" name="subject">
                                                     <option></option>
                                                     @foreach ($subjects as $subject)
-                                                        <option value="{{$subject['id']}}" @if($course['subjectId'] == $subject['id']) selected @endif>{{$subject['name']}}</option>
+                                                        <option value="{{$subject['id']}}" @if($course['data']['subjectId'] == $subject['id']) selected @endif>{{$subject['name']}}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="error-msg"></div>                                            
@@ -277,7 +277,7 @@
                                                 <select class="form-control m-b" id="teacher" name="teacher">
                                                     <option></option>
                                                     @foreach ($teachers as $teacher)
-                                                        <option value="{{$teacher['id']}}" @if($course['teacherId'] == $teacher['id']) selected @endif>{{$teacher['fullName']}}</option>
+                                                        <option value="{{$teacher['id']}}" @if($course['data']['teacherId'] == $teacher['id']) selected @endif>{{$teacher['fullName']}}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="error-msg"></div>
@@ -306,7 +306,7 @@
                                             <div class="col-sm-8">
                                                 <div class="border">
                                                     <textarea class="form-control" name="course-heading"
-                                                              cols="30" rows="7" placeholder="" autocomplete="off">{{$course['headingText']}}</textarea>
+                                                              cols="30" rows="7" placeholder="" autocomplete="off">{{$course['data']['headingText']}}</textarea>
                                                     <div class="error-msg"></div>
                                                 </div>
 
@@ -362,9 +362,9 @@
 
                                             </div>
                                         </div>
-                                        <input type="hidden" value="{{$course['image']}}"
-                                               name="hidden_course_img" data-url="{{$course['image']}}"/>
-                                        <input type="hidden" value="{{$course['image']}}" name="hidden_course_img_url"/>
+                                        <input type="hidden" value="{{$course['data']['image']}}"
+                                               name="hidden_course_img" data-url="{{$course['data']['image']}}"/>
+                                        <input type="hidden" value="{{$course['data']['image']}}" name="hidden_course_img_url"/>
                                         <input type="hidden" value="1" name="hidden_file_add_count"/>
                                         <div class="hr-line-dashed"></div>
 
@@ -378,9 +378,9 @@
                                                         <span class="input-group-addon">X Hours : Y minutes</span>
                                                     </div>
                                                     <input type="text" name="course-duration-hours" placeholder="Hours" 
-                                                        class="form-control" value="{{$course['durationHours']}}">                                                    
+                                                        class="form-control" value="{{$course['data']['durationHours']}}">                                                    
                                                     <input type="text" name="course-duration-minutes" placeholder="Minutes" 
-                                                        class="form-control" value="{{$course['durationMinutes']}}">                                                
+                                                        class="form-control" value="{{$course['data']['durationMinutes']}}">                                                
                                                 </div>
 
                                                 <div class="mt-2 error-msg-hours"></div>
@@ -422,7 +422,7 @@
                                         <div class="form-group  row">
                                             <label class="col-sm-4 col-form-label">Duration<br> <small>X Hours : Y minutes</small></label>
                                             <div class="col-sm-8">
-                                                <input type="text" name="video-duration" class="form-control" value="{{$course['duration']}}">
+                                                <input type="text" name="video-duration" class="form-control" value="{{$course['data']['duration']}}">
                                                 @if (old('video-duration'))
                                                     <span class="block mt-1 @if($errors->infoErrMsgArr->has('video-duration')) text-red-600 @else text-green-600 @endif
                                                         text-xs font-bold">Previously you entered - {{ old('video-duration') }}</span>
@@ -435,7 +435,7 @@
                                         <div class="form-group  row">
                                             <label class="col-sm-4 col-form-label">Videos <small>(count)</small></label>
                                             <div class="col-sm-8">
-                                                <input type="text" name="video-count" class="form-control" value="{{$course['videoCount']}}">
+                                                <input type="text" name="video-count" class="form-control" value="{{$course['data']['videoCount']}}">
                                                 <div class="error-msg"></div>
 
                                                 @if (old('video-count'))
@@ -469,7 +469,7 @@
                                                 </label>
                                                 <div class="col-sm-8">
                                                     <div class="text-2xl text-center font-bold output"></div><br>
-                                                    <input type="range" name="author_share_percentage" value="{{$course['authorSharePercentage']}}" min="0" max="100" step="1">
+                                                    <input type="range" name="author_share_percentage" value="{{$course['data']['authorSharePercentage']}}" min="0" max="100" step="1">
                                                     @if (old('author_share_percentage'))
                                                         <span class="block mt-1 @if($errors->infoErrMsgArr->has('author_share_percentage')) text-red-600 @else text-green-600 @endif
                                                             text-xs font-bold">Previously you entered - {{ old('author_share_percentage') }}%</span>
@@ -489,7 +489,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-addon">Rs</span>
                                                     </div>
-                                                    <input type="text" name="course-price" class="form-control" value="{{$course['price']}}"><br>
+                                                    <input type="text" name="course-price" class="form-control" value="{{$course['data']['price']}}"><br>
                                                 </div>
 
                                                 <!--
@@ -511,10 +511,10 @@
 
                                             <div class="col-sm-8">
                                                 <div class="">
-                                                    <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{($course['status']) == 'draft'? 'checked':''}}> <i></i>Draft </label>
+                                                    <label> <input type="radio" class="iCheck" value="draft" name="course_stat" {{($course['data']['status']) == 'draft'? 'checked':''}}> <i></i>Draft </label>
                                                 </div>
                                                 <div class="">
-                                                    <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{($course['status']) != 'draft'? 'checked':''}}> <i></i>Published </label>
+                                                    <label> <input type="radio" class="iCheck" value="published" name="course_stat" {{($course['data']['status']) != 'draft'? 'checked':''}}> <i></i>Published </label>
                                                 </div>
                                                 @if (old('course_stat'))
                                                     <span class="block mt-1 @if($errors->infoErrMsgArr->has('course_stat')) text-red-600 @else text-green-600 @endif
@@ -855,8 +855,8 @@
             var courseContentFromOld    = {{ Js::from(old('contentInputStr','')) }};        
             
             
-            @isset($course['price'])
-                var coursePrice = {{ Js::from($course['price']) }};
+            @isset($course['data']['price'])
+                var coursePrice = {{ Js::from($course['data']['price']) }};
                 coursePrice     = parseInt(coursePrice);               
             @endisset
 
@@ -1008,9 +1008,9 @@
                                 ]
                             ],
                         });
-                        @if(isset($course['description']))
-                            //$('[name="course-description"]').summernote('code', '{{$course['description']}}');
-                            $('[name="course-description"]').summernote('code', `{!!$course['description']!!}`);
+                        @if(isset($course['data']['description']))
+                            //$('[name="course-description"]').summernote('code', '{{$course['data']['description']}}');
+                            $('[name="course-description"]').summernote('code', `{!!$course['data']['description']!!}`);
                         @endif
 
 

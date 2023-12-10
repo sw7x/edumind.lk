@@ -2,48 +2,44 @@
 
 namespace App\Database\DataTransformers;
 
-use App\Domain\CourseItem as CourseItemEntity;
+use App\Domain\Commission as CommissionEntity;
 
-use App\DataTransferObjects\CourseItemDto;
-use App\DataTransferObjects\Factories\CourseItemDtoFactory;
-use App\Mappers\CourseItemMapper;
-use App\Domain\Factories\CourseItemFactory;
+use App\DataTransferObjects\CommissionDto;
+use App\DataTransferObjects\Factories\CommissionDtoFactory;
+use App\Mappers\CommissionMapper;
+use App\Domain\Factories\CommissionFactory;
 
 use App\Repositories\UserRepository;
-use App\Repositories\CourseRepository;
-use App\Repositories\CouponRepository;
 
 class CourseItemDataTransformer{
 
-	public static function buildDto(array $courseSelRecData) : CourseItemDto {        
-        
-        $courseItemEntity 	= self::buildEntity($courseSelRecData);
-        $courseItemDto    	= CourseItemDtoFactory::fromArray($courseItemEntity->toArray());
-		return $courseItemDto;
-	}
+    public static function buildDto(array $commissionRecData) : CommissionDto {       
+        $courseItemEntity   = self::buildEntity($commissionRecData);
+        $courseItemDto      = CommissionDtoFactory::fromArray($courseItemEntity->toArray());
+        return $courseItemDto;
+    }
 
-	public static function buildEntity(array $courseSelRecData) : CourseItemEntity {
+    public static function buildEntity(array $commissionRecData) : CommissionEntity {
  
-		if(!isset($courseSelRecData['course_arr'])){
-        	$courseId 							= $courseSelRecData['course_id'];
-        	$courseSelRecData['course_arr'] 	= is_null($courseId) ? [] : (new CourseRepository())->findDataArrById($authorId);
-        }		
+        if(!isset($commissionRecData['student_arr'])){
+            $studentId                          = $commissionRecData['student_id'];
+            $commissionRecData['student_arr']     = is_null($studentId) ? [] : (new UserRepository())->findDataArrById($authorId);
+        }       
 
-        if(!isset($courseSelRecData['student_arr'])){
-        	$studentId 							= $courseSelRecData['student_id'];
-        	$courseSelRecData['student_arr'] 	= is_null($studentId) ? [] : (new UserRepository())->findDataArrById($authorId);
-        }		
-
-        if(!isset($courseSelRecData['used_coupon_arr'])){
-        	$cc 									= $courseSelRecData['used_coupon_code'];
-        	$courseSelRecData['used_coupon_arr'] 	= is_null($cc) ? [] : (new CouponRepository())->findDataArrByCode($cc);
-        }
-        
-        $courseItemEntityArr = CourseItemMapper::dbRecConvertToEntityArr($courseSelRecData);
-        $courseItemEntity    = (new CourseItemFactory())->createObjTree($courseItemEntityArr);
+        $courseItemEntityArr = CommissionMapper::dbRecConvertToEntityArr($commissionRecData);
+        $courseItemEntity    = (new CommissionFactory())->createObjTree($courseItemEntityArr);
         return $courseItemEntity;
-	}
-} 	
+    }
+} 
+
+
+
+
+
+
+
+
+
 
 
 

@@ -28,8 +28,7 @@ class InvoiceRepository extends BaseRepository implements IGetDataRepository{
             unset($invoiceArr['updated_at']);
             unset($invoiceArr['deleted_at']);  
 
-            $billingInfo = json_decode($invoiceArr['billing_info'],true);
-            $invoiceArr['billing_info'] = $billingInfo;
+            $invoiceArr['billing_info'] = $invoiceArr['billing_info'];            
             
         } catch (\JsonException $exception) {  
             $invoiceArr['billing_info'] = [];

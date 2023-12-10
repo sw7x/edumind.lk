@@ -17,7 +17,7 @@ use App\Permissions\Abilities\ContactUsAbilities;
 
 class ContactUsController extends Controller
 {
-    use PermissionCheck,GateCheck;
+    use GateCheck;
 
     private ContactUsService $contactUsService;
 
