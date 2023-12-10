@@ -1,5 +1,5 @@
 <?php
-namespace App\Domain\Interfaces;
+namespace App\Domain\Services;
 
 interface IDomainService{
     

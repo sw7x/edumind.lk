@@ -223,7 +223,30 @@ class EnrollmentRepository extends BaseRepository implements IGetDataRepository{
         //dd($enrolledRecs->get());
         return $enrolledRecs;
     }
-
+    
+    public function findAllPaidEnrollmentsByStudent(UserModel $studentRec, array $columns = ['enrollments.*']) : Collection {
+        $enrolledRecs   =   $this->model->join('course_selections', function($join) use ($studentRec){
+                                $join->on('enrollments.course_selection_id','=','course_selections.id')
+                                    ->where('course_selections.student_id', '=', $studentRec->id);
+                            })
+                            ->join('courses','course_selections.course_id','=','courses.id')
+                            ->where(function ($query) {                                
+                                // for paid courses
+                                $query->whereNotNull('course_selections.cart_added_date')
+                                    ->where('course_selections.is_checkout', 1)
+                                    ->where('courses.price', '!=', 0);                                
+                            
+                            })
+                            ->latest('enrollments.id')                            
+                            ->get($columns);
+                            //->toArray()
+                            //->toSql();
+        
+        //dump($enrolledRecs->toSql());
+        //dump($enrolledRecs->getBindings());
+        //dd($enrolledRecs->get());
+        return $enrolledRecs;
+    }
 
 }
 

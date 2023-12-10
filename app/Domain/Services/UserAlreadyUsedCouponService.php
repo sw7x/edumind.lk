@@ -2,24 +2,21 @@
 namespace App\Domain\Services;
 
 use App\Domain\CouponCode as CouponCodeEntity;
-
 use App\Domain\Exceptions\DomainException;
 use App\Domain\Services\IDomainService;
-//  this is domanin service
 
 
-
-class IsCouponUsedByStudentService implements IDomainService{
+class UserAlreadyUsedCouponService implements IDomainService{
 
 	/**
     * @param CouponCode $cc
-    * @param Enrollment[] $enrollmentArr
+    * @param PaidEnrollment[] $enrollmentEntityArr
     * @return bool
     */
-	public function execute(CouponCodeEntity $cc, array $enrollmentArr) : bool {
+	public function execute(CouponCodeEntity $cc, array $enrollmentEntityArr) : bool {
         $isUsed = false;
-        foreach ($enrollmentArr as $enrollment) {
-        	if($enrollment->checkGivenCouponUsed($cc)){
+        foreach ($enrollmentEntityArr as $enrollmentEntity) {
+        	if($enrollmentEntity->checkGivenCouponUsed($cc)){
 				$isUsed = true;
 				break;
         	}

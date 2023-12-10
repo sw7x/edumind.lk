@@ -11,24 +11,29 @@ use App\Exceptions\CustomException;
 use App\Models\User as UserModel;
 use App\Models\Course as CourseModel;
 use App\Models\CourseSelection as CourseSelectionModel;
+use App\Models\TempBillingInfo as TempBillingInfoModel;
+
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\TempBillingInfo as TempBillingInfoModel;
+use Illuminate\Support\Facades\DB;
+
+use App\Domain\CourseItems\PaidCourseItem as PaidCourseItemEntity;
+use App\Domain\CouponCode as CouponCodeEntity;
+use App\Domain\Services\UserAlreadyUsedCouponService;
+
+use App\DataTransformers\Database\CourseItemDataTransformer;
+use App\DataTransformers\Database\CourseDataTransformer;
+use App\DataTransformers\Database\EnrollmentDataTransformer;
 use App\DataTransformers\Database\CouponCodeDataTransformer;
 use App\DataTransformers\Database\UserDataTransformer;
 
-use App\Domain\CourseItems\PaidCourseItem as PaidCourseItemEntity;
-
-use App\DataTransferObjects\Factories\CourseItemDtoFactory;
-use App\DataTransformers\Database\CourseItemDataTransformer;
-use App\DataTransformers\Database\CourseDataTransformer;
 use App\Domain\ValueObjects\DateTimeVO;
 use App\Mappers\CourseItemMapper;
 use App\Mappers\CouponMapper;
-use Illuminate\Support\Facades\DB;
-
 use App\Mappers\InvoiceMapper;
+
+use App\DataTransferObjects\Factories\CourseItemDtoFactory;
 use App\DataTransferObjects\Factories\InvoiceDtoFactory;
 use App\DataTransferObjects\Factories\CourseDtoFactory;
 
@@ -300,6 +305,18 @@ class CartService
         return $this->courseSelectionRepository->deleteById($courseSelRec->id);
     }
 
+    /* check given coupon code is already applied by user earlier */
+    private function checkCouponAlreadyUsedByStud(CouponCodeEntity $coupon, UserModel $studentRec) : bool {
+        $enrollmentRecs  = (new EnrollmentRepository())->findAllPaidEnrollmentsByStudent($studentRec);
+
+        $enrollmentEntityArr = [];
+        foreach ($enrollmentRecs as $rec) {
+            $enrollmentEntityArr[] = EnrollmentDataTransformer::buildEntity($rec->toArray());
+        }
+
+        return (new UserAlreadyUsedCouponService())->execute($coupon, $enrollmentEntityArr);
+    }
+
 
     public function applyCouponToCart(string $couponCode, UserModel $studentRec) : void {
         // String does not have six characters or does not contain only letters and numbers
@@ -323,6 +340,8 @@ class CartService
         $studentEntity  = UserDataTransformer::buildEntity($studentRec->toArray());
         $cartEntity     = $studentEntity->getCart();
 
+        if($this->checkCouponAlreadyUsedByStud($ccEntity, $studentRec))
+            throw new CustomException('You have already used this Coupon !');
 
         $cartEntity->canCouponUse($ccEntity);
 
