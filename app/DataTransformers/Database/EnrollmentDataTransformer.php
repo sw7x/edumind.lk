@@ -2,7 +2,7 @@
 
 namespace App\DataTransformers\Database;
 
-use App\Domain\Enrollment as EnrollmentEntity;
+use App\Domain\AbstractEnrollment as AbstractEnrollmentEntity;
 use App\DataTransferObjects\EnrollmentDto;
 use App\DataTransferObjects\Factories\EnrollmentDtoFactory;
 use App\Mappers\EnrollmentMapper;
@@ -19,7 +19,7 @@ class EnrollmentDataTransformer{
 		return $enrollmentDto;
 	}
 
-	public static function buildEntity(array $enrollmentRecData) : EnrollmentEntity {
+	public static function buildEntity(array $enrollmentRecData) : AbstractEnrollmentEntity {
  
 		if(!isset($enrollmentRecData['course_item_arr'])){
         	$courseSelId 							= $enrollmentRecData['course_selection_id'];

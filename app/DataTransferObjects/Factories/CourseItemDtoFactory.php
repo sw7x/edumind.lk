@@ -23,7 +23,7 @@ class CourseItemDtoFactory extends AbstractDtoFactory
     //-------->course_id,course array
     //-------->used_coupon_code,used_coupon_code array
     public static function fromArray(array $data) : ?CourseItemDto {        
-        if(!isset($data['cartAddedDate']))
+        if(!isset($data['cartAddedDate']) && !is_null($data['cartAddedDate']))
             throw new MissingArgumentDtoException('CourseItemDto create failed due to missing cartAddedDate parameter');
         
         if(!isset($data['isCheckout']))
@@ -31,13 +31,10 @@ class CourseItemDtoFactory extends AbstractDtoFactory
         
         if( !isset($data['courseId']) && !isset($data['courseArr']) )
             throw new MissingArgumentDtoException('CourseItemDto create failed due to missing both courseArr and courseId parameters');
-        
-        
-        //dump('jj');dump(isset($data['usedCouponArr']));dd($data);
+              
         $courseDto  =   (isset($data['courseArr'])  && !empty($data['courseArr']))? 
                             CourseDtoFactory::fromArray($data['courseArr']) : 
                             (new CourseDtoFactory())->createDtoById($data['courseId']);
-        
         
         $couponCodeDto  =   (isset($data['usedCouponArr']) && !empty($data['usedCouponArr'])) ? 
                                 CouponDtoFactory::fromArray($data['usedCouponArr']) : 
@@ -46,13 +43,16 @@ class CourseItemDtoFactory extends AbstractDtoFactory
                                     null
                                 );
 
-        if ( DateTime::createFromFormat("Y-m-d H:i:s", $data['cartAddedDate']) )
-            $cartAddedDateString     = (new DateTime($data['cartAddedDate']))->format("Y-m-d");
+        if(!is_null($data['cartAddedDate'])){
+            if ( DateTime::createFromFormat("Y-m-d H:i:s", $data['cartAddedDate']) )
+                $cartAddedDateString     =  (new DateTime($data['cartAddedDate']))->format("Y-m-d");
 
-        if ( DateTime::createFromFormat("Y-m-d", $data['cartAddedDate']) )
-            $cartAddedDateString     = $data['cartAddedDate'];
-                   
-
+            if ( DateTime::createFromFormat("Y-m-d", $data['cartAddedDate']) )
+                $cartAddedDateString     =  $data['cartAddedDate'];            
+        
+        }else{
+            $cartAddedDateString         =  null;
+        }                  
 
                             
         return new CourseItemDto(
@@ -75,10 +75,9 @@ class CourseItemDtoFactory extends AbstractDtoFactory
 
 
     
-    public static function fromRequest(Request $request) : ?CourseItemDto {        
-
-        if($request->input('cart_added_date') == null )
-            throw new MissingArgumentDtoException('CourseItemDto create failed due to missing cart_added_date parameter');
+    public static function fromRequest(Request $request) : ?CourseItemDto {       
+        /*if($request->input('cart_added_date') == null )
+            throw new MissingArgumentDtoException('CourseItemDto create failed due to missing cart_added_date parameter');*/
         
         if($request->input('is_checkout') === null )
             throw new MissingArgumentDtoException('CourseItemDto create failed due to missing is_checkout parameter');
@@ -91,12 +90,11 @@ class CourseItemDtoFactory extends AbstractDtoFactory
         }
 
         if($request->has('course_id') && $request->filled('course_id')){
-            $courseDto = (new CourseDtoFactory())->createDtoById($request->input('course_id'));
+            $courseDto = (new CourseDtoFactory())->createDtoById($request->input('course_id'));       
         }else {            
             $courseArr = $request->input('course_arr');            
             $courseArr = CourseMapper::arrConvertToDtoArr($courseArr);           
-            $courseDto = CourseDtoFactory::fromArray($courseArr);
-
+            $courseDto = CourseDtoFactory::fromArray($courseArr);            
         }
             
         
@@ -113,12 +111,17 @@ class CourseItemDtoFactory extends AbstractDtoFactory
         }
 
 
-        if ( DateTime::createFromFormat("Y-m-d H:i:s", $request->input('cart_added_date')) )
-            $cartAddedDateString     = (new DateTime($request->input('cart_added_date')))->format("Y-m-d");
+        if(!is_null($request->input('cart_added_date'))){
+            if ( DateTime::createFromFormat("Y-m-d H:i:s", $request->input('cart_added_date')) )
+                $cartAddedDateString     =  (new DateTime($request->input('cart_added_date')))->format("Y-m-d");
 
-        if ( DateTime::createFromFormat("Y-m-d", $request->input('cart_added_date')) )
-            $cartAddedDateString     = $request->input('cart_added_date');
-        
+            if ( DateTime::createFromFormat("Y-m-d", $request->input('cart_added_date')) )
+                $cartAddedDateString     =  $request->input('cart_added_date');
+
+        }else{
+            $cartAddedDateString         =  null;
+        }
+
         
         return new CourseItemDto(
             $courseDto,                

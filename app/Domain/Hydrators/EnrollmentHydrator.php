@@ -5,27 +5,28 @@ namespace App\Domain\Hydrators;
 use Ramsey\Uuid\Uuid;
 use App\Domain\Exceptions\InvalidArgumentDomainException;
 use App\Domain\Exceptions\MissingArgumentDomainException;
-use App\Domain\Enrollment as EnrollmentEntity;
 use App\Domain\Hydrators\IHydrator;
 use App\Domain\IEntity;
 use App\Domain\ValueObjects\DateTimeVO;
 use \DateTime;
 
-
+use App\Domain\AbstractEnrollment as AbstractEnrollmentEntity;
+use App\Domain\Enrollments\FreeEnrollment as FreeEnrollmentEntity;
+use App\Domain\Enrollments\PaidEnrollment as PaidEnrollmentEntity;
 
 
 //class EnrollmentFactory {
 class EnrollmentHydrator implements IHydrator {
     
 
-    public static function hydrateData(array $enrollmentData, ?IEntity $enrollmentEntity = null): EnrollmentEntity {
+    public static function hydrateData(array $enrollmentData, ?IEntity $enrollmentEntity = null): AbstractEnrollmentEntity {
 
         if(is_null($enrollmentEntity)){
-            throw new MissingArgumentDomainException("Missing parameter: EnrollmentEntity is required.");
+            throw new MissingArgumentDomainException("Missing parameter: Entity is required.");
         }
         
-        if(!$enrollmentEntity instanceof  EnrollmentEntity){
-            throw new InvalidArgumentDomainException("provided object must be instance of EnrollmentEntity class");
+        if(!$enrollmentEntity instanceof AbstractEnrollmentEntity){
+            throw new InvalidArgumentDomainException("provided object must be instance of FreeEnrollmentEntity or  PaidEnrollmentEntity class");
         }
 
         if (!isset($enrollmentData['id']) || $enrollmentData['id'] == null) {

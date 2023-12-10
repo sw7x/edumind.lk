@@ -1,48 +1,26 @@
 <?php
 
-namespace App\Domain;
+namespace App\Domain\CourseItems;
 
-use App\Domain\Types\CourseItemTypesEnum;
-use App\Domain\Interfaces\IEntity;
-use App\Domain\Entity;
+use App\Domain\AbstractCourseItem as AbstractCourseItemEntity;
 
 use App\Domain\ValueObjects\AmountVO;
 use App\Domain\ValueObjects\DateTimeVO;
-
-use App\Domain\Exceptions\AttributeAlreadySetDomainException;
-//use App\Domain\Exceptions\InvalidArgumentDomainException;
 use App\Domain\Exceptions\InvalidCouponException;
-use App\Domain\Exceptions\ValueObjects\InvalidArgumentAmountVOException;
-
-
+use App\Domain\Types\CourseItemTypesEnum;
 use App\Domain\Course as CourseEntity;
 use App\Domain\CouponCode as CouponCodeEntity;
 use App\Domain\Exceptions\DomainException;
 
 
-class CourseItem extends Entity{
+class PaidCourseItem extends AbstractCourseItemEntity{
 	
-    private ?int        $id   = null;
-    private ?string     $uuid = null;
     private DateTimeVO  $cartAddedDate;
     private bool        $isCheckout;
-
-    private AmountVO    $discountAmount;
-    private AmountVO    $edumindLoseAmount;
-    private AmountVO    $revisedPrice;
-    private AmountVO    $edumindAmount;
-    
-    private AmountVO    $beneficiaryEarnAmount;
-    private AmountVO    $authorAmount;
-
-    
     
 
     /* associations */
-    private CourseEntity        $course;
     private ?CouponCodeEntity   $couponCode = null;
-
-
 
 
     public function __construct(CourseEntity $course, DateTimeVO $cartAddedDate, bool $isCheckout) {
@@ -65,47 +43,17 @@ class CourseItem extends Entity{
         $this->edumindLoseAmount        =   new AmountVO(0);
         $this->beneficiaryEarnAmount    =   new AmountVO(0);
 
-        /*
         if($course->getPrice()->isEqual(new AmountVO(0))){                                  
-            throw new DomainException("CourseItem entity objects cannot be created using free courses.");}
-        */
+            throw new DomainException("Provided course needs to be paid one for PaidCourseItem entity !");}
+        
     }
 
 
-
-
-    
-
-    
     // Getters
-    public function getId() : ?int {
-        return $this->id;
-    }
-
-    public function getUuid() : ?string {
-        return $this->uuid;
-    }
-
     public function getRevisedPrice() : AmountVO {
         return $this->revisedPrice;
     }
 
-    public function getBeneficiaryEarnAmount() : AmountVO {
-        return $this->beneficiaryEarnAmount;
-    }    
-
-    public function getAuthorAmount() : AmountVO {
-        return $this->authorAmount;
-    }
-    
-    public function getEdumindAmount() : AmountVO {
-        return $this->edumindAmount;
-    }
-    
-    public function getEdumindLooseAmount() : AmountVO {
-        return $this->edumindLoseAmount;
-    }
-    
     public function getcartAddedDate() : DateTimeVO {
         return $this->cartAddedDate;
     }
@@ -114,35 +62,13 @@ class CourseItem extends Entity{
         return $this->isCheckout();
     }
     
-    public function getCourse() : CourseEntity {
-        return $this->course;
-    }
-
     public function getCouponCode() : ?CouponCodeEntity {
         return $this->couponCode;
     }
     
-
-
-
-    // Setters
-    final public function setId(int $id) : void {
-        if ($this->id !== null) {
-            throw new AttributeAlreadySetDomainException('id attribute already been set and cannot be changed.');
-        }
-        $this->id  = $id;
-    }
-        
-    final public function setUuid(string $uuid) : void {
-        if ($this->uuid !== null) {
-            throw new AttributeAlreadySetDomainException('uuid attribute has already been set and cannot be changed.');
-        }
-        $this->uuid = $uuid;
-    }
     
-
-
-
+    // Setters
+    
     
     // toArray method
     public function toArray() : array {
@@ -172,9 +98,6 @@ class CourseItem extends Entity{
     public function markAsCheckout() : void {
         $this->isCheckout = true;
     }
-
-
-
 
     public function applyCouponCode(CouponCodeEntity $couponCode) : void {
         $canCcApply = $this->canEdumindEarnAfterUsingCoupon($couponCode);        
@@ -214,8 +137,6 @@ class CourseItem extends Entity{
             CourseItemTypesEnum::CART_ITEM;
     }
 
-    // public function getCourse(){}
-    
     public function checkCouponWorksforThis(CouponcodeEntity $givenCc) : bool {
         $ccAssignedCourse   =   $givenCc->getCourse();
         $thisCourseId       =   $this->course->getId();
@@ -231,17 +152,8 @@ class CourseItem extends Entity{
         }
     } 
     
-    public function coursePrice() : AmountVO {
-        $course = $this->getCourse();
-        return new $course->getPrice();       
-    }
-
-    public function edumindNetAmount() : AmountVO {
-        return $this->edumindAmount->subtract($this->edumindLoseAmount);
-    }
-
-
-   public function canEdumindEarnAfterUsingCoupon(CouponCodeEntity $couponCode) : bool {       
+    
+    public function canEdumindEarnAfterUsingCoupon(CouponCodeEntity $couponCode) : bool {       
         try {
             
             $isCouponWorks = $this->checkCouponWorksforThis($couponCode);
@@ -270,14 +182,9 @@ class CourseItem extends Entity{
         return $edumindCanEarn;
     }
 
-
-
-
-
-    public function calcDiscount() : AmountVO {
-        return $this->discountAmount;
+    public function revisedPrice() : AmountVO {
+        return $this->revisedPrice;
     }
-
 
     public function checkGivenCouponUsed(CouponCodeEntity $cc) : bool {        
         if(!$this->couponCode)
@@ -285,9 +192,6 @@ class CourseItem extends Entity{
         
         return ($this->couponCode->getCode() == $cc->getCode());
     }
-    
-    public function checkGivenCourse(CourseEntity $givenCourse) : bool {
-        return ($givenCourse->getId() == $this->course->getId());
-    }  
+
 
 }

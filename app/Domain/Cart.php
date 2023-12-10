@@ -1,12 +1,12 @@
 <?php
 namespace App\Domain;
 
-use App\Domain\CourseItem as CourseItemEntity;
+use App\Domain\CourseItems\PaidCourseItem as PaidCourseItemEntity;
 use App\Domain\CouponCode as CouponCodeEntity;
 use App\Domain\Users\StudentUser as StudentUserEntity;
 use App\Domain\Course as CourseEntity;
 use App\Domain\Order as OrderEntity;
-use App\Domain\Enrollment as EnrollmentEntity;
+use App\Domain\Enrollments\PaidEnrollment as PaidEnrollmentEntity;
 
 use App\Domain\Exceptions\DomainException;
 use App\Domain\Entity;
@@ -14,14 +14,11 @@ use App\Domain\Exceptions\AttributeAlreadySetDomainException;
 use App\Domain\ValueObjects\AmountVO;
 use App\Domain\ValueObjects\DateTimeVO;
 
-//use App\Domain\Invoice as InvoiceEntity;
-//use App\Domain\Exceptions\InvalidCouponException;
-
 
 class Cart extends Entity{
     
     /* associations */
-    /* @var CourseItemEntity[] */
+    /* @var PaidCourseItemEntity[] */
     private array $courseItems;
 
 
@@ -54,11 +51,11 @@ class Cart extends Entity{
 
 
 
-    public function addToCart(CourseItemEntity $courseItem) : void {
+    public function addToCart(PaidCourseItemEntity $courseItem) : void {
         $this->courseItems[] = $courseItem;
     }
 
-    public function removeFromCart(CourseItemEntity $removeCourseItem)  : void {
+    public function removeFromCart(PaidCourseItemEntity $removeCourseItem)  : void {
         foreach ($this->courseItems as $key => $courseItem) {
             if ($courseItem->getId() == $removeCourseItem->getId()) {
                 unset($this->courseItems[$key]);
@@ -277,7 +274,7 @@ class Cart extends Entity{
         foreach ($courseItems as $courseItem) {
             $courseItem->markAsCheckout();
             
-            $enrollmentObj   = new EnrollmentEntity($courseItem, $cartOwner);
+            $enrollmentObj   = new PaidEnrollmentEntity($courseItem, $cartOwner);
             $enrollmentObj->setIsComplete(false);
             $enrollmentArr[] = $enrollmentObj;           
         }

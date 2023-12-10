@@ -48,17 +48,19 @@ class ContactUsFormRequest extends FormRequest
     public function rules()
     {
         return [               
-        /*            
+                   
             'full_name'             =>'sometimes|required',
             'subject'               =>'required|max:50',
             'message'               =>'required',
-            'g-recaptcha-response'  =>'required',  */           
+            'g-recaptcha-response'  =>'required',        
 
-
+            /* 
             'full_name'             =>'sometimes|required',
             'subject'               =>'required|min:30|max:50|email',
             'message'               =>'required|min:30|email',
-            'g-recaptcha-response'  =>'required',                          
+            'g-recaptcha-response'  =>'required'
+            */ 
+                                         
         ];
     }
 

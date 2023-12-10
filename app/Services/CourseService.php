@@ -29,8 +29,8 @@ use App\DataTransformers\Database\EnrollmentDataTransformer;
 use App\Domain\ValueObjects\DateTimeVO;
 use \DateTime;
 use App\Mappers\EnrollmentMapper;
-use App\Domain\CourseItem as CourseItemEntity;
-use App\Domain\Enrollment as EnrollmentEntity;
+use App\Domain\CourseItems\FreeCourseItem as FreeCourseItemEntity;
+use App\Domain\Enrollments\FreeEnrollment as FreeEnrollmentEntity;
 
 use App\DataTransferObjects\Factories\CourseItemDtoFactory;
 use App\DataTransformers\Database\CourseItemDataTransformer;
@@ -296,29 +296,21 @@ class CourseService
         DB::transaction(function () use ($courseRec, $studentRec){
 
             $courseEntity       = CourseDataTransformer::buildEntity($courseRec->toArray());
-            $courseItemEntity   = new CourseItemEntity($courseEntity, DateTimeVO::now(), false);
+            $courseItemEntity   = new FreeCourseItemEntity($courseEntity);
             $courseItemDto      = CourseItemDtoFactory::fromArray($courseItemEntity->toArray());
             $payloadArr         = CourseItemDataTransformer::dtoToDbRecArr($courseItemDto);
 
             $payloadArr['student_id'] = $studentRec->id;
             unset($payloadArr['uuid']);
 
-            /*
-             workaround -
-                for free courses  CourseItemEntity attribute cartAddedDate need to be null,
-                but in CourseItemEntity class attribute cartAddedDate cannot be null
-            */
-            $payloadArr['cart_added_date'] = null;
-
             $courseSelRec = (new CourseSelectionRepository())->create($payloadArr);
             if(!$courseSelRec) //todo cehck is that rollback
                 abort(500, "Failed to enroll course due to server error  - unable to save Course Item record !");
 
-
             $courseItemEntity->setId($courseSelRec->id);
 
             $studentEntity      = UserDataTransformer::buildEntity($studentRec->toArray());
-            $enrollmentEntity   = new EnrollmentEntity($courseItemEntity, $studentEntity);
+            $enrollmentEntity   = new FreeEnrollmentEntity($courseItemEntity, $studentEntity);
             $enrollmentEntity->setIsComplete(false);
             $enrollmentRecDBArr =  EnrollmentMapper::entityConvertToDbArr($enrollmentEntity->toArray());
 

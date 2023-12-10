@@ -186,7 +186,9 @@ Route::group(['prefix'=>'teachers','as'=>'teachers.'], function(){
 
 
 Route::group(['prefix'=>'contact-us','as'=>'contact-us.','namespace' =>''], function(){
-    Route::get('/', [ContactUsController::class,'viewContactUs'])->name('view');    
+    Route::get('/', [ContactUsController::class,'viewContactUs'])
+    //->middleware('can:view_guest_messages_admin_panel, App\Models\ContactUs')
+    ->name('view');    
     Route::post('/submit', [ContactUsController::class,'submitContactForm'])->name('submit');
 });
 //->can('create', ContactUs::class);;
@@ -293,6 +295,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::get('/my-coupons',[CouponController::class,'myCoupons'])->name('my-coupons');//TODO
         });
         
+    
 
         Route::group(['prefix'=>'feedbacks','as'=>'feedbacks.'], function(){
             Route::get('/student', [ContactUsMessagesController::class,'viewStudentMessages'])->name('student');

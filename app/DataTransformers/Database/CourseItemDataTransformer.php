@@ -2,29 +2,25 @@
 
 namespace App\DataTransformers\Database;
 
-use App\Domain\CourseItem as CourseItemEntity;
-
+use App\Domain\AbstractCourseItem as AbstractCourseItemEntity;
 use App\DataTransferObjects\CourseItemDto;
 use App\DataTransferObjects\Factories\CourseItemDtoFactory;
 use App\Mappers\CourseItemMapper;
 use App\Domain\Factories\CourseItemFactory;
-
 use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 use App\Repositories\CouponRepository;
 
 class CourseItemDataTransformer{
 
-	public static function buildDto(array $courseSelRecData) : CourseItemDto {        
-        
+	public static function buildDto(array $courseSelRecData) : CourseItemDto {       
         $courseItemEntity 	= self::buildEntity($courseSelRecData);
         $courseItemDto    	= CourseItemDtoFactory::fromArray($courseItemEntity->toArray());
 		return $courseItemDto;
 	}
 
-	public static function buildEntity(array $courseSelRecData) : CourseItemEntity {
- 
-		if(!isset($courseSelRecData['course_arr'])){
+	public static function buildEntity(array $courseSelRecData) : AbstractCourseItemEntity {
+        if(!isset($courseSelRecData['course_arr'])){
         	$courseId 							= $courseSelRecData['course_id'];
         	$courseSelRecData['course_arr'] 	= is_null($courseId) ? [] : (new CourseRepository())->findDataArrById($courseId);
         }		
@@ -44,7 +40,7 @@ class CourseItemDataTransformer{
         return $courseItemEntity;
 	}
 
-    public static function entityToDbRecArr(CourseItemEntity $courseItemEntity) : array {
+    public static function entityToDbRecArr(AbstractCourseItemEntity $courseItemEntity) : array {
         $courseItemEntityArr    = $courseItemEntity->toArray();
         $payloadArr             = CourseItemMapper::entityConvertToDbArr($courseItemEntityArr);
         //unset($payloadArr['creator_arr']);

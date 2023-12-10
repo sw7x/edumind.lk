@@ -6,11 +6,10 @@ use App\Domain\Users\StudentUser as StudentUserEntity;
 use App\Domain\Entity;
 use App\Domain\Invoice as InvoiceEntity;
 
-use App\Domain\CourseItem as CourseItemEntity;
+use App\Domain\CourseItems\PaidCourseItem as PaidCourseItemEntity;
 use App\Domain\CourseEntity as CourseEntity;
 use App\Domain\Users\TeacherUser as TeacherUserEntity;
-use App\Domain\Users\Enrollment as EnrollmentEntity;
-
+use App\Domain\Enrollments\PaidEnrollment as PaidEnrollmentEntity;
 
 use App\Domain\ValueObjects\PercentageVO;
 use App\Domain\ValueObjects\AmountVO;
@@ -30,13 +29,13 @@ class Order extends Entity{
     private ?InvoiceEntity    $invoice = null;
     private StudentUserEntity $customer;
     
-    /* @var EnrollmentEntity[] */
+    /* @var PaidEnrollmentEntity[] */
     private array             $enrollments = [];
 
 
 
 
-    /* @var enrollments => EnrollmentEntity[] */
+    /* @var enrollments => PaidEnrollmentEntity[] */
     public function __construct(array $enrollments, StudentUserEntity $customer){        
         foreach ($enrollments as $enrollment) {            
             //$enrollment->setOrder($this);
@@ -105,7 +104,7 @@ class Order extends Entity{
     
     
     /**
-    * @param EnrollmentEntity[] $enrollments
+    * @param PaidEnrollmentEntity[] $enrollments
     * @return void
     
     final public function setEnrollments(array $enrollments) : void {
@@ -162,8 +161,8 @@ class Order extends Entity{
         return $this->invoice->getId();
     }
 
-    public function addEnrollment(CourseItemEntity $courseItem) : void {        
-        $enrollment          = new EnrollmentEntity($courseItem);
+    public function addEnrollment(PaidCourseItemEntity $courseItem, StudentUserEntity $student) : void {        
+        $enrollment          = new PaidEnrollmentEntity($courseItem, $student);
         //$enrollment.setOrder($this);
         $this->enrollments[] = $enrollment;       
     }

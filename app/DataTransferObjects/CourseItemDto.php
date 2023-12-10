@@ -14,11 +14,11 @@ class CourseItemDto extends AbstractDto{
 
     //public read only
     private courseDto      $courseDto;
-    private string         $cartAddedDate;
+    private ?string        $cartAddedDate;
     private bool           $isCheckout;
 
     private ?int           $id;
-    //private ?string        $uuid;
+    //private ?string      $uuid;
     private ?float         $discountAmount;
     private ?float         $edumindLoseAmount;
     private ?float         $revisedPrice;
@@ -32,11 +32,11 @@ class CourseItemDto extends AbstractDto{
     // Constructor
     public function __construct(
         CourseDto       $courseDto,
-        string          $cartAddedDate,
+        string          $cartAddedDate          = null,
         bool            $isCheckout,
 
         ?int            $id                     = null,
-        //?string         $uuid                   = null,        
+        //?string       $uuid                   = null,      
         ?float          $discountAmount         = 0, 
         ?float          $edumindLoseAmount      = 0,
         ?float          $revisedPrice           = 0, 
@@ -51,7 +51,7 @@ class CourseItemDto extends AbstractDto{
         $this->isCheckout                       = $isCheckout;
         
         $this->id                               = $id;
-        //$this->uuid                             = $uuid;
+        //$this->uuid                           = $uuid;
         $this->discountAmount                   = $discountAmount;
         $this->edumindLoseAmount                = $edumindLoseAmount;
         $this->revisedPrice                     = $revisedPrice;
@@ -127,9 +127,7 @@ class CourseItemDto extends AbstractDto{
             'id'                    => $this->id,
             //'uuid'                  => $this->uuid,
             
-            'cartAddedDate'         => $this->cartAddedDate,
-            //'cartAddedDate'       => $this->cartAddedDate ? $this->cartAddedDate->format('Y-m-d H:i:s') : null,
-            
+            'cartAddedDate'         => $this->cartAddedDate ? $this->cartAddedDate : null,            
             'isCheckout'            => $this->isCheckout,
             'edumindAmount'         => $this->edumindAmount,
             'authorAmount'          => $this->authorAmount,

@@ -24,10 +24,8 @@ use App\Models\{
     Coupon as CouponModel,
     Invoice as InvoiceModel
 };
-use App\Domain\Enrollment as EnrollmentEntity;
 use App\Domain\Users\Student as StudentEntity;
 use App\Domain\Course as CourseEntity;
-use App\Domain\CourseItem as CourseItemEntity;
 use App\Domain\CouponCode as CouponCodeEntity;
 use App\Domain\Factories\CourseFactory;
 use App\Domain\Factories\CouponFactory;
