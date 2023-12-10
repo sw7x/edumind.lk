@@ -33,14 +33,17 @@ GateFacade::define(
 
 /*
     - Admins and editors can watch any course.
-    - Teachers and (editors) can watch courses they have created.
-    - Students can watch their enrolled courses.
+    - Teachers and (editors) can watch courses(paid) they have created.
+    - Students can watch their enrolled courses(paid).
+    - anyone can watch Free courses.
 */
 GateFacade::define(
 	CourseAbilities::WATCH_COURSE, function(?UserModel $user, CourseModel $course) {	
 	$userSharedService = new UserSharedService();
 
 	$hasAllowedRole = $userSharedService->hasAnyRole($user, [RoleModel::ADMIN, RoleModel::EDITOR]);
+	
+	$isFreeCourse 	= $course->price == 0;
 	
 	$isTeacher 		= $userSharedService->hasRole($user, RoleModel::TEACHER);	
 	$isCourseAuthor = $isTeacher ? $user->isCourseAuthor($course) : false;
@@ -54,7 +57,7 @@ GateFacade::define(
 		$isEnrolledCourse 	= false;
 	}	
 
-   	return ($hasAllowedRole || $isCourseAuthor || $isEnrolledCourse) ? 
+   	return ($hasAllowedRole || $isCourseAuthor || $isEnrolledCourse || $isFreeCourse) ? 
 		Response::allow() : 
 		Response::deny('You dont have Permissions to watch the course materials !');
 });

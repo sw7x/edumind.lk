@@ -24,6 +24,7 @@
     
     @php
         //var_dump($courseData);
+        //var_dump($courseType);
         //var_dump($courseData->subject->name);
         //var_dump($courseData['creatorArr']->full_name);
     @endphp
@@ -189,7 +190,7 @@
                                                 <ul class="course-curriculum-list font-normal">
                                                     @foreach($sectionContent as $arr)
                                                         <li class=" hover:bg-gray-100 p-2 flex _rounded-md
-                                                            {{($arr['isFree'] == true)?' text-blue-500':''}}
+                                                            {{($arr['isFree'] == true || $courseType == 'free') ? ' text-blue-500':''}}
                                                             {{($arr['type'] == 'Download')?' __pl-8':''}}">
 
 
@@ -204,7 +205,7 @@
                                                             @endif
 
                                                             <div class="link_div mr-2 text-justify">
-                                                                @if($arr['isFree'] == true)
+                                                                @if($arr['isFree'] == true || $courseType == 'free')
 
                                                                     @if(strtolower($arr['type']) == 'video')                                                                        
                                                                         @if(ValidUrl($arr['inputUrl']))
@@ -507,7 +508,7 @@
         @php($liCount = 1)
         @foreach($courseContent as $sectionHeading => $sectionContent)
             @foreach($sectionContent as $arr)
-                @if($arr['isFree'] == true)
+                @if($arr['isFree'] == true || $courseType == 'free')
                     @if(strtolower($arr['type']) == 'video')
                     <!-- model for video {{$liCount}} -->
                         <div id="preview-modal-{{$liCount}}" uk-modal>

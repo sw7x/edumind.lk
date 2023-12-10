@@ -72,9 +72,6 @@ class CourseService
         $pageResult     = $this->loadCoursePage($currentUser, $courseRec);
         $viewFile       = $pageResult['view'];
 
-        if($courseRec->price == 0)
-            $viewFile = 'course-single-enrolled';
-
         //validate course content format
         $courseContentData  =  (new CourseSharedService())->validateCourseContent($courseRec->content);
 
@@ -91,11 +88,7 @@ class CourseService
     }
 
 
-    public function loadCourseWatchData(string $slug, $videoId) : array {
-        $courseRec = $this->courseRepository->findByUrl($slug);
-        if(is_null($courseRec))
-            abort(404, 'Course does not exist');
-
+    public function loadCourseWatchData(CourseModel $courseRec, $videoId) : array {
         if($courseRec->status != CourseModel::PUBLISHED)
             throw new CustomException('Course is temporary disabled');
 
@@ -155,11 +148,11 @@ class CourseService
 
 
     /*
-    for student
-        when status = FRESH          then display [add to cart] button
-        when status = ADDED_TO_CART  then display [view cart] button
-        when status = ENROLLED       then display [complete course] button
-        when status = COMPLETED      then display 'course completed' messeage
+        for student
+            when status = FRESH          then display [add to cart] button
+            when status = ADDED_TO_CART  then display [view cart] button
+            when status = ENROLLED       then display [complete course] button
+            when status = COMPLETED      then display 'course completed' messeage
     */
     private function loadCoursePage(?UserModel $user, CourseModel $courseRec) : array {
         $usrSvc = new UserSharedService();

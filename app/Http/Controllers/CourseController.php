@@ -41,24 +41,30 @@ class CourseController extends Controller
         if(!$slug)
             throw new CustomException('Course id not provided');
 
-        $courseData     = $this->courseService->loadCourseData($slug);
+        $courseData = $this->courseService->loadCourseData($slug);        
+        $viewFile   = $courseData['viewFile'];
+        
+        /*  - loggedin users can watch free courses by navigating into course-watch page
+            - guest users can not navigate into course-watch page, they can watch the course from within the course page */   
+        if($courseData['dbRec']->price == 0 && Sentinel::check())
+            $viewFile = 'course-single-enrolled';
 
         $courseDataArr  = CourseDataFormatter::prepareCourseData($courseData);
-        $viewFile       = $courseData['viewFile'];
 
         return view($viewFile)->with([
-            'courseData'             => $courseDataArr,
+            'courseData'                => $courseDataArr,
 
-            //'courseContent'          => $courseData['courseContentData']['content'],
-            //'courseContentInvFormat' => $courseData['courseContentData']['invalidFormat'],
+            //'courseContent'           => $courseData['courseContentData']['content'],
+            //'courseContentInvFormat'  => $courseData['courseContentData']['invalidFormat'],
 
-            'courseContent'          => $courseData['courseContentData']['data'],
-            'courseContentInvFormat' => $courseData['courseContentData']['isInvFormat'],
+            'courseContent'             => $courseData['courseContentData']['data'],
+            'courseContentInvFormat'    => $courseData['courseContentData']['isInvFormat'],
 
-            'bgColor'                => $courseData['colors']['bgColor'],
-            'txtColor'               => $courseData['colors']['txtColor'],
-            'invColor'               => $courseData['colors']['invColor'],
-            'enroll_status'          => $courseData['enroll_status']
+            'bgColor'                   => $courseData['colors']['bgColor'],
+            'txtColor'                  => $courseData['colors']['txtColor'],
+            'invColor'                  => $courseData['colors']['invColor'],
+            'enroll_status'             => $courseData['enroll_status'],
+            'courseType'                => (($courseData['dto'])->getPrice() == 0) ? 'free' : 'paid'
         ]);
 
     }
@@ -78,9 +84,15 @@ class CourseController extends Controller
         if(!$slug)
             throw new CustomException('Course id not provided');
 
-        //todo -need auth and permissions
+        $courseRec = (new CourseRepository())->findByUrl($slug);
+        if(is_null($courseRec))
+            abort(404, 'Course does not exist');
 
-        $courseData = $this->courseService->loadCourseWatchData($slug, $videoId);
+        //todo -need auth and permissions
+        $this->hasPermission(CourseAbilities::WATCH_COURSE, $courseRec);
+
+
+        $courseData = $this->courseService->loadCourseWatchData($courseRec, $videoId);
         //$bannerColors = ColorUtil::generateBannerColors($course->image);
 
         return view('course-watch')->with([
