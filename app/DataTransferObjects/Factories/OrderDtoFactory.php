@@ -11,6 +11,7 @@ use App\DataTransferObjects\OrderDto;
 
 use App\Repositories\OrderRepository;
 use App\DataTransferObjects\Exceptions\MissingArgumentDtoException;
+use App\DataTransferObjects\Exceptions\InvalidArgumentDtoException;
 
 use App\Mappers\UserMapper;
 use App\Mappers\InvoiceMapper;
@@ -27,7 +28,10 @@ class OrderDtoFactory extends AbstractDtoFactory
     public static function fromArray(array $data): ?OrderDto{
 
         if( !isset($data['enrollmentsArr']) )
-            throw new MissingArgumentDtoException('OrderDto create failed due to missing enrollmentsArr parameter'); 
+            throw new MissingArgumentDtoException('OrderDto create failed due to missing enrollmentsArr parameter');        
+
+        if( empty($data['enrollmentsArr']) )
+            throw new InvalidArgumentDtoException('OrderDto create failed due to empty enrollmentsArr parameter'); 
 
         if( !isset($data['studentId']) && !isset($data['studentArr']) )
             throw new MissingArgumentDtoException('OrderDto create failed due to missing both studentArr and studentId parameters');
@@ -73,6 +77,9 @@ class OrderDtoFactory extends AbstractDtoFactory
         if( ($request->input('enrollments_arr') === null) )
             throw new MissingArgumentDtoException('OrderDto create failed due to missing enrollments_arr parameter'); 
         
+        if( empty($request->input('enrollments_arr')) )
+            throw new InvalidArgumentDtoException('OrderDto create failed due to empty enrollmentsArr parameter');
+
         if( 
             ( $request->input('student_id')  == null) && 
             ( $request->input('student_arr') === null || empty($request->input('student_arr')) ) 

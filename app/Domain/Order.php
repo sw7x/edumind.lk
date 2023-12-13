@@ -16,27 +16,30 @@ use App\Domain\ValueObjects\AmountVO;
 use App\Domain\ValueObjects\DateTimeVO;
 
 use App\Domain\Exceptions\AttributeAlreadySetDomainException;
-
+use App\Domain\Exceptions\DomainException;
 
 class Order extends Entity{
 	
-    private ?int        $id           = null;
-    private ?string     $uuid         = null;
-	private ?DateTimeVO $checkOutDate = null;
+    private ?int               $id           = null;
+    private ?string            $uuid         = null;
+	private ?DateTimeVO        $checkOutDate = null;
     
     
     /* associations */
-    private ?InvoiceEntity    $invoice = null;
+    private ?InvoiceEntity    $invoice       = null;
     private StudentUserEntity $customer;
     
     /* @var PaidEnrollmentEntity[] */
-    private array             $enrollments = [];
+    private array             $enrollments   = [];
 
 
 
 
     /* @var enrollments => PaidEnrollmentEntity[] */
     public function __construct(array $enrollments, StudentUserEntity $customer){        
+        if(empty($enrollments))
+            throw new DomainException("At least one paid enrollment is required to create an order.");
+            
         foreach ($enrollments as $enrollment) {            
             //$enrollment->setOrder($this);
             $this->enrollments[] = $enrollment;

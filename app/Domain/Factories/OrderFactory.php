@@ -38,7 +38,7 @@ class OrderFactory implements IFactory {
 		$enrollmentsArr  =  $orderData['enrollmentsArr'];
         $studentArr      =  $orderData['studentArr'];
         
-        if(!is_array($enrollmentsArr) || empty($enrollmentsArr))       
+        if(!is_array($enrollmentsArr))       
             throw new InvalidArgumentDomainException("enrollmentsArr parameter is not in correct format for create CouponCode entity");              
         
         if(!is_array($studentArr) || empty($studentArr))      
@@ -111,7 +111,7 @@ class OrderFactory implements IFactory {
 		$enrollmentsArr  =  $orderData['enrollmentsArr'];
         $studentArr      =  $orderData['studentArr'];
         
-        if(!is_array($enrollmentsArr) || empty($enrollmentsArr))     
+        if(!is_array($enrollmentsArr))     
             throw new InvalidArgumentDomainException("enrollmentsArr parameter is not in correct format for create CouponCode entity");              
         
         if(!is_array($studentArr) || empty($studentArr))        
