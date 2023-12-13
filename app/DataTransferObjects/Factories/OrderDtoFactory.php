@@ -46,7 +46,7 @@ class OrderDtoFactory extends AbstractDtoFactory
                                 (UserDtoFactory::fromArray($data['studentArr'])) : 
                                 (new UserDtoFactory())->createDtoById($data['studentId']);
         
-        $invoiceDto     =   (isset($data['invoiceArr']) && !empty($data['studentArr'])) ?
+        $invoiceDto     =   (isset($data['invoiceArr']) && !empty($data['invoiceArr'])) ?
                                 InvoiceDtoFactory::fromArray($data['invoiceArr']) : 
                                 (isset($data['invoiceId']) ? 
                                     (new InvoiceDtoFactory())->createDtoById($data['invoiceId']) : 
