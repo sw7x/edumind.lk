@@ -48,9 +48,9 @@ class ViewServiceProvider extends ServiceProvider
         });*/
 
 
-        view::composer (['includes.header','includes.footer','home'],TopSubjectsComposer::class);
+        view::composer (['includes.header','includes.footer','home'], TopSubjectsComposer::class);
 
-        view::composer (['includes.header','student.cart.cart-page'],CartComposer::class);
+        view::composer (['includes.header','student.cart.cart-page'], CartComposer::class);
         //view::composer (['student.cart.cart-page'],CartComposer::class);
 
         view::composer ([
@@ -59,7 +59,7 @@ class ViewServiceProvider extends ServiceProvider
             'includes.components.course-page-buttons',
             'admin-panel.includes.top-nav',
             'admin-panel.includes.side-nav',
-        ],UserInfoComposer::class);
+        ], UserInfoComposer::class);
 
 
     }

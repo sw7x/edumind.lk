@@ -27,7 +27,7 @@ class FileUploadUtil{
 
         $imageName = substr($filename, 0, 40).'_'.uniqid().'.'.$ext;
 
-        Storage::disk('public')->put($path.$imageName, base64_decode($imgData));
+        Storage::disk('public')->put($path . $imageName, base64_decode($imgData));
 
         //$destination = Storage::disk('public')->getAdapter()->getPathPrefix(). '/' . pathinfo($imageName, PATHINFO_FILENAME) . '.jpeg';
         $destination = $path.$imageName;

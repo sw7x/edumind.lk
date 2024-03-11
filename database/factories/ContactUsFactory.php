@@ -23,14 +23,12 @@ class ContactUsFactory extends Factory
      */
     public function definition()
     {
-
         $randUser = UserModel::withoutGlobalScope('active')->get()->random();
 
         //var_dump($randUser->id);
         //var_dump($randUser->full_name);
         //var_dump($randUser->email);
         //var_dump($randUser->phone);
-
         //dd($randUser->id);
 
         $user1 =    [
@@ -57,16 +55,13 @@ class ContactUsFactory extends Factory
         $user = $this->faker->randomElement([$user1, $user2, $user3]);
 
 
-
         $randomNumber = $this->faker->numberBetween(1, 10);
-
         return [
             'full_name' => $user['full_name'],//50    ////////////
             'email'     => $user['email'], //////////////
             'phone'     => $user['phone'], //20////////
             'subject'   => $this->faker->sentence($nbWords = $randomNumber, $variableNbWords = true),
             'message'   => $this->faker->text(),
-
             'user_id'   => $user['user_id'],////////////////
         ];
 
@@ -81,21 +76,8 @@ class ContactUsFactory extends Factory
         ];
         */
 
-
-
-
-
-
-
-
-
-
-
         //$table->integer('user_id')->nullable()->unsigned();
         //$table->foreign('user_id')->references('id')->on('users');
-
-
-
 
     }
 }

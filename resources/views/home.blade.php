@@ -110,26 +110,25 @@
 
 
 
-
     <div class="main-container container mx-auto max-w-5xl __p-4">
         @if(Session::has('message'))
-            <x-flash-message  
-                :class="Session::get('cls', 'flash-info')"  
-                :title="Session::get('msgTitle') ?? 'Info!'" 
-                :message="Session::get('message') ?? ''"  
-                :message2="Session::get('message2') ?? ''"  
+            <x-flash-message
+                :class="Session::get('cls', 'flash-info')"
+                :title="Session::get('msgTitle') ?? 'Info!'"
+                :message="Session::get('message') ?? ''"
+                :message2="Session::get('message2') ?? ''"
                 :canClose="true" />
         @endif
-    
-        
-        
+
+
+
 
 
         @php
             //var_dump ($popular_courses);
         @endphp
 
-        @if(isset($popular_courses) && isNotEmptyArray($popular_courses))            
+        @if(isset($popular_courses) && isNotEmptyArray($popular_courses))
             <!--  Popular Courses  feature section -->
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
                 <h2 class="text-2xl font-semibold">Popular Courses</h2>
@@ -139,7 +138,7 @@
                 <a href="{{route('courses.show',$course['slug'])}}" class="uk-link-reset">
                     <div class="horizontal-course-item bg-white md:flex shadow-sm rounded-lg uk-transition-toggle mb-5">
                         <div class="md:w-5/12 md:h-60 h-40 overflow-hidden rounded-l-lg relative">
-                            <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                
+                            <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                         </div>
                         <div class="flex-1 md:p-6 p-4">
                             <div class="font-semibold line-clamp-2 md:text-xl md:leading-relaxed">{{$course['name']}}</div>
@@ -155,7 +154,7 @@
 
                                         <div class="font-semibold mt-3 lg:mt-0 lg:mr-3 md:mt-2">
                                             <span class=""><i class="align-middle icon icon-feather-clock mr-1" style="font-size: 1.20rem;"></i>{{$course['duration']}}</span>
-                                        </div>                                            
+                                        </div>
                                     </div>
                                     {{--
                                     <div class="flex items-center space-x-1 text-yellow-500 md:ml-5 mt-3 lg:mt-0 lg:mr-3 md:mt-2">
@@ -260,7 +259,7 @@
             //var_dump ($new_courses);
         @endphp
 
-        @if(isset($new_courses) && isNotEmptyArray($new_courses))             
+        @if(isset($new_courses) && isNotEmptyArray($new_courses))
             <!--  slider courses -->
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
                 <h2 class="text-2xl font-semibold">New Courses</h2>
@@ -278,7 +277,7 @@
                                     <a href="{{route('courses.show',$course['slug'])}}" class="uk-link-reset">
                                         <div class="bg-white shadow-sm rounded-lg uk-transition-toggle">
                                             <div class="w-full h-40 overflow-hidden rounded-t-lg relative">
-                                                <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                                               
+                                                <img src="{{$course['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">
                                                 <img src="{{asset('images/icon-play.svg')}}" class="w-12 h-12 uk-position-center uk-transition-fade" alt="">
                                             </div>
                                             <div class="p-4">
@@ -289,7 +288,9 @@
                                                     <div>{{$course['videoCount']}} lectures</div>
                                                 </div>
                                                 <div class="pt-1 _flex items-center justify-between">
-                                                    <div class="text-sm font-semibold">{{$course['teacherName']}}</div>
+                                                    
+                                                    <div class="text-sm font-semibold">{!! $course['teacherName'] ?? '<span class="text-red-500">Author not available<span>' !!}</div>
+                                                    
                                                     @if(isset($course['price']))
                                                         <div class="text-lg font-semibold">{{ $course['price'] == 0 ? "Free" : 'Rs '.$course['price'] }}</div>
                                                     @endif
@@ -369,7 +370,7 @@
             //var_dump ($teachers);
         @endphp
 
-        @if(isset($teachers) && isNotEmptyArray($teachers))             
+        @if(isset($teachers) && isNotEmptyArray($teachers))
             <!--  Teachers  -->
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
                 <h2 class="text-2xl font-semibold">Teachers</h2>
@@ -383,12 +384,12 @@
                             <li>
                                 <div class="relative overflow-hidden bg-white shadow-sm md:rounded-lg rounded-md">
                                     <a href="{{route('teachers.show',$teacher['username'])}}">
-                                        <img src="{{$teacher['profilePic']}}" class="w-full h-52 object-cover" alt="">                                        
+                                        <img src="{{$teacher['profilePic']}}" class="w-full h-52 object-cover" alt="">
                                         <div class="p-3 truncate">{{$teacher['fullName']}}</div>
                                     </a>
                                 </div>
                             </li>
-                        @endforeach                        
+                        @endforeach
                     </ul>
 
                     <a class="absolute bg-white bottom-1/2 flex items-center justify-center p-2 -left-4 rounded-full shadow-md text-xl w-9 z-10 dark:bg-gray-800 dark:text-white"
@@ -410,7 +411,7 @@
         @if(isset($subject_info) && isNotEmptyArray($subject_info))
             <!--  Subjects section  -->
             <div class="sm:my-4 my-3 flex items-end justify-between pt-3">
-                <h2 class="text-2xl font-semibold">Subjects</h2>
+                <h2 class="text-2xl font-semibold">Top Subjects</h2>
                 <a href="{{route('subjects.index')}}" class="text-blue-500 sm:block hidden"> See all </a>
             </div>
 
@@ -419,7 +420,7 @@
                     <a href="{{route('subjects.show',$subject_Item['slug'])}}" class="rounded-md overflow-hidden relative w-full lg:h-56 h-40">
                         <div class="absolute w-full h-3/4 -bottom-12 bg-gradient-to-b from-transparent to-gray-800 z-10">
                         </div>
-                        <img src="{{$subject_Item['image']}}" class="absolute w-full h-full object-cover" alt="">                       
+                        <img src="{{$subject_Item['image']}}" class="absolute w-full h-full object-cover" alt="">
                         {{--<img src="{{asset('images/category/design.jpg')}}" class="absolute w-full h-full object-cover" alt="">--}}
                         <div class="absolute bottom-0 w-full p-3 text-white z-20 font-semibold text-lg">{{$subject_Item['name']}}</div>
                     </a>

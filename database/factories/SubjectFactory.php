@@ -29,41 +29,37 @@ class SubjectFactory extends Factory
         $urlString  = UrlUtil::wordsToUrl($subjectName,15);
         $slug       = UrlUtil::generateSubjectUrl($urlString);
 
-        $imgSrc     = 'subjects/' . $this->faker->image('public/storage/subjects', 200, 200, 'subject', false, true);
-
+        $haveImage = $this->faker->randomElement([true, true, true, false]);
 
         return [
-            //'name' => substr($this->faker->name,0,24),
-
             'name'          => $subjectName,
             'description'   => $this->faker->text(),
 
-            //'image'         => $this->faker->imageUrl($width = 200, $height = 200),
-            //'image'         => '',
-            'image'           => $this->faker->randomElement([$imgSrc,$imgSrc,$imgSrc,null]),
+            'image'         => function () use ($haveImage){
+                $imgSrc =   ($haveImage) ?
+                                $this->faker->image(public_path('storage/subjects'), 200, 200, 'Subject', false, true) :
+                                null;
 
-            //'status'        => $this->faker->randomElement(['published','draft']),
+                // fix for sometimes faker not generate image
+                return $imgSrc ? 'subjects/' . $imgSrc : null;
+            },
+
             'status'        => $this->faker->randomElement([
                 $this->model::PUBLISHED,
                 $this->model::DRAFT,
                 $this->model::PUBLISHED
             ]),
+            
             'slug'          => $slug,
             'author_id'     => function () {
                 $teacherIdArr   = Sentinel::findRoleBySlug(RoleModel::TEACHER)->users()->with('roles')->pluck('id')->toArray();
                 $adminIdArr     = Sentinel::findRoleBySlug(RoleModel::ADMIN)->users()->with('roles')->pluck('id')->toArray();
                 $editorIdArr    = Sentinel::findRoleBySlug(RoleModel::EDITOR)->users()->with('roles')->pluck('id')->toArray();
 
-                $userArr = array_merge($teacherIdArr,$adminIdArr,$editorIdArr);
+                $userArr = array_merge($teacherIdArr, $adminIdArr, $editorIdArr);
                 shuffle($userArr);
                 return $userArr[0];
             },
-
-
-
-
-
-
         ];
     }
 }

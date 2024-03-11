@@ -1,23 +1,17 @@
-<?php 
-
+<?php
 namespace App\View\DataFormatters;
 
-
-
-
 class TeacherDataFormatter{
-    
+
     public static function prepareUserData(array $userData) : array {
-        $userDto    = $userData['dto'];  
-        $createdAt  = $userData['createdAt'];  
+        $userDto    = $userData['dto'];
+        $createdAt  = $userData['createdAt'];
 
         $tempArr                 = $userDto->toArray();
         $tempArr['createdAt']    = $createdAt->format('Y/m/d H:i');
         $tempArr['createdAtAgo'] = $createdAt->diffForHumans();
         return $tempArr;
     }
-
-
 
     public static function prepareUserListData(array $userDataArr) : array {
         $arr = array();
@@ -35,13 +29,10 @@ class TeacherDataFormatter{
         return $arr;
     }
 
-
-
-    
     public static function prepareCourseData(array $courseDtoArr) : array {
         $arr = array();
         foreach ($courseDtoArr as $courseDto) {
-            $subjectDto  = $courseDto->getsubjectDto();            
+            $subjectDto  = $courseDto->getsubjectDto();
             $tempArr     = array();
 
             $tempArr     = $courseDto->toArray();
@@ -60,21 +51,10 @@ class TeacherDataFormatter{
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     public static function __prepareCourseData(array $courseDtoArr) : array {
         $arr = array();
         foreach ($courseDtoArr as $courseDto) {
-            $tempArr     = array(); 
+            $tempArr     = array();
             $tempArr     = $courseDto->toArray();
 
             $courseDto  = $courseData['dto'];

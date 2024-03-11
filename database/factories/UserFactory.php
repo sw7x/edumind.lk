@@ -32,26 +32,25 @@ class UserFactory extends Factory
         $user =  [
             'full_name' => $this->faker->name(),
             'email'     => $this->faker->unique()->safeEmail(),
-            
-            'gender' => $this->faker->randomElement([
-                $this->model::GENDER_MALE, 
-                $this->model::GENDER_FEMALE, 
-                $this->model::GENDER_OTHER, 
-                $this->model::GENDER_MALE, 
-                $this->model::GENDER_FEMALE
-            ]),
+
+            'gender'    => $this->faker->randomElement([
+                                $this->model::GENDER_MALE,
+                                $this->model::GENDER_FEMALE,
+                                $this->model::GENDER_OTHER,
+                                $this->model::GENDER_MALE,
+                                $this->model::GENDER_FEMALE
+                           ]),
             //'profile_pic'   => $profilePic,
 
-            'dob_year' => 1987,
-            'status' => $this->faker->randomElement([1,1,0]),
-            'password' => bcrypt('Pa$$w0rd!'),
-            'phone' => $this->faker->phoneNumber(),
-
-            'username' => substr($this->faker->userName(), 0, 24),
+            'dob_year'  => 1987,
+            'status'    => $this->faker->randomElement([1,1,0]),
+            'password'  => bcrypt('Pa$$w0rd!'),
+            'phone'     => $this->faker->phoneNumber(),
+            'username'  => substr($this->faker->userName(), 0, 24),
             'created_at'=> now(),
             'updated_at'=> now(),
         ];
-     
+
         return $user;
 
         //$user = User->registerAndActivate($user);

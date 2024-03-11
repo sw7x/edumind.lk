@@ -1,8 +1,8 @@
-@php    
+@php
     use App\Permissions\Abilities\ContactUsAbilities;
     use App\Permissions\Abilities\AuthAbilities;
     use App\Permissions\Abilities\AdminPanelAbilities;
-@endphp         
+@endphp
                 <div class="left-side">
 
                     <!-- Logo -->
@@ -43,7 +43,7 @@
 
                                 @can(ContactUsAbilities::SUBMIT_FORM)
                                     <li><a href="{{route('contact-us.view')}}">Contact</a></li>
-                                @endcan 
+                                @endcan
 
                                 <li class="uk-parent">
                                     <a href="#">Pages</a>
@@ -79,13 +79,15 @@
                                         <li><a href="{{route('students.courses','student1')}}">Student1 - enrolled courses</a></li>
                                         <li><a href="{{route('teachers.show','teacher1')}}">view teacher profile</a></li>
                                         <li><a href="{{route('courses.index')}}">All courses</a></li>
-                                        <li><a href="{{route('courses.search')}}">Course search</a></li>                                       
+                                        <li><a href="{{route('courses.search')}}">Course search</a></li>
                                         <li><a href="{{route('courses.watch')}}">--course watch</a></li>
                                         {{-- <li><a href="{{route('view-cart')}}">My Cart</a></li>
                                         <li><a href="{{route('bill-info')}}">bill-info</a></li>
                                          --}}<li><a href="{{route('subjects.index')}}">subject list</a></li>
                                         <li><a href="{{route('contact-us.view')}}">contact</a></li>
-                                        <li><a href="{{route('courses.show',App\Models\Course::first()->slug)}}">course single</a></li>
+                                        @if(App\Models\Course::count() > 0)
+                                            <li><a href="{{route('courses.show',App\Models\Course::first()->slug)}}">course single</a></li>
+                                        @endif
                                     </ul>
                                 </li>
 
@@ -103,7 +105,7 @@
                                 @canany([
                                     AuthAbilities::STUDENT_REGISTER,
                                     AuthAbilities::TEACHER_REGISTER
-                                ])                                
+                                ])
                                     <li class="uk-parent">
                                         <a href="#">Register</a>
                                         <ul class="uk-nav-sub uk-nav-parent-icon" uk-nav>
@@ -118,10 +120,10 @@
                                         </ul>
                                     </li>
                                 @endcan
-                                
+
                                 @can(AdminPanelAbilities::ACCESS)
                                     <li><a href="{{route('admin.dashboard')}}">Admin panel</a></li>
-                                @endcan   
+                                @endcan
                             </ul>
                         </div>
                     </div>
@@ -129,9 +131,9 @@
 
                     <nav class="header_menu">
                         <ul class="uk-nav uk-nav-default">
-                            
+
                             {{--<li><a href="{{route('home')}}">Home</a></li>--}}
-                            
+
                             @if(isset($subject_info) && isNotEmptyArray($subject_info))
                                 <li>
                                     <a href="#">Coursess</a>
@@ -150,11 +152,11 @@
                             @endif
 
                             <li><a href="{{route('instructions')}}">Teach on Udemy</a></li>
-                            
+
                             @can(ContactUsAbilities::SUBMIT_FORM)
                                 <li><a href="{{route('contact-us.view')}}">Contact</a></li>
-                            @endcan 
-                                                        
+                            @endcan
+
                             <li>
                                 <a href="#">Pages</a>
                                 <div uk-drop="mode:hover;animation:uk-animation-slide-top-medium" class="xdropdown">
@@ -173,7 +175,7 @@
 
                                         <li><a href="#">Teacher </a>
                                             <div class="xdropdown" uk-drop="mode: hover;pos:right-top;animation: uk-animation-slide-right-small">
-                                                <ul>                                                    
+                                                <ul>
                                                     <li><a href="{{route('admin.dashboard')}}">dashboard</a></li>
                                                     <li><a href="{{route('profile')}}">Profile</a></li>
                                                     <li><a href="{{route('admin.profile-edit')}}">profile-edit</a></li>
@@ -187,10 +189,10 @@
                                         </li>
                                         <li><a href="{{route('students.show','student1')}}">Student1 - profile</a></li>
                                         <li><a href="{{route('students.courses','student1')}}">Student1 - enrolled courses</a></li>
-                                        <li><a href="{{route('teachers.index')}}">View all teachers</a></li>                                                
+                                        <li><a href="{{route('teachers.index')}}">View all teachers</a></li>
                                         <li><a href="{{route('teachers.show','teacher1')}}">View teacher profile</a></li>
                                         <li><a href="{{route('courses.index')}}">All courses</a></li>
-                                        <li><a href="{{route('courses.search')}}">Search</a></li>                                        
+                                        <li><a href="{{route('courses.search')}}">Search</a></li>
                                         <li><a href="{{route('courses.watch')}}">--course watch</a></li>
                                         <li><a href="{{route('help')}}">Help</a></li>
 
@@ -200,26 +202,28 @@
                                                     <li><a href="{{route('view-cart')}}">Cart page</a></li>
                                                     {{-- <li><a href="{{route('bill-info')}}">billing info</a></li>
                                                     <li><a href="{{route('credit-pay')}}">credit card pay</a></li> --}}
-                                                    
+
                                                     @if(Route::has('checkout-complete'))
                                                         <li><a href="{{route('checkout-complete')}}">checkout complete</a></li>
-                                                    @endif    
-                                                    
+                                                    @endif
+
                                                     @if(Route::has('checkout-complete'))
                                                         <li><a href="{{route('payment-failed')}}">Payment failed</a></li>
-                                                    @endif    
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </li>
 
-                                        
-                                        @php 
+
+                                        @php
                                             //dump(App\Models\Course::first()->slug);
                                         @endphp
 
                                         <li><a href="{{route('subjects.index')}}">subject list</a></li>
                                         <li><a href="{{route('contact-us.view')}}">contact</a></li>
-                                        <li><a href="{{route('courses.show',App\Models\Course::first()->slug)}}">course single</a></li>
+                                        @if(App\Models\Course::count() > 0)
+                                            <li><a href="{{route('courses.show',App\Models\Course::first()->slug)}}">course single</a></li>
+                                        @endif
                                         <li><a href="{{route('profile')}}">profile</a></li>
 
                                     </ul>
@@ -242,7 +246,7 @@
                             @canany([
                                 AuthAbilities::STUDENT_REGISTER,
                                 AuthAbilities::TEACHER_REGISTER
-                            ])                            
+                            ])
                                 <li>
                                     <a href="#">Register</a>
                                     <div uk-drop="mode: hover;animation:uk-animation-slide-top-medium" class="xdropdown">
@@ -250,7 +254,7 @@
                                             @can(AuthAbilities::STUDENT_REGISTER)
                                             <li><a href="{{route('auth.register')}}">Register as Student</a></li>
                                             @endcan
-                                            
+
                                             @can(AuthAbilities::TEACHER_REGISTER)
                                             <li><a href="{{route('auth.teacher-register')}}">Register as Teacher</a></li>
                                             @endcan
@@ -261,20 +265,20 @@
 
                             @can(AdminPanelAbilities::ACCESS)
                                 <li><a href="{{route('admin.dashboard')}}">Admin panel</a></li>
-                            @endcan    
-                                                        
+                            @endcan
+
                             {{--
                                 @can('is_admin')
                                 <li>eeeeeeeeeeeee</li>
                                 @endcan
-                                 
-                                @can('viewAny','App\Models\ContactUs')                            
+
+                                @can('viewAny','App\Models\ContactUs')
                                 <li>ffff</li>
                                 @endcan
 
-                                @can('viewAny',App\Models\ContactUs::class)                            
+                                @can('viewAny',App\Models\ContactUs::class)
                                 <li>gggg</li>
-                                @endcan 
+                                @endcan
                             --}}
 
                         </ul>

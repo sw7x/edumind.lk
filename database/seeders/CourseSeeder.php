@@ -15,26 +15,23 @@ class CourseSeeder extends Seeder
      */
     public function run()
     {
-        
-        try {                        
-            
-            // create courses folder          
+        try {
+
+            // create courses folder
             $folderPath = storage_path('app/public/courses');
 
             if (!File::exists($folderPath)) {
                 File::makeDirectory($folderPath, 0755, true);
                 $this->command->alert($folderPath.' - Folder created successfully.');
             } else {
-            //$this->command->info($folderPath.' - Folder already exists.');
+                //$this->command->info($folderPath.' - Folder already exists.');
             }
 
             CourseModel::factory()->count(150)->create();
 
         } catch (\Exception $e) {
+            //dump($e->getMessage());
             $this->command->error('Failed to seed courses to database !');
         }
-
-
- 
     }
 }

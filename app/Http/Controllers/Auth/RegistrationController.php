@@ -116,7 +116,7 @@ class RegistrationController extends Controller
 
             // upload profile picture
             $file        = $request->input('profile_pic');
-            $destination = isset($file) ? FileUploadUtil::upload($file,'users/teachers/') : null;
+            $destination = isset($file) ? FileUploadUtil::upload($file, 'users/teachers/') : null;
 
             $reqData = $request->all();
             $reqData['profile_pic'] = $destination;

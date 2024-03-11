@@ -198,9 +198,20 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
         return $this->model->latest()->take($courseCount)->get();
     }
 
-    public function getPopularCourses(int $courseCount) : ?Collection {
-        return $this->model->orderBy('id', 'desc')->skip(0)->take($courseCount)->get();
+    public function getPopularCourses(int $courseCount) : ?Collection {        
+        
+        return  $this->model
+                    ->has('enrollments')
+                    ->withCount('enrollments')
+                    ->skip(0)
+                    ->take($courseCount)
+                    ->orderBy('enrollments_count', 'desc')
+                    ->get();
         /*
+        dd2($rr);
+
+        return $this->model->orderBy('id', 'desc')->skip(0)->take($courseCount)->get();
+        
             //  todo filter when rows have (course_id,student_id) duplicate values
             return Course::whereHas('students', function ($q) {
                 $q->where('enrollments.status', 'enrolled')

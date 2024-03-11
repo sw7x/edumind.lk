@@ -74,7 +74,7 @@ class TeacherService
     public function loadPopularTeachers() : array {
         $courseCount        = 8;
         $popularTeachers    = $this->userRepository->getPopularTeachers($courseCount);
-
+        
         $teachersDtoArr = array();
         $popularTeachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
             $teachersDtoArr[]  =   UserDataTransformer::buildDto($record->toArray());

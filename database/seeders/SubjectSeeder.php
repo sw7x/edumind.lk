@@ -6,8 +6,6 @@ use App\Models\Subject as SubjectModel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 
-        
-
 class SubjectSeeder extends Seeder
 {
     /**
@@ -17,9 +15,8 @@ class SubjectSeeder extends Seeder
      */
     public function run()
     {
-        
-        try {                        
-            
+
+        try {
 
             //$this->command->alert('Failed to seed subjects to database !');
             //$this->command->warn('Failed to seed subjects to database !');
@@ -27,7 +24,7 @@ class SubjectSeeder extends Seeder
             //$this->command->bulletList(['Failed to seed subjects to database !','kkk','gg']);
             //dd('kk');
 
-            // create subjects folder          
+            // create subjects folder
             $folderPath = storage_path('app\public\subjects');
             if (!File::exists($folderPath)) {
                 File::makeDirectory($folderPath, 0755, true);
@@ -35,8 +32,8 @@ class SubjectSeeder extends Seeder
             } else {
                 //$this->command->info($folderPath.' - Folder already exists.');
             }
-            
-            SubjectModel::factory()->count(12)->create();        
+
+            SubjectModel::factory()->count(12)->create();
         } catch (\Exception $e) {
             $this->command->error('Failed to seed subjects to database !');
         }

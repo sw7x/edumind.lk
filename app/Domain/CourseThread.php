@@ -8,7 +8,6 @@ use App\Domain\Entity;
 use App\Domain\Exceptions\AttributeAlreadySetDomainException;
 
 use App\Domain\Course as CourseEntity;
-use App\Domain\CourseMessage as CourseMessageEntity;
 
 class CourseThread extends Entity
 {
