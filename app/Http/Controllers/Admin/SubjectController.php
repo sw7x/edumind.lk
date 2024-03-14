@@ -125,7 +125,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             throw new CustomException('Subject does not exist!');
 
-        $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS, $subjectData['dbRec']);
+        $this->hasPermission(SubjectAbilities::DELETE_SINGLE_SUBJECT, $subjectData['dbRec']);
 
         $courseCount = $subjectData['dbRec']->courses->count();
         if($courseCount > 0){
@@ -155,7 +155,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             throw new CustomException('Subject does not exist!');
         
-        $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS, $subjectData['dbRec']);
+        $this->hasPermission(SubjectAbilities::DELETE_SINGLE_SUBJECT, $subjectData['dbRec']);
 
         if(!$subjectData['dbRec']->trashed())
             return redirect()->route('admin.subjects.trashed')
@@ -167,13 +167,11 @@ class SubjectController extends Controller
             
         return redirect()->route('admin.subjects.trashed')
                 ->with(AlertDataUtil::success('Subject permanently delete  successfully'));
-
     }
 
 
-
     public function viewTrashedList(){
-        //$this->hasPermission(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT_LIST);
+        $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS);
         //dd('viewTrashedList');        
         $subjectsData    = $this->adminSubjectService->loadAllTrashedDbRecs();
         $filteredDataArr = AdminSubjectDataFormatter::prepareSubjectDataList($subjectsData);
@@ -188,7 +186,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             abort(404,'Subject does not exist!');
         
-        $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS, $subjectData['dbRec']);
+        $this->hasPermission(SubjectAbilities::DELETE_SINGLE_SUBJECT, $subjectData['dbRec']);
         
         if(!$subjectData['dbRec']->trashed())
             return redirect()->route('admin.subjects.trashed')
@@ -199,7 +197,7 @@ class SubjectController extends Controller
             abort(500,'Failed to restore Subject!');
 
         return redirect()->route('admin.subjects.trashed')
-                ->with(AlertDataUtil::success('Subject restored successfully'));
-        
+                ->with(AlertDataUtil::success('Subject restored successfully'));        
     }
+
 }

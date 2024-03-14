@@ -77,7 +77,7 @@
                                                         <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                     @endcan
                                                     
-                                                    @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                    @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
                                                         <a href="javascript:void(0);" class="remove-subject-btn btn-warning btn btn-xs">Remove</a>
                                                     @endcan
 
@@ -85,7 +85,7 @@
 
                                                 </div>
                                                 
-                                                @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
                                                     <form class="subject-remove" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
                                                         @method('DELETE')
                                                         @csrf

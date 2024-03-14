@@ -57,9 +57,19 @@ GateFacade::define(
 });
 
 GateFacade::define(
-	SubjectAbilities::DELETE_SUBJECTS, function(?UserModel $user, SubjectModel $subject) {
+	SubjectAbilities::DELETE_SINGLE_SUBJECT, function(?UserModel $user, SubjectModel $subject) {
 	
 	return (new SubjectPolicy)->delete($user, $subject) ? 
 		Response::allow() : 
-		Response::deny('You dont have Permissions to delete/restore the subject !');
+		Response::deny('You dont have Permissions to delete/restore the selected subject !');
+});
+
+GateFacade::define(
+	SubjectAbilities::DELETE_SUBJECTS, function(?UserModel $user) {
+	
+	$allowedRoles 	= 	[RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER];
+    $response       =   (new UserSharedService)->hasAnyRole($user, $allowedRoles) ? 
+                            Response::allow() : 
+                            Response::deny('You dont have Permissions delete subjects !'); 
+    return  $response;	
 });

@@ -78,25 +78,25 @@
                                                 <div class="btn-group">
                                                     <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                     
-                                                    @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                    @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
                                                     <a href="javascript:void(0);" class="restore-subject-btn btn-primary btn btn-xs">Restore</a>
                                                     @endcan
                                                     
-                                                    @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                    @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
                                                     <a  href="javascript:void(0);" 
                                                         data-course_count={{$item['data']['course_count']}}
                                                         class="permanently-delete-subject-btn btn-danger btn btn-xs">Delete</a>
                                                     @endcan
                                                 </div>
                                                 
-                                                @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
                                                     <form class="subject-restore" action="{{ route('admin.subjects.restore', $item['data']['id']) }}" method="POST">
                                                         @method('PATCH')
                                                         @csrf
                                                     </form>
                                                 @endcan
 
-                                                @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
                                                     <form class="subject-permanently-delete" action="{{ route('admin.subjects.permanently-delete', $item['data']['id']) }}" method="POST">
                                                         @method('DELETE')
                                                         @csrf
