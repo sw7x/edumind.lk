@@ -792,10 +792,9 @@
 
     <!-- jQuery validate -->
     <script src="{{asset('admin/js/plugins/validate/jquery.validate.min.js')}}"></script>
-    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>
-    {{--
+    <script src="{{asset('admin/js/plugins/validate/custom-additional-methods.js')}}"></script>    
     <script src="{{asset('admin/js/plugins/validate/additional-methods.min.js')}}"></script>
-    --}}
+    
 
 
 
@@ -1231,17 +1230,22 @@
                             required: true,
                             minlength: 3
                         },
+                        
+                        //when subject delete and it's course exists then no need to set subjuect
                         //"subject"         : {required: true},
-                        //"teacher"         : {required: true},
-                        //"course-heading"  : {required: true},
-                        //"video-count"     : {number: true,min:0},
-                        //'course-duration-hours'     : {number: true, min:0},
-                        //'course-duration-minutes'   : {required: true, minutes: true},
+                        
+                        "teacher"         : {required: true},
+                        "course-heading"  : {required: true},
+                        "video-count"     : {number: true,min:0},
+                        'course-duration-hours'     : {number: true, min:0},
+                        'course-duration-minutes'   : {required: true, minutes: true},
+                        
                         /*
                         "course-img"        : { 
                             accept: "image/*",
                            filesize: 1 // 1MB
-                        }*/
+                        }
+                        */
 
                     },
                     messages:{
@@ -1249,15 +1253,19 @@
                             required:"Course name is required",
                             minlength:"Please enter at least 3 characters"
                         },
-                        "subject":          {required: "Subject name is required"},
+                        
+                        //when subject delete and it's course exists then no need to set subjuect
+                        //"subject":          {required: "Subject name is required"},
+                        
                         "teacher":          {required: "Teacher name is required"},
                         "course-heading":   {required: "Course heading is required"},
                         "video-count":      {digits:   "Video count must be digits only"},
-                        /*                    
+                        /*
                         "course-img" :      { 
                             accept: 'Only image type jpg/png/jpeg/gif/webp is allowed',
                             filesize:" file size must be less than 1MB.",
-                        }, 
+                        },
+                        */ 
                         'course-duration-hours'     : {
                             number: "Course duration hour count must be number", 
                             min:"Course duration hour count cannot be minus"
@@ -1265,7 +1273,7 @@
                         'course-duration-minutes'   : {
                             required: "Course duration minute count is required", 
                             minutes: "Course duration minute count is invalid",                         
-                        },*/
+                        },
 
                        
 
