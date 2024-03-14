@@ -7,6 +7,8 @@ use App\Domain\Users\User as UserEntity;
 use App\Domain\Entity;
 
 use App\Domain\Exceptions\AttributeAlreadySetDomainException;
+use App\Domain\ValueObjects\DateTimeVO;
+
 
 class Subject extends Entity{
 
@@ -18,6 +20,8 @@ class Subject extends Entity{
 	private ?string $slug        = null;
 	private ?string $status      = null;
     
+    private ?DateTimeVO $deletedAt = null;
+
     /* associations */
     private ?UserEntity $author = null;  
     
@@ -64,7 +68,9 @@ class Subject extends Entity{
         return $this->author;
     }
 
-    
+    public function getDeletedAt() : ?DateTimeVO {
+        return $this->deletedAt;
+    }
 
 
 
@@ -99,6 +105,10 @@ class Subject extends Entity{
         $this->status = $status;
     }
     
+    public function setDeletedAt(?DateTimeVO $deletedAt) : void {
+        $this->deletedAt = $deletedAt;
+    }
+
     public function setAuthor(UserEntity $author) : void {
         $this->author = $author;
     }
@@ -116,7 +126,8 @@ class Subject extends Entity{
             'image' 		=> $this->image,
             'slug' 			=> $this->slug,
             'status' 		=> $this->status,
-            
+            'deletedAt'      => $this->deletedAt ? $this->deletedAt->format() : null,
+
             'creatorArr'    => $this->author ? $this->author->toArray() : null,
             'creatorId'     => $this->author ? $this->author->getId()   : null,
         ];

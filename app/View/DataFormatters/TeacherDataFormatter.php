@@ -37,8 +37,16 @@ class TeacherDataFormatter{
 
             $tempArr     = $courseDto->toArray();
 
-            $tempArr['subjectName']      = $subjectDto->getName();
-            $tempArr['subjectSlug']      = $subjectDto->getSlug();
+            $tempArr['subjectName']      = optional($subjectDto)->getName();
+            $tempArr['subjectSlug']      = optional($subjectDto)->getSlug();
+
+            if(is_null($subjectDto)){
+                $tempArr['deletedAt'] = null;
+            }else{
+                $tempArr['deletedAt'] = $subjectDto->getDeletedAt();
+            }
+            
+
             //$tempArr['teacherName']      = $courseDto->getAuthorDto()->getFullName();
             //$tempArr['teacherUserName']  = $courseDto->getAuthorDto()->getUserName();
 

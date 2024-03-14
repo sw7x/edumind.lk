@@ -122,6 +122,23 @@ class CourseService
     }
 
 
+    public function loadSearchResults(Request $request){
+        $searchParams = $request->only(['subject', 'course-type', 'searchQueryInput', 'course-duration']);
+        $courses      = $this->courseRepository->getSearchCourses($searchParams);
+
+        $coursesDtoArr = array();
+        $courses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){
+            $tempArr            = array();
+
+            $tempArr['dto']     = CourseDataTransformer::buildDto($record->toArray());
+            $tempArr['dbRec']   = $record;
+
+            $coursesDtoArr[]    = $tempArr;
+        });
+        return $coursesDtoArr;
+    }
+
+
     public function loadNewCourses(){
         $courseCount    = 10;
         $newCourses     = $this->courseRepository->getNewCourse($courseCount);
@@ -266,22 +283,7 @@ class CourseService
     }
 
 
-    public function loadSearchResults(Request $request){
-        $searchParams = $request->only(['subject', 'course-type', 'searchQueryInput', 'course-duration']);
-        $courses      = $this->courseRepository->getSearchCourses($searchParams);
-
-        $coursesDtoArr = array();
-        $courses->each(function (CourseModel $record, int $key) use (&$coursesDtoArr){
-            $tempArr            = array();
-
-            $tempArr['dto']     = CourseDataTransformer::buildDto($record->toArray());
-            $tempArr['dbRec']   = $record;
-
-            $coursesDtoArr[]    = $tempArr;
-        });
-        return $coursesDtoArr;
-
-    }
+    
 
 
     public function freeCourseEnroll(CourseModel $courseRec, UserModel $studentRec) : void {

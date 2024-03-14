@@ -23,9 +23,19 @@ class CourseDataFormatter{
 
             $tempArr['data']     = $courseDto->toArray();
 
-            $tempArr['data']['subjectId']        = $subjectDto->getId();
-            $tempArr['data']['subjectName']      = $subjectDto->getName();
-            $tempArr['data']['subjectSlug']      = $subjectDto->getSlug();
+            
+            $tempArr['data']['subjectId']        = optional($subjectDto)->getId();               
+            $tempArr['data']['subjectName']      = optional($subjectDto)->getName();
+            $tempArr['data']['subjectSlug']      = optional($subjectDto)->getSlug();
+            
+            $subjectIsTrashed;
+            if(!$tempArr['data']['subjectName']){
+                $subjectIsTrashed   = '';
+            }else{
+                $subjectIsTrashed   = is_null($subjectDto->getDeletedAt()) ? '' : '(Trashed)';
+            }
+            $tempArr['data']['subjectIsTrashed'] = $subjectIsTrashed;
+
 
             $tempArr['data']['teacherId']        = $teacherDto->getId();
             $tempArr['data']['teacherName']      = $teacherDto->getFullName();

@@ -23,7 +23,8 @@ class SubjectMapper  extends Mapper{
             ["description",               '<=>',      'description'],
             ["image",                     '<=>',      'image'], 
             ["slug",                      '<=>',      'slug'], 
-            ["status",                    '<=>',      'status'],            
+            ["status",                    '<=>',      'status'],
+            ["deleted_at",                '<=>',      'deletedAt'],
             
             //['creator_id',              '<=>',      'creatorId'],
 			['author_id',                 '<=>',      'creatorId'],

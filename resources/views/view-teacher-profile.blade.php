@@ -69,10 +69,17 @@
                                             <a href="{{route('courses.show',$course['slug'])}}" class="md:text-xl font-semibold line-clamp-2">{{$course['name']}}</a>
                                             <p class="leading-6 pr-4 line-clamp-2 md:block hidden">{{$course['headingText']}}</p>
 
-                                            <a href="{{route('subjects.show',$course['subjectSlug'])}}" class="md:font-semibold block text-base">
-                                                {{$course['subjectName']}}
-                                            </a>
-
+                                            @if($course['subjectName'])                                                
+                                                @if(is_null($course['deletedAt']))
+                                                    <a href="{{route('subjects.show', $course['subjectSlug'])}}" class="md:font-semibold block text-base">
+                                                        {{$course['subjectName']}}
+                                                    </a>
+                                                @else
+                                                    <span class="text-gray-400">No subject !</span>
+                                                @endif
+                                            @else
+                                                <span class="text-gray-400">No subject</span>
+                                            @endif
 
                                             <div class="flex items-center justify-between">
                                                 <div class="flex __space-x-2 items-center text-sm">

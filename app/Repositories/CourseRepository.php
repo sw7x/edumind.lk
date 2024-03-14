@@ -301,15 +301,31 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
         $courseName     = $params['searchQueryInput'];
         $courseDuration = $params['course-duration'];
 
-        // Define the base query
-        $query  =   $this->model->join('subjects', 'courses.subject_id', '=', 'subjects.id');
+        if( $subjectId == -1){
+            //subject dropdown value = None 
+            $query  =   $this->model->leftJoin('subjects', 'courses.subject_id', '=', 'subjects.id')
+                            ->where(function ($query) {
+                                $query->whereNull('courses.subject_id')
+                                ->orWhere(function ($query){
+                                    $query->whereNotNull('courses.subject_id')
+                                    ->whereNotNull('subjects.deleted_at');
+                                });
+                            });
 
+        }else{ 
+            // subject dropdown value = All  / any perticular subject
+            $query  =   $this->model->join('subjects', 'courses.subject_id', '=', 'subjects.id')
+                            ->whereNull('subjects.deleted_at');
+        }
+        
         // filter by course name
         if ($courseName)
             $query->where('courses.name', 'like', '%' . $courseName . '%');
         
         // filter by subject
-        if ($subjectId)
+        //when select subject dropdown  - All value then not consider any perticular subject
+        //when select subject dropdown  - None value, to select records where courses.subject_id = null 
+        if ($subjectId != 0 && $subjectId != -1)
             $query->where('courses.subject_id', '=', $subjectId);
         
         // filter by courses price
@@ -319,11 +335,15 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
             //$query = ($courseType == 'free') ? $query->where('courses.price', 0) : $query->where('courses.price', '>', 0);
         });
 
-
-        // filter PUBLISHED courses only
-        $query->where('subjects.status', '=', SubjectModel::PUBLISHED);
-
-
+        
+        /*
+            when select none in category dropdown, 
+            result can include courses which courses.subject_id = null
+            to prevent filter subject status of those courses
+        */
+        if($subjectId != -1)
+            $query->where('subjects.status', '=', SubjectModel::PUBLISHED);
+        
         // filter by course duration
         $query->where(function ($query) use ($courseDuration) {
             if ($courseDuration == 'short') {
@@ -350,23 +370,15 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
                     ->where('courses.duration', 'NOT LIKE', '3 Hours :%')
                     ->where('courses.duration', 'NOT LIKE', '4 Hours :%')
                     ->where('courses.duration', 'NOT LIKE', '5 Hours :%')
-                    ->where('courses.duration', 'NOT LIKE', '1 Hour :%');
-               
+                    ->where('courses.duration', 'NOT LIKE', '1 Hour :%');               
             }
         });
 
         $courses = $query->get('courses.*');        
-        //dd($query->toSql());
+        //dump($query->getBindings());
+        //dump($query->toSql());        
+        //dd($courses);
         return $courses;      
     }
 
-
-
-
-    
- 
-
 }
-
-
-

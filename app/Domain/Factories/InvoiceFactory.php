@@ -58,8 +58,15 @@ class InvoiceFactory implements IFactory {
         }
 
         if (isset($invoiceData['billingInfo'])) {
-            $invoiceEntity->setBillingInfo($invoiceData['billingInfo']);
-        }          
+            
+            $billingInfoArr;
+            try {
+                $billingInfoArr = json_decode($invoiceData['billingInfo'], true, 512, JSON_THROW_ON_ERROR);
+            }catch (\JsonException $exception) {  
+                $billingInfoArr = null;
+            }
+            $invoiceEntity->setBillingInfo($billingInfoArr);         
+        }
 
         if (isset($invoiceData['paidAmount'])) {
             $invoiceEntity->setPaidAmount(                

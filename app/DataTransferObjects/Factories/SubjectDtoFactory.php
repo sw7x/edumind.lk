@@ -40,7 +40,8 @@ class SubjectDtoFactory extends AbstractDtoFactory{
             $data['description'] ?? null,
             $data['image']       ?? null,                      
             $data['slug']        ?? null, 
-            $data['status']      ?? null, 
+            $data['status']      ?? null,
+            $data['deletedAt']   ?? null,
 
             $authorDto                   
         );               
@@ -67,10 +68,12 @@ class SubjectDtoFactory extends AbstractDtoFactory{
         return new SubjectDto(
             $request->input('name'),
             $request->input('id') ?? null,
+            
             $request->input('description') ?? null,
             $request->input('image') ?? null,
             $request->input('slug') ?? null,
             $request->input('status') ?? null,
+            null,
 
             $authorDto
         );        

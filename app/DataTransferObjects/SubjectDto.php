@@ -18,6 +18,8 @@ class SubjectDto extends AbstractDto{
 	private ?string $image;
 	private ?string $slug;
 	private ?string $status;
+    private ?string $deletedAt;
+
 
     private ?UserDto $authorDto;
 
@@ -31,6 +33,8 @@ class SubjectDto extends AbstractDto{
         ?string  $image       = null,
         ?string  $slug        = null,
         ?string  $status      = null,
+        ?string  $deletedAt   = null,
+
 
         ?UserDto $authorDto   = null
     ) {
@@ -42,6 +46,7 @@ class SubjectDto extends AbstractDto{
         $this->image          = $image;
         $this->slug           = $slug;
         $this->status         = $status;
+        $this->deletedAt      = $deletedAt;
 
         $this->authorDto      = $authorDto;
     }
@@ -78,6 +83,10 @@ class SubjectDto extends AbstractDto{
     public function getStatus() : ?string {
         return $this->status;
     }
+    public function getDeletedAt() : ?string {
+        return $this->deletedAt;
+    }
+
 
     public function getAuthorDto() : ?UserDto {
         return $this->authorDto;
@@ -93,6 +102,8 @@ class SubjectDto extends AbstractDto{
             'image' 		=> $this->image,
             'slug' 			=> $this->slug,
             'status' 		=> $this->status,
+            'deletedAt'     => $this->deletedAt,
+
             
             'creatorArr'     => $this->authorDto ? $this->authorDto->toArray() : null,
             'creatorId'      => $this->authorDto ? $this->authorDto->getId() : null,

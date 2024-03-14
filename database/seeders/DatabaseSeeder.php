@@ -38,9 +38,9 @@ class DatabaseSeeder extends Seeder
             fill invalid cart items for student1
             run these seeders at last
         */
-        $this->call(InvCartItems_FreeCourses::class);
-        $this->call(InvCartItems_InvalidCc::class);
-        $this->call(InvCartItems_ValidMultipleCc::class);
+        //$this->call(InvCartItems_FreeCourses::class);
+        //$this->call(InvCartItems_InvalidCc::class);
+        //$this->call(InvCartItems_ValidMultipleCc::class);
         
         
     }

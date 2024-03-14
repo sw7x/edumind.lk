@@ -13,7 +13,8 @@ use App\Domain\Exceptions\InvalidArgumentDomainException;
 //use App\Domain\IEntity;
 use App\Domain\Types\SubjectStatusTypesEnum;
 use App\Domain\Factories\UserFactory;
-
+use App\Domain\ValueObjects\DateTimeVO;
+use \DateTime;
 
 //class SubjectFactory {
 class SubjectFactory implements IFactory {
@@ -65,11 +66,23 @@ class SubjectFactory implements IFactory {
         if (isset($subjectData['status'])) {              
             $subjectEntity->setStatus($subjectData['status']);      
         }
+        
+        if (isset($subjectData['deletedAt'])) {
+            if ( DateTime::createFromFormat("Y-m-d H:i:s", $subjectData['deletedAt']) )
+                $deletedAtStr     = (new DateTime($subjectData['deletedAt']))->format("Y-m-d");
+
+            if ( DateTime::createFromFormat("Y-m-d", $subjectData['deletedAt']) )
+                $deletedAtStr     = $subjectData['deletedAt'];
+
+            if(isset($deletedAtStr))
+                $subjectEntity->setDeletedAt(DateTimeVO::createDate(new DateTime($deletedAtStr)));       
+        }
 
         if(isset($subjectData['creatorArr']) && is_array($subjectData['creatorArr']) && !empty($subjectData['creatorArr'])){        
             $author = (new UserFactory())->createObjTree($subjectData['creatorArr']);
             $subjectEntity->setAuthor($author);
         }
+        
         return $subjectEntity;
     }
 
@@ -119,6 +132,17 @@ class SubjectFactory implements IFactory {
 
         if (isset($subjectData['status'])) {              
             $subjectEntity->setStatus($subjectData['status']);      
+        }
+
+        if (isset($subjectData['deletedAt'])) {
+            if ( DateTime::createFromFormat("Y-m-d H:i:s", $subjectData['deletedAt']) )
+                $deletedAtStr     = (new DateTime($subjectData['deletedAt']))->format("Y-m-d");
+
+            if ( DateTime::createFromFormat("Y-m-d", $subjectData['deletedAt']) )
+                $deletedAtStr     = $subjectData['deletedAt'];
+
+            if(isset($deletedAtStr))
+                $subjectEntity->setDeletedAt(DateTimeVO::createDate(new DateTime($deletedAtStr)));       
         }
 
         return $subjectEntity;

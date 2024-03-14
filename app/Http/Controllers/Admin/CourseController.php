@@ -136,7 +136,6 @@ class CourseController extends Controller
         $courseDataArr   = array();
         $courseDataArr[] = $courseData;
         $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
-
         return view('admin-panel.course-view')->with([
             'course'                 => reset($courseArr),
             'courseContent'          => $courseContentVal['data'],
@@ -207,8 +206,8 @@ class CourseController extends Controller
             /* creating validation eroors for view*/
             $errors = Session::get('errors');
             $courseValErrors = null;
-            if (!is_null($errors) && !is_null($errors->courseCreate))
-                $courseValErrors = $this->adminCourseService->getCourseValidationErrors($errors->courseCreate->getMessages());
+            if (!is_null($errors) && !is_null($errors->courseUpdate))
+                $courseValErrors = $this->adminCourseService->getCourseValidationErrors($errors->courseUpdate->getMessages());
 
             /* if have validation errors create text to display */
             $valErrMsg = $dbValidCourseContent['validationErrMsg'];

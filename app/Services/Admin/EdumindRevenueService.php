@@ -71,10 +71,9 @@ class EdumindRevenueService
             $invoiceId              =   $enrollmentRec['invoiceId'];
             $invoiceDataArr         =   (new InvoiceRepository())->findDataArrById($invoiceId);
             $invoiceEntityDataArr   =   InvoiceMapper::dbRecConvertToEntityArr($invoiceDataArr);
+
             $invoiceEntity          =   (new InvoiceFactory())->createObjTree($invoiceEntityDataArr);
             $invoiceDto             =   InvoiceDtoFactory::fromArray($invoiceEntity->toArray());
-            ////dump($invoiceDto);
-
 
             $edumindRevenueArr[]    =   array(
                                             'invoiceDto'    =>  $invoiceDto,

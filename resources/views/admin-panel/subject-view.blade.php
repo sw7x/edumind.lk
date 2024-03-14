@@ -12,7 +12,7 @@
         <div class="col-lg-12">            
 
             @if(isset($subject) && isNotEmptyArray($subject))            
-                <div class="ibox ">
+                <div class="ibox {{$subject['isDelete'] ? 'bg-gray-300' : ''}}">
                     <div class="ibox-content px-3">                  
                         <form class="edit-subject-form" id="edit-subject" action="{{route('admin.subjects.update',$subject['id'])}}" method="POST">
 
@@ -47,6 +47,13 @@
                                     <div class="i-checks">
                                         <label> <input type="radio" value="published" name="subject_stat" {{$subject['status'] == App\Models\Subject::PUBLISHED ? 'checked':''}}> <i></i> Published </label>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+
+                            <div class="form-group row"><label class="col-sm-4 col-form-label">Trashed</label>
+                                <div class="col-sm-8">
+                                    <label class="col-form-label">{{$subject['isDelete'] ? 'Yes' : 'No'}}</label>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>

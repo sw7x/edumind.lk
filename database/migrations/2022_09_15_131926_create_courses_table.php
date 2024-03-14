@@ -38,7 +38,7 @@ class CreateCoursesTable extends Migration
                 //->references('id')->on('other_table');
 
             $table->integer('subject_id')->nullable()->unsigned();
-            $table->foreign('subject_id')->references('id')->on('subjects');
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('set null');
 
 
             //teacher - fk

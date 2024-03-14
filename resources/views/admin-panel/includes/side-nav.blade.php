@@ -35,6 +35,7 @@
                 @canany([                   
                     SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT_LIST,
                     SubjectAbilities::CREATE_SUBJECTS,
+                    SubjectAbilities::DELETE_SUBJECTS
                 ])
                 <li class="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="#" class="" aria-expanded="{{ \Str::is('admin.subjects.*', Route::currentRouteName()) ? 'true' : 'false' }}">
@@ -49,6 +50,10 @@
                             <li class="{{ Route::is('admin.subjects.create') ? 'current' : '' }}"><a href="{{route('admin.subjects.create')}}">Create subject</a></li>
                         @endcan
                         
+                        @can(SubjectAbilities::DELETE_SUBJECTS)
+                            <li class="{{ Route::is('admin.subjects.trashed') ? 'current' : '' }}"><a href="{{route('admin.subjects.trashed')}}">Trashed subjects</a></li>
+                        @endcan
+
                         <li class=""><a href="{{route('admin.subjects.create')}}">#Approve subject</a></li>
                         <li class=""><a href="{{route('admin.subjects.create')}}">#Approve subject changes</a></li>
                     </ul>

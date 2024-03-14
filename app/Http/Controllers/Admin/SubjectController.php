@@ -71,7 +71,7 @@ class SubjectController extends Controller
         if(is_null($subjectData['dbRec']))
             abort(404,'Subject does not exist!');
         
-        $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
+        $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData);
         return view('admin-panel.subject-view')->with(['subject' => $subjectDataArr]);
     }
 
@@ -85,7 +85,7 @@ class SubjectController extends Controller
 
         $this->hasPermission(SubjectAbilities::EDIT_SUBJECTS, $subjectData['dbRec']);
 
-        $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData['dto']);
+        $subjectDataArr = AdminSubjectDataFormatter::prepareViewSubjectData($subjectData);
         return view('admin-panel.subject-edit')->with(['subject' => $subjectDataArr]);
     }
 
@@ -127,12 +127,79 @@ class SubjectController extends Controller
 
         $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS, $subjectData['dbRec']);
 
-        $isDelete = $this->adminSubjectService->deleteDbRec($subjectData['dbRec']);
-        if (!$isDelete)
-            abort(500, "Subject delete failed due to server error !");
+        $courseCount = $subjectData['dbRec']->courses->count();
+        if($courseCount > 0){
+            $isDelete = $this->adminSubjectService->deleteDbRec($subjectData['dbRec']);
+            if (!$isDelete)
+                abort(500, "Subject delete failed due to server error !");
+            
+            $resultMsg = 'Subject have associated courses, so it trashed successfully.';
+            return redirect()->route('admin.subjects.index')->with(AlertDataUtil::warning($resultMsg));
 
-        return redirect()->route('admin.subjects.index')
-            ->with(AlertDataUtil::success('Subject inserted successfully'));
+        }else{
+            $isDelete = $this->adminSubjectService->permanentlyDeleteDbRec($subjectData['dbRec']);
+            if (!$isDelete)
+                abort(500, "Subject permanently delete failed due to server error !");
+
+            $resultMsg = 'Subject have no associated courses, so it deleted permanently.';
+            return redirect()->route('admin.subjects.index')->with(AlertDataUtil::success($resultMsg));
+        } 
+    
     }
 
+    public function permanentlyDelete(int $id){      
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $subjectData = $this->adminSubjectService->findDbRec($id);
+        if(is_null($subjectData['dbRec']))
+            throw new CustomException('Subject does not exist!');
+        
+        $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS, $subjectData['dbRec']);
+
+        if(!$subjectData['dbRec']->trashed())
+            return redirect()->route('admin.subjects.trashed')
+                ->with(AlertDataUtil::warning('Not a trashed subject record, thereore cannot delete permanently'));
+
+        $isPermDel = $this->adminSubjectService->permanentlyDeleteDbRec($subjectData['dbRec']);
+        if(!$isPermDel)
+            abort(500, "Failed to permanently delete subject record from database!");
+            
+        return redirect()->route('admin.subjects.trashed')
+                ->with(AlertDataUtil::success('Subject permanently delete  successfully'));
+
+    }
+
+
+
+    public function viewTrashedList(){
+        //$this->hasPermission(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT_LIST);
+        //dd('viewTrashedList');        
+        $subjectsData    = $this->adminSubjectService->loadAllTrashedDbRecs();
+        $filteredDataArr = AdminSubjectDataFormatter::prepareSubjectDataList($subjectsData);
+        return view ('admin-panel.subject-list-trashed')->withData($filteredDataArr);
+    }
+
+    public function restoreRec(int $id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $subjectData = $this->adminSubjectService->findDbRec($id);
+        if(is_null($subjectData['dbRec']))
+            abort(404,'Subject does not exist!');
+        
+        $this->hasPermission(SubjectAbilities::DELETE_SUBJECTS, $subjectData['dbRec']);
+        
+        if(!$subjectData['dbRec']->trashed())
+            return redirect()->route('admin.subjects.trashed')
+                ->with(AlertDataUtil::warning('Not a trashed subject record'));
+
+        $isRestored = $this->adminSubjectService->restoreDbRec($id);
+        if(!$isRestored)
+            abort(500,'Failed to restore Subject!');
+
+        return redirect()->route('admin.subjects.trashed')
+                ->with(AlertDataUtil::success('Subject restored successfully'));
+        
+    }
 }

@@ -61,5 +61,5 @@ GateFacade::define(
 	
 	return (new SubjectPolicy)->delete($user, $subject) ? 
 		Response::allow() : 
-		Response::deny('You dont have Permissions to delete the subject !');
+		Response::deny('You dont have Permissions to delete/restore the subject !');
 });

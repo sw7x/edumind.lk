@@ -18,15 +18,24 @@
             <div class="container p-0">
                 <div class="lg:flex items-center lg:space-x-12 lg:py-14 lg:px-20 p-3">
                     <div class="lg:w-4/12">                        
-                        @if(isset($courseData['subjectArr']) && isNotEmptyArray($courseData['subjectArr']))
+                        @if(isset($courseData['image']) && $courseData['image'] != '')
                             <div class="w-full lg:h-52 h-40 overflow-hidden rounded-lg relative lg:mb-0 mb-4">
                                 <img src="{{$courseData['image']}}" class="w-full h-full absolute inset-0 object-cover" alt="">                           
                             </div>
                         @endif
                     </div>
                     <div class="lg:w-8/12">
-                        <div class="capitalize text-gray-200 mb-2 font-semibold">
-                            <a class="hover:text-white" href="{{route('subjects.show',$courseData['subjectArr']['slug'])}}">{{$courseData['subjectArr']['name']}}</a>
+                        <div class="capitalize text-gray-200 mb-2 font-semibold text-base">
+                            @if($courseData['subjectArr'])
+                                @if(!$courseData['subjectArr']['deletedAt'])
+                                    <a class="hover:text-white" href="{{route('subjects.show',$courseData['subjectArr']['slug'])}}">{{$courseData['subjectArr']['name']}}</a>
+                                @else                            
+                                    {{-- <span class="text-gray-400">{{$courseData['subjectArr']['name']}}</span> --}}
+                                    <span class="text-gray-400">No subject !</span>
+                                @endif
+                            @else
+                                <span class="text-gray-400">No subject</span>
+                            @endif                      
                         </div>
                         <h1 class="lg:leading-10 lg:text-3xl text-white text-xl leading-8 font-bold">{{$courseData['name']}}</h1>
                         <p class="lg:w-4/5 mt-2 md:text-lg md:block hidden">{{$courseData['headingText']}}</p>

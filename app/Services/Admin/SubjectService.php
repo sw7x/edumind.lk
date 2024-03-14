@@ -58,11 +58,9 @@ class SubjectService
         });
         return $dataArr;
     }
-
-
+        
     public function saveDbRec(Request $request) : SubjectModel {
         $subjectCount = $this->subjectRepository->findByName($request->get('name'))->count();
-
         if ($subjectCount > 0)
             throw new CustomException('Subject name already exists!');
 
@@ -142,9 +140,14 @@ class SubjectService
         return $this->subjectRepository->deleteById($subjectDbRec->id);
         //todo delete image also
     }
+    
+    public function permanentlyDeleteDbRec(SubjectModel $subjectDbRec) : bool {
+        return $this->subjectRepository->permanentlyDeleteById($subjectDbRec->id);
+        //todo delete image also
+    }
 
     public function findDbRec(int $id) : ?array {
-        $dbRec  =   $this->subjectRepository->findById($id);
+        $dbRec  =   $this->subjectRepository->findRecByIdIncludingTrashed($id);        
         $dto    =   $dbRec ? SubjectDataTransformer::buildDto($dbRec->toArray()) : null;
         $entity =   $dbRec ? SubjectDataTransformer::buildEntity($dbRec->toArray()) : null;
 
@@ -154,9 +157,23 @@ class SubjectService
         );
     }
 
+    public function loadAllTrashedDbRecs() : array {
+        $allRecs = $this->subjectRepository->allTrashed();
 
+        $dataArr = array();
+        $allRecs->each(function (SubjectModel $record, int $key) use (&$dataArr){
+            $subjectDto     =   SubjectDataTransformer::buildDto($record->toArray());
+            $dataArr[]      =   array(
+                                    'data'  => SubjectDataTransformer::buildDto($record->toArray()),
+                                    'dbRec' => $record
+                                );
+        });
+        return $dataArr;
+    }
 
-
+    public function restoreDbRec(int $dbRecId) : bool {
+        return $this->subjectRepository->restoreById($dbRecId);
+    }
 
     /*
     public function entityToDbRecArr(SubjectEntity $subject) : array {

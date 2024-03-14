@@ -324,11 +324,15 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
     });
 
     
-
+    Route::group(['prefix'=>'subjects','as'=>'subjects.'], function(){
+        Route::get('/trashed', [Admin_SubjectController::class,'viewTrashedList'])->name('trashed');
+        Route::patch('/restore/{id}', [Admin_SubjectController::class,'restoreRec'])->name('restore');
+        Route::delete('/permanently-delete/{id}', [Admin_SubjectController::class,'permanentlyDelete'])->name('permanently-delete');
+    });
     //Route::group(['middleware' => ['canAccess:admin,editor']], function() {
         Route::resource('/subjects', Admin_SubjectController::class);
     //});
-    
+
     
 
     /*

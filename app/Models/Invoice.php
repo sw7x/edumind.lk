@@ -18,7 +18,6 @@ class Invoice extends Model
         'checkout_date' => 'date:Y-m-d h:i:s',
         'created_at'    => 'date',
         'billing_info'  => Json::class,
-
     ];
 
         

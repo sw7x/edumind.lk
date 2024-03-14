@@ -138,8 +138,8 @@ class CourseController extends Controller
 
         $coursesArr     =   CourseDataFormatter::prepareCoursListData($coursesDtoArr);
         return  redirect(route('courses.search'))
-            ->withInput($request->all())
-            ->with(['courses' => $coursesArr]);
+                    ->withInput($request->all())
+                    ->with(['courses' => $coursesArr]);
 
     }
 

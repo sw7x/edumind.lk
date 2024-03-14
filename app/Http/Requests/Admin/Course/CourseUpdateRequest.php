@@ -86,7 +86,10 @@ class CourseUpdateRequest extends FormRequest
     {
         return [
             'course-name'   => 'required|min:3|unique:courses,name,'.$this->recordId,
-            'subject'       => 'required',
+            
+            //when subject delete and it's course exists then no need to set subjuect
+            //'subject'       => 'required',
+
             'teacher'       => 'required',
             'course-heading'=> 'required',
             'video-count'   => 'nullable|numeric|min:0',            
@@ -230,7 +233,10 @@ class CourseUpdateRequest extends FormRequest
             'course-name.required'      => 'Course name field is required.',
             'course-name.min'           => 'Course name must be minimum 3 characters long.',
             'course-name.unique'        => "Course name {$this->get('course-name')} already exist",    
-            'subject.required'          => 'Subject need to assign for a course.',
+            
+            //when subject delete and it's course exists then no need to set subjuect
+            //'subject.required'          => 'Subject need to assign for a course.',
+            
             'teacher.required'          => 'Teacher need to assign for a course.',            
             'course-heading.required'   => 'Course heading field is required.',
             'video-count.numeric'       => ':attribute must be a number.',

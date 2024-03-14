@@ -66,7 +66,7 @@ class Invoice extends Entity
         $this->checkoutDate = $checkoutDate;
     }
 
-    public function setBillingInfo(array $billingInfo) : void {
+    public function setBillingInfo(?array $billingInfo) : void {
         $this->billingInfo = $billingInfo;
     }
 

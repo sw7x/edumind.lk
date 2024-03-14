@@ -14,16 +14,16 @@
                 <div class="lg:flex lg:space-x-10">
 
                     <div class="lg:w-3/12 space-y-4 lg:block mb-3 lg:mb-1">
-
                         <div>
-                            <h4 class="font-semibold text-base mb-2"> Categories </h4>                            
+                            <h4 class="font-semibold text-base mb-2"> Subject </h4>
                             <select class="selectpicker default" name="subject">
-                                <option value="0" @if(!old('subject')) selected @endif>All Categories</option>                              
+                                <option value="0"  @if(old('subject') == 0 || old('subject') == '')  selected @endif>( All )</option>
+                                <option value="-1" @if(old('subject') == -1) selected @endif>( No subject )</option>                              
                                 @foreach($subjectData as $subject)
                                     <option value="{{$subject['id']}}" {{ old('subject') == $subject['id'] ? "selected" : "" }}>
                                         {{$subject['name']}}
                                     </option>                                   
-                                @endforeach  
+                                @endforeach                               
                             </select>                          
                         </div>
 

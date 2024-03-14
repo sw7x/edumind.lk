@@ -31,6 +31,11 @@
                     :canClose="true" />
             @endif
 
+            @php
+                //dd($data);
+            @endphp
+
+
             @if(isset($data) && is_array($data))            
                 @if(!empty($data))    
                     <div class="ibox">
@@ -73,20 +78,26 @@
                                                 <div class="btn-group">
                                                     <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                     
-                                                    @can(SubjectAbilities::EDIT_SUBJECTS, $item['dbRec'])
-                                                        <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+                                                    @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                    <a href="javascript:void(0);" class="restore-subject-btn btn-primary btn btn-xs">Restore</a>
                                                     @endcan
                                                     
                                                     @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
-                                                        <a href="javascript:void(0);" class="remove-subject-btn btn-warning btn btn-xs">Remove</a>
+                                                    <a  href="javascript:void(0);" 
+                                                        data-course_count={{$item['data']['course_count']}}
+                                                        class="permanently-delete-subject-btn btn-danger btn btn-xs">Delete</a>
                                                     @endcan
-
-                                                    {{-- <a href="javascript:void(0);" class="delete-subject-btn btn-danger btn btn-xs">Delete</a> --}}
-
                                                 </div>
                                                 
                                                 @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
-                                                    <form class="subject-remove" action="{{ route('admin.subjects.destroy', $item['data']['id']) }}" method="POST">
+                                                    <form class="subject-restore" action="{{ route('admin.subjects.restore', $item['data']['id']) }}" method="POST">
+                                                        @method('PATCH')
+                                                        @csrf
+                                                    </form>
+                                                @endcan
+
+                                                @can(SubjectAbilities::DELETE_SUBJECTS, $item['dbRec'])
+                                                    <form class="subject-permanently-delete" action="{{ route('admin.subjects.permanently-delete', $item['data']['id']) }}" method="POST">
                                                         @method('DELETE')
                                                         @csrf
                                                     </form>
@@ -156,7 +167,8 @@
 
 		console.log('');
 
-		$('.remove-subject-btn').on('click', function(event){
+
+		$('.permanently-delete-subject-btn').on('click', function(event){
 
 			Swal.fire({
 				title: 'Delete subject',
@@ -167,16 +179,61 @@
 				cancelButtonColor: '#3fcc98',
 				confirmButtonText: 'Delete'
 			}).then((result) => {
-
-
 				if (result.isConfirmed) {
 					//todo
-					$(this).parent().parent().find('form.subject-remove').submit()
+					
+                    let courseCount = $(this).data('course_count');
+                    alert(courseCount);
+                    let form        = $(this).parent().parent().find('form.subject-permanently-delete');
+
+
+                    if(courseCount > 0){
+                        Swal.fire({
+                            title: 'Subject has associated course',
+                            text: "Are you sure you want to delete this subject? This subject has associated course records. Deleting it will cause the course to exist without the subject. Please confirm your action. ?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3fcc98',
+                            confirmButtonText: 'Delete'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+
+                        });
+                    }else{
+                        form.submit();
+                    }
+            
+                    //$(this).parent().parent().find('form.subject-permanently-delete').submit();
 				}
 			});
 
 			event.preventDefault();
 		});
+
+
+
+        $('.restore-subject-btn').on('click', function(event){
+
+            Swal.fire({
+                title: 'Restore subject',
+                text: "Are you sure you want to restore this subject ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3fcc98',
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //todo
+                    $(this).parent().parent().find('form.subject-restore').submit();
+                }
+            });
+
+            event.preventDefault();
+        });
 
 
 

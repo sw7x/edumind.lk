@@ -49,7 +49,7 @@ class StudentController extends Controller
     }
 
 
-    public function studentEnrolledCourses(?string $username = null){
+    public function viewStudentEnrolledCourses(?string $username = null){
         if(!$username)
             throw new CustomException('Profile username does not provided');
 

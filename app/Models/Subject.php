@@ -14,7 +14,12 @@ class Subject extends Model
 {
     use HasFactory;
     use Sluggable;    
-    //use SoftDeletes;
+    use SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'date:Y-m-d h:i:s',
+    ];
+
 
 
     const PUBLISHED = 'published';
@@ -54,7 +59,9 @@ class Subject extends Model
 
 
     public function courses(){
-        return $this->hasMany(Course::class,'subject_id','id');
+        return  $this->hasMany(Course::class,'subject_id','id')
+                    ->withoutGlobalScope('published')
+                    ->withTrashed();
     }
 
     public function creator(){

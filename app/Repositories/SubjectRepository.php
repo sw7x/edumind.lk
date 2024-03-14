@@ -39,7 +39,7 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     * @return Collection
     */
     public function allWithGlobalScope(array $columns = ['*'], array $relations = []): Collection{
-        return parent::all($columns, $relations, $relations);        
+        return parent::all($columns, $relations);        
     }
     
 
@@ -70,7 +70,31 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
         }
         return $result;
     }
+    
+    /**
+    * Find trashed model by id.
+    *
+    * @param int $modelId
+    * @param array $columns
+    * @param array $relations
+    * @param array $appends
+    * @return SubjectModel
+    */
+    public function findRecByIdIncludingTrashed(
+        int $modelId,
+        array $columns      = ['*'],
+        array $relations    = [],
+        array $appends      = []
+    ) : ?SubjectModel{
+        
+        $result =   $this->model->withTrashed()->withoutGlobalScope('published')
+                        ->select($columns)->with($relations)->find($modelId);
 
+        if ($result) {
+            $result->append($appends);
+        }
+        return $result;
+    }
 
     /**
     * Find model by id.
@@ -131,28 +155,51 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     }
 
 
+    /**
+    * Get all trashed models.
+    *
+    * @return Collection
+    */
+    public function allTrashed(): Collection{
+
+        return $this->model->withoutGlobalScope('published')->onlyTrashed()->get();
+    }
+
+
 
     public function findByName(String $name) : ?Collection{
-        return $this->model->withoutGlobalScope('published')->where('name',$name)->get();
+        return $this->model->withTrashed()->withoutGlobalScope('published')->where('name',$name)->get();
     }    
 
     public function findByUrl(String $url) : ?SubjectModel{
-        return $this->model->withoutGlobalScope('published')->where('slug',$slug)->first();
+        return $this->model->withTrashed()->withoutGlobalScope('published')->where('slug',$slug)->first();
     }    
+
+    public function findDuplicateCountByName(string $subjectName, int $id) : int {
+        return $this->model->withTrashed()->withoutGlobalScope('published')->where('id', '!=', $id)->where('name', '=', $subjectName)->count();
+    }
+
+
+    public function findAvailableByName(String $url) : ?SubjectModel{
+        return $this->model->where('name',$name)->get();
+    }
 
     public function findAvailableByUrl(String $url) : ?SubjectModel{
         return $this->model->where('slug',$url)->first();
     }
 
-    public function findDuplicateCountByName(string $subjectName, int $id) : int {
-        return $this->model->withoutGlobalScope('published')->where('id', '!=', $id)->where('name', '=', $subjectName)->count();
+    public function findAvailableDuplicateCountByName(string $subjectName, int $id) : int {
+        return $this->model->where('id', '!=', $id)->where('name', '=', $subjectName)->count();
     }
+
 
 
 
     public function findDataArrById(int $subjectId) : array{
         //dd($subjectId);
-        $subjectRec    = $this->findById($subjectId); 
+        //$subjectRec    = $this->findById($subjectId); 
+        $subjectRec    = $this->findRecByIdIncludingTrashed($subjectId); 
+
         if(is_null($subjectRec)) return [];
 
         $subjectArr = $subjectRec->toArray();
@@ -162,7 +209,7 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
         //unset($subjectArr['author_id']);
         unset($subjectArr['created_at']);
         unset($subjectArr['updated_at']);
-        unset($subjectArr['deleted_at']);
+        //unset($subjectArr['deleted_at']);
     
         $creatorDataArr = ($authorId) ? (new UserRepository())->findDataArrById($authorId) : [];        
         $subjectArr['creator_arr'] =  $creatorDataArr;
@@ -174,5 +221,15 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
         return SubjectMapper::dbRecConvertToEntityArr($data);
     }
 
+
+    /**
+    * Permanently delete model by id.
+    *
+    * @param int $modelId
+    * @return bool
+    */
+    public function permanentlyDeleteById(int $modelId): bool{
+        return $this->findRecByIdIncludingTrashed($modelId)->forceDelete();
+    }
 
 }

@@ -19,11 +19,12 @@ use App\Models\Coupon as CouponModel;
 use App\Models\Subject as SubjectModel;
 use App\Models\User as UserModel;
 use App\Models\Enrollment as EnrollmentModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Course extends Model
 {
-    use HasFactory,Sluggable;
+    use HasFactory,Sluggable,SoftDeletes;
 
     const PUBLISHED = 'published';
     const DRAFT     = 'draft';
@@ -139,7 +140,9 @@ class Course extends Model
 
 
     public function subject(){
-        return $this->belongsTo(SubjectModel::class,'subject_id','id');
+        return  $this->belongsTo(SubjectModel::class,'subject_id','id')
+                    ->withoutGlobalScope('published')
+                    ->withTrashed();
     }
 
     public function teacher(){

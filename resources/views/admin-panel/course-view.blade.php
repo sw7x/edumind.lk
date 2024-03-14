@@ -53,7 +53,17 @@
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Subject</label>
-                                                <label class="col-sm-8 col-form-label">{{$course['data']['subjectName']}}</label>
+                                                <label class="col-sm-8 col-form-label">                                                    
+                                                    @if($course['data']['subjectName'])
+                                                        {{$course['data']['subjectName']}}
+                                                    @else
+                                                        <span class="text-gray-400">No subject</span>
+                                                    @endif
+                                                    
+                                                    @if($course['data']['subjectIsTrashed'])
+                                                        <small class="font-bold text-red">{{$course['data']['subjectIsTrashed']}}</small>
+                                                    @endif
+                                                </label>                                                                                                
                                             </div>
                                             <div class="hr-line-dashed"></div>
 
