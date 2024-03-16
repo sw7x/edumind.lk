@@ -51,7 +51,9 @@ class CourseSelection extends Model
 
     public function course()
     {
-        return $this->belongsTo(CourseModel::class,'course_id','id');        
+        return  $this->belongsTo(CourseModel::class,'course_id','id')
+                    ->withoutGlobalScope('published');
+                    //->withTrashed();        
     }
 
     public function student()

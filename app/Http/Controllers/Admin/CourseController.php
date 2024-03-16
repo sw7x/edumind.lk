@@ -123,7 +123,7 @@ class CourseController extends Controller
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
-        $courseData = $this->adminCourseService->findDbRec($id);
+        $courseData = $this->adminCourseService->findDbRecIncludingTrashed($id);
 
         $this->hasPermission(CourseAbilities::ADMIN_PANEL_VIEW_COURSE, $courseData['dbRec']);
 
@@ -136,6 +136,7 @@ class CourseController extends Controller
         $courseDataArr   = array();
         $courseDataArr[] = $courseData;
         $courseArr       = AdminCourseDataFormatter::prepareCourseListData($courseDataArr);
+        //dd($courseArr);
         return view('admin-panel.course-view')->with([
             'course'                 => reset($courseArr),
             'courseContent'          => $courseContentVal['data'],
@@ -243,17 +244,15 @@ class CourseController extends Controller
 
     }
 
-
     public function destroy(int $id){
-
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
-        $courseData = $this->adminSubjectService->findDbRec($id);
+        $courseData = $this->adminCourseService->findDbRec($id);
         if(is_null($courseData['dbRec']))
             throw new CustomException('Course does not exist!');
 
-        $this->hasPermission(CourseAbilities::DELETE_COURSE, $courseData['dbRec']);
+        $this->hasPermission(CourseAbilities::DELETE_SINGLE_COURSE, $courseData['dbRec']);
 
         $isDelete = $this->adminCourseService->deleteDbRec($courseData['dbRec']);
         if (!$isDelete)
@@ -261,27 +260,77 @@ class CourseController extends Controller
 
         return redirect(route('admin.courses.index'))
             ->with(AlertDataUtil::success('successfully deleted the course'));
+    }
 
+    public function permanentlyDelete(int $id){      
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $courseData = $this->adminCourseService->findDbRecIncludingTrashed($id);////
+        if(is_null($courseData['dbRec']))
+            throw new CustomException('Course does not exist!');
+        
+        $this->hasPermission(CourseAbilities::DELETE_SINGLE_COURSE, $courseData['dbRec']);
+
+        if(!$courseData['dbRec']->trashed())
+            return redirect()->route('admin.courses.trashed')
+                ->with(AlertDataUtil::warning('Not a trashed course record, therefore cannot delete permanently'));
+
+        $isPermDel = $this->adminCourseService->permanentlyDeleteDbRec($courseData['dbRec']);
+        if(!$isPermDel)
+            abort(500, "Failed to permanently delete course record from database!");
+            
+        return redirect()->route('admin.courses.trashed')
+                ->with(AlertDataUtil::success('Course permanently delete  successfully'));
+    }
+
+    public function viewTrashedList(){
+        $this->hasPermission(CourseAbilities::DELETE_COURSES);        
+        $coursesData     = $this->adminCourseService->loadAllTrashedDbRecs();
+        $filteredDataArr = AdminCourseDataFormatter::prepareCourseListData($coursesData);
+        return view ('admin-panel.course-list-trashed')->withData($filteredDataArr);
+    }
+
+    public function restoreRec(int $id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $courseData = $this->adminCourseService->findDbRecIncludingTrashed($id);
+        if(is_null($courseData['dbRec']))
+            abort(404,'Course does not exist!');
+        
+        $this->hasPermission(CourseAbilities::DELETE_SINGLE_COURSE, $courseData['dbRec']);
+        
+        if(!$courseData['dbRec']->trashed())
+            return redirect()->route('admin.courses.trashed')
+                ->with(AlertDataUtil::warning('Not a trashed course record'));
+
+        $isRestored = $this->adminCourseService->restoreDbRec($id);
+        if(!$isRestored)
+            abort(500,'Failed to restore course!');
+
+        return redirect()->route('admin.courses.trashed')
+                ->with(AlertDataUtil::success('Course restored successfully'));        
     }
 
 
+
+
+    
     public function checkEmpty(Request $request){
         try{
             $courseId = $request->input('courseId');
             if(!filter_var($courseId, FILTER_VALIDATE_INT))
                 throw new CustomException('Invalid Course id');
 
-            $courseData = $this->adminCourseService->findDbRec($courseId);
+            $courseData = $this->adminCourseService->findDbRecIncludingTrashed($courseId);
 
             if(is_null($courseData['dbRec']))
                 throw new CustomException("Course does not exist!");
 
-            //You dont have Permissions to delete the course!
-            //$this->authorize('delete', $courseData['dbRec']);
-
             $isEmpty = $this->adminCourseService->checkIsCourseEmpty($courseData['dbRec']);
 
-            return response()->json(['status' => 'success', 'message' => $isEmpty]);
+            return response()->json(['status' => 'success', 'isEmpty' => $isEmpty, 'message' => '']);
 
         }catch(\Throwable $ex){
             $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Course status check failed!';
@@ -289,7 +338,6 @@ class CourseController extends Controller
         }
 
     }
-
 
     public function changeStatus(Request $request){
 
@@ -319,6 +367,32 @@ class CourseController extends Controller
         }
     }
 
+    //check course record have linked with records in course_selection, coupons tables
+    public function checkCanDelete(Request $request){
+        try{
+            $courseId = $request->input('courseId');
+            if(!filter_var($courseId, FILTER_VALIDATE_INT))
+                throw new CustomException('Invalid Course id');
+
+            $courseData = $this->adminCourseService->findDbRecIncludingTrashed($courseId);
+
+            if(is_null($courseData['dbRec']))
+                throw new CustomException("Course does not exist!");
+
+            $canDelete = $this->adminCourseService->checkCourseCanDelete($courseData['dbRec']);
+
+            return response()->json(['status' => 'success', 'canDelete' => $canDelete, 'message' => '']);
+
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Course status check failed!';
+            return response()->json(['status' => 'error', 'message' => $msg]);
+        }
+
+    }
+
+
+
+
 
     public function viewCourseEnrollmentList(){
         if(!Sentinel::check())
@@ -339,7 +413,6 @@ class CourseController extends Controller
         $data = CourseModel::orderBy('id')->get();
         return view('admin-panel.admin.course-enrollments')->withData($data);
     }
-
 
     public function viewCourseCompleteList(){
 

@@ -8,7 +8,8 @@ class CourseAbilities{
 	const ADMIN_PANEL_VIEW_COURSE 			= 'admin_panel_view_course';
 	const CREATE_COURSES 					= 'admin_panel_create_courses';
 	const EDIT_COURSE 						= 'admin_panel_edit_course';
-	const DELETE_COURSE 					= 'admin_panel_delete_course';
+	const DELETE_SINGLE_COURSE 				= 'admin_panel_delete_single_course';
+	const DELETE_COURSES 					= 'admin_panel_delete_courses';
 	const CHANGE_COURSE_STATUS 				= 'admin_panel_change_course_status';
 
 	const WATCH_COURSE						= 'watch_course';

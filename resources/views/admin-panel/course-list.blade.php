@@ -3,7 +3,7 @@
 @endphp
 
 
-@extends('admin-panel.layouts.master')
+@extends('admin-panel.layouts.master',['title' => 'Course list'])
 @section('title','Course list')
 
 
@@ -13,9 +13,6 @@
     <!-- datatables -->
     <link href="{{asset('admin/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
     <link href="{{asset('admin/css/plugins/dataTables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
-
-    <!-- select2 -->
-    <link href="{{asset('admin/css/plugins/select2/select2.min.css')}}" rel="stylesheet">
 
     <!-- toastr CSS file-->
     <link rel="stylesheet" href="{{asset('admin/css/plugins/toastr/toastr.min.css')}}">
@@ -89,7 +86,19 @@
 				                                <td width="22%"><a href="" target="_blank">{{ $item['data']['name']}}</a></td>
 
 				                                {{-- // todo add frontend link--}}
-				                                <td><a href="" target="_blank">{{$item['data']['subjectName']}}</a></td>
+				                                <td>
+				                                	<a href="" target="_blank">
+					                                	@if($item['data']['subjectName'])
+					                                		{{$item['data']['subjectName']}}
+					                                	@else
+					                                		<span class="text-gray-400">No subject</span>
+					                                	@endif
+
+					                                	@if($item['data']['subjectIsTrashed'])
+					                                		<br><small class="font-bold text-red">{{$item['data']['subjectIsTrashed']}}</small>
+														@endif					                                	
+				                                	</a>
+				                                </td>
 
 				                                <td>{{$item['data']['teacherName']}}<br>
 				                                    {{--   todo
@@ -138,15 +147,17 @@
 				                                        	<a href="{{route ('admin.courses.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
 				                                        @endcan
 														
-														@can(CourseAbilities::DELETE_COURSE, $item['dbRec'])
-				                                        	<a href="javascript:void(0);" data-courseId="{{$item['data']['id']}}" class="delete-course-btn btn-danger btn btn-xs">Delete</a>
+														@can(CourseAbilities::DELETE_SINGLE_COURSE, $item['dbRec'])
+				                                        	<a href="javascript:void(0);" 
+				                                        		data-courseId="{{$item['data']['id']}}"
+				                                        		class="remove-course-btn btn-warning btn btn-xs">Trash</a>
 				                                    	@endcan
 				                                    </div>
-				                                    @can(CourseAbilities::DELETE_COURSE, $item['dbRec'])
-					                                    <form class="course-destroy" action="{{ route('admin.courses.destroy', $item['data']['id']) }}" method="POST">
+				                                    @can(CourseAbilities::DELETE_SINGLE_COURSE, $item['dbRec'])
+					                                    <form class="course-remove" action="{{ route('admin.courses.destroy', $item['data']['id']) }}" method="POST">
 					                                        @method('DELETE')
 					                                        <input name="courseId" type="hidden" value="{{$item['data']['id']}}">
-					                                        @csrf
+															@csrf
 					                                    </form>
 				                                    @endcan
 				                                </td>
@@ -192,28 +203,17 @@
 
 
 @section('script-files')
-
-
     <script src="{{asset('admin/js/plugins/dataTables/datatables.min.js')}}"></script>
     <script src="{{asset('admin/js/plugins/dataTables/dataTables.bootstrap4.min.js')}}"></script>
 
     <!-- Switchery -->
     <script src="{{asset('admin/js/plugins/switchery/switchery.js')}}"></script>
-
-    <!-- Select2 -->
-    <script src="{{asset('admin/js/plugins/select2/select2.full.min.js')}}"></script>
-
-
-    <!-- SUMMERNOTE -->
-    <!-- <script src="../assets/summernote-0.8.18/summernote-lite.js"></script> -->
-    <script src="{{asset('admin/plugins/summernote-0.8.18/summernote-bs4.js')}}"></script>
-
+    
     <!-- toastr js file-->
     <script src="{{asset('admin/js/plugins/toastr/toastr.min.js')}}"></script>
 
     <!-- sweetalert2 js file-->
     <script src="{{asset('admin/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
-
 @stop
 
 
@@ -224,28 +224,27 @@
 <script>
 
 
-
     //delete course
-	$('.delete-course-btn').on('click', function(event){
+	$('.remove-course-btn').on('click', function(event){
 
 		var courseId = $(this).data('courseid');
-        var form     = $(this).parent().parent().find('form.course-destroy');
+        var form     = $(this).parent().parent().find('form.course-remove');
+
 
 		Swal.fire({
-			title: 'Delete course',
-			text: "Are you sure you want to course this user ?",
+			title: 'Move course to trash',
+			text: "Are you sure you want to move this course to trash?",
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#d33',
 			cancelButtonColor: '#3fcc98',
-			confirmButtonText: 'Delete'
+			confirmButtonText: 'Trash'
 		}).then((result) => {
-
-
 			if (result.isConfirmed) {
+				
 
 				$.ajax({
-					url: "{{route('admin.courses.check-empty')}}",
+					url: "{{route('admin.courses.check-can-delete')}}",
 					type: "post",
 					async:true,
 					dataType:'json',
@@ -257,27 +256,66 @@
 
 						if(response.status === 'success'){
 
-							if(response.message === true){
-								// course content is empty
-                                //submit form
-								form.submit();
-                            }else{
+							if(response.canDelete === true){
+								
+								$.ajax({
+									url: "{{route('admin.courses.check-empty')}}",
+									type: "post",
+									async:true,
+									dataType:'json',
+									data:{
+										_token : '{{ csrf_token() }}',
+										courseId : courseId
+									},
+									success: function (response) {
+
+										if(response.status === 'success'){
+
+											if(response.isEmpty === true){
+												// course content is empty - submit form
+												form.submit();
+				                            
+				                            }else{
+												
+												// course content is empty
+												Swal.fire({
+													title: 'Course already have content',
+													text: "Are you sure you want to move this course to trash",
+													icon: 'warning',
+													showCancelButton: true,
+													confirmButtonColor: '#d33',
+													cancelButtonColor: '#3fcc98',
+													confirmButtonText: 'Trash'
+												
+												}).then((result) => {
+													if (result.isConfirmed) {
+														//sumit form
+														form.submit();
+				                                    }
+				                                });
+
+				                            }
+				                        }else if(response.status == 'error'){
+											toastr[response.status](response.message);
+				                        }
+									},
+									error:function(request,errorType,errorMessage)
+									{
+										//alert ('error - '+errorType+'with message - '+errorMessage);
+										//toastr["success"]("User updated successfully! ", "Good Job!")
+										toastr["error"]("checking course content is empty failed!")
+									}
+								});
+                            
+                            }else{                           	
 								// course content is empty
 								Swal.fire({
-									title: 'Course already have content',
-									text: "Are you sure you want to delete this course",
+									title: 'Cannot move this course to trash',
+									text: "Course already have related child table recods (coupons, course selections)",
 									icon: 'warning',
-									showCancelButton: true,
-									confirmButtonColor: '#d33',
-									cancelButtonColor: '#3fcc98',
-									confirmButtonText: 'Delete'
-								}).then((result) => {
+									confirmButtonColor: '#3fcc98',
+								});
 
-									if (result.isConfirmed) {
-										//sumit form
-										form.submit();
-                                    }
-                                })
                             }
                         }else if(response.status == 'error'){
 							toastr[response.status](response.message);
@@ -287,9 +325,11 @@
 					{
 						//alert ('error - '+errorType+'with message - '+errorMessage);
 						//toastr["success"]("User updated successfully! ", "Good Job!")
-						toastr["error"]("Course check failed!")
+						toastr["error"]("checking course is linked failed!")
 					}
 				});
+
+				
 			}
 		});
 		event.preventDefault();

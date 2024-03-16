@@ -28,6 +28,7 @@ class UserRepository extends BaseRepository implements IGetDataRepository{
 
         return  $this->model->withoutGlobalScope('active')
                     ->with($relations)
+                    ->withCount($relations)
                     ->orderBy('id')
                     ->get($columns);
     }

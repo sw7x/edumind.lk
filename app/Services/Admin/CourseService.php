@@ -49,7 +49,7 @@ class CourseService
         });
         return $coursesDtoArr;
     }
-
+    
     public function findDbRec(int $id) : ?array {
         $dbRec  =   $this->courseRepository->findById($id);
         $dto    =   $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
@@ -58,6 +58,27 @@ class CourseService
             'dbRec' => $dbRec,
             'dto'   => $dto
         );
+    }
+
+    public function findDbRecIncludingTrashed(int $id) : ?array {
+        $dbRec  =   $this->courseRepository->findByIdIncludingTrashed($id);
+        $dto    =   $dbRec ? CourseDataTransformer::buildDto($dbRec->toArray()) : null;
+
+        return array(
+            'dbRec' => $dbRec,
+            'dto'   => $dto
+        );
+    }
+
+    public function loadAllTrashedDbRecs() : array {
+        $allRecs = $this->courseRepository->allTrashed();
+
+        $dataArr = array();
+        $allRecs->each(function (CourseModel $record, int $key) use (&$dataArr){
+            $courseDto  =   CourseDataTransformer::buildDto($record->toArray());
+            $dataArr[]  =   array('dto' => $courseDto, 'dbRec' => $record);
+        });
+        return $dataArr;
     }
 
     public function updateStatus(int $courseId, string $status) : bool {
@@ -74,6 +95,10 @@ class CourseService
         return $this->courseRepository->deleteById($courseDbRec->id);
     }
 
+    public function permanentlyDeleteDbRec(CourseModel $courseDbRec) : bool {
+        return $this->courseRepository->permanentlyDeleteById($courseDbRec->id);
+        //todo delete image also
+    }
 
     /*
         if course content is in correct format then send it to view
@@ -271,6 +296,14 @@ class CourseService
         unset($payloadArr['creator_arr']);
         unset($payloadArr['slug']);
         return $this->courseRepository->update($coursrRecId, $payloadArr);
+    }
+
+    public function restoreDbRec(int $dbRecId) : bool {
+        return $this->courseRepository->restoreById($dbRecId);
+    }
+
+    public function checkCourseCanDelete(CourseModel $courseDbRec) : bool {
+        return $this->courseRepository->hasRelatedChildRecords($courseDbRec);
     }
 
 

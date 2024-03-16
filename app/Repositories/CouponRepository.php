@@ -21,7 +21,7 @@ class CouponRepository implements ICouponRepository{
     * @return Collection
     */
     public function all(array $columns = ['*'], array $relations = []): Collection {
-        return CouponModel::withoutGlobalScope('enabled')->with($relations)->get($columns);
+        return CouponModel::withoutGlobalScope('enabled')->with($relations)->withCount($relations)->get($columns);
     }
 
 

@@ -345,11 +345,15 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
     Route::group(['prefix'=>'courses','as'=>'courses.'], function(){
         Route::post('/change-status', [Admin_CourseController::class,'changeStatus'])->name('change-status');
         Route::post('/check-empty', [Admin_CourseController::class,'checkEmpty'])->name('check-empty');
-        
+        Route::post('/check-can-delete', [Admin_CourseController::class,'checkCanDelete'])->name('check-can-delete');
+
         Route::get('/enrollments', [Admin_CourseController::class,'viewCourseEnrollmentList'])->name('enrollement-list');
         Route::get('/completions', [Admin_CourseController::class,'viewCourseCompleteList'])->name('complete-list');       
+    
+        Route::get('/trashed', [Admin_CourseController::class,'viewTrashedList'])->name('trashed');
+        Route::patch('/restore/{id}', [Admin_CourseController::class,'restoreRec'])->name('restore');
+        Route::delete('/permanently-delete/{id}', [Admin_CourseController::class,'permanentlyDelete'])->name('permanently-delete');
     });
-
     Route::resource('/courses', Admin_CourseController::class);   
         
     Route::resource('/users', UserController::class)->except(['store','update']);

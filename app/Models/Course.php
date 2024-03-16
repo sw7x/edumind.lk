@@ -156,7 +156,8 @@ class Course extends Model
 
     public function coupons()
     {
-        return $this->hasMany(CouponModel::class,'cc_course_id','id');
+        return  $this->hasMany(CouponModel::class,'cc_course_id','id')
+                    ->withoutGlobalScope('enabled');
     }
 
     public function activeCoupons()

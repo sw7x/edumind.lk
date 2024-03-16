@@ -27,6 +27,7 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
     public function all(array $columns = ['*'], array $relations = []) : Collection {
         return  $this->model->withoutGlobalScope('published')
                     ->with($relations)
+                    ->withCount($relations)
                     ->orderBy('id')
                     ->get($columns);
     }
@@ -37,7 +38,7 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
     * @return Collection
     */
     public function allWithGlobalScope(array $columns = ['*'], array $relations = []) : Collection {
-        return parent::all($columns, $relations, $relations);
+        return parent::all($columns, $relations);
     }
 
 
@@ -63,6 +64,34 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
         if ($result)
             $result->append($appends);
         
+        return $result;
+    }
+
+    /**
+    * Find trashed model by id.
+    *
+    * @param int $modelId
+    * @param array $columns
+    * @param array $relations
+    * @param array $appends
+    * @return CourseModel
+    */
+    public function findByIdIncludingTrashed(
+        int $modelId,
+        array $columns      = ['*'],
+        array $relations    = [],
+        array $appends      = []
+    ) : ?CourseModel{
+        
+        $result =   $this->model->withTrashed()->withoutGlobalScope('published')
+                        ->select($columns)
+                        ->with($relations)
+                        ->withCount($relations)
+                        ->find($modelId);
+
+        if ($result) {
+            $result->append($appends);
+        }
         return $result;
     }
 
@@ -125,7 +154,15 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
     }
 
 
+    /**
+    * Get all trashed models.
+    *
+    * @return Collection
+    */
+    public function allTrashed(): Collection{
 
+        return $this->model->withoutGlobalScope('published')->onlyTrashed()->get();
+    }
 
     /*
     public function deleteById($modelId){
@@ -381,4 +418,23 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
         return $courses;      
     }
 
+
+    public function hasRelatedChildRecords(CourseModel $courseRec) : bool {
+        $courseSelRecCount  =   $courseRec->course_selections->count();
+        $couponRecCount     =   $courseRec->coupons->count();
+
+        //dump('couponRecCount - '.$couponRecCount);
+        //dump('courseSelRecCount - '.$courseSelRecCount);
+        return ($couponRecCount == 0 && $courseSelRecCount == 0);
+    }
+
+    /**
+    * Permanently delete model by id.
+    *
+    * @param int $modelId
+    * @return bool
+    */
+    public function permanentlyDeleteById(int $modelId): bool{
+        return $this->findByIdIncludingTrashed($modelId)->forceDelete();
+    }
 }

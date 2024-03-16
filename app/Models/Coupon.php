@@ -74,12 +74,15 @@ class Coupon extends Model
 
     public function course()
 	{
-	    return $this->belongsTo(CourseModel::class, 'cc_course_id', 'id');
+	    return  $this->belongsTo(CourseModel::class, 'cc_course_id', 'id')
+                    ->withoutGlobalScope('published');
+                    //->withTrashed();
 	}    
 
     public function paidCourse()
     {
         return $this->belongsTo(CourseModel::class, 'cc_course_id', 'id')
+                    ->withoutGlobalScope('published')
                     ->where('courses.price', '!=', 0);
     }
 
@@ -97,7 +100,7 @@ class Coupon extends Model
 	
     public function course_selections()
     {
-        return $this->hasMany(CourseSelectionModel::class,'used_coupon_code','code');        
+        return  $this->hasMany(CourseSelectionModel::class,'used_coupon_code','code');   
     }
 
 

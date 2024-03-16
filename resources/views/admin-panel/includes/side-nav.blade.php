@@ -88,6 +88,7 @@
                 @canany([                   
                     CourseAbilities::ADMIN_PANEL_VIEW_COURSE_LIST,
                     CourseAbilities::CREATE_COURSES,
+                    CourseAbilities::DELETE_COURSES
                 ])
                 <li class="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="" aria-expanded="{{ \Str::is('admin.courses.*', Route::currentRouteName()) ? 'true' : 'false' }}">
@@ -101,6 +102,11 @@
                         @can(CourseAbilities::CREATE_COURSES)
                             <li class="{{ Route::is('admin.courses.create') ? 'current' : '' }}"><a href="{{route('admin.courses.create')}}">Add course</a></li>
                         @endcan
+                        
+                        @can(CourseAbilities::DELETE_COURSES)
+                            <li class="{{ Route::is('admin.courses.trashed') ? 'current' : '' }}"><a href="{{route('admin.courses.trashed')}}">Trashed courses</a></li>
+                        @endcan
+
                         {{--                        
                         <li class="{{ Route::is('admin.courses.content') ? 'current' : '' }}"><a href="{{route('admin.courses.content')}}">Course content (Add/Edit)</a></li>
                         --}}

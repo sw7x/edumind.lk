@@ -83,15 +83,25 @@ GateFacade::define(
     - Teachers can delete the courses that they created.
 */
 GateFacade::define(
-	CourseAbilities::DELETE_COURSE, function(?UserModel $user, CourseModel $course) {
+	CourseAbilities::DELETE_SINGLE_COURSE, function(?UserModel $user, CourseModel $course) {
 	
 	return (new CoursePolicy)->delete($user, $course) ?
 			Response::allow() : 
-			Response::deny('You dont have Permissions to delete courses !');
+			Response::deny('You dont have Permissions to selected delete course !');
 });
 
 
-
+GateFacade::define(
+	CourseAbilities::DELETE_COURSES, function(?UserModel $user) {
+	
+	$userSharedService 	= new UserSharedService();
+	$allowedRoles 		= [RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER];
+	$hasAllowedRole 	= $userSharedService->hasAnyRole($user, $allowedRoles);
+	
+	return $hasAllowedRole ? 
+		Response::allow() : 
+		Response::deny('You dont have Permissions to delete/restore courses !');
+});
 
 /*
     - Admins and editors can change status of the any course.
