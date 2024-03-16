@@ -29,6 +29,7 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
         
         return  $this->model->withoutGlobalScope('published')
                     ->with($relations)
+                    ->withCount($relations)
                     ->orderBy('id')
                     ->get($columns);
     }
@@ -80,7 +81,7 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     * @param array $appends
     * @return SubjectModel
     */
-    public function findRecByIdIncludingTrashed(
+    public function findByIdIncludingTrashed(
         int $modelId,
         array $columns      = ['*'],
         array $relations    = [],
@@ -88,7 +89,10 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     ) : ?SubjectModel{
         
         $result =   $this->model->withTrashed()->withoutGlobalScope('published')
-                        ->select($columns)->with($relations)->find($modelId);
+                        ->select($columns)
+                        ->with($relations)
+                        ->withCount($relations)
+                        ->find($modelId);
 
         if ($result) {
             $result->append($appends);
@@ -198,7 +202,7 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     public function findDataArrById(int $subjectId) : array{
         //dd($subjectId);
         //$subjectRec    = $this->findById($subjectId); 
-        $subjectRec    = $this->findRecByIdIncludingTrashed($subjectId); 
+        $subjectRec    = $this->findByIdIncludingTrashed($subjectId); 
 
         if(is_null($subjectRec)) return [];
 
@@ -229,7 +233,7 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     * @return bool
     */
     public function permanentlyDeleteById(int $modelId): bool{
-        return $this->findRecByIdIncludingTrashed($modelId)->forceDelete();
+        return $this->findByIdIncludingTrashed($modelId)->forceDelete();
     }
 
 }

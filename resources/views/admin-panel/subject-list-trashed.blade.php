@@ -2,8 +2,8 @@
     use App\Permissions\Abilities\SubjectAbilities;
 @endphp
 
-@extends('admin-panel.layouts.master')
-@section('title','Subject list')
+@extends('admin-panel.layouts.master',['title' => 'Trashed subject list'])
+@section('title','Trashed subject list')
 
 @section('css-files')
     <!-- datatables -->
@@ -79,13 +79,13 @@
                                                     <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                     
                                                     @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
-                                                    <a href="javascript:void(0);" class="restore-subject-btn btn-primary btn btn-xs">Restore</a>
+                                                        <a href="javascript:void(0);" class="restore-subject-btn btn-primary btn btn-xs">Restore</a>
                                                     @endcan
                                                     
                                                     @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
-                                                    <a  href="javascript:void(0);" 
-                                                        data-course_count={{$item['data']['course_count']}}
-                                                        class="permanently-delete-subject-btn btn-danger btn btn-xs">Delete</a>
+                                                        <a  href="javascript:void(0);" 
+                                                            data-course_count={{$item['data']['course_count']}}
+                                                            class="permanently-delete-subject-btn btn-danger btn btn-xs">Delete</a>
                                                     @endcan
                                                 </div>
                                                 
@@ -102,7 +102,6 @@
                                                         @csrf
                                                     </form>
                                                 @endcan
-
                                             </td>
 
                                         </tr>
@@ -147,8 +146,6 @@
 
 
 @section('script-files')
-
-
     <script src="{{asset('admin/js/plugins/dataTables/datatables.min.js')}}"></script>
     <script src="{{asset('admin/js/plugins/dataTables/dataTables.bootstrap4.min.js')}}"></script>
 
@@ -165,58 +162,49 @@
 
 	$(document).ready(function() {
 
-		console.log('');
-
-
 		$('.permanently-delete-subject-btn').on('click', function(event){
 
 			Swal.fire({
-				title: 'Delete subject',
-				text: "Are you sure you want to delete this subject ?",
+				title: 'Permanently delete the subject',
+				text: "Are you sure you want to permanently delete this subject?",
 				icon: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3fcc98',
-				confirmButtonText: 'Delete'
+				confirmButtonText: 'Permanently delete'
 			}).then((result) => {
 				if (result.isConfirmed) {
 					//todo
 					
-                    let courseCount = $(this).data('course_count');
-                    alert(courseCount);
+                    let courseCount = $(this).data('course_count');                    
                     let form        = $(this).parent().parent().find('form.subject-permanently-delete');
-
 
                     if(courseCount > 0){
                         Swal.fire({
-                            title: 'Subject has associated course',
-                            text: "Are you sure you want to delete this subject? This subject has associated course records. Deleting it will cause the course to exist without the subject. Please confirm your action. ?",
+                            title: 'Are you sure you want to permanently delete this subject',
+                            text: "This subject has associated course records. Deleting it will cause the course to exist without a subject. Please confirm your action. ?",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',
                             cancelButtonColor: '#3fcc98',
-                            confirmButtonText: 'Delete'
+                            confirmButtonText: 'Permanently delete'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 form.submit();
                             }
-
                         });
                     }else{
                         form.submit();
-                    }
-            
+                    }            
                     //$(this).parent().parent().find('form.subject-permanently-delete').submit();
 				}
 			});
-
 			event.preventDefault();
 		});
 
 
 
         $('.restore-subject-btn').on('click', function(event){
-
             Swal.fire({
                 title: 'Restore subject',
                 text: "Are you sure you want to restore this subject ?",
@@ -224,14 +212,13 @@
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3fcc98',
-                confirmButtonText: 'Delete'
+                confirmButtonText: 'Restore'
             }).then((result) => {
                 if (result.isConfirmed) {
                     //todo
                     $(this).parent().parent().find('form.subject-restore').submit();
                 }
             });
-
             event.preventDefault();
         });
 
@@ -279,37 +266,7 @@
 			dom: 'Bfrtip',
 			lengthChange: false,
 			
-            buttons: [
-				/*
-                {extend: 'copy'},
-                {extend: 'csv'},
-                {extend: 'excel', title: 'ExampleFile'},
-                {extend: 'pdf', title: 'ExampleFile'},
-
-                {extend: 'print',
-                    customize: function (win){
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
-
-                        $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                    }
-                }
-                */
-                @can(SubjectAbilities::CREATE_SUBJECTS)
-				{
-					text: 'Add subject',
-					action: function ( e, dt, node, config ) {
-						//$('#addProjectModal').modal('show');
-						//$('#add-modal').modal('show');
-						window.location = '{{route('admin.subjects.create')}}';
-						//  alert( 'Button activated' );
-					},
-					className: 'add-ct mb-3 btn-green '
-				}
-                @endcan
-			]
+            buttons: []
 
 		});
 		$("#category-list-tbl thead tr").css("border-bottom","5px solid #000");

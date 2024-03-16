@@ -11,7 +11,7 @@ use Ramsey\Uuid\Uuid;
 class ContactUs extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    //use SoftDeletes;
 
     protected $table = 'contact_us';
     protected $fillable = ['uuid','full_name','email','phone','subject','message','user_id'];

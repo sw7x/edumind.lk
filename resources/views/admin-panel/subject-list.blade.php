@@ -2,7 +2,7 @@
     use App\Permissions\Abilities\SubjectAbilities;
 @endphp
 
-@extends('admin-panel.layouts.master')
+@extends('admin-panel.layouts.master',['title' => 'Subject list'])
 @section('title','Subject list')
 
 @section('css-files')
@@ -91,7 +91,6 @@
                                                         @csrf
                                                     </form>
                                                 @endcan
-
                                             </td>
 
                                         </tr>
@@ -136,8 +135,6 @@
 
 
 @section('script-files')
-
-
     <script src="{{asset('admin/js/plugins/dataTables/datatables.min.js')}}"></script>
     <script src="{{asset('admin/js/plugins/dataTables/dataTables.bootstrap4.min.js')}}"></script>
 
@@ -154,31 +151,23 @@
 
 	$(document).ready(function() {
 
-		console.log('');
-
 		$('.remove-subject-btn').on('click', function(event){
-
 			Swal.fire({
-				title: 'Delete subject',
-				text: "Are you sure you want to delete this subject ?",
+				title: 'Move subject to trash',
+				text: "Are you sure you want to move this subject to trash",
 				icon: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3fcc98',
-				confirmButtonText: 'Delete'
+				confirmButtonText: 'Trash'
 			}).then((result) => {
-
-
 				if (result.isConfirmed) {
 					//todo
 					$(this).parent().parent().find('form.subject-remove').submit()
 				}
 			});
-
 			event.preventDefault();
 		});
-
-
 
 
 		$('a.popup-img').magnificPopup({

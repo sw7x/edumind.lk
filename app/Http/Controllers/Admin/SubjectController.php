@@ -66,7 +66,7 @@ class SubjectController extends Controller
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
-        $subjectData = $this->adminSubjectService->findDbRec($id);
+        $subjectData = $this->adminSubjectService->findDbRecIncludingTrashed($id);
 
         if(is_null($subjectData['dbRec']))
             abort(404,'Subject does not exist!');
@@ -151,7 +151,7 @@ class SubjectController extends Controller
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
-        $subjectData = $this->adminSubjectService->findDbRec($id);
+        $subjectData = $this->adminSubjectService->findDbRecIncludingTrashed($id);
         if(is_null($subjectData['dbRec']))
             throw new CustomException('Subject does not exist!');
         
@@ -159,7 +159,7 @@ class SubjectController extends Controller
 
         if(!$subjectData['dbRec']->trashed())
             return redirect()->route('admin.subjects.trashed')
-                ->with(AlertDataUtil::warning('Not a trashed subject record, thereore cannot delete permanently'));
+                ->with(AlertDataUtil::warning('Not a trashed subject record, therefore cannot delete permanently'));
 
         $isPermDel = $this->adminSubjectService->permanentlyDeleteDbRec($subjectData['dbRec']);
         if(!$isPermDel)
@@ -182,7 +182,7 @@ class SubjectController extends Controller
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
-        $subjectData = $this->adminSubjectService->findDbRec($id);
+        $subjectData = $this->adminSubjectService->findDbRecIncludingTrashed($id);
         if(is_null($subjectData['dbRec']))
             abort(404,'Subject does not exist!');
         

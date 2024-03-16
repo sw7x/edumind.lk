@@ -145,11 +145,11 @@ class SubjectService
         return $this->subjectRepository->permanentlyDeleteById($subjectDbRec->id);
         //todo delete image also
     }
-
+    
     public function findDbRec(int $id) : ?array {
-        $dbRec  =   $this->subjectRepository->findRecByIdIncludingTrashed($id);        
+        $dbRec  =   $this->subjectRepository->findById($id);       
         $dto    =   $dbRec ? SubjectDataTransformer::buildDto($dbRec->toArray()) : null;
-        $entity =   $dbRec ? SubjectDataTransformer::buildEntity($dbRec->toArray()) : null;
+        //$entity =   $dbRec ? SubjectDataTransformer::buildEntity($dbRec->toArray()) : null;
 
         return array(
             'dbRec' => $dbRec,
@@ -157,16 +157,25 @@ class SubjectService
         );
     }
 
+    public function findDbRecIncludingTrashed(int $id) : ?array {
+        $dbRec  =   $this->subjectRepository->findByIdIncludingTrashed($id);        
+        $dto    =   $dbRec ? SubjectDataTransformer::buildDto($dbRec->toArray()) : null;
+        //$entity =   $dbRec ? SubjectDataTransformer::buildEntity($dbRec->toArray()) : null;
+
+        return array(
+            'dbRec' => $dbRec,
+            'dto'   => $dto
+        );
+    }
+
+
     public function loadAllTrashedDbRecs() : array {
         $allRecs = $this->subjectRepository->allTrashed();
 
         $dataArr = array();
         $allRecs->each(function (SubjectModel $record, int $key) use (&$dataArr){
             $subjectDto     =   SubjectDataTransformer::buildDto($record->toArray());
-            $dataArr[]      =   array(
-                                    'data'  => SubjectDataTransformer::buildDto($record->toArray()),
-                                    'dbRec' => $record
-                                );
+            $dataArr[]      =   array('data' => $subjectDto, 'dbRec' => $record);
         });
         return $dataArr;
     }
