@@ -146,7 +146,12 @@ class Course extends Model
     }
 
     public function teacher(){
-        return $this->belongsTo(UserModel::class,'teacher_id','id');
+        return 	$this->belongsTo(UserModel::class,'teacher_id','id')
+					->withoutGlobalScope('active');        
+        /*  	
+			no need withTrashed(), because if user has created courses then 
+			that user record not allowed to soft delete/ force dedlete
+		*/
     }
 
     public function course_selections()

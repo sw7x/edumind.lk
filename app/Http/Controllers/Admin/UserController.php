@@ -207,11 +207,11 @@ class UserController extends Controller
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
                         
-        $userData = $this->adminUserService->findDbRec($id);
+        $userData = $this->adminUserService->findDbRecIncludingTrashed($id);
         if(is_null($userData['dbRec']))
             throw new CustomException('User does not exist!');
         
-        $this->hasPermission(UserManageAbilities::ADMIN_PANEL_VIEW_USERS, $userData['dbRec']);
+        $this->hasPermission(UserManageAbilities::ADMIN_PANEL_VIEW_USER, $userData['dbRec']);
 
         $filteredUserData   = AdminUserDataFormatter::prepareUserData($userData);
         return view('admin-panel.user-view')->with(['userData' => $filteredUserData]);        
@@ -341,6 +341,114 @@ class UserController extends Controller
     }
 
 
+    public function destroy(Request $request, $id){
+        $this->hasPermission(UserManageAbilities::DELETE_USERS);
+
+        //todo delete image
+        switch ($request->userType) {
+            case "teacher":
+                $hash = '#tab-teachers';
+                $redirectRoute = 'admin.users.index';
+                break;
+            case "approve.teacher":
+                $hash = '#tab-teachers';
+                $redirectRoute = 'admin.users.un-approved-teachers-list';
+                break;
+            case "student":
+                $hash = '#tab-students';
+                $redirectRoute = 'admin.users.index';
+                break;
+            case "marketer":
+                $hash = '#tab-marketers';
+                $redirectRoute = 'admin.users.index';
+                break;
+            case "editor":
+                $hash = '#tab-editors';
+                $redirectRoute = 'admin.users.index';
+                break;
+            default:
+                $hash = '';
+                $redirectRoute = 'admin.users.index';
+        }
+
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $userData = $this->adminUserService->findDbRec($id);
+        if(is_null($userData['dbRec']))
+            throw new CustomException('User does not exist!');
+
+        $isDelete = $this->adminUserService->deleteDbRec($userData['dbRec']);
+        if (!$isDelete)
+            abort(500, "User delete failed due to server error !");
+
+        return  redirect(route($redirectRoute, []). $hash)
+                    ->with(AlertDataUtil::success('successfully deleted the user record'));
+    }
+    
+
+
+    public function permanentlyDelete(int $id){      
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $userData = $this->adminUserService->findDbRecIncludingTrashed($id);
+        if(is_null($userData['dbRec']))
+            throw new CustomException('User does not exist!');
+        
+        $this->hasPermission(UserManageAbilities::DELETE_USERS);
+
+        if(!$userData['dbRec']->trashed())
+            return redirect()->route('admin.users.trashed')
+                ->with(AlertDataUtil::warning('Not a trashed user record, therefore cannot delete permanently'));
+
+        $isPermDel = $this->adminUserService->permanentlyDeleteDbRec($userData['dbRec']);
+        if(!$isPermDel)
+            abort(500, "Failed to permanently delete user record from database!");
+            
+        return redirect()->route('admin.users.trashed')
+                ->with(AlertDataUtil::success('Course permanently delete  successfully'));
+    }
+
+    public function viewTrashedList(){
+        $this->hasPermission(UserManageAbilities::DELETE_USERS);      
+        $usersData  = $this->adminUserService->loadAllTrashedDbRecs();
+                
+        $teachers   = AdminUserDataFormatter::prepareUserListData($usersData['teachersDtoArr']);
+        $students   = AdminUserDataFormatter::prepareUserListData($usersData['studentsDtoArr']);
+        $marketers  = AdminUserDataFormatter::prepareUserListData($usersData['marketersDtoArr']);
+        $editors    = AdminUserDataFormatter::prepareUserListData($usersData['editorsDtoArr']);
+    
+        return view ('admin-panel.user-list-trashed')->with([
+            'teachers'         => $teachers,
+            'students'         => $students,
+            'marketers'        => $marketers,
+            'editors'          => $editors
+        ]);
+    }
+
+    public function restoreRec(int $id){
+        if(!filter_var($id, FILTER_VALIDATE_INT))
+            throw new CustomException('Invalid id');
+
+        $userData = $this->adminUserService->findDbRecIncludingTrashed($id);
+        if(is_null($userData['dbRec']))
+            abort(404,'User does not exist!');
+        
+        $this->hasPermission(UserManageAbilities::DELETE_USERS);
+        
+        if(!$userData['dbRec']->trashed())
+            return redirect()->route('admin.users.trashed')
+                ->with(AlertDataUtil::warning('Not a trashed user record'));
+
+        $isRestored = $this->adminUserService->restoreDbRec($id);
+        if(!$isRestored)
+            abort(500,'Failed to restore user!');
+
+        return redirect()->route('admin.users.trashed')
+                ->with(AlertDataUtil::success('User restored successfully'));        
+    }
+    
     public function changeStatus(Request $request){
         try{
             $this->hasPermission(UserManageAbilities::CHANGE_USERS_STATUS);
@@ -374,52 +482,29 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(Request $request, $id){
-        $this->hasPermission(UserManageAbilities::DELETE_USERS);
+    
+    //check course record have linked with records in course_selection, coupons tables
+    public function checkCanDelete(Request $request){
+        try{
+            $userId = $request->input('userId');
+            if(!filter_var($userId, FILTER_VALIDATE_INT))
+                throw new CustomException('Invalid user id');
 
-        //todo delete image
-        switch ($request->userType) {
-            case "teacher":
-                $hash = '#tab-teachers';
-                $redirectRoute = 'admin.user.index';
-                break;
-            case "approve.teacher":
-                $hash = '#tab-teachers';
-                $redirectRoute = 'admin.user.un-approved-teachers-list';
-                break;
-            case "student":
-                $hash = '#tab-students';
-                $redirectRoute = 'admin.user.index';
-                break;
-            case "marketer":
-                $hash = '#tab-marketers';
-                $redirectRoute = 'admin.user.index';
-                break;
-            case "editor":
-                $hash = '#tab-editors';
-                $redirectRoute = 'admin.user.index';
-                break;
-            default:
-                $hash = '';
-                $redirectRoute = 'admin.user.index';
+            $userData = $this->adminUserService->findDbRecIncludingTrashed($userId);
+
+            if(is_null($userData['dbRec']))
+                throw new CustomException("User does not exist!");
+
+            $canDelete = $this->adminUserService->checkCourseCanDelete($userData['dbRec']);
+
+            return response()->json(['status' => 'success', 'canDelete' => $canDelete, 'message' => '']);
+
+        }catch(\Throwable $ex){
+            $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'User status check failed!';
+            //$msg = $ex->getMessage();          
+            return response()->json(['status' => 'error', 'message' => $msg]);
         }
 
-        if(!filter_var($id, FILTER_VALIDATE_INT))
-            throw new CustomException('Invalid id', $eArr);
-
-        $userData = $this->adminUserService->findDbRec($id);
-        if(is_null($userData['dbRec']))
-            throw new CustomException('User does not exist!',$eArr);
-
-        //You dont have Permissions to delete the user !
-        //$this->authorize('delete', $userData['dbRec']);
-
-        $isDelete = $this->adminUserService->deleteDbRec($userData['dbRec']);
-        if (!$isDelete)
-            abort(500, "User delete failed due to server error !");
-
-        return redirect(route($redirectRoute, []). $hash)
-            ->with(AlertDataUtil::success('successfully deleted the user record'));
     }
 
 

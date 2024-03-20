@@ -24,7 +24,7 @@ GateFacade::define(
 
 
 GateFacade::define(
-	SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECTS, function(?UserModel $user) {
+	SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT, function(?UserModel $user) {
 	
 	$allowedRoles 	= 	[RoleModel::ADMIN, RoleModel::EDITOR, RoleModel::TEACHER];
     $response       =   (new UserSharedService)->hasAnyRole($user, $allowedRoles) ? 

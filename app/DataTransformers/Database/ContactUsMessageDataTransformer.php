@@ -21,7 +21,7 @@ class ContactUsMessageDataTransformer{
 	public static function buildEntity(array $contactUsMsgRecData) : ContactUsMessageEntity {
         if(!isset($contactUsMsgRecData['user_arr'])){
         	$userId 						 = $contactUsMsgRecData['user_id'];
-        	$contactUsMsgRecData['user_arr'] = is_null($userId) ? [] : (new UserRepository())->findDataArrById($userId);
+        	$contactUsMsgRecData['user_arr'] = is_null($userId) ? [] : (new UserRepository())->findDataArrIncludingTrashedById($userId);
         }
         
         $contactUsMessageEntityArr = ContactUsMapper::dbRecConvertToEntityArr($contactUsMsgRecData);

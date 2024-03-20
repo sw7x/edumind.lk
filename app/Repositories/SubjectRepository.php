@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Subject as SubjectModel;
+use App\Models\User as UserModel;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\UserRepository;
@@ -159,15 +160,7 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     }
 
 
-    /**
-    * Get all trashed models.
-    *
-    * @return Collection
-    */
-    public function allTrashed(): Collection{
-
-        return $this->model->withoutGlobalScope('published')->onlyTrashed()->get();
-    }
+    
 
 
 
@@ -234,6 +227,44 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
     */
     public function permanentlyDeleteById(int $modelId): bool{
         return $this->findByIdIncludingTrashed($modelId)->forceDelete();
+    }
+
+
+    /**
+    * Get all trashed models.
+    *
+    * @return Collection
+    */
+    public function allTrashed(): Collection{
+
+        return $this->model->withoutGlobalScope('published')->onlyTrashed()->get();
+    }
+
+    /**
+    * Find trashed model by id.
+    *
+    * @param int $modelId
+    * @return SubjectModel
+    */
+    public function findTrashedById(int $modelId): ?SubjectModel{
+        
+        return $this->model->withoutGlobalScope('published')->withTrashed()->find($modelId);
+    }
+
+    /**
+    * Find only trashed model by id.
+    *
+    * @param int $modelId
+    * @return SubjectModel
+    */
+    public function findOnlyTrashedById(int $modelId): ?SubjectModel{
+        
+        return $this->model->withoutGlobalScope('published')->onlyTrashed()->find($modelId);
+    }
+
+
+    public function getAllSubjectsByUserIncludingTrashed(UserModel $teacher) : ?Collection {
+        return $teacher->subjects()->withTrashed()->withoutGlobalScope('published')->get();
     }
 
 }

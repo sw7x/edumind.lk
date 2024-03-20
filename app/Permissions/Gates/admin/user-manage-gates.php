@@ -25,7 +25,7 @@ GateFacade::define(
     - Editors can only view Teacher users.
 */
 GateFacade::define(
-	UserManageAbilities::ADMIN_PANEL_VIEW_USERS, function(?UserModel $currentUser, UserModel $selectedUserModel) {
+	UserManageAbilities::ADMIN_PANEL_VIEW_USER, function(?UserModel $currentUser, UserModel $selectedUserModel) {
 	
 	return (new UserPolicy)->view($currentUser, $selectedUserModel) ? 
 		Response::allow() : 

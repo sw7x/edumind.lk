@@ -2,12 +2,10 @@
     use App\Permissions\Abilities\UserManageAbilities;
 @endphp
 
-@extends('admin-panel.layouts.master',['title' => 'User list'])
+@extends('admin-panel.layouts.master',['title' => 'Trashed user list'])
 @section('title','User list')
 
 @section('css-files')
-
-    <link href="{{asset('admin/css/plugins/switchery/switchery.css')}}" rel="stylesheet">
 
     <!-- datatables -->
     <link href="{{asset('admin/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
@@ -43,17 +41,25 @@
                     <div class="tabs-container mb-5">
 
                         <ul class="nav nav-tabs" role="tablist" id="tab-button-wrapper">                                
-                            <li><a class="nav-link __active" data-toggle="tab" href="#tab-teachers">Teachers</a></li>
-                            <li><a class="nav-link" data-toggle="tab" href="#tab-students">Students</a></li>
-                            <li><a class="nav-link" data-toggle="tab" href="#tab-marketers">Marketers</a></li>
-                            <li><a class="nav-link" data-toggle="tab" href="#tab-editors">Editors</a></li>                                                           
+                            <li><a class="nav-link __active" data-toggle="tab" href="#tab-teachers">Teachers (Trashed)</a></li>
+                            <li><a class="nav-link" data-toggle="tab" href="#tab-students">Students (Trashed)</a></li>
+                            <li><a class="nav-link" data-toggle="tab" href="#tab-marketers">Marketers (Trashed)</a></li>
+                            <li><a class="nav-link" data-toggle="tab" href="#tab-editors">Editors (Trashed)</a></li>                                                           
                         </ul>
 
                         <div class="tab-content" id="tab-pane-wrapper">                                
-                                
+                            @php
+                            //dd($data);
+                            //dd($teachers);
+                            //dd($students);
+                            //dd($marketers);
+                            //dd($editors);
+                            @endphp 
+
                             <div role="tabpanel" id="tab-teachers" class="tab-pane __active">
                                 <div class="panel-body">
                                     @can(UserManageAbilities::VIEW_TEACHERS)
+
                                         @if(isset($teachers) && is_array($teachers))
                                             @if(!empty($teachers))                                                    
                                                 <div class="table-responsive">
@@ -101,45 +107,49 @@
                                                                     </td>
                                                                     
                                                                     <td>
-                                                                        @can(UserManageAbilities::CHANGE_USERS_STATUS)
-                                                                            <input type="checkbox" class="js-switch-teacher"
-                                                                                    userId="{{$item['data']['id']}}" {{($item['data']['status'] === true)?'checked':''}}/>
+                                                                        @if($item['data']['status'] === true)
+                                                                            <span class="label label-primary">Active</span>
                                                                         @else
-                                                                            @if($item['data']['status'] === true)
-                                                                                <span class="label label-primary">Active</span>
-                                                                            @else
-                                                                                <span class="label label-disable">Inactive</span>
-                                                                            @endif
-                                                                        @endcan
+                                                                            <span class="label label-disable">Inactive</span>
+                                                                        @endif
                                                                     </td>
-
+                                                                    
                                                                     <td class="text-right">
                                                                         <div class="btn-group">
                                                                             @can(UserManageAbilities::ADMIN_PANEL_VIEW_USER, $item['dbRec'])
                                                                                 <a href="{{route ('admin.users.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
-                                                                            @endcan                                                                    
-                                                                            
-                                                                            @can(UserManageAbilities::VIEW_EDIT_PAGE)
-                                                                                <a href="{{route ('admin.users.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
                                                                             @endcan
-                                                                            
+
                                                                             @can(UserManageAbilities::DELETE_USERS)
-                                                                                <a  href="javascript:void(0);"
+                                                                                <a href="javascript:void(0);" class="restore-user-btn btn btn-primary btn-xs">Restore</a>
+                                                                            @endcan
+
+                                                                            @can(UserManageAbilities::DELETE_USERS)
+                                                                                <a  href="javascript:void(0);" 
                                                                                     data-user-id="{{$item['data']['id']}}"
-                                                                                    class="remove-user-btn btn-warning btn btn-xs">Trash</a>
+                                                                                    class="permanently-delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                             @endcan
                                                                         </div>
+                                                                        
                                                                         @can(UserManageAbilities::DELETE_USERS)
-                                                                            <form class="user-remove" action="{{ route('admin.users.destroy', $item['data']['id']) }}" method="POST">
-                                                                                @method('DELETE')
+                                                                            <form class="user-restore" action="{{ route('admin.users.restore', $item['data']['id']) }}" method="POST">
+                                                                                @method('PATCH')
+                                                                                @csrf
                                                                                 <input name="userId" type="hidden" value="{{$item['data']['id']}}">
                                                                                 <input name="userType" type="hidden" value="teacher">
-                                                                                @csrf
                                                                             </form>
-                                                                        @endcan    
+                                                                        @endcan
+
+                                                                        @can(UserManageAbilities::DELETE_USERS)
+                                                                            <form class="user-permanently-delete" action="{{ route('admin.users.permanently-delete', $item['data']['id']) }}" method="POST">
+                                                                                @method('DELETE')
+                                                                                @csrf
+                                                                                <input name="userId" type="hidden" value="{{$item['data']['id']}}">
+                                                                                <input name="userType" type="hidden" value="teacher">
+                                                                            </form>
+                                                                        @endcan
                                                                     </td>
-                                                                </tr>
-                                                                
+                                                                </tr>                                                                   
                                                             @endforeach
                                                         </tbody>
                                                         <tfoot>
@@ -151,7 +161,10 @@
                                                                 <th>Image</th>
                                                                 <th>Gender</th>
                                                                 <th>Activated</th>
-                                                                <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
+                                                                
+                                                                    <th>status<br/> <small>Enable/Disable <br/> by admin</small></th>
+                                                                
+
                                                                 <th class="text-right">Action</th>
                                                             </tr>
                                                         </tfoot>
@@ -160,7 +173,7 @@
                                             @else
                                                 <x-flash-message 
                                                     class="flash-info mt-3"  
-                                                    title="No Teachers!" 
+                                                    title="No Trashed teachers!" 
                                                     message="" 
                                                     :canClose="false"/>
                                             @endif
@@ -226,40 +239,45 @@
                                                                     </td>
                                                                     
                                                                     <td>
-                                                                        @can(UserManageAbilities::CHANGE_USERS_STATUS)
-                                                                            <input type="checkbox" class="js-switch-teacher"
-                                                                                    userId="{{$item['data']['id']}}" {{($item['data']['status'] === true)?'checked':''}}/>
+                                                                        @if($item['data']['status'] === true)
+                                                                            <span class="label label-primary">Active</span>
                                                                         @else
-                                                                            @if($item['data']['status'] === true)
-                                                                                <span class="label label-primary">Active</span>
-                                                                            @else
-                                                                                <span class="label label-disable">Inactive</span>
-                                                                            @endif
-                                                                        @endcan
+                                                                            <span class="label label-disable">Inactive</span>
+                                                                        @endif
                                                                     </td>
-
+                                                                    
                                                                     <td class="text-right">
                                                                         <div class="btn-group">
                                                                             @can(UserManageAbilities::ADMIN_PANEL_VIEW_USER, $item['dbRec'])
                                                                                 <a href="{{route ('admin.users.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                                             @endcan
 
-                                                                            @can(UserManageAbilities::VIEW_EDIT_PAGE)
-                                                                                <a href="{{route ('admin.users.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
-                                                                            @endcan
-                                                                            
                                                                             @can(UserManageAbilities::DELETE_USERS)
-                                                                                <a  href="javascript:void(0);"
+                                                                                <a href="javascript:void(0);" class="restore-user-btn btn btn-primary btn-xs">Restore</a>
+                                                                            @endcan
+
+                                                                            @can(UserManageAbilities::DELETE_USERS)
+                                                                                <a  href="javascript:void(0);" 
                                                                                     data-user-id="{{$item['data']['id']}}"
-                                                                                    class="remove-user-btn btn-warning btn btn-xs">Trash</a>
+                                                                                    class="permanently-delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                             @endcan
                                                                         </div>
+                                                                        
                                                                         @can(UserManageAbilities::DELETE_USERS)
-                                                                            <form class="user-remove" action="{{ route('admin.users.destroy', $item['data']['id']) }}" method="POST">
-                                                                                @method('DELETE')
+                                                                            <form class="user-restore" action="{{ route('admin.users.restore', $item['data']['id']) }}" method="POST">
+                                                                                @method('PATCH')
+                                                                                @csrf
                                                                                 <input name="userId" type="hidden" value="{{$item['data']['id']}}">
                                                                                 <input name="userType" type="hidden" value="student">
+                                                                            </form>
+                                                                        @endcan
+
+                                                                        @can(UserManageAbilities::DELETE_USERS)
+                                                                            <form class="user-permanently-delete" action="{{ route('admin.users.permanently-delete', $item['data']['id']) }}" method="POST">
+                                                                                @method('DELETE')
                                                                                 @csrf
+                                                                                <input name="userId" type="hidden" value="{{$item['data']['id']}}">
+                                                                                <input name="userType" type="hidden" value="student">
                                                                             </form>
                                                                         @endcan
                                                                     </td>
@@ -283,7 +301,7 @@
                                             @else
                                                 <x-flash-message 
                                                     class="flash-info mt-3"  
-                                                    title="No Students!" 
+                                                    title="No Trashed students!" 
                                                     message="" 
                                                     :canClose="false"/>
                                             @endif
@@ -349,16 +367,11 @@
                                                                 </td>
 
                                                                 <td>
-                                                                    @can(UserManageAbilities::CHANGE_USERS_STATUS)
-                                                                        <input type="checkbox" class="js-switch-teacher"
-                                                                                userId="{{$item['data']['id']}}" {{($item['data']['status'] === true)?'checked':''}}/>
+                                                                    @if($item['data']['status'] === true)
+                                                                        <span class="label label-primary">Active</span>
                                                                     @else
-                                                                        @if($item['data']['status'] === true)
-                                                                            <span class="label label-primary">Active</span>
-                                                                        @else
-                                                                            <span class="label label-disable">Inactive</span>
-                                                                        @endif
-                                                                    @endcan
+                                                                        <span class="label label-disable">Inactive</span>
+                                                                    @endif
                                                                 </td>
 
                                                                 <td class="text-right">
@@ -366,23 +379,33 @@
                                                                         @can(UserManageAbilities::ADMIN_PANEL_VIEW_USER, $item['dbRec'])
                                                                             <a href="{{route ('admin.users.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                                         @endcan
-                                                                        
-                                                                        @can(UserManageAbilities::VIEW_EDIT_PAGE)
-                                                                            <a href="{{route ('admin.users.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+
+                                                                        @can(UserManageAbilities::DELETE_USERS)
+                                                                            <a href="javascript:void(0);" class="restore-user-btn btn btn-primary btn-xs">Restore</a>
                                                                         @endcan
 
                                                                         @can(UserManageAbilities::DELETE_USERS)
-                                                                            <a  href="javascript:void(0);"
-                                                                                data-user-id="{{$item['data']['id']}}" 
-                                                                                class="remove-user-btn btn-warning btn btn-xs">Trash</a>
+                                                                            <a  href="javascript:void(0);" 
+                                                                                data-user-id="{{$item['data']['id']}}"
+                                                                                class="permanently-delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                         @endcan
                                                                     </div>
+                                                                    
                                                                     @can(UserManageAbilities::DELETE_USERS)
-                                                                        <form class="user-remove" action="{{ route('admin.users.destroy', $item['data']['id']) }}" method="POST">
-                                                                            @method('DELETE')
+                                                                        <form class="user-restore" action="{{ route('admin.users.restore', $item['data']['id']) }}" method="POST">
+                                                                            @method('PATCH')
+                                                                            @csrf
                                                                             <input name="userId" type="hidden" value="{{$item['data']['id']}}">
                                                                             <input name="userType" type="hidden" value="marketer">
+                                                                        </form>
+                                                                    @endcan
+
+                                                                    @can(UserManageAbilities::DELETE_USERS)
+                                                                        <form class="user-permanently-delete" action="{{ route('admin.users.permanently-delete', $item['data']['id']) }}" method="POST">
+                                                                            @method('DELETE')
                                                                             @csrf
+                                                                            <input name="userId" type="hidden" value="{{$item['data']['id']}}">
+                                                                            <input name="userType" type="hidden" value="marketer">
                                                                         </form>
                                                                     @endcan
                                                                 </td>
@@ -406,7 +429,7 @@
                                             @else
                                                 <x-flash-message 
                                                     class="flash-info mt-3"  
-                                                    title="No Marketers!" 
+                                                    title="No Trashed marketers!" 
                                                     message="" 
                                                     :canClose="false"/>
                                             @endif
@@ -472,40 +495,45 @@
                                                                 </td>
                                                                 
                                                                 <td>
-                                                                    @can(UserManageAbilities::CHANGE_USERS_STATUS)
-                                                                        <input type="checkbox" class="js-switch-teacher"
-                                                                                userId="{{$item['data']['id']}}" {{($item['data']['status'] === true)?'checked':''}}/>
+                                                                    @if($item['data']['status'] === true)
+                                                                        <span class="label label-primary">Active</span>
                                                                     @else
-                                                                        @if($item['data']['status'] === true)
-                                                                            <span class="label label-primary">Active</span>
-                                                                        @else
-                                                                            <span class="label label-disable">Inactive</span>
-                                                                        @endif
-                                                                    @endcan
+                                                                        <span class="label label-disable">Inactive</span>
+                                                                    @endif
                                                                 </td>
-
+                                                        
                                                                 <td class="text-right">
                                                                     <div class="btn-group">
                                                                         @can(UserManageAbilities::ADMIN_PANEL_VIEW_USER, $item['dbRec'])
                                                                             <a href="{{route ('admin.users.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
                                                                         @endcan
-                                                                        
-                                                                        @can(UserManageAbilities::VIEW_EDIT_PAGE)
-                                                                        <a href="{{route ('admin.users.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+
+                                                                        @can(UserManageAbilities::DELETE_USERS)
+                                                                            <a href="javascript:void(0);" class="restore-user-btn btn btn-primary btn-xs">Restore</a>
                                                                         @endcan
-                                                                        
+
                                                                         @can(UserManageAbilities::DELETE_USERS)
                                                                             <a  href="javascript:void(0);"
                                                                                 data-user-id="{{$item['data']['id']}}"
-                                                                                class="remove-user-btn btn-warning btn btn-xs">Trash</a>
+                                                                                class="permanently-delete-user-btn btn-danger btn btn-xs">Delete</a>
                                                                         @endcan
                                                                     </div>
+                                                                    
                                                                     @can(UserManageAbilities::DELETE_USERS)
-                                                                        <form class="user-remove" action="{{ route('admin.users.destroy', $item['data']['id']) }}" method="POST">
-                                                                            @method('DELETE')
+                                                                        <form class="user-restore" action="{{ route('admin.users.restore', $item['data']['id']) }}" method="POST">
+                                                                            @method('PATCH')
+                                                                            @csrf
                                                                             <input name="userId" type="hidden" value="{{$item['data']['id']}}">
                                                                             <input name="userType" type="hidden" value="editor">
+                                                                        </form>
+                                                                    @endcan
+
+                                                                    @can(UserManageAbilities::DELETE_USERS)
+                                                                        <form class="user-permanently-delete" action="{{ route('admin.users.permanently-delete', $item['data']['id']) }}" method="POST">
+                                                                            @method('DELETE')
                                                                             @csrf
+                                                                            <input name="userId" type="hidden" value="{{$item['data']['id']}}">
+                                                                            <input name="userType" type="hidden" value="editor">
                                                                         </form>
                                                                     @endcan
                                                                 </td>
@@ -529,7 +557,7 @@
                                             @else
                                                 <x-flash-message 
                                                     class="flash-info mt-3"  
-                                                    title="No Editors!" 
+                                                    title="No Trashed editors!" 
                                                     message="" 
                                                     :canClose="false"/>
                                             @endif
@@ -573,9 +601,6 @@
     <script src="{{asset('admin/js/plugins/dataTables/datatables.min.js')}}"></script>
     <script src="{{asset('admin/js/plugins/dataTables/dataTables.bootstrap4.min.js')}}"></script>
 
-    <!-- Switchery -->
-    <script src="{{asset('admin/js/plugins/switchery/switchery.js')}}"></script>
-
     <!-- Magnific Popup core JS file -->
     <script src="{{asset('admin/js/jquery.magnific-popup.min.js')}}"></script>
 
@@ -601,6 +626,7 @@
         let firstTabId   = '#' + $('#tab-pane-wrapper .tab-pane').first().attr('id');
 		selectedTab      = (selectedTab=='')? firstTabId : selectedTab;
 
+
         console.log(selectedTab);
         $('.nav-link[href="' + selectedTab + '"]' ).trigger('click');
         //window.location.hash = selectedTab;
@@ -612,6 +638,7 @@
 
 
     $(document).ready(function() {
+
 
 		toastr.options = {
 			"closeButton": true,
@@ -633,21 +660,44 @@
 		};
 
 
-        $('.remove-user-btn').on('click', function(event){
-			var userId   = $(this).data('user-id');
-            var form     = $(this).parent().parent().find('form.user-remove');
 
-            Swal.fire({
-				title: 'Move course to trash',
-				text: "Are you sure you want to move this course to trash?",
+        $('.restore-user-btn').on('click', function(event){
+
+			Swal.fire({
+				title: 'Restore user',
+				text: "Are you sure you want to Restore this user ?",
 				icon: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3fcc98',
-				confirmButtonText: 'Trash'
+				confirmButtonText: 'Restore'
 			}).then((result) => {
 				if (result.isConfirmed) {
-					
+					$(this).parent().parent().find('form.user-restore').submit();               
+				}
+			});
+
+			event.preventDefault();
+        });
+
+
+        $('.permanently-delete-user-btn').on('click', function(event){
+            var userId   = $(this).data('user-id');
+            var form     = $(this).parent().parent().find('form.user-permanently-delete');
+            console.log
+
+            Swal.fire({
+                title: 'Permanently delete the user',
+                text: "Are you sure you want to permanently delete this user ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3fcc98',
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    
                     $.ajax({
                         url: "{{route('admin.users.check-can-delete')}}",
                         type: "post",
@@ -658,6 +708,7 @@
                             userId : userId
                         },
                         success: function (response) {
+                            console.log(response);
                             if(response.status === 'success'){
 
                                 if(response.canDelete === true){
@@ -668,11 +719,11 @@
                                     
                                     // course content is empty
                                     Swal.fire({
-                                        title: 'Cannot move this user to trash',
+                                        title: 'Cannot permanently delete this user',
                                         text: "User already have related child table recods (coupons, course selections)",
                                         icon: 'warning',
                                         confirmButtonColor: '#3fcc98',
-                                    });                                
+                                    });
 
                                 }
                             }else if(response.status == 'error'){
@@ -685,13 +736,15 @@
                             //toastr["success"]("User updated successfully! ", "Good Job!")
                             toastr["error"]("User already have related child table recods (coupons, course selections)!");
                         }
-                    });                  
-                    
-				}
-			});
+                    });
 
-			event.preventDefault();
+                }
+            });
+
+            event.preventDefault();
         });
+
+
 
 
 
@@ -727,49 +780,11 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-            buttons: [
-            @can(UserManageAbilities::VIEW_CREATE_PAGE)
-                {
-    				text: 'Add teacher',
-    				href : 'uuu',
-    				action: function ( e, dt, node, config ) {
-    					//$('#addProjectModal').modal('show');
-    					//$('#add-modal').modal('show');
-    					window.location = '{{route('admin.users.create').'#tab-teachers'}}';
-    					//  alert( 'Button activated' );
-    				},
-    				className: 'add-ct mb-3 btn-green '
-    			}
-            @endcan
-            ],
+            buttons: [],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6,7],
 				"searchable": false
-
-			}],
-			fnDrawCallback:function (oSettings) {
-				console.log("after table create");
-				var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch-teacher'));
-
-				elems.forEach(function(html) {
-					//need to check that it has not already be instantiated.
-					if(!html.getAttribute('data-switchery')){
-						var switchery = new Switchery(html, { size: 'small' });
-					}
-					html.onchange = function () {
-						console.log("on click");
-						var checked = html.checked;
-						var id = $(html).attr('userId');
-						if (checked == false) {
-							checked = 2;
-						} else {
-							checked = 1;
-						}
-						//todo
-						changeUserState(id, checked);
-					}
-				});
-			}
+			}],			
 		});
 
 		$('#user-list-stud').DataTable({
@@ -777,50 +792,11 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [
-            @can(UserManageAbilities::VIEW_CREATE_PAGE)
-                {
-    				text: 'Add student',
-    				href : 'uuu',
-    				action: function ( e, dt, node, config ) {
-    					//$('#addProjectModal').modal('show');
-    					//$('#add-modal').modal('show');
-    					window.location = '{{route('admin.users.create').'#tab-students'}}';
-    					//  alert( 'Button activated' );
-    				},
-    				className: 'add-ct mb-3 btn-green '
-    			}
-            @endcan
-            ],
+			buttons: [],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6],                
 				"searchable": false
-
-			}],
-			fnDrawCallback:function (oSettings) {
-				console.log("after table create");
-				var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch-student'));
-
-				elems.forEach(function(html) {
-					//need to check that it has not already be instantiated.
-					if(!html.getAttribute('data-switchery')){
-						var switchery = new Switchery(html, { size: 'small' });
-					}
-					html.onchange = function () {
-						console.log("on click");
-						var checked = html.checked;
-						var id = $(html).attr('userId');
-
-						if (checked == false) {
-							checked = 2;
-						} else {
-							checked = 1;
-						}
-						//todo
-						changeUserState(id, checked);
-					}
-				});
-			}
+			}],			
 		});
 
 		$('#user-list-marketer').DataTable({
@@ -828,49 +804,11 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [
-            @can(UserManageAbilities::VIEW_CREATE_PAGE)
-                {
-    				text: 'Add marketer',
-    				href : 'uuu',
-    				action: function ( e, dt, node, config ) {
-    					//$('#addProjectModal').modal('show');
-    					//$('#add-modal').modal('show');
-    					window.location = '{{route('admin.users.create').'#tab-marketers'}}';
-    					//  alert( 'Button activated' );
-    				},
-    				className: 'add-ct mb-3 btn-green '
-    			}
-            @endcan
-            ],
+			buttons: [],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6],
 				"searchable": false
-
-			}],
-			fnDrawCallback:function (oSettings) {
-				console.log("after table create");
-				var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch-marketer'));
-
-				elems.forEach(function(html) {
-					//need to check that it has not already be instantiated.
-					if(!html.getAttribute('data-switchery')){
-						var switchery = new Switchery(html, { size: 'small' });
-					}
-					html.onchange = function () {
-						console.log("on click");
-						var checked = html.checked;
-						var id = $(html).attr('userId');
-						if (checked == false) {
-							checked = 2;
-						} else {
-							checked = 1;
-						}
-						//todo
-						changeUserState(id, checked);
-					}
-				});
-			}
+			}],			
 		});
 
 
@@ -879,88 +817,13 @@
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [
-            @can(UserManageAbilities::VIEW_CREATE_PAGE)
-                {
-    				text: 'Add editor',
-    				href : 'uuu',
-    				action: function ( e, dt, node, config ) {
-    					//$('#addProjectModal').modal('show');
-    					//$('#add-modal').modal('show');
-    					window.location = '{{route('admin.users.create').'#tab-editors'}}';
-    					//  alert( 'Button activated' );
-    				},
-    				className: 'add-ct mb-3 btn-green '
-			    }
-            @endcan
-            ],
+			buttons: [],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5,6],
 				"searchable": false
-
-			}],
-			fnDrawCallback:function (oSettings) {
-				console.log("after table create");
-				var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch-editor'));
-
-				elems.forEach(function(html) {
-					//need to check that it has not already be instantiated.
-					if(!html.getAttribute('data-switchery')){
-						var switchery = new Switchery(html, { size: 'small' });
-					}
-					html.onchange = function () {
-						console.log("on click");
-						var checked = html.checked;
-						var id = $(html).attr('userId');
-						if (checked == false) {
-							checked = 2;
-						} else {
-							checked = 1;
-						}
-						//todo
-						changeUserState(id, checked);
-					}
-				});
-			}
+			}],			
 		});
 
-
-		function changeUserState(id, checked){
-            //alert(id);
-			//alert(checked);
-			//if switch in off state, before change checked = 1  then checked = 2
-			//if switch in on  state, before change checked = 2  then checked = 1
-			var status;
-			if(checked === 1){
-				status = 1;
-            }else if(checked === 2){
-				status = 0;
-            }else{
-				status = 0;
-            }
-
-			$.ajax({
-				url: "{{route('admin.users.change-status')}}",
-				type: "post",
-				async:true,
-				dataType:'json',
-				data:{
-					status : status,
-					_token : '{{ csrf_token() }}',
-					userId : id
-				},
-				success: function (response) {
-					toastr[response.status](response.message,response.msgTitle);
-					// You will get response from your PHP page (what you echo or print)
-                },
-				error:function(request,errorType,errorMessage)
-				{
-					//alert ('error - '+errorType+'with message - '+errorMessage);
-					//toastr["success"]("User updated successfully! ", "Good Job!")
-					toastr["error"]("User status update failed!")
-				}
-			});
-        }
 
     });
 </script>

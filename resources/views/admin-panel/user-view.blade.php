@@ -1,4 +1,4 @@
-@extends('admin-panel.layouts.master')
+@extends('admin-panel.layouts.master',['title'=> 'User single'.($userData['isTrashed'] ? ' - Trashed' : '')])
 @section('title','View user')
 
 @section('css-files')
@@ -10,10 +10,13 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
-                       
+            @php
+                //dd($userData);
+            @endphp
+
             @if(isset($userData) && isNotEmptyArray($userData))
                 <div class="ibox">  
-                    <div class="ibox-content feedback-container forum-post-container mb-5">                    
+                    <div class="ibox-content feedback-container forum-post-container mb-5 {{$userData['isTrashed'] ? 'bg-gray-300' : ''}}">                    
                         @if(isset($userData['fullName']))
                             <div class="form-group  row">
                                 <label class="col-sm-3 col-form-label">Name <span class="text-red-500 text-sm font-bold">*</span></label>

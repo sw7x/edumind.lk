@@ -3,25 +3,22 @@
 @endphp
 
 
-@extends('admin-panel.layouts.master',['title' => 'Course list'])
-@section('title','Course list')
+@extends('admin-panel.layouts.master',['title' => 'Trashed course list'])
+@section('title','Trashed course list')
 
 
 @section('css-files')
-    <link href="{{asset('admin/css/plugins/switchery/switchery.css')}}" rel="stylesheet">
-
     <!-- datatables -->
     <link href="{{asset('admin/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
     <link href="{{asset('admin/css/plugins/dataTables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
-
-    <!-- toastr CSS file-->
-    <link rel="stylesheet" href="{{asset('admin/css/plugins/toastr/toastr.min.css')}}">
 
     <!-- sweetalert2 CSS file-->
     <link rel="stylesheet" href="{{asset('admin/css/plugins/sweetalert2/sweetalert2.min.css')}}">
 
 @stop
-
+@php
+	//dd2($data);
+@endphp
 
 
 
@@ -38,7 +35,9 @@
                     :message2="Session::get('message2') ?? ''"  
                     :canClose="true" />
 			@endif     
-
+			
+			
+			
 			@if(isset($data) && isNotEmptyArray($data))			
             	<div class="ibox">
 	                <div class="ibox-content">
@@ -63,12 +62,7 @@
 		                            <tr>
 		                                <th>Course</th>
 		                                <th>Subject</th>
-		                                <th>
-		                                    Teacher<br>
-		                                    Enrolled <small>(count)</small><br>
-		                                    Completed <small>(count)</small><br>
-		                                    Rating
-		                                </th>
+		                                <th>Teacher</th>
 		                                <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
 		                                <th>Status</th>
 		                                <th class="text-right">Action</th>
@@ -97,27 +91,21 @@
 			                                	</a>
 			                                </td>
 
-			                                <td>{{$item['data']['teacherName'] ?? ''}}<br>
+			                                <td>
+			                                	{{$item['data']['teacherName'] ?? ''}}<br>
 			                                	@if($item['data']['authorRecAvailability'])
 			                                		<span class="text-red">{{$item['data']['authorRecAvailability']}}</span>
 			                                	@endif
-			                                	
-			                                    {{--   
-			                                    todo
-			                                    123 <small>(Enrolled)</small><br>
-			                                    345 <small>(Completed)</small><br>
-			                                    4.9/5.0
-			                                    --}}
+
 			                                </td>
 
-			                                <!-- <td>12/04/2015</td>-->
 			                                <td>
 			                                    @if(isset($item['data']['price']))
 			                                        Rs {{$item['data']['price']}}<br>
 			                                    @endif
 
 			                                    @if(isset($item['data']['duration']))
-			                                    	{{$item['data']['duration']}}<br>
+			                                    {{$item['data']['duration']}}<br>
 			                                    @endif
 
 			                                    @if(isset($item['data']['videoCount']))
@@ -131,38 +119,46 @@
 			                                </td>
 			                                
 			                                <td>				                                    
-			                                	@can(CourseAbilities::CHANGE_COURSE_STATUS, $item['dbRec'])
-			                                    	<input type="checkbox" class="js-switch-course"
-			                                           courseId="{{$item['data']['id']}}" {{($item['data']['status'] === App\Models\Course::PUBLISHED)?'checked':''}}/>
-			                                	@else
-			                                		{{($item['data']['status'] === App\Models\Course::PUBLISHED)?'published' : 'Draft'}}
-			                                	@endcan
+			                                	@if($item['data']['status'] == App\Models\Course::PUBLISHED)
+                                                    <span class="label label-primary">Published</span>
+                                                @else
+                                                    <span class="label label-disable">Draft</span>
+                                                @endif
 			                                </td>
 
 			                                <td class="text-right">
 			                                    <div class="btn-group">
+			                                        
 			                                        @can(CourseAbilities::ADMIN_PANEL_VIEW_COURSE, $item['dbRec'])
 			                                        	<a href="{{route ('admin.courses.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
 			                                        @endcan
 													
-													@can(CourseAbilities::EDIT_COURSE, $item['dbRec'])
-			                                        	<a href="{{route ('admin.courses.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>
+													@can(CourseAbilities::DELETE_SINGLE_COURSE, $item['dbRec'])
+			                                        	<a href="javascript:void(0);" class="restore-course-btn btn-primary btn btn-xs">Restore</a>
 			                                        @endcan
 													
 													@can(CourseAbilities::DELETE_SINGLE_COURSE, $item['dbRec'])
-			                                        	<a href="javascript:void(0);" 
+			                                        	<a 	href="javascript:void(0);" 
 			                                        		data-courseId="{{$item['data']['id']}}"
-			                                        		class="remove-course-btn btn-warning btn btn-xs">Trash</a>
+			                                        		class="permanently-delete-course-btn btn-danger btn btn-xs">Delete</a>
 			                                    	@endcan
 			                                    </div>
+			                                    
 			                                    @can(CourseAbilities::DELETE_SINGLE_COURSE, $item['dbRec'])
-				                                    <form class="course-remove" action="{{ route('admin.courses.destroy', $item['data']['id']) }}" method="POST">
+				                                    <form class="course-restore" action="{{ route('admin.courses.restore', $item['data']['id']) }}" method="POST">
+				                                        @method('PATCH')
+				                                        @csrf
+				                                    </form>
+			                                    @endcan				                                    
+
+			                                    @can(CourseAbilities::DELETE_SINGLE_COURSE, $item['dbRec'])
+				                                    <form class="course-permanently-delete" action="{{ route('admin.courses.permanently-delete', $item['data']['id']) }}" method="POST">
 				                                        @method('DELETE')
-				                                        <input name="courseId" type="hidden" value="{{$item['data']['id']}}">
-														@csrf
+				                                        @csrf
 				                                    </form>
 			                                    @endcan
 			                                </td>
+
 			                            </tr>			                            
 		                            @endforeach
 	                            </tbody>
@@ -170,12 +166,7 @@
 	                            <tfoot>
 		                            <th>Course</th>
 		                            <th>Subject</th>
-		                            <th>
-		                                Teacher<br>
-		                                Enrolled <small>(count)</small><br>
-		                                Ecomplete <small>(count)</small><br>
-		                                Rating
-		                            </th>
+		                            <th>Teacher</th>		                           
 		                            <th>Price <br>Duration <br>Videos <small>(count)</small><br>Last updated</th>
 		                            <th>Status</th>
 		                            <th class="text-right">Action</th>
@@ -187,11 +178,11 @@
 	            </div>
             @else                
                 <x-flash-message 
-                    class="flash-danger"  
-                    title="Data not available!" 
-                    message="Course data list is not available or not in correct format"  
+                    class="flash-info"  
+                    title="No Courses!" 
+                    message=""  
                     message2=""  
-                    :canClose="false" />                
+                    :canClose="false" />
             @endif
 
         </div>
@@ -203,12 +194,6 @@
 @section('script-files')
     <script src="{{asset('admin/js/plugins/dataTables/datatables.min.js')}}"></script>
     <script src="{{asset('admin/js/plugins/dataTables/dataTables.bootstrap4.min.js')}}"></script>
-
-    <!-- Switchery -->
-    <script src="{{asset('admin/js/plugins/switchery/switchery.js')}}"></script>
-    
-    <!-- toastr js file-->
-    <script src="{{asset('admin/js/plugins/toastr/toastr.min.js')}}"></script>
 
     <!-- sweetalert2 js file-->
     <script src="{{asset('admin/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
@@ -222,16 +207,16 @@
 <script>
 
 
+
     //delete course
-	$('.remove-course-btn').on('click', function(event){
+	$('.permanently-delete-course-btn').on('click', function(event){
 
 		var courseId = $(this).data('courseid');
-        var form     = $(this).parent().parent().find('form.course-remove');
-
+        var form     = $(this).parent().parent().find('form.course-permanently-delete');
 
 		Swal.fire({
-			title: 'Move course to trash',
-			text: "Are you sure you want to move this course to trash?",
+			title: 'Permanently delete the course',
+			text: "Are you sure you want permanently delete this course?",
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#d33',
@@ -239,7 +224,6 @@
 			confirmButtonText: 'Trash'
 		}).then((result) => {
 			if (result.isConfirmed) {
-				
 
 				$.ajax({
 					url: "{{route('admin.courses.check-can-delete')}}",
@@ -278,7 +262,7 @@
 												// course content is empty
 												Swal.fire({
 													title: 'Course already have content',
-													text: "Are you sure you want to move this course to trash",
+													text: "Are you sure you want to permanently delete this course",
 													icon: 'warning',
 													showCancelButton: true,
 													confirmButtonColor: '#d33',
@@ -308,7 +292,7 @@
                             }else{                           	
 								// course content is empty
 								Swal.fire({
-									title: 'Cannot move this course to trash',
+									title: 'Cannot permanently delete this course',
 									text: "Course already have related child table recods (coupons, course selections)",
 									icon: 'warning',
 									confirmButtonColor: '#3fcc98',
@@ -335,115 +319,39 @@
 
 
 
+	$('.restore-course-btn').on('click', function(event){
+        Swal.fire({
+            title: 'Restore the course',
+            text: "Are you sure you want to restore this course ?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3fcc98',
+            confirmButtonText: 'Restore'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //todo
+                $(this).parent().parent().find('form.course-restore').submit();
+            }
+        });
+        event.preventDefault();
+    });
+
 
 	$(document).ready(function() {
-
-		toastr.options = {
-			"closeButton": true,
-			"debug": false,
-			"newestOnTop": true,
-			"progressBar": true,
-			"positionClass": "toast-top-right",
-			"preventDuplicates": false,
-			"onclick": null,
-			"showDuration": "300",
-			"hideDuration": "1000",
-			"timeOut": "5000",
-			"extendedTimeOut": "1000",
-			"showEasing": "swing",
-			"hideEasing": "linear",
-			"showMethod": "fadeIn",
-			"hideMethod": "fadeOut"
-		};
-
-
 		$('#course-list').DataTable({
 			pageLength: 10,
 			ordering: false,
 			responsive: true,
 			dom: 'Bfrtip',
-			buttons: [
-			@can(CourseAbilities::CREATE_COURSES)
-				{
-					text: 'Add course',
-					action: function ( e, dt, node, config ) {
-						//$('#addProjectModal').modal('show');
-						//$('#add-modal').modal('show');
-						window.location = '{{route ('admin.courses.create')}}';
-						//  alert( 'Button activated' );
-					},
-					className: 'add-ct mb-3 btn-green '
-				}
-			@endcan
-			],
+			buttons: [],
 			"columnDefs": [{
 				"targets": [1,2,3,4,5],
 				"searchable": false
 
-			}],
-			fnDrawCallback:function (oSettings) {
-				console.log("after table create");
-				var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch-course'));
-
-				elems.forEach(function(html) {
-					//need to check that it has not already be instantiated.
-					if(!html.getAttribute('data-switchery')){
-						var switchery = new Switchery(html, { size: 'small' });
-					}
-
-					html.onchange = function () {
-						console.log("on click");
-						var checked = html.checked;
-						var id = $(html).attr('courseId');
-						if (checked == false) {
-							checked = 2;
-						} else {
-							checked = 1;
-						}
-						//todo
-						changeCourseStatus(id, checked);
-					}
-				});
-			}
+			}],			
 		});
-	});
-
-	function changeCourseStatus(id, checked){
-		//alert(id);
-		//alert(checked);
-		//if switch in off state, before change checked = 1  then checked = 2
-		//if switch in on  state, before change checked = 2  then checked = 1
-		var status;
-		if(checked === 1){
-			status = 'published';
-		}else if(checked === 2){
-			status = 'draft';
-		}else{
-			status = 'draft';
-		}
-
-		$.ajax({
-			url: "{{route('admin.courses.change-status')}}",
-			type: "post",
-			async:true,
-			dataType:'json',
-			data:{
-				status : status,
-				_token : '{{ csrf_token() }}',
-				courseId : id
-			},
-			success: function (response) {
-				toastr[response.status](response.message);
-				// You will get response from your PHP page (what you echo or print)
-			},
-			error:function(request,errorType,errorMessage)
-			{
-				//alert ('error - '+errorType+'with message - '+errorMessage);
-				//toastr["success"]("User updated successfully! ", "Good Job!")
-				toastr["error"]("User status update failed!")
-			}
-		});
-	}
+	});	
 
 </script>
 @stop

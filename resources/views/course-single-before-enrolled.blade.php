@@ -277,44 +277,53 @@
                     </div>
 
 
-                    <!-- Student details -->
+                    <!-- Teacher details -->
                     <div class="tube-card p-5 lg:p-8 course-student-info bg-yellow-50 space-y-4" id="enrollment-details">
                         <div>
                             <h3 class="text-xl font-semibold lg:mb-5">Teacher details</h3>
-                            <div class="bg-gray-50 border flex gap-x-4 p-4 relative rounded-md my-5">
+                            @isset($courseData['creatorArr'])
+                                <div class="bg-gray-50 border flex gap-x-4 p-4 relative rounded-md my-5">
 
-                                @if(isset($courseData['creatorArr']))
-                                    <div class="lg:w-1/4">
-                                        <img src="{{$courseData['creatorArr']['profilePic']}}" class="rounded shadow w-full" alt="">
+                                    @if(isset($courseData['creatorArr']))
+                                        <div class="lg:w-1/4">
+                                            <img src="{{$courseData['creatorArr']['profilePic']}}" class="rounded shadow w-full" alt="">
+                                        </div>
+                                    @endif
+
+                                    <div class="w-3/4 md:text-justify">
+                                        @if(isset($courseData['creatorArr']))
+                                            <h4 class="text-base m-0 font-semibold">
+                                                <a href="{{route('teachers.show',$courseData['creatorArr']['username'])}}">
+                                                    {{$courseData['creatorArr']['fullName']}}
+                                                </a>
+                                            </h4>
+                                        @endif
+                                        
+                                        @if(isset($courseData['creatorArr']))
+                                            {!! $courseData['creatorArr']['eduQualifications'] !!}
+                                        @endif
+                                        
+                                        {{--
+                                        <p class="mt-2 md:ml-0 -ml-16  text-sm">
+                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
+                                            magna aliquam erat volutpat.
+                                        </p>
+                                        <p class="mt-2 md:ml-0 -ml-16  text-sm">
+                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
+                                            magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
+                                            ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+                                        </p>
+                                        --}}
                                     </div>
-                                @endif
-
-                                <div class="w-3/4 md:text-justify">
-                                    @if(isset($courseData['creatorArr']))
-                                        <h4 class="text-base m-0 font-semibold">
-                                            <a href="{{route('teachers.show',$courseData['creatorArr']['username'])}}">
-                                                {{$courseData['creatorArr']['fullName']}}
-                                            </a>
-                                        </h4>
-                                    @endif
-                                    
-                                    @if(isset($courseData['creatorArr']))
-                                        {!! $courseData['creatorArr']['eduQualifications'] !!}
-                                    @endif
-                                    
-                                    {{--
-                                    <p class="mt-2 md:ml-0 -ml-16  text-sm">
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
-                                        magna aliquam erat volutpat.
-                                    </p>
-                                    <p class="mt-2 md:ml-0 -ml-16  text-sm">
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
-                                        magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
-                                        ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-                                    </p>
-                                    --}}
                                 </div>
-                            </div>
+                            @else
+                                    <x-flash-message 
+                                        class="flash-info"  
+                                        title="Not available" 
+                                        message=""  
+                                        message2=""  
+                                        :canClose="false" />
+                                @endisset
                         </div>
 
                     </div>

@@ -8,10 +8,12 @@ use Carbon\Carbon;
 
 class ContactUsDataFormatter{
     
-    public static function prepareData(array $contactUsDtoArr) : array {
+    public static function prepareData(array $contactUsDataArr) : array {
         $arr = array();
-        
-        foreach ($contactUsDtoArr as $contactUsDto) {
+
+        foreach ($contactUsDataArr as $contactUsDataItem) {
+            $contactUsDto   = $contactUsDataItem['dto'];
+
             $tempArr        = $contactUsDto->toArray();
             $creator        = $contactUsDto->getCreatorDto();
             $createdAt      = $contactUsDto->getCreatedAt();
@@ -28,8 +30,11 @@ class ContactUsDataFormatter{
             $tempArr['createdAt']    = $createdAt;
             $tempArr['createdAtAgo'] = Carbon::parse($createdAt)->diffForHumans();
 
+            $tempArr['userArr']['isTrashed'] = isset($contactUsDataItem['dbRec']->user) ? $contactUsDataItem['dbRec']->user->trashed() : null;
+
             $arr[] = $tempArr;
         }
+        
         return $arr;
     }
     

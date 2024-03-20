@@ -236,118 +236,129 @@
                     </div>
 
 
+                    
+                        <!-- Teacher details -->
+                        <div class="tube-card p-5 lg:p-8 course-student-info bg-yellow-50 space-y-4" id="enrollment-details">
+                            <div>
+                                <h3 class="text-xl font-semibold lg:mb-5">Teacher details</h3>
+                                
+                                @isset($courseData['creatorArr'])
+                                    <div class="bg-gray-50 border flex gap-x-4 p-4 relative rounded-md my-5">
 
-                    <!-- Student details -->
-                    <div class="tube-card p-5 lg:p-8 course-student-info bg-yellow-50 space-y-4" id="enrollment-details">
-                        <div>
-                            <h3 class="text-xl font-semibold lg:mb-5">Teacher details</h3>
-                            <div class="bg-gray-50 border flex gap-x-4 p-4 relative rounded-md my-5">
+                                        <div class="lg:w-1/4">                                    
+                                            <img src="{{$courseData['creatorArr']['profilePic']}}" class="rounded shadow w-full" alt="">
+                                        </div>
 
-                                <div class="lg:w-1/4">                                    
-                                    <img src="{{$courseData['creatorArr']['profilePic']}}" class="rounded shadow w-full" alt="">
-                                </div>
+                                        <div class="w-3/4 md:text-justify">
+                                            <h4 class="text-base m-0 font-semibold">
+                                                <a href="{{route('teachers.show',$courseData['creatorArr']['username'])}}">
+                                                    {{$courseData['creatorArr']['fullName']}}
+                                                </a>
+                                            </h4>
+                                            {!! $courseData['creatorArr']['eduQualifications'] !!}
+                                            {{--
+                                            <p class="mt-2 md:ml-0 -ml-16  text-sm">
+                                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
+                                                magna aliquam erat volutpat.
+                                            </p>
+                                            <p class="mt-2 md:ml-0 -ml-16  text-sm">
+                                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
+                                                magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
+                                                ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+                                            </p>
+                                            --}}
+                                        </div>
+                                    </div>
+                                @else
+                                    <x-flash-message 
+                                        class="flash-info"  
+                                        title="Not available" 
+                                        message=""  
+                                        message2=""  
+                                        :canClose="false" />
+                                @endisset
 
-                                <div class="w-3/4 md:text-justify">
-                                    <h4 class="text-base m-0 font-semibold">
-                                        <a href="{{route('teachers.show',$courseData['creatorArr']['username'])}}">
-                                            {{$courseData['creatorArr']['fullName']}}
-                                        </a>
-                                    </h4>
-                                    {!! $courseData['creatorArr']['eduQualifications'] !!}
-                                    {{--
-                                    <p class="mt-2 md:ml-0 -ml-16  text-sm">
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
-                                        magna aliquam erat volutpat.
-                                    </p>
-                                    <p class="mt-2 md:ml-0 -ml-16  text-sm">
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam ut laoreet dolore
-                                        magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
-                                        ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-                                    </p>
-                                    --}}
-                                </div>
                             </div>
+
+                            {{--
+                            <div>
+                                <h3 class="text-xl font-semibold lg:mb-5">Student details</h3>
+                                <!-- ACCORDION -->
+
+                                <ul uk-accordion class="uk-accordion">
+
+                                    <li class="__uk-open bg-gray-100 px-4 py-3">
+                                        <h3 class="uk-accordion-title font-semibold text-base">Enrolled students (65)</h3>
+                                        <div class="uk-accordion-content rounded-md">
+                                            <ul class="stud-name-list">
+                                                <?php //for($i=0;$i<20;$i++): ?>
+                                                <li><a href="#">HTML</a></li>
+                                                <li><a href="#">CSS</a></li>
+                                                <li><a href="#">JavaScript</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">CSS</a></li>
+                                                <li><a href="#">JavaScript</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript We Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">CSS</a></li>
+                                                <li><a href="#">JavaScript</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript We Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <?php //endfor; ?>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="bg-gray-100 px-4 py-3">
+                                        <h3 class="uk-accordion-title font-semibold text-base">Course complete students (45)</h3>
+                                        <div class="uk-accordion-content rounded-md">
+                                            <p class="mt-3">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor reprehenderit.</p>
+                                            <ul class="stud-name-list">
+                                                <?php //for($i=0;$i<20;$i++): ?>
+                                                <li><a href="#">HTML</a></li>
+                                                <li><a href="#">CSS</a></li>
+                                                <li><a href="#">JavaScript</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">CSS</a></li>
+                                                <li><a href="#">JavaScript</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript We Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">CSS</a></li>
+                                                <li><a href="#">JavaScript</a></li>
+                                                <li><a href="#">PHP</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <li><a href="#">SC</a></li>
+                                                <li><a href="#">JavaScript We Abc</a></li>
+                                                <li><a href="#">PHPT</a></li>
+                                                <?php //endfor; ?>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            --}}
                         </div>
-
-                        {{--
-                        <div>
-                            <h3 class="text-xl font-semibold lg:mb-5">Student details</h3>
-                            <!-- ACCORDION -->
-
-                            <ul uk-accordion class="uk-accordion">
-
-                                <li class="__uk-open bg-gray-100 px-4 py-3">
-                                    <h3 class="uk-accordion-title font-semibold text-base">Enrolled students (65)</h3>
-                                    <div class="uk-accordion-content rounded-md">
-                                        <ul class="stud-name-list">
-                                            <?php //for($i=0;$i<20;$i++): ?>
-                                            <li><a href="#">HTML</a></li>
-                                            <li><a href="#">CSS</a></li>
-                                            <li><a href="#">JavaScript</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">CSS</a></li>
-                                            <li><a href="#">JavaScript</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript We Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">CSS</a></li>
-                                            <li><a href="#">JavaScript</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript We Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <?php //endfor; ?>
-                                        </ul>
-                                    </div>
-                                </li>
-
-                                <li class="bg-gray-100 px-4 py-3">
-                                    <h3 class="uk-accordion-title font-semibold text-base">Course complete students (45)</h3>
-                                    <div class="uk-accordion-content rounded-md">
-                                        <p class="mt-3">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor reprehenderit.</p>
-                                        <ul class="stud-name-list">
-                                            <?php //for($i=0;$i<20;$i++): ?>
-                                            <li><a href="#">HTML</a></li>
-                                            <li><a href="#">CSS</a></li>
-                                            <li><a href="#">JavaScript</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">CSS</a></li>
-                                            <li><a href="#">JavaScript</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript We Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">CSS</a></li>
-                                            <li><a href="#">JavaScript</a></li>
-                                            <li><a href="#">PHP</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <li><a href="#">SC</a></li>
-                                            <li><a href="#">JavaScript We Abc</a></li>
-                                            <li><a href="#">PHPT</a></li>
-                                            <?php //endfor; ?>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul>
-
-                        </div>
-                        --}}
-                    </div>
-
+                    
 
 
                     <!-- todo - disable rating after onece done rating -->
@@ -456,7 +467,7 @@
                     </div>
                     --}}
                 </div>
-
+                
 
                 <div class="lg:w-4/12 space-y-4">
 

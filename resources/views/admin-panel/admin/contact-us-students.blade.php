@@ -35,6 +35,7 @@
                                 @php
                                     //var_dump($comment->user->id);
                                     //var_dump($comment->id);
+                                    //dd($comment);
                                 @endphp
                                                     
                                 <div class="vertical-timeline-block student-block">
@@ -47,7 +48,11 @@
                                         <p>{{$comment['message']}}</p>                                  
                                         
                                         <div class="text-xs">
-                                            <strong>Name : </strong>    {{$comment['fullName']}} 
+                                            <strong>Name : </strong> {{$comment['fullName']}} 
+                                            @isset($comment['userArr']['isTrashed'])
+                                                - <span class="text-red">{{$comment['userArr']['isTrashed'] ? '(Trashed)' : ''}}</span>
+                                            @endisset
+
                                             @if(!$comment['userStat']) <span class="text-red">[Disabled]</span> @endif
                                         </div>
                                         <div class="text-xs"><strong>Email : </strong>   {{$comment['email']}}</div>

@@ -75,7 +75,6 @@ class UserService
 
 
     public function deleteDbRec(UserModel $userDbRec) : bool {
-        //return $subjectDbRec->delete();
         return $this->userRepository->deleteById($userDbRec->id);
     }
 
@@ -109,7 +108,53 @@ class UserService
         );
     }
 
+    public function findDbRecIncludingTrashed(int $id) : ?array {
+        $dbRec  =   $this->userRepository->findByIdIncludingTrashed($id);
+        $dto    =   $dbRec ? UserDataTransformer::buildDto($dbRec->toArray()) : null;
 
+        return array(
+            'dbRec' => $dbRec,
+            'dto'   => $dto
+        );
+    }
+
+    public function loadAllTrashedDbRecs() : array {
+        $teachers    = $this->userRepository->findAllTrashedTeachers();
+        $students    = $this->userRepository->findAllTrashedStudents();
+        $marketers   = $this->userRepository->findAllTrashedMarketers();
+        $editors     = $this->userRepository->findAllTrashedEditors();
+
+        $teachersDtoArr = array();
+        $teachers->each(function (UserModel $record, int $key) use (&$teachersDtoArr){
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $teachersDtoArr[]   =   array('dto' => $dto, 'dbRec' => $record);
+        });
+
+        $studentsDtoArr = array();
+        $students->each(function (UserModel $record, int $key) use (&$studentsDtoArr){
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $studentsDtoArr[]   =   array('dto' => $dto, 'dbRec' => $record);
+        });
+
+        $marketersDtoArr = array();
+        $marketers->each(function (UserModel $record, int $key) use (&$marketersDtoArr){
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $marketersDtoArr[]  =   array('dto' => $dto, 'dbRec' => $record);
+        });
+
+        $editorsDtoArr = array();
+        $editors->each(function (UserModel $record, int $key) use (&$editorsDtoArr){
+            $dto                =   UserDataTransformer::buildDto($record->toArray());
+            $editorsDtoArr[]    =   array('dto' => $dto, 'dbRec' => $record);
+        });
+        
+        return array(
+            'teachersDtoArr'    => $teachersDtoArr,
+            'studentsDtoArr'    => $studentsDtoArr,
+            'marketersDtoArr'   => $marketersDtoArr,
+            'editorsDtoArr'     => $editorsDtoArr,
+        );
+    }
 
     public function loadLoggedInUserData() : array {
         $user = Sentinel::getUser();
@@ -467,11 +512,19 @@ class UserService
         $payloadArr     = $this->entityToDbRecArr($userEntity);
         return $payloadArr;
     }*/
+    
+    public function permanentlyDeleteDbRec(UserModel $userDbRec) : bool {
+        return $this->userRepository->permanentlyDeleteById($userDbRec->id);
+        //todo delete image also
+    }
+
+    public function restoreDbRec(int $dbRecId) : bool {
+        return $this->userRepository->restoreById($dbRecId);
+    }
+
+    public function checkCourseCanDelete(UserModel $courseDbRec) : bool {
+        return $this->userRepository->hasRelatedChildRecords($courseDbRec);
+    }
 
 
 }
-
-
-
-
-

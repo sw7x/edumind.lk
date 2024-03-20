@@ -1,6 +1,5 @@
-@extends('admin-panel.layouts.master')
+@extends('admin-panel.layouts.master',['title'=> 'Course single'.($course['data']['isTrashed'] ? ' - Trashed' : '')])
 @section('title','View course')
-
 
 @section('css-files')
     <!-- Feather Icons (https://feathericons.com/) -->
@@ -27,10 +26,13 @@
 @section('content')
     <div class="row" id="">
         <div class="col-lg-12">
+            @php
+                //dd($course);
+            @endphp
 
             @if(isset($course) && isNotEmptyArray($course))  
                 <div class="ibox">
-                    <div class="ibox-content">
+                    <div class="ibox-content {{$course['data']['isTrashed'] ? 'bg-gray-300' : ''}}">
 
                         <div class="tabs-container">
                             <ul class="nav nav-tabs" role="tablist">
@@ -54,7 +56,7 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Subject</label>
                                                 <label class="col-sm-8 col-form-label">                                                    
-                                                    @if($course['data']['subjectName'])
+                                                    @if(isset($course['data']['subjectName']))
                                                         {{$course['data']['subjectName']}}
                                                     @else
                                                         <span class="text-gray-400">No subject</span>
@@ -69,7 +71,12 @@
 
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">Teacher</label>
-                                                <label class="col-sm-8 col-form-label">{{$course['data']['teacherName']}}</label>
+                                                <label class="col-sm-8 col-form-label">
+                                                    {{$course['data']['teacherName'] ?? ''}}
+                                                    @if($course['data']['authorRecAvailability'])
+                                                        <span class="text-red">{{$course['data']['authorRecAvailability']}}</span>
+                                                    @endif
+                                                </label>
                                             </div>
                                             <div class="hr-line-dashed"></div>
 

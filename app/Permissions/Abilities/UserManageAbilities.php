@@ -6,7 +6,7 @@ class UserManageAbilities{
 
 	const ADMIN_PANEL_VIEW_USER_LIST = 'admin_panel_view_user_list';
 	
-	const ADMIN_PANEL_VIEW_USERS 	 = 'admin_panel_view_users';
+	const ADMIN_PANEL_VIEW_USER 	 = 'admin_panel_view_user';
 	const VIEW_TEACHERS 			 = 'admin_panel_view_teachers';
 	const VIEW_STUDENTS 			 = 'admin_panel_view_students';
 	const VIEW_MARKETERS 			 = 'admin_panel_view_editors';

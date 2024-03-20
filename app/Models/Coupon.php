@@ -71,7 +71,7 @@ class Coupon extends Model
 
 
 
-
+    
     public function course()
 	{
 	    return  $this->belongsTo(CourseModel::class, 'cc_course_id', 'id')
@@ -88,8 +88,9 @@ class Coupon extends Model
 
     public function beneficiary()
 	{
-	    return $this->belongsTo(UserModel::class, 'beneficiary_id', 'id');
-
+	    return  $this->belongsTo(UserModel::class, 'beneficiary_id', 'id')
+                    ->withoutGlobalScope('active')
+                    ->withTrashed();
 	}
 
 	/*

@@ -61,7 +61,7 @@ class SubjectController extends Controller
     }
 
     public function show(int $id){
-        $this->hasPermission(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECTS);
+        $this->hasPermission(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT);
      
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');

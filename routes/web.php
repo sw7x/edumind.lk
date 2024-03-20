@@ -250,6 +250,16 @@ Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
             Route::patch('/update-editor/{id}', [UserController::class,'updateEditor'])->name('update-editor');
 
             Route::post('/change-status', [UserController::class,'changeStatus'])->name('change-status');
+
+
+
+            Route::post('/check-can-delete', [UserController::class,'checkCanDelete'])->name('check-can-delete');
+            Route::get('/trashed', [UserController::class,'viewTrashedList'])->name('trashed');
+            Route::patch('/restore/{id}', [UserController::class,'restoreRec'])->name('restore');
+            Route::delete('/permanently-delete/{id}', [UserController::class,'permanentlyDelete'])->name('permanently-delete');
+    
+
+
         });
 
 

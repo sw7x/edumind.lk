@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Repositories\BaseRepository;
 use App\Models\ContactUs as ContactUsModel;
+use App\Models\User as UserModel;
 
 use App\Repositories\Interfaces\IGetDataRepository;
 use App\Mappers\ContactUsMapper;
@@ -22,9 +23,10 @@ class ContactUsRepository extends BaseRepository implements IGetDataRepository{
         $studentComments    =   $this->model->select('contact_us.*', 'users.status as userStat')
                                     ->whereHas('user', function ($query){
                                         $query->withoutGlobalScope('active')
-                                        ->whereHas('roles', function ($query){
-                                            $query->where('name', 'student');
-                                        });
+                                            ->withTrashed()                                        
+                                            ->whereHas('roles', function ($query){
+                                                $query->where('name', 'student');
+                                            });
                                     })
                                     ->join('users', 'contact_us.user_id', '=', 'users.id')
                                     ->orderBy('contact_us.created_at', 'desc')
@@ -105,5 +107,8 @@ class ContactUsRepository extends BaseRepository implements IGetDataRepository{
         return ContactUsMapper::dbRecConvertToEntityArr($data);
     }
       
+    public function getAllContactMessagesUser(UserModel $userRec) : ?Collection{
+        return $userRec->getContactMessages;
+    }
 
 }

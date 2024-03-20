@@ -19,10 +19,11 @@ class ContactUsService
 
     public function loadStudentMessages(){
         $studentContactMessages = $this->contactUsRepository->getAllStudentContactMessages();
-
+        
         $dataArr = array();
         $studentContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dto        = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dataArr[]  = array('dbRec' => $record, 'dto' => $dto);
         });
         return $dataArr;
     }
@@ -32,7 +33,8 @@ class ContactUsService
 
         $dataArr = array();
         $teacherContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dto        = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dataArr[]  = array('dbRec' => $record, 'dto' => $dto);
         });
         return $dataArr;
     }
@@ -43,7 +45,8 @@ class ContactUsService
 
         $dataArr = array();
         $otherUserContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dto        = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dataArr[]  = array('dbRec' => $record, 'dto' => $dto);
         });
         return $dataArr;
     }
@@ -53,7 +56,8 @@ class ContactUsService
 
         $dataArr = array();
         $guestContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
-            $dataArr[] = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dto        = ContactUsMessageDataTransformer::buildDto($record->toArray());
+            $dataArr[]  = array('dbRec' => $record, 'dto' => $dto);
         });
         return $dataArr;
     }

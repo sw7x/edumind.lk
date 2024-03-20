@@ -64,6 +64,7 @@
                 @canany([                   
                     UserManageAbilities::ADMIN_PANEL_VIEW_USER_LIST,
                     UserManageAbilities::VIEW_CREATE_PAGE,
+                    UserManageAbilities::DELETE_USERS
                 ])
                 <li class="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'active current' : '' }}">
                     <a href="" aria-expanded="{{ \Str::is('admin.users.*', Route::currentRouteName()) ? 'true' : 'false' }}">
@@ -76,6 +77,10 @@
 
                         @can(UserManageAbilities::VIEW_CREATE_PAGE)
                             <li class="{{ Route::is('admin.users.create') ? 'current' : '' }}"><a href="{{route('admin.users.create')}}">Add user</a></li>
+                        @endcan
+
+                        @can(UserManageAbilities::DELETE_USERS)
+                            <li class="{{ Route::is('admin.users.trashed') ? 'current' : '' }}"><a href="{{route('admin.users.trashed')}}">Trashed users</a></li>
                         @endcan
 
                         <li class="{{ Route::is('admin.users.un-approved-teachers-list') ? 'current' : '' }}"><a href="{{route('admin.users.un-approved-teachers-list')}}">Approve teachers</a></li>

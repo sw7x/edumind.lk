@@ -154,15 +154,7 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
     }
 
 
-    /**
-    * Get all trashed models.
-    *
-    * @return Collection
-    */
-    public function allTrashed(): Collection{
-
-        return $this->model->withoutGlobalScope('published')->onlyTrashed()->get();
-    }
+    
 
     /*
     public function deleteById($modelId){
@@ -301,6 +293,12 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
         return $teacher->getTeachingCourses()->get();
     }
 
+    public function getAllCoursesByTeacherIncludingTrashed(UserModel $teacher) : ?Collection {
+        return $teacher->getTeachingCourses()->withTrashed()->withoutGlobalScope('published')->get();
+    }
+
+    
+
 
     public function findByName(String $courseName) : ?Collection {
         return $this->model->withoutGlobalScope('published')->where('name', $courseName)->get();
@@ -437,4 +435,39 @@ class CourseRepository extends BaseRepository implements IGetDataRepository{
     public function permanentlyDeleteById(int $modelId): bool{
         return $this->findByIdIncludingTrashed($modelId)->forceDelete();
     }
+
+
+    /**
+    * Get all trashed models.
+    *
+    * @return Collection
+    */
+    public function allTrashed(): Collection{
+
+        return $this->model->withoutGlobalScope('published')->onlyTrashed()->get();
+    }
+
+    /**
+    * Find trashed model by id.
+    *
+    * @param int $modelId
+    * @return CourseModel
+    */
+    public function findTrashedById(int $modelId): ?CourseModel{
+        
+        return $this->model->withoutGlobalScope('published')->withTrashed()->find($modelId);
+    }
+
+    /**
+    * Find only trashed model by id.
+    *
+    * @param int $modelId
+    * @return CourseModel
+    */
+    public function findOnlyTrashedById(int $modelId): ?CourseModel{
+        
+        return $this->model->withoutGlobalScope('published')->onlyTrashed()->find($modelId);
+    }
+
+
 }

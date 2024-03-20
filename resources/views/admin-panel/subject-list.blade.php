@@ -71,7 +71,9 @@
 
                                             <td class="text-right">
                                                 <div class="btn-group">
-                                                    <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                    @can(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT)
+                                                        <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                    @endcan
                                                     
                                                     @can(SubjectAbilities::EDIT_SUBJECTS, $item['dbRec'])
                                                         <a href="{{route ('admin.subjects.edit',$item['data']['id'])}}" class="btn btn-blue btn-xs">Edit</a>

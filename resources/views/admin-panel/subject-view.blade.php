@@ -1,4 +1,4 @@
-@extends('admin-panel.layouts.master')
+@extends('admin-panel.layouts.master',['title'=> 'Subject single'.($subject['isDelete'] ? ' - Trashed' : '')])
 @section('title','View subject')
 
 @section('css-files')

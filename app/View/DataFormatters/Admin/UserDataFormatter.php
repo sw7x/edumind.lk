@@ -29,7 +29,10 @@ class UserDataFormatter{
         $arr['userType'] = $userDto->getRoleDto() ? $userDto->getRoleDto()->getName() : null;
         
         $arr['lastLogin']       = $userDataArr['dbRec']->last_login;
-        $arr['lastLoginTime']   = $userDataArr['dbRec']->getLastLoginTime();        
+        $arr['lastLoginTime']   = $userDataArr['dbRec']->getLastLoginTime();
+
+        $arr['isTrashed'] = $userDataArr['dbRec']->trashed();
+        
         return $arr;
     }
     

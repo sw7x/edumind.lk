@@ -76,7 +76,9 @@
 
                                             <td class="text-right">
                                                 <div class="btn-group">
-                                                    <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                    @can(SubjectAbilities::ADMIN_PANEL_VIEW_SUBJECT)
+                                                        <a href="{{route ('admin.subjects.show',$item['data']['id'])}}" class="btn-white btn btn-xs">View</a>
+                                                    @endcan
                                                     
                                                     @can(SubjectAbilities::DELETE_SINGLE_SUBJECT, $item['dbRec'])
                                                         <a href="javascript:void(0);" class="restore-subject-btn btn-primary btn btn-xs">Restore</a>

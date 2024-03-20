@@ -12,11 +12,8 @@ use Carbon\Carbon;
 use Sentinel;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 
-//use Illuminate\Database\Eloquent\SoftDeletes;
-
 use Illuminate\Database\Eloquent\Builder;
 use Ramsey\Uuid\Uuid;
-
 
 use App\Models\Course as CourseModel;
 use App\Models\CourseSelection as CourseSelectionModel;
@@ -25,12 +22,17 @@ use App\Models\Role as RoleModel;
 use App\Models\Subject as SubjectModel;
 use App\Models\Enrollment as EnrollmentModel;
 use App\Models\ContactUs as ContactUsModel;
+use App\Models\TempBillingInfo as TempBillingInfoModel;
 
 use Cartalyst\Sentinel\Users\EloquentUser as CartalystUser;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
+
 class User extends CartalystUser
 //class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, Authorizable ;
+    use HasApiTokens, HasFactory, Notifiable, Authorizable,SoftDeletes;
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
     const GENDER_MALE   = 'male';
@@ -169,11 +171,16 @@ class User extends CartalystUser
 
     public function subjects(){
         return $this->hasMany(SubjectModel::class,'author_id','id');
+    }    
+
+    public function tempBillingInfoRecs(){
+        return $this->hasMany(TempBillingInfoModel::class,'user_id','id');
     }
     
     public function coupons()
     {
-        return $this->hasMany(CouponModel::class,'beneficiary_id','id');
+        return  $this->hasMany(CouponModel::class,'beneficiary_id','id')
+                    ->withoutGlobalScope('enabled');
     }
 
     public function enrollments()
@@ -255,12 +262,22 @@ class User extends CartalystUser
 
 
 
+    /**
+     * Override the delete method to customize the behavior.
+     *
+     * @return bool|null
+     */   
+    public function delete(){
+        return parent::delete();
+    }
 
-    
 
-    public function delete()
-    {
-
+    /**
+     * Override the forceDelete method to customize the behavior.
+     *
+     * @return bool|null
+     */
+    public function permanentlyDelete(){        
         if ($this->exists) {
             $this->activations()->delete();
             $this->persistences()->delete();
@@ -270,8 +287,10 @@ class User extends CartalystUser
             $this->throttle()->delete();
         }
 
-        parent::delete();
+        return $this->forceDelete();
     }
+
+
 
 
     public function getAllUserRoles(){
