@@ -97,7 +97,7 @@ class CourseController extends Controller
                 abort(500, "Course create failed due to server error !");
 
             return redirect()->route('admin.courses.create')
-                ->with(AlertDataUtil::sucess('Course created successfully'));
+                ->with(AlertDataUtil::success('Course created successfully'));
 
         }catch(\Throwable $ex){
             /* when $courseContentLinkErrMsgArr send as a meessage bag error as following code
@@ -105,6 +105,8 @@ class CourseController extends Controller
             then laravel automatically remove all duplicated message in one key element in array */
 
             $msg = ($ex instanceof CustomException) ? $ex->getMessage() : 'Course create failed !';
+            //$msg =  $ex->getMessage();
+
             return redirect(route('admin.courses.create'))
                 ->withErrors($courseValErrors['contentMsg'] ?? [],'contentErrMsgArr')
                 ->withErrors($courseValErrors['infoMsg'] ?? [],'infoErrMsgArr')
@@ -266,7 +268,7 @@ class CourseController extends Controller
         if(!filter_var($id, FILTER_VALIDATE_INT))
             throw new CustomException('Invalid id');
 
-        $courseData = $this->adminCourseService->findDbRecIncludingTrashed($id);////
+        $courseData = $this->adminCourseService->findDbRecIncludingTrashed($id);
         if(is_null($courseData['dbRec']))
             throw new CustomException('Course does not exist!');
         
