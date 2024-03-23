@@ -23,7 +23,6 @@ class ContactUsMessageDtoFactory extends AbstractDtoFactory
         if(!isset($data['message']))
             throw new MissingArgumentDtoException('ContactUsMessageDto create failed due to missing message parameter');
 
-        
         $creatorDto = isset($data['userId']) ? 
                         (new UserDtoFactory())->createDtoById($data['userId']) : 
                         (isset($data['userArr']) && !empty($data['userArr']) ? 

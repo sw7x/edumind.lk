@@ -49,7 +49,7 @@ class UserFactory implements IFactory {
                 $method     = 'createMarketerUserObj';
                 break;
             case UserTypesEnum::STUDENT:
-                $method     = 'createStudentUserObj';
+                $method     = 'createStudentUserObjTree';
                 break;
             case UserTypesEnum::TEACHER:
                 $method     = 'createTeacherUserObj';
@@ -391,7 +391,7 @@ class UserFactory implements IFactory {
         return $marketerUser;
     }
 
-    private function createStudentUserObj(array $userData): StudentUserEntity {
+    private function createStudentUserObjTree(array $userData): StudentUserEntity {
 
         if( !isset(
                 $userData['fullName'],
@@ -484,6 +484,94 @@ class UserFactory implements IFactory {
                 $studentUser->addToCart($courseItemEntity);
             }
         }
+        return $studentUser;
+    }
+
+
+    private function createStudentUserObj(array $userData): StudentUserEntity {
+
+        if( !isset(
+                $userData['fullName'],
+                $userData['email'],
+                $userData['phone'],
+                $userData['username'],
+                $userData['status']
+            )
+        ){  throw new MissingArgumentDomainException("Missing required parameter. for create Student User"); }
+
+        //type validations
+        if(!is_string($userData['fullName']) || ($userData['fullName'] === ''))
+            throw new InvalidArgumentDomainException("Invalid fullName parameter to create Student user entity");
+
+        if(!is_string($userData['phone']) || ($userData['phone'] === ''))
+            throw new InvalidArgumentDomainException("Invalid phone parameter to create Student user entity");
+
+        if(!is_string($userData['username']) || ($userData['username'] === ''))
+            throw new InvalidArgumentDomainException("Invalid username parameter to create Student user entity");
+
+        if(!filter_var($userData['email'], FILTER_VALIDATE_EMAIL))
+            throw new InvalidArgumentDomainException("Invalid email address for create Student User entity");
+
+        if(!is_bool($userData['status']))
+            throw new InvalidArgumentDomainException("Invalid status parameter for create Student User entity");
+
+        $studentUser = new StudentUserEntity(
+            $userData['fullName'],
+            $userData['email'],
+            $userData['phone'],
+            $userData['username'],
+            $userData['status'],
+            (int)$userData['dobYear']
+        );
+
+        if (!isset($userData['id']) || $userData['id'] == null) {
+            $userData['uuid'] = str_replace('-', '', Uuid::uuid4()->toString());
+        }
+
+        if (isset($userData['uuid'])) {
+            $studentUser->setUuid($userData['uuid']);
+        }
+
+        if (isset($userData['id'])) {
+            $studentUser->setId($userData['id']);
+        }
+
+        if (isset($userData['profilePic'])) {
+            $studentUser->setProfilePic($userData['profilePic']);
+        }
+
+        if (isset($userData['gender'])) {
+            if (!in_array( $userData['gender'], [GenderTypesEnum::MALE, GenderTypesEnum::FEMALE, GenderTypesEnum::OTHER])) {
+                throw new InvalidArgumentDomainException('Invalid gender parameter for Student User entity');
+            }
+            $studentUser->setGender($userData['gender']);
+        }
+
+        /*
+        if (isset($userData['dobYear'])) {
+            $studentUser->setDobYear($userData['dobYear']);
+        }
+        */
+
+        if (isset($userData['profileText'])) {
+            $studentUser->setProfileText($userData['profileText']);
+        }
+
+        if (isset($userData['isActivated'])){
+            if (!is_bool($userData['isActivated']))
+                throw new InvalidArgumentDomainException('Invalid isActivated parameter for Student User entity');
+
+            $studentUser->setIsActivated($userData['isActivated']);
+        }
+
+        if(!empty($userData['roleArr']) && $userData['roleArr']['name'] == UserTypesEnum::STUDENT){
+            $role = new RoleEntity($userData['roleArr']['name']);
+            if(isset($userData['roleArr']['id'])) $role->setId($userData['roleArr']['id']);
+            if(isset($userData['roleArr']['uuid'])) $role->setUuid($userData['roleArr']['uuid']);
+            if($userData['roleArr']['name'] == UserTypesEnum::STUDENT) $role->setSlug($userData['roleArr']['slug']);
+            $studentUser->setRole($role);
+        }
+
         return $studentUser;
     }
 

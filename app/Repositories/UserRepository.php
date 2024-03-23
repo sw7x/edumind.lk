@@ -240,7 +240,7 @@ class UserRepository extends BaseRepository implements IGetDataRepository{
     }
 
     public function findDtoDataById(int $userId): array {
-        $data = $this->findDataArrById($userId);
+        $data = $this->findDataArrIncludingTrashedById($userId);
         return UserMapper::dbRecConvertToEntityArr($data);
     }
 

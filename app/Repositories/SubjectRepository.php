@@ -193,7 +193,6 @@ class SubjectRepository extends BaseRepository implements IGetDataRepository {
 
 
     public function findDataArrById(int $subjectId) : array{
-        //dd($subjectId);
         //$subjectRec    = $this->findById($subjectId); 
         $subjectRec    = $this->findByIdIncludingTrashed($subjectId); 
 

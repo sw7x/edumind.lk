@@ -24,8 +24,6 @@ class UserDtoFactory extends AbstractDtoFactory{
     
     
     public static function fromArray(array $data) : ?UserDto {        
-        //dd($data);
-        
         $requiredKeys = ['fullName', 'email', 'phone', 'username', 'status'];
         foreach ($requiredKeys as $key) {
             if (!isset($data[$key])) { 

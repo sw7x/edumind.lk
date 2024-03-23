@@ -19,7 +19,6 @@ class ContactUsService
 
     public function loadStudentMessages(){
         $studentContactMessages = $this->contactUsRepository->getAllStudentContactMessages();
-        
         $dataArr = array();
         $studentContactMessages->each(function (ContactUsModel $record, int $key) use (&$dataArr){
             $dto        = ContactUsMessageDataTransformer::buildDto($record->toArray());
